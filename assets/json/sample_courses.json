@@ -1,7 +1,7 @@
 [
   {
     "course": "HISTORY 124B",
-    "name": "The United States from World War II to the Vietnam Era",
+    "title": "The United States from World War II to the Vietnam Era",
     "instructor": "Zubovich, Y",
     "ccn": 39471,
     "units": 4,
@@ -21,7 +21,7 @@
   },
   {
     "course": "COMPSCI 162",
-    "name": "Operating Systems and System Programming",
+    "title": "Operating Systems and System Programming",
     "instructor": "Joseph, A D",
     "ccn": 26520,
     "units": 4,
@@ -63,7 +63,7 @@
   },
   {
     "course": "COMPSCI 61A",
-    "name": "The Structure and Interpretation of Computer Programs",
+    "title": "The Structure and Interpretation of Computer Programs",
     "instructor": "Hilfinger, P N",
     "ccn": 25902,
     "units": 4,

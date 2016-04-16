@@ -13,13 +13,13 @@
         $stateProvider
           .state('find', {
             url: '/find',
-            templateUrl: 'html/find.html',
+            templateUrl: 'assets/html/find.html',
             controller: 'CourseFindCtrl',
             controllerAs: 'vm'
           })
           .state('schedule', {
             url: '/schedule',
-            templateUrl: 'html/schedule.html',
+            templateUrl: 'assets/html/schedule.html',
             controller: 'ScheduleCtrl',
             controllerAs: 'vm'
           });
@@ -28,11 +28,13 @@
       }
     ]);
 
-  var sampleCoursesUrl = 'assets/courses/sample_courses.json';
+  var sampleCoursesUrl = 'assets/json/sample_courses.json';
 
   function courses($http) {
     var sampleCoursesQ = $http.get(sampleCoursesUrl).then(function(response) {
-      return response.data;
+      return response.data.map(function(courseJson) {
+        return Course.parse(courseJson);
+      });
     });
 
     return {
