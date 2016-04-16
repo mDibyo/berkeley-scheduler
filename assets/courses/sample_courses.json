@@ -1,0 +1,125 @@
+[
+  {
+    "course": "HISTORY 124B",
+    "name": "The United States from World War II to the Vietnam Era",
+    "instructor": "Zubovich, Y",
+    "units": 4,
+    "sections": [
+      {
+        "number": "001",
+        "type": "LEC",
+        "CCN": 39471,
+        "location": "100 GPB",
+        "instructor": "Zubovich, Y",
+        "time": "MWF 11-12P",
+        "capacity": 206,
+        "enrolled": 150,
+        "waitlist": 0
+      }
+    ]
+  },
+  {
+    "course": "COMPSCI 162",
+    "name": "Operating Systems and System Programming",
+    "instructor": "Joseph, A D",
+    "units": 4,
+    "sections": [
+      {
+        "number": "001",
+        "type": "LEC",
+        "CCN": 26520,
+        "location": "245 LI KA SHING",
+        "instructor": "Joseph, A D",
+        "time": "MW 5-6:30P",
+        "capacity": 300,
+        "enrolled": 268,
+        "waitlist": 0
+      },
+      {
+        "number": "101",
+        "type": "DIS",
+        "CCN": 26523,
+        "location": "B5 HEARST ANNEX",
+        "instructor": "Chen, R Y",
+        "time": "T 1-2P",
+        "capacity": 28,
+        "enrolled": 0,
+        "waitlist": 0
+      },
+      {
+        "number": "105",
+        "type": "DIS",
+        "CCN": 26535,
+        "location": "310 HEARST MIN",
+        "instructor": "Kamko, A Y",
+        "time": "W 11-12P",
+        "capacity": 28,
+        "enrolled": 0,
+        "waitlist": 0
+      },
+    ]
+  },
+  {
+    "course": "COMPSCI 61A",
+    "name": "The Structure and Interpretation of Computer Programs",
+    "instructor": "Hilfinger, P N",
+    "units": 4,
+    "sections": [
+      {
+        "number": "001",
+        "type": "LEC",
+        "CCN": 25902,
+        "location": "WHEELER AUD",
+        "instructor": "Hilfinger, P N",
+        "time": "MWF 2-3P",
+        "capacity": 1000,
+        "enrolled": 824,
+        "waitlist": 0
+      },
+      {
+        "number": "011",
+        "type": "LAB",
+        "CCN": 25905,
+        "location": "271 SODA",
+        "instructor": "Liu, K",
+        "time": "T 9:30-11A",
+        "capacity": 34,
+        "enrolled": 29,
+        "waitlist": 0
+      },
+      {
+        "number": "111",
+        "type": "DIS",
+        "CCN": 25908,
+        "location": "242 DWINELLE",
+        "instructor": "Liu, K",
+        "time": "R 9:30-11A",
+        "capacity": 34,
+        "enrolled": 29,
+        "waitlist": 0
+      },
+      {
+        "number": "015",
+        "type": "LAB",
+        "CCN": 25929,
+        "location": "275 SODA",
+        "instructor": "Nguyen, T D",
+        "time": "T 11-12:30P",
+        "capacity": 27,
+        "enrolled": 25,
+        "waitlist": 0
+      },
+      {
+        "number": "115",
+        "type": "DIS",
+        "CCN": 25932,
+        "location": "242 DWINELLE",
+        "instructor": "Nguyen, T D",
+        "time": "R 11-12:30P",
+        "capacity": 27,
+        "enrolled": 25,
+        "waitlist": 0
+      },
+    ]
+  }
+]
