@@ -3,12 +3,13 @@
     "course": "HISTORY 124B",
     "name": "The United States from World War II to the Vietnam Era",
     "instructor": "Zubovich, Y",
+    "ccn": 39471,
     "units": 4,
     "sections": [
       {
         "number": "001",
         "type": "LEC",
-        "CCN": 39471,
+        "ccn": 39471,
         "location": "100 GPB",
         "instructor": "Zubovich, Y",
         "time": "MWF 11-12P",
@@ -22,12 +23,13 @@
     "course": "COMPSCI 162",
     "name": "Operating Systems and System Programming",
     "instructor": "Joseph, A D",
+    "ccn": 26520,
     "units": 4,
     "sections": [
       {
         "number": "001",
         "type": "LEC",
-        "CCN": 26520,
+        "ccn": 26520,
         "location": "245 LI KA SHING",
         "instructor": "Joseph, A D",
         "time": "MW 5-6:30P",
@@ -38,7 +40,7 @@
       {
         "number": "101",
         "type": "DIS",
-        "CCN": 26523,
+        "ccn": 26523,
         "location": "B5 HEARST ANNEX",
         "instructor": "Chen, R Y",
         "time": "T 1-2P",
@@ -49,7 +51,7 @@
       {
         "number": "105",
         "type": "DIS",
-        "CCN": 26535,
+        "ccn": 26535,
         "location": "310 HEARST MIN",
         "instructor": "Kamko, A Y",
         "time": "W 11-12P",
@@ -63,12 +65,13 @@
     "course": "COMPSCI 61A",
     "name": "The Structure and Interpretation of Computer Programs",
     "instructor": "Hilfinger, P N",
+    "ccn": 25902,
     "units": 4,
     "sections": [
       {
         "number": "001",
         "type": "LEC",
-        "CCN": 25902,
+        "ccn": 25902,
         "location": "WHEELER AUD",
         "instructor": "Hilfinger, P N",
         "time": "MWF 2-3P",
@@ -79,7 +82,7 @@
       {
         "number": "011",
         "type": "LAB",
-        "CCN": 25905,
+        "ccn": 25905,
         "location": "271 SODA",
         "instructor": "Liu, K",
         "time": "T 9:30-11A",
@@ -90,7 +93,7 @@
       {
         "number": "111",
         "type": "DIS",
-        "CCN": 25908,
+        "ccn": 25908,
         "location": "242 DWINELLE",
         "instructor": "Liu, K",
         "time": "R 9:30-11A",
@@ -101,7 +104,7 @@
       {
         "number": "015",
         "type": "LAB",
-        "CCN": 25929,
+        "ccn": 25929,
         "location": "275 SODA",
         "instructor": "Nguyen, T D",
         "time": "T 11-12:30P",
@@ -112,7 +115,7 @@
       {
         "number": "115",
         "type": "DIS",
-        "CCN": 25932,
+        "ccn": 25932,
         "location": "242 DWINELLE",
         "instructor": "Nguyen, T D",
         "time": "R 11-12:30P",
