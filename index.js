@@ -41,9 +41,43 @@
       sampleCoursesQ: sampleCoursesQ
     }
   }
-  angular.module('scheduleBuilder').factory('course', [
+  angular.module('scheduleBuilder').factory('courses', [
     '$http',
     courses
+  ]);
+
+  function scheduleFactory() {
+    var _courses = {};
+    var _schedules = {};
+    var _stale = false;
+
+    function addCourse(course) {
+      _courses[course.ccn] = course;
+      _stale = true;
+    }
+
+    function dropCourse(course) {
+      delete _courses[course.ccn];
+      _stale = true;
+    }
+
+    function generateSchedules() {
+      if (_stale) {
+        _schedules = [];
+        // TODO: Generate schedules
+        _stale = false;
+      }
+      return _schedules;
+    }
+
+    return {
+      addCourse: addCourse,
+      dropCourse: dropCourse,
+      generateSchedules: generateSchedules
+    };
+  }
+  angular.module('scheduleBuilder').factory('scheduleFactory', [
+    scheduleFactory
   ]);
 
   function BaseCtrl($state, $window) {
