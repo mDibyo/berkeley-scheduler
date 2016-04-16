@@ -26,7 +26,15 @@
 
         $urlRouterProvider.otherwise('find');
       }
-    ]);
+    ])
+    .directive('sbCourseDisplayAndSelect', function() {
+      return {
+        scope: {
+          course: '='
+        },
+        templateUrl: "assets/html/course_display_and_select.partial.html"
+      };
+    });
 
   var sampleCoursesUrl = 'assets/json/sample_courses.json';
 

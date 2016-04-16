@@ -9,10 +9,12 @@ function Course(courseJson) {
   this.instructor = courseJson.instructor;
   this.ccn = courseJson.ccn;
   this.units = courseJson.units;
-  this.sections = courseJson.sections;
 
+  this.sections = courseJson.sections;
   this.sectionTypes = [];
   this.sections.forEach(function(section) {
+    section.selected = true;
+
     if (this.sectionTypes.indexOf(section.type) < 0) {
       this.sectionTypes.push(section.type);
     }

@@ -1,0 +1,26 @@
+<h3>{{course.department}} {{course.courseNumber}} - {{course.title}}</h3>
+
+<table>
+  <tr>
+    <th></th>
+    <th>Number</th>
+    <th>Type</th>
+    <th>CCN</th>
+    <th>Location</th>
+    <th>Time</th>
+    <th>Instructor</th>
+    <th>Enrollment</th>
+    <th>Waitlist</th>
+  </tr>
+  <tr ng-repeat="section in course.sections">
+    <td><input type="checkbox" ng-model="section.selected"></td>
+    <td>{{section.number}}</td>
+    <td>{{section.type}}</td>
+    <td>{{section.ccn}}</td>
+    <td>{{section.location}}</td>
+    <td>{{section.time}}</td>
+    <td>{{section.instructor}}</td>
+    <td>{{section.enrolled}}/{{section.capacity}}</td>
+    <td>{{section.waitlist}}</td>
+  </tr>
+</table>
