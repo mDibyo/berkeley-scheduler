@@ -6,3 +6,7 @@ table, td, th {
 td, th {
     padding: 5px;
 }
+
+#select-courses, #view-course {
+    float: left;
+}

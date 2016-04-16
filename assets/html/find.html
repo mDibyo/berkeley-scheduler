@@ -1,5 +1,27 @@
-<ul>
-  <li ng-repeat="course in vm.coursesList">
+<div id="select-courses">
+  <h3>All courses</h3>
+  <ul>
+    <li ng-repeat="course in vm.coursesList">
+      {{course.department}} {{course.courseNumber}}
+      <a href="" ng-click="vm.addCourse(course)">add</a>
+    </li>
+  </ul>
+
+  <br>
+
+  <h3>Added Courses</h3>
+  <ul>
+    <li ng-repeat="course in vm.addedCoursesList">
+      <a href="" ng-click="vm.setSelectedCourse(course)">
+        {{course.department}} {{course.courseNumber}}
+      </a>&nbsp;
+      <a href="" ng-click="vm.dropCourse(course)">drop</a>
+    </li>
+  </ul>
+</div>
+
+<div id="view-course">
+  <div ng-repeat="course in vm.addedCoursesList" ng-show="course == selectedCourse">
     <sb-course-display-and-select course="course"></sb-course-display-and-select>
-  </li>
-</ul>
+  </div>
+</div>

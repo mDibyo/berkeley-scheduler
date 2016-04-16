@@ -60,13 +60,21 @@
     var _stale = false;
 
     function addCourse(course) {
+      if (_courses.hasOwnProperty(course.ccn)) {
+        return false;
+      }
       _courses[course.ccn] = course;
       _stale = true;
+      return true;
     }
 
     function dropCourse(course) {
+      if (!_courses.hasOwnProperty(course.ccn)) {
+        return false;
+      }
       delete _courses[course.ccn];
       _stale = true;
+      return true;
     }
 
     function generateSchedules() {
@@ -104,21 +112,58 @@
   }
 
   CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function CourseFindCtrl($state, $window, courses) {
+  function CourseFindCtrl($state, $window, $scope, courses, scheduleFactory) {
     BaseCtrl.call(this, $state, $window);
 
     var vm = this;
 
     vm.coursesList = [];
+    vm.addedCoursesList = [];
+    vm.addCourse = addCourse;
+    vm.dropCourse = dropCourse;
+    vm.setSelectedCourse = setSelectedCourse;
 
+    var selectedCourse = null;
     courses.sampleCoursesQ.then(function(courses) {
       vm.coursesList = courses;
     });
+
+    function addCourse(course) {
+      if (scheduleFactory.addCourse(course)) {
+        vm.addedCoursesList.push(course);
+      } else {
+        console.error('Unable to add course ', course);
+      }
+    }
+
+    function dropCourse(course) {
+      if (scheduleFactory.dropCourse(course)) {
+        if (course == selectedCourse) {
+          vm.setSelectedCourse(null);
+        }
+        vm.addedCoursesList.remove(course);
+      } else {
+        console.error('Unable to drop course ', course);
+      }
+    }
+
+    function setSelectedCourse(course) {
+      console.log(course);
+      if (selectedCourse != null) {
+        selectedCourse.view = false;
+      }
+      selectedCourse = course;
+      if (selectedCourse != null) {
+        selectedCourse.view = true;
+      }
+    }
   }
   angular.module('scheduleBuilder').controller('CourseFindCtrl', [
     '$state',
     '$window',
+    '$scope',
     'courses',
+    'scheduleFactory',
     CourseFindCtrl
   ]);
 

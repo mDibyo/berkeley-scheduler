@@ -19,6 +19,9 @@ function Course(courseJson) {
       this.sectionTypes.push(section.type);
     }
   }, this);
+
+  this.color = null;
+  this.view = false;
 }
 
 Course.parse = function(data) {
