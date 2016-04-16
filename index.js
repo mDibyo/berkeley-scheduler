@@ -1,4 +1,6 @@
 (function() {
+  'use strict';
+
   angular.module('scheduleBuilder', [
     'ui.router',
     'ngSanitize',
@@ -26,6 +28,22 @@
       }
     ]);
 
+  var sampleCoursesUrl = 'assets/courses/sample_courses.json';
+
+  function courses($http) {
+    var sampleCoursesQ = $http.get(sampleCoursesUrl).then(function(response) {
+      return response.data;
+    });
+
+    return {
+      sampleCoursesQ: sampleCoursesQ
+    }
+  }
+  angular.module('scheduleBuilder').factory('course', [
+    '$http',
+    courses
+  ]);
+
   function BaseCtrl($state, $window) {
     var vm = this;
 
@@ -42,12 +60,21 @@
   }
 
   CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function CourseFindCtrl($state, $window) {
+  function CourseFindCtrl($state, $window, courses) {
     BaseCtrl.call(this, $state, $window);
+
+    var vm = this;
+
+    vm.coursesList = [];
+
+    courses.sampleCoursesQ.then(function(courses) {
+      vm.coursesList = courses;
+    });
   }
   angular.module('scheduleBuilder').controller('CourseFindCtrl', [
     '$state',
     '$window',
+    'courses',
     CourseFindCtrl
   ]);
 
