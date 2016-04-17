@@ -1,0 +1,25 @@
+<div id="select-courses" ng-controller="CourseFindNewCtrl as vm">
+  <h3>All courses</h3>
+  <ul>
+    <li ng-repeat="course in vm.coursesList">
+      {{course.department}} {{course.courseNumber}}
+      <a href="" ng-click="vm.addCourse(course)">add</a>
+    </li>
+  </ul>
+
+  <br>
+
+  <h3>Added Courses</h3>
+  <ul>
+    <li ng-repeat="course in vm.addedCoursesList">
+      <a ui-sref="scheduleNew.viewCourse({ccn: course.ccn})">
+        {{course.department}} {{course.courseNumber}}
+      </a>&nbsp;
+      <a href="" ng-click="vm.dropCourse(course)">drop</a>
+    </li>
+  </ul>
+</div>
+
+<div id="view-course">
+  <ui-view></ui-view>
+</div>

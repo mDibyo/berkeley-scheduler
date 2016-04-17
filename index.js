@@ -22,6 +22,16 @@
             templateUrl: 'assets/html/schedule.html',
             controller: 'ScheduleCtrl',
             controllerAs: 'vm'
+          })
+          .state('scheduleNew', {
+            url: '/schedule1',
+            templateUrl: 'assets/html/schedule_new.html'
+          })
+          .state('scheduleNew.viewCourse', {
+            url: '/course/{ccn}',
+            templateUrl: 'assets/html/course_view_and_select.partial.html',
+            controller: 'CourseViewAndSelectCtrl',
+            controllerAs: 'vm'
           });
 
         $urlRouterProvider.otherwise('find');
@@ -48,6 +58,7 @@
 
   function scheduleFactory() {
     var _courses = {};
+    var _sections = {};
     var _schedules = {};
     var _stale = false;
 
@@ -56,11 +67,21 @@
     }
 
     function getAllCourses() {
-      var courses = []
+      var courses = [];
       for (var ccn in _courses) {
         courses.push(_courses[ccn]);
       }
       return courses;
+    }
+
+    function getCourseByCcn(ccn) {
+      if (_courses.hasOwnProperty(ccn)) {
+        return _courses[ccn];
+      }
+      if (_sections.hasOwnProperty(ccn)) {
+        return _sections[ccn].course;
+      }
+      return null;
     }
 
     function addCourse(course) {
@@ -68,6 +89,9 @@
         return false;
       }
       _courses[course.ccn] = course;
+      course.sections.forEach(function(section) {
+        _sections[section.ccn] = section;
+      });
       setStale();
       return true;
     }
@@ -77,6 +101,9 @@
         return false;
       }
       delete _courses[course.ccn];
+      course.sections.forEach(function(section) {
+        delete _sections[section.ccn];
+      });
       setStale();
       return true;
     }
@@ -111,13 +138,13 @@
       };
       generateHelper([], 0);
       _stale = false;
-      console.log(_schedules);
       return _schedules;
     }
 
     return {
       setStale: setStale,
       getAllCourses: getAllCourses,
+      getCourseByCcn: getCourseByCcn,
       addCourse: addCourse,
       dropCourse: dropCourse,
       generateSchedules: generateSchedules
@@ -200,6 +227,72 @@
     'courses',
     'scheduleFactory',
     CourseFindCtrl
+  ]);
+
+  CourseFindNewCtrl.prototype = Object.create(BaseCtrl.prototype);
+  function CourseFindNewCtrl($state, $window, courses, scheduleFactory) {
+    BaseCtrl.call(this, $state, $window);
+
+    var vm = this;
+
+    vm.coursesList = [];
+    vm.addedCoursesList = scheduleFactory.getAllCourses();
+    vm.setSchedulesStale = setSchedulesStale;
+    vm.addCourse = addCourse;
+    vm.dropCourse = dropCourse;
+    //vm.displayCourse = displayCourse;
+    vm.generateSchedules = scheduleFactory.generateSchedules;
+
+    var selectedCourse = null;
+    courses.sampleCoursesQ.then(function(courses) {
+      vm.coursesList = courses;
+    });
+
+    function setSchedulesStale() {
+      scheduleFactory.setStale();
+    }
+
+    function addCourse(course) {
+      if (scheduleFactory.addCourse(course)) {
+        vm.addedCoursesList.push(course);
+      } else {
+        console.error('Unable to add course ', course);
+      }
+    }
+
+    function dropCourse(course) {
+      if (scheduleFactory.dropCourse(course)) {
+        if (course == selectedCourse) {
+          vm.setSelectedCourse(null);
+        }
+        vm.addedCoursesList.remove(course);
+      } else {
+        console.error('Unable to drop course ', course);
+      }
+    }
+  }
+  angular.module('scheduleBuilder').controller('CourseFindNewCtrl', [
+    '$state',
+    '$window',
+    'courses',
+    'scheduleFactory',
+    CourseFindNewCtrl
+  ]);
+
+  CourseViewAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
+  function CourseViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory) {
+    BaseCtrl.call(this, $state, $window);
+
+    var vm = this;
+
+    vm.selectedCourse = scheduleFactory.getCourseByCcn($stateParams.ccn);
+  }
+  angular.module('scheduleBuilder').controller('CourseViewAndSelectCtrl', [
+    '$state',
+    '$window',
+    '$stateParams',
+    'scheduleFactory',
+    CourseViewAndSelectCtrl
   ]);
 
   ScheduleCtrl.prototype = Object.create(BaseCtrl.prototype);
