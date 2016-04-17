@@ -55,6 +55,14 @@
       _stale = true;
     }
 
+    function getAllCourses() {
+      var courses = []
+      for (var ccn in _courses) {
+        courses.push(_courses[ccn]);
+      }
+      return courses;
+    }
+
     function addCourse(course) {
       if (_courses.hasOwnProperty(course.ccn)) {
         return false;
@@ -109,6 +117,7 @@
 
     return {
       setStale: setStale,
+      getAllCourses: getAllCourses,
       addCourse: addCourse,
       dropCourse: dropCourse,
       generateSchedules: generateSchedules
@@ -140,7 +149,7 @@
     var vm = this;
 
     vm.coursesList = [];
-    vm.addedCoursesList = [];
+    vm.addedCoursesList = scheduleFactory.getAllCourses();
     vm.setSchedulesStale = setSchedulesStale;
     vm.addCourse = addCourse;
     vm.dropCourse = dropCourse;
