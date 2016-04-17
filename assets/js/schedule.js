@@ -40,6 +40,9 @@ Schedule.generateId = function(ccnList) {
 };
 
 Schedule.normalizeId = function(id) {
+  if (id === null) {
+    return null;
+  }
   return Schedule.generateId(id.split('.'));
 };
 

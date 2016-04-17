@@ -340,14 +340,6 @@
     var vm = this;
 
     vm.selectedCourse = scheduleFactory.getCourseByCcn($stateParams.ccn);
-    vm.generateSchedulesAndView = generateSchedulesAndView;
-
-    function generateSchedulesAndView() {
-      scheduleFactory.generateSchedules();
-      vm.goToState('scheduleNew.viewSchedule', {
-        scheduleId: scheduleFactory.getCurrScheduleId()
-      });
-    }
   }
   angular.module('scheduleBuilder').controller('CourseViewAndSelectCtrl', [
     '$state',
@@ -414,7 +406,7 @@
         sbCourseDisplayAndSelectCtrl
       ],
       controllerAs: 'vm',
-      templateUrl: "assets/html/course_display_and_select.partial.html"
+      templateUrl: 'assets/html/course_display_and_select.partial.html'
     };
   }
   angular.module('scheduleBuilder').directive('sbCourseDisplayAndSelect', [
@@ -467,11 +459,47 @@
         sbScheduleDisplayCtrl
       ],
       controllerAs: 'vm',
-      templateUrl: "assets/html/schedule_display.partial.html"
+      templateUrl: 'assets/html/schedule_display.partial.html'
     }
   }
   angular.module('scheduleBuilder').directive('sbScheduleDisplay', [
-    'scheduleFactory',
     sbScheduleDisplayDirective
-  ])
+  ]);
+
+  function sbGenerateSchedulesDirective() {
+    sbGenerateSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
+    function sbGenerateSchedulesCtrl($state, $window, scheduleFactory) {
+      BaseCtrl.call(this, $state, $window);
+
+      var vm = this;
+
+      vm.message = 'Generate Schedule';
+      vm.generateSchedulesAndView = generateSchedulesAndView;
+
+      function generateSchedulesAndView() {
+        scheduleFactory.generateSchedules();
+        var currScheduleId = scheduleFactory.getCurrScheduleId();
+        if (currScheduleId === undefined) {
+          return;
+        }
+        vm.goToState('scheduleNew.viewSchedule', {
+          scheduleId: currScheduleId
+        });
+      }
+    }
+
+    return {
+      controller: [
+        '$state',
+        '$window',
+        'scheduleFactory',
+        sbGenerateSchedulesCtrl
+      ],
+      controllerAs: 'vm',
+      templateUrl: 'assets/html/generate_schedules.partial.html'
+    }
+  }
+  angular.module('scheduleBuilder').directive('sbGenerateSchedules', [
+    sbGenerateSchedulesDirective
+  ]);
 })();
