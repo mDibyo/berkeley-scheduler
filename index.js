@@ -194,12 +194,18 @@
   ]);
 
   ScheduleCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function ScheduleCtrl($state, $window) {
+  function ScheduleCtrl($state, $window, scheduleFactory) {
     BaseCtrl.call(this, $state, $window);
+
+    var vm = this;
+
+    vm.sampleSchedule = scheduleFactory.generateSchedules()[0];
+    console.log(vm.sampleSchedule);
   }
   angular.module('scheduleBuilder').controller('ScheduleCtrl', [
     '$state',
     '$window',
+    'scheduleFactory',
     ScheduleCtrl
   ]);
 
@@ -242,13 +248,32 @@
 
       var vm = this;
 
-      vm.hours = ['8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM']
+      vm.hours = [
+        '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM'
+      ];
+      vm.numHours = vm.hours.length;
       vm.halfHours = [
         '8AM', '8:30AM', '9AM', '9:30AM', '10AM', '10:30AM', '11AM', '11:30AM', '12PM',
         '12:30PM', '1PM', '1:30PM', '2PM', '2:30PM', '3PM', '3:30PM', '4PM', '4:30PM',
         '5PM', '5:30PM', '6PM', '6:30PM'
       ];
       vm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+      vm.getMeetingPosition = getMeetingPosition;
+      vm.getMeetingHeight = getMeetingHeight;
+
+      var dayHeight = 600;
+
+      function getMeetingPosition(section) {
+        var interval = section.time.split(' ', 2)[1];
+        var offset = Schedule.intervalAbrvPositionOffsets[interval];
+        return offset / vm.numHours * dayHeight;
+      }
+
+      function getMeetingHeight(section) {
+        var interval = section.time.split(' ', 2)[1];
+        var height = Schedule.intervalAbrvHeights[interval];
+        return height / vm.numHours * dayHeight;
+      }
     }
 
     return {

@@ -31,7 +31,7 @@ td, th {
 
 #schedule-entire {
     padding: 20px;
-    position: relative;
+    /*position: relative;*/
     width: 600px;
 }
 
@@ -43,7 +43,6 @@ td, th {
 
 .schedule-display-header {
     border-top: 1px solid black;
-    border-bottom: 1px solid black;
     border-right: 1px solid black;
     text-align: center;
     line-height: 25px;
@@ -51,26 +50,32 @@ td, th {
 }
 
 .schedule-display-header-blank {
-    border: 1px solid black;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
 }
 
 .schedule-display-day {
     height: 600px;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    position: relative;
 }
 
 .schedule-display-hour {
     border-left: 1px solid black;
-    border-right: 1px solid black;
-    border-bottom: 1px solid black;
+    border-top: 1px solid black;
 }
 
 .schedule-display-hour-first-half {
-    /*border-top: 1px solid grey;*/
-    border-right: 1px solid grey;
+    border-top: 1px solid grey;
 }
 
 .schedule-display-hour-second-half {
     border-top: 1px dashed grey;
-    border-right: 1px solid grey;
-    border-bottom: 1px solid grey;
+}
+
+.schedule-display-section {
+    background-color: aliceblue;
+    position: absolute;
 }
