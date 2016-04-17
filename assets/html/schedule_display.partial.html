@@ -31,7 +31,7 @@
       <!--Sections-->
       <div class="schedule-display schedule-display-section"
            ng-repeat="meeting in schedule.meetingsByDay[day]"
-           ng-style="{top: vm.getMeetingPosition(meeting), height: vm.getMeetingHeight(meeting), width: 100}">
+           ng-style="{top: vm.getMeetingPosition(meeting), height: vm.getMeetingHeight(meeting)}">
         {{meeting.course.department}} {{meeting.course.courseNumber}}
       </div>
     </div>

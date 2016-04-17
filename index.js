@@ -25,12 +25,20 @@
           })
           .state('scheduleNew', {
             url: '/schedule1',
-            templateUrl: 'assets/html/schedule_new.html'
+            templateUrl: 'assets/html/schedule_new.html',
+            controller: 'CourseFindNewCtrl',
+            controllerAs: 'vm'
           })
           .state('scheduleNew.viewCourse', {
             url: '/course/{ccn}',
             templateUrl: 'assets/html/course_view_and_select.partial.html',
             controller: 'CourseViewAndSelectCtrl',
+            controllerAs: 'vm'
+          })
+          .state('scheduleNew.viewSchedule', {
+            url: '/schedule/{scheduleId}',
+            templateUrl: 'assets/html/schedule_view_and_select.partial.html',
+            controller: 'ScheduleViewAndSelectCtrl',
             controllerAs: 'vm'
           });
 
@@ -60,6 +68,7 @@
     var _courses = {};
     var _sections = {};
     var _schedules = {};
+    var _scheduleIdList = [];
     var _stale = false;
 
     function setStale() {
@@ -113,7 +122,8 @@
         return _schedules;
       }
 
-      _schedules = [];
+      _schedules = {};
+      _scheduleIdList = [];
       var sectionsByCourseType = [];
       for (var ccn in _courses) {
         var course = _courses[ccn];
@@ -130,15 +140,22 @@
           var a = array.slice(0);
           a.push(sectionsByCourseType[n][i]);
           if (n === numSections-1) {
-            _schedules.push(new Schedule(a));
+            var schedule = new Schedule(a);
+            _schedules[schedule.id] = schedule;
+            _scheduleIdList.push(schedule.id);
           } else {
             generateHelper(a, n+1);
           }
         }
       };
       generateHelper([], 0);
+      console.log(_scheduleIdList);
       _stale = false;
       return _schedules;
+    }
+
+    function getSchedule(scheduleId) {
+      return _schedules[Schedule.normalizeId(scheduleId)];
     }
 
     return {
@@ -147,7 +164,8 @@
       getCourseByCcn: getCourseByCcn,
       addCourse: addCourse,
       dropCourse: dropCourse,
-      generateSchedules: generateSchedules
+      generateSchedules: generateSchedules,
+      getSchedule: getSchedule
     };
   }
   angular.module('scheduleBuilder').factory('scheduleFactory', [
@@ -240,7 +258,6 @@
     vm.setSchedulesStale = setSchedulesStale;
     vm.addCourse = addCourse;
     vm.dropCourse = dropCourse;
-    //vm.displayCourse = displayCourse;
     vm.generateSchedules = scheduleFactory.generateSchedules;
 
     var selectedCourse = null;
@@ -309,6 +326,22 @@
     '$window',
     'scheduleFactory',
     ScheduleCtrl
+  ]);
+
+  ScheduleViewAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
+  function ScheduleViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory) {
+    BaseCtrl.call(this, $state, $window);
+
+    var vm = this;
+
+    vm.selectedSchedule = scheduleFactory.getSchedule($stateParams.scheduleId);
+  }
+  angular.module('scheduleBuilder').controller('ScheduleViewAndSelectCtrl', [
+    '$state',
+    '$window',
+    '$stateParams',
+    'scheduleFactory',
+    ScheduleViewAndSelectCtrl
   ]);
 
   function sbCourseDisplayAndSelectDirective() {

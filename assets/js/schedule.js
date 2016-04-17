@@ -10,7 +10,9 @@ function Schedule(sections) {
     'Friday': []
   };
 
+  var ccnList = [];
   sections.forEach(function (section) {
+    ccnList.push(section.ccn);
     var ccn = section.course.ccn;
     if (!this.courses.hasOwnProperty(ccn)) {
       this.courses[ccn] = [];
@@ -22,9 +24,24 @@ function Schedule(sections) {
       this.meetingsByDay[Schedule.dayAbrvExpansions[dayAbrvs[i]]].push(section);
     }
   }, this);
+  this.id = Schedule.generateId(ccnList);
 
   this.selected = true;
 }
+
+Schedule.generateId = function(ccnList) {
+  ccnList = ccnList.map(function (ccn) {
+    return parseInt(ccn);
+  });
+  ccnList.sort(function(a, b) {
+    return a - b;
+  });
+  return ccnList.join('.');
+};
+
+Schedule.normalizeId = function(id) {
+  return Schedule.generateId(id.split('.'));
+};
 
 Schedule.dayAbrvExpansions = {
   M: 'Monday',
