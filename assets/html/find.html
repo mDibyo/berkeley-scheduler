@@ -21,7 +21,7 @@
 </div>
 
 <div id="view-course">
-  <div ng-repeat="course in vm.addedCoursesList" ng-show="course == selectedCourse">
+  <div ng-repeat="course in vm.addedCoursesList" ng-show="course.view">
     <sb-course-display-and-select course="course"></sb-course-display-and-select>
   </div>
 </div>
