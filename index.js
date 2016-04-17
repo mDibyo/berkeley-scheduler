@@ -42,7 +42,7 @@
             controllerAs: 'vm'
           });
 
-        $urlRouterProvider.otherwise('find');
+        $urlRouterProvider.otherwise('schedule1');
       }
     ]);
 
@@ -65,11 +65,14 @@
   ]);
 
   function scheduleFactory() {
+    var _stale = false;
+
     var _courses = {};
     var _sections = {};
+
     var _schedules = {};
     var _scheduleIdList = [];
-    var _stale = false;
+    var _currentScheduleIdx = 0;
 
     function setStale() {
       _stale = true;
@@ -124,6 +127,7 @@
 
       _schedules = {};
       _scheduleIdList = [];
+      _currentScheduleIdx = 0;
       var sectionsByCourseType = [];
       for (var ccn in _courses) {
         var course = _courses[ccn];
@@ -149,23 +153,56 @@
         }
       };
       generateHelper([], 0);
-      console.log(_scheduleIdList);
       _stale = false;
       return _schedules;
     }
 
-    function getSchedule(scheduleId) {
-      return _schedules[Schedule.normalizeId(scheduleId)];
+    function getScheduleById(scheduleId) {
+      if (!_schedules.hasOwnProperty(scheduleId)) {
+        scheduleId = Schedule.normalizeId(scheduleId);
+      }
+      return _schedules[scheduleId];
+    }
+
+    function getCurrScheduleId() {
+      return _scheduleIdList[_currentScheduleIdx];
+    }
+
+    function getPrevScheduleId() {
+      var l = _scheduleIdList.length;
+      var prevScheduleIdx = (_currentScheduleIdx + l - 1) % l;
+      return _scheduleIdList[prevScheduleIdx];
+    }
+
+    function getNextScheduleId() {
+      var nextScheduleIdx = (_currentScheduleIdx + 1) % _scheduleIdList.length;
+      return _scheduleIdList[nextScheduleIdx];
+    }
+
+    function setCurrentScheduleById(scheduleId) {
+      if (!_schedules.hasOwnProperty(scheduleId)) {
+        scheduleId = Schedule.normalizeId(scheduleId);
+      }
+      _currentScheduleIdx = _scheduleIdList.indexOf(scheduleId);
+      if (_currentScheduleIdx < 0) {
+        _currentScheduleIdx = 0;
+      }
     }
 
     return {
       setStale: setStale,
+
       getAllCourses: getAllCourses,
       getCourseByCcn: getCourseByCcn,
       addCourse: addCourse,
       dropCourse: dropCourse,
+
       generateSchedules: generateSchedules,
-      getSchedule: getSchedule
+      getScheduleById: getScheduleById,
+      getCurrScheduleId: getCurrScheduleId,
+      getPrevScheduleId: getPrevScheduleId,
+      getNextScheduleId: getNextScheduleId,
+      setCurrentScheduleById: setCurrentScheduleById
     };
   }
   angular.module('scheduleBuilder').factory('scheduleFactory', [
@@ -303,6 +340,14 @@
     var vm = this;
 
     vm.selectedCourse = scheduleFactory.getCourseByCcn($stateParams.ccn);
+    vm.generateSchedulesAndView = generateSchedulesAndView;
+
+    function generateSchedulesAndView() {
+      scheduleFactory.generateSchedules();
+      vm.goToState('scheduleNew.viewSchedule', {
+        scheduleId: scheduleFactory.getCurrScheduleId()
+      });
+    }
   }
   angular.module('scheduleBuilder').controller('CourseViewAndSelectCtrl', [
     '$state',
@@ -334,7 +379,7 @@
 
     var vm = this;
 
-    vm.selectedSchedule = scheduleFactory.getSchedule($stateParams.scheduleId);
+    vm.selectedSchedule = scheduleFactory.getScheduleById($stateParams.scheduleId);
   }
   angular.module('scheduleBuilder').controller('ScheduleViewAndSelectCtrl', [
     '$state',
