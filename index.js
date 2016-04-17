@@ -356,7 +356,6 @@
     var vm = this;
 
     vm.sampleSchedule = scheduleFactory.generateSchedules()[0];
-    console.log(vm.sampleSchedule);
   }
   angular.module('scheduleBuilder').controller('ScheduleCtrl', [
     '$state',
@@ -495,7 +494,7 @@
         'scheduleFactory',
         sbGenerateSchedulesCtrl
       ],
-      controllerAs: 'vm',
+      controllerAs: 'dvm',
       templateUrl: 'assets/html/generate_schedules.partial.html'
     }
   }
