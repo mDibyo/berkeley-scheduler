@@ -118,34 +118,6 @@
     scheduleFactory
   ]);
 
-  function sbCourseDisplayAndSelectDirective(scheduleFactory) {
-    function sbCourseDisplayAndSelectCtrl(scheduleFactory) {
-      var vm = this;
-
-      vm.setSchedulesStale = setSchedulesStale;
-
-      function setSchedulesStale() {
-        scheduleFactory.setStale();
-      }
-    }
-
-    return {
-      scope: {
-        course: '='
-      },
-      controller: [
-        'scheduleFactory',
-        sbCourseDisplayAndSelectCtrl
-      ],
-      controllerAs: 'vm',
-      templateUrl: "assets/html/course_display_and_select.partial.html"
-    };
-  }
-  angular.module('scheduleBuilder').directive('sbCourseDisplayAndSelect', [
-    'scheduleFactory',
-    sbCourseDisplayAndSelectDirective
-  ]);
-
   function BaseCtrl($state, $window) {
     var vm = this;
 
@@ -230,4 +202,71 @@
     '$window',
     ScheduleCtrl
   ]);
+
+  function sbCourseDisplayAndSelectDirective() {
+    sbCourseDisplayAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
+    function sbCourseDisplayAndSelectCtrl($state, $window, scheduleFactory) {
+      BaseCtrl.call(this, $state, $window);
+
+      var vm = this;
+
+      vm.setSchedulesStale = setSchedulesStale;
+
+      function setSchedulesStale() {
+        scheduleFactory.setStale();
+      }
+    }
+
+    return {
+      scope: {
+        course: '='
+      },
+      controller: [
+        '$state',
+        '$window',
+        'scheduleFactory',
+        sbCourseDisplayAndSelectCtrl
+      ],
+      controllerAs: 'vm',
+      templateUrl: "assets/html/course_display_and_select.partial.html"
+    };
+  }
+  angular.module('scheduleBuilder').directive('sbCourseDisplayAndSelect', [
+    sbCourseDisplayAndSelectDirective
+  ]);
+
+  function sbScheduleDisplayDirective() {
+    sbScheduleDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
+    function sbScheduleDisplayCtrl($state, $window, scheduleFactory) {
+      BaseCtrl.call(this, $state, $window);
+
+      var vm = this;
+
+      vm.hours = ['8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM']
+      vm.halfHours = [
+        '8AM', '8:30AM', '9AM', '9:30AM', '10AM', '10:30AM', '11AM', '11:30AM', '12PM',
+        '12:30PM', '1PM', '1:30PM', '2PM', '2:30PM', '3PM', '3:30PM', '4PM', '4:30PM',
+        '5PM', '5:30PM', '6PM', '6:30PM'
+      ];
+      vm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    }
+
+    return {
+      scope: {
+        schedule: '='
+      },
+      controller: [
+        '$state',
+        '$window',
+        'scheduleFactory',
+        sbScheduleDisplayCtrl
+      ],
+      controllerAs: 'vm',
+      templateUrl: "assets/html/schedule_display.partial.html"
+    }
+  }
+  angular.module('scheduleBuilder').directive('sbScheduleDisplay', [
+    'scheduleFactory',
+    sbScheduleDisplayDirective
+  ])
 })();
