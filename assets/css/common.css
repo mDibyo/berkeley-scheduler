@@ -7,6 +7,19 @@ td, th {
     padding: 5px;
 }
 
+.course-sections {
+    width: 100%;
+}
+
 #select-courses, #view-course {
     float: left;
+    padding: 5px;
+}
+
+#select-courses {
+    width: 200px;
+}
+
+#view-course {
+    width: 800px;
 }

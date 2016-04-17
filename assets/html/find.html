@@ -21,6 +21,12 @@
 </div>
 
 <div id="view-course">
+  <p align="right">
+    <a href="" ng-click="vm.generateSchedules()">
+      Generate Schedules
+    </a>
+  </p>
+
   <div ng-repeat="course in vm.addedCoursesList" ng-show="course.view">
     <sb-course-display-and-select course="course"></sb-course-display-and-select>
   </div>

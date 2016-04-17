@@ -13,6 +13,7 @@ function Course(courseJson) {
   this.sections = courseJson.sections;
   this.sectionTypes = [];
   this.sections.forEach(function(section) {
+    section.course = this;
     section.selected = true;
 
     if (this.sectionTypes.indexOf(section.type) < 0) {

@@ -26,15 +26,7 @@
 
         $urlRouterProvider.otherwise('find');
       }
-    ])
-    .directive('sbCourseDisplayAndSelect', function() {
-      return {
-        scope: {
-          course: '='
-        },
-        templateUrl: "assets/html/course_display_and_select.partial.html"
-      };
-    });
+    ]);
 
   var sampleCoursesUrl = 'assets/json/sample_courses.json';
 
@@ -59,12 +51,16 @@
     var _schedules = {};
     var _stale = false;
 
+    function setStale() {
+      _stale = true;
+    }
+
     function addCourse(course) {
       if (_courses.hasOwnProperty(course.ccn)) {
         return false;
       }
       _courses[course.ccn] = course;
-      _stale = true;
+      setStale();
       return true;
     }
 
@@ -73,20 +69,46 @@
         return false;
       }
       delete _courses[course.ccn];
-      _stale = true;
+      setStale();
       return true;
     }
 
     function generateSchedules() {
-      if (_stale) {
-        _schedules = [];
-        // TODO: Generate schedules
-        _stale = false;
+      if (!_stale) {
+        return _schedules;
       }
+
+      _schedules = [];
+      var sectionsByCourseType = [];
+      for (var ccn in _courses) {
+        var course = _courses[ccn];
+        course.sectionTypes.forEach(function(sectionType) {
+          sectionsByCourseType.push(course.getSectionsByType(sectionType).filter(function(section) {
+            return section.selected;
+          }));
+        });
+      }
+      var numSections = sectionsByCourseType.length;
+
+      var generateHelper = function(array, n) {
+        for (var i = 0, l = sectionsByCourseType[n].length; i < l; i++) {
+          var a = array.slice(0);
+          a.push(sectionsByCourseType[n][i]);
+          if (n === numSections-1) {
+            _schedules.push(new Schedule(a));
+          } else {
+            generateHelper(a, n+1);
+          }
+        }
+      };
+      generateHelper([], 0);
+      _stale = false;
+      console.log(_schedules);
       return _schedules;
     }
 
     return {
+      setStale: setStale,
       addCourse: addCourse,
       dropCourse: dropCourse,
       generateSchedules: generateSchedules
@@ -94,6 +116,34 @@
   }
   angular.module('scheduleBuilder').factory('scheduleFactory', [
     scheduleFactory
+  ]);
+
+  function sbCourseDisplayAndSelectDirective(scheduleFactory) {
+    function sbCourseDisplayAndSelectCtrl(scheduleFactory) {
+      var vm = this;
+
+      vm.setSchedulesStale = setSchedulesStale;
+
+      function setSchedulesStale() {
+        scheduleFactory.setStale();
+      }
+    }
+
+    return {
+      scope: {
+        course: '='
+      },
+      controller: [
+        'scheduleFactory',
+        sbCourseDisplayAndSelectCtrl
+      ],
+      controllerAs: 'vm',
+      templateUrl: "assets/html/course_display_and_select.partial.html"
+    };
+  }
+  angular.module('scheduleBuilder').directive('sbCourseDisplayAndSelect', [
+    'scheduleFactory',
+    sbCourseDisplayAndSelectDirective
   ]);
 
   function BaseCtrl($state, $window) {
@@ -112,21 +162,27 @@
   }
 
   CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function CourseFindCtrl($state, $window, $scope, courses, scheduleFactory) {
+  function CourseFindCtrl($state, $window, courses, scheduleFactory) {
     BaseCtrl.call(this, $state, $window);
 
     var vm = this;
 
     vm.coursesList = [];
     vm.addedCoursesList = [];
+    vm.setSchedulesStale = setSchedulesStale;
     vm.addCourse = addCourse;
     vm.dropCourse = dropCourse;
     vm.setSelectedCourse = setSelectedCourse;
+    vm.generateSchedules = scheduleFactory.generateSchedules;
 
     var selectedCourse = null;
     courses.sampleCoursesQ.then(function(courses) {
       vm.coursesList = courses;
     });
+
+    function setSchedulesStale() {
+      scheduleFactory.setStale();
+    }
 
     function addCourse(course) {
       if (scheduleFactory.addCourse(course)) {
@@ -148,7 +204,6 @@
     }
 
     function setSelectedCourse(course) {
-      console.log(course);
       if (selectedCourse != null) {
         selectedCourse.view = false;
       }
@@ -161,7 +216,6 @@
   angular.module('scheduleBuilder').controller('CourseFindCtrl', [
     '$state',
     '$window',
-    '$scope',
     'courses',
     'scheduleFactory',
     CourseFindCtrl

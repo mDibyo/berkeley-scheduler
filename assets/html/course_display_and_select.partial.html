@@ -1,6 +1,6 @@
 <h3>{{course.department}} {{course.courseNumber}} - {{course.title}}</h3>
 
-<table>
+<table class="course-sections">
   <tr>
     <th></th>
     <th>Number</th>
@@ -13,7 +13,7 @@
     <th>Waitlist</th>
   </tr>
   <tr ng-repeat="section in course.sections">
-    <td><input type="checkbox" ng-model="section.selected"></td>
+    <td><input type="checkbox" ng-model="section.selected" ng-click="vm.setSchedulesStale()"></td>
     <td>{{section.number}}</td>
     <td>{{section.type}}</td>
     <td>{{section.ccn}}</td>
