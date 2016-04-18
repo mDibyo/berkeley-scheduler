@@ -6,8 +6,8 @@ from collections import defaultdict, namedtuple
 
 Range = namedtuple('Range', ['start', 'end'])
 
-FETCHED_DIR = 'fetched_course_json'
-EXTRACTED_DIR = 'extracted'
+FETCHED_DIR = 'fetched-course-json'
+EXTRACTED_DIR = 'extracted-course-json'
 
 INPUT_FORMAT = '{}/response.{}.json'
 PARSED_OUTPUT_FORMAT = '{}/response_extracted.{}.json'
