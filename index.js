@@ -372,6 +372,7 @@
 
     var vm = this;
 
+    scheduleFactory.setCurrentScheduleById($stateParams.scheduleId);
     vm.selectedSchedule = scheduleFactory.getScheduleById($stateParams.scheduleId);
   }
   angular.module('scheduleBuilder').controller('ScheduleViewAndSelectCtrl', [
@@ -434,6 +435,9 @@
       vm.getMeetingPosition = getMeetingPosition;
       vm.getMeetingHeight = getMeetingHeight;
       vm.getMeetingColor = getMeetingColor;
+
+      vm.getPrevScheduleId = scheduleFactory.getPrevScheduleId;
+      vm.getNextScheduleId = scheduleFactory.getNextScheduleId;
 
       var dayHeight = 600;
 
