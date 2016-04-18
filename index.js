@@ -335,15 +335,8 @@
 
       var vm = this;
 
-      vm.hours = [
-        '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM'
-      ];
-      vm.numHours = vm.hours.length;
-      vm.halfHours = [
-        '8AM', '8:30AM', '9AM', '9:30AM', '10AM', '10:30AM', '11AM', '11:30AM', '12PM',
-        '12:30PM', '1PM', '1:30PM', '2PM', '2:30PM', '3PM', '3:30PM', '4PM', '4:30PM',
-        '5PM', '5:30PM', '6PM', '6:30PM'
-      ];
+      vm.hours = [];
+      vm.halfHours = [];
       vm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       vm.getMeetingPosition = getMeetingPosition;
       vm.getMeetingHeight = getMeetingHeight;
@@ -352,18 +345,29 @@
       vm.getPrevScheduleId = scheduleFactory.getPrevScheduleId;
       vm.getNextScheduleId = scheduleFactory.getNextScheduleId;
 
+      var startHour = 8;
+      var endHour = 19;
+      var numHours = endHour - startHour;
+      for (var h = startHour; h < endHour; h++) {
+        vm.hours.push(new Time(h, 0));
+        vm.halfHours.push(new Time(h, 0));
+        vm.halfHours.push(new Time(h, 30));
+      }
+
       var dayHeight = 600;
+      var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
+      var dayTotalMinutes = (new Time(numHours, 0)).getTotalMinutes();
 
       function getMeetingPosition(section) {
-        var interval = section.time.split(' ', 2)[1];
-        var offset = Schedule.intervalAbrvPositionOffsets[interval];
-        return offset / vm.numHours * dayHeight;
+        var interval = TimeInterval.parse(section.time.split(' ', 2)[1]);
+        var offset = interval.startTime.getTotalMinutes() - startHourTotalMinutes;
+        return offset / dayTotalMinutes * dayHeight;
       }
 
       function getMeetingHeight(section) {
-        var interval = section.time.split(' ', 2)[1];
-        var height = Schedule.intervalAbrvHeights[interval];
-        return height / vm.numHours * dayHeight;
+        var interval = TimeInterval.parse(section.time.split(' ', 2)[1]);
+        var height = interval.getTotalMinutes();
+        return height / dayTotalMinutes * dayHeight;
       }
 
       function getMeetingColor(section) {
