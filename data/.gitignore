@@ -1,0 +1,7 @@
+.set_credentials.sh
+
+/fetched_course_json
+!/fetched_course_json/.keep
+
+/extracted
+!/extracted/.keep
