@@ -1,1 +1,27 @@
-<sb-schedule-display schedule="vm.sampleSchedule"></sb-schedule-display>
+<div id="select-courses">
+  <h3>All courses</h3>
+  <ul>
+    <li ng-repeat="course in vm.coursesList">
+      {{course.department}} {{course.courseNumber}}
+      <a href="" ng-click="vm.addCourse(course)">add</a>
+    </li>
+  </ul>
+
+  <br>
+
+  <h3>Added Courses</h3>
+  <ul>
+    <li ng-repeat="course in vm.addedCoursesList">
+      <a ui-sref="schedule.viewCourse({ccn: course.ccn})">
+        {{course.department}} {{course.courseNumber}}
+      </a>&nbsp;
+      <a href="" ng-click="vm.dropCourse(course)">drop</a>
+    </li>
+  </ul>
+</div>
+
+<div id="view-course">
+  <ui-view>
+    <sb-generate-schedules></sb-generate-schedules>
+  </ui-view>
+</div>
