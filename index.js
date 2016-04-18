@@ -11,38 +11,26 @@
       '$urlRouterProvider',
       function($stateProvider, $urlRouterProvider) {
         $stateProvider
-          .state('find', {
-            url: '/find',
-            templateUrl: 'assets/html/find.html',
-            controller: 'CourseFindCtrl',
-            controllerAs: 'vm'
-          })
           .state('schedule', {
             url: '/schedule',
             templateUrl: 'assets/html/schedule.html',
-            controller: 'ScheduleCtrl',
+            controller: 'CourseFindCtrl',
             controllerAs: 'vm'
           })
-          .state('scheduleNew', {
-            url: '/schedule1',
-            templateUrl: 'assets/html/schedule_new.html',
-            controller: 'CourseFindNewCtrl',
-            controllerAs: 'vm'
-          })
-          .state('scheduleNew.viewCourse', {
+          .state('schedule.viewCourse', {
             url: '/course/{ccn}',
             templateUrl: 'assets/html/course_view_and_select.partial.html',
             controller: 'CourseViewAndSelectCtrl',
             controllerAs: 'vm'
           })
-          .state('scheduleNew.viewSchedule', {
-            url: '/schedule/{scheduleId}',
+          .state('schedule.viewSchedule', {
+            url: '/{scheduleId}',
             templateUrl: 'assets/html/schedule_view_and_select.partial.html',
             controller: 'ScheduleViewAndSelectCtrl',
             controllerAs: 'vm'
           });
 
-        $urlRouterProvider.otherwise('schedule1');
+        $urlRouterProvider.otherwise('schedule');
       }
     ]);
 
@@ -101,6 +89,7 @@
         return false;
       }
       _courses[course.ccn] = course;
+      course.add();
       course.sections.forEach(function(section) {
         _sections[section.ccn] = section;
       });
@@ -113,6 +102,7 @@
         return false;
       }
       delete _courses[course.ccn];
+      course.drop();
       course.sections.forEach(function(section) {
         delete _sections[section.ccn];
       });
@@ -235,7 +225,6 @@
     vm.setSchedulesStale = setSchedulesStale;
     vm.addCourse = addCourse;
     vm.dropCourse = dropCourse;
-    vm.setSelectedCourse = setSelectedCourse;
     vm.generateSchedules = scheduleFactory.generateSchedules;
 
     var selectedCourse = null;
@@ -263,16 +252,6 @@
         vm.addedCoursesList.remove(course);
       } else {
         console.error('Unable to drop course ', course);
-      }
-    }
-
-    function setSelectedCourse(course) {
-      if (selectedCourse != null) {
-        selectedCourse.view = false;
-      }
-      selectedCourse = course;
-      if (selectedCourse != null) {
-        selectedCourse.view = true;
       }
     }
   }
@@ -282,55 +261,6 @@
     'courses',
     'scheduleFactory',
     CourseFindCtrl
-  ]);
-
-  CourseFindNewCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function CourseFindNewCtrl($state, $window, courses, scheduleFactory) {
-    BaseCtrl.call(this, $state, $window);
-
-    var vm = this;
-
-    vm.coursesList = [];
-    vm.addedCoursesList = scheduleFactory.getAllCourses();
-    vm.setSchedulesStale = setSchedulesStale;
-    vm.addCourse = addCourse;
-    vm.dropCourse = dropCourse;
-    vm.generateSchedules = scheduleFactory.generateSchedules;
-
-    var selectedCourse = null;
-    courses.sampleCoursesQ.then(function(courses) {
-      vm.coursesList = courses;
-    });
-
-    function setSchedulesStale() {
-      scheduleFactory.setStale();
-    }
-
-    function addCourse(course) {
-      if (scheduleFactory.addCourse(course)) {
-        vm.addedCoursesList.push(course);
-      } else {
-        console.error('Unable to add course ', course);
-      }
-    }
-
-    function dropCourse(course) {
-      if (scheduleFactory.dropCourse(course)) {
-        if (course == selectedCourse) {
-          vm.setSelectedCourse(null);
-        }
-        vm.addedCoursesList.remove(course);
-      } else {
-        console.error('Unable to drop course ', course);
-      }
-    }
-  }
-  angular.module('scheduleBuilder').controller('CourseFindNewCtrl', [
-    '$state',
-    '$window',
-    'courses',
-    'scheduleFactory',
-    CourseFindNewCtrl
   ]);
 
   CourseViewAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
@@ -349,27 +279,13 @@
     CourseViewAndSelectCtrl
   ]);
 
-  ScheduleCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function ScheduleCtrl($state, $window, scheduleFactory) {
-    BaseCtrl.call(this, $state, $window);
-
-    var vm = this;
-
-    vm.sampleSchedule = scheduleFactory.generateSchedules()[0];
-  }
-  angular.module('scheduleBuilder').controller('ScheduleCtrl', [
-    '$state',
-    '$window',
-    'scheduleFactory',
-    ScheduleCtrl
-  ]);
-
   ScheduleViewAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
   function ScheduleViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory) {
     BaseCtrl.call(this, $state, $window);
 
     var vm = this;
 
+    scheduleFactory.setCurrentScheduleById($stateParams.scheduleId);
     vm.selectedSchedule = scheduleFactory.getScheduleById($stateParams.scheduleId);
   }
   angular.module('scheduleBuilder').controller('ScheduleViewAndSelectCtrl', [
@@ -431,6 +347,10 @@
       vm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       vm.getMeetingPosition = getMeetingPosition;
       vm.getMeetingHeight = getMeetingHeight;
+      vm.getMeetingColor = getMeetingColor;
+
+      vm.getPrevScheduleId = scheduleFactory.getPrevScheduleId;
+      vm.getNextScheduleId = scheduleFactory.getNextScheduleId;
 
       var dayHeight = 600;
 
@@ -444,6 +364,10 @@
         var interval = section.time.split(' ', 2)[1];
         var height = Schedule.intervalAbrvHeights[interval];
         return height / vm.numHours * dayHeight;
+      }
+
+      function getMeetingColor(section) {
+        return Course.colorCodes[section.course.color];
       }
     }
 
@@ -481,7 +405,7 @@
         if (currScheduleId === undefined) {
           return;
         }
-        vm.goToState('scheduleNew.viewSchedule', {
+        vm.goToState('schedule.viewSchedule', {
           scheduleId: currScheduleId
         });
       }

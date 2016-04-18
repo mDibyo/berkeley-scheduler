@@ -1,3 +1,6 @@
+<a ui-sref="schedule.viewSchedule({scheduleId: vm.getPrevScheduleId()})">Previous Schedule</a>
+<a ui-sref="schedule.viewSchedule({scheduleId: vm.getNextScheduleId()})">Next Schedule</a>
+
 <div id="schedule-entire" layout="column">
   <div class="schedule-display" layout="row">
     <div class="schedule-display schedule-display-header-blank" flex="10"></div>
@@ -31,7 +34,11 @@
       <!--Sections-->
       <div class="schedule-display schedule-display-section"
            ng-repeat="meeting in schedule.meetingsByDay[day]"
-           ng-style="{top: vm.getMeetingPosition(meeting), height: vm.getMeetingHeight(meeting)}">
+           ng-style="{
+             'top': vm.getMeetingPosition(meeting),
+             'height': vm.getMeetingHeight(meeting),
+             'background-color': vm.getMeetingColor(meeting)
+           }">
         {{meeting.course.department}} {{meeting.course.courseNumber}}
       </div>
     </div>
