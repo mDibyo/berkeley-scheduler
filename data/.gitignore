@@ -5,3 +5,9 @@
 
 /extracted-course-json
 !/extracted-course-json/.keep
+
+/departments
+!/departments/.keep
+!/departments/course-listing-by-department/.keep
+!/departments/course-listing-by-subject-area/.keep
+!/departments/class-listing-fall-2016-by-subject-area/.keep
