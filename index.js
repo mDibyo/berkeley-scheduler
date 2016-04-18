@@ -36,7 +36,7 @@
             controllerAs: 'vm'
           })
           .state('scheduleNew.viewSchedule', {
-            url: '/schedule/{scheduleId}',
+            url: '/{scheduleId}',
             templateUrl: 'assets/html/schedule_view_and_select.partial.html',
             controller: 'ScheduleViewAndSelectCtrl',
             controllerAs: 'vm'
@@ -101,6 +101,7 @@
         return false;
       }
       _courses[course.ccn] = course;
+      course.add();
       course.sections.forEach(function(section) {
         _sections[section.ccn] = section;
       });
@@ -113,6 +114,7 @@
         return false;
       }
       delete _courses[course.ccn];
+      course.drop();
       course.sections.forEach(function(section) {
         delete _sections[section.ccn];
       });
@@ -431,6 +433,7 @@
       vm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       vm.getMeetingPosition = getMeetingPosition;
       vm.getMeetingHeight = getMeetingHeight;
+      vm.getMeetingColor = getMeetingColor;
 
       var dayHeight = 600;
 
@@ -444,6 +447,10 @@
         var interval = section.time.split(' ', 2)[1];
         var height = Schedule.intervalAbrvHeights[interval];
         return height / vm.numHours * dayHeight;
+      }
+
+      function getMeetingColor(section) {
+        return Course.colorCodes[section.course.color];
       }
     }
 
