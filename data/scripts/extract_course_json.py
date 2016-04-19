@@ -6,8 +6,8 @@ from collections import defaultdict, namedtuple
 
 Range = namedtuple('Range', ['start', 'end'])
 
-FETCHED_DIR = 'fetched-course-json'
-EXTRACTED_DIR = 'extracted-course-json'
+FETCHED_DIR = 'intermediate/fetched-course-json'
+EXTRACTED_DIR = 'intermediate/extracted-course-json'
 
 INPUT_FORMAT = '{}/response.{}.json'
 PARSED_OUTPUT_FORMAT = '{}/response_extracted.{}.json'
@@ -80,10 +80,4 @@ def run_range(start, end):
 
 
 if __name__ == '__main__':
-    import sys
-    if len(sys.argv) > 1:
-        FETCHED_DIR = sys.argv[1]
-    if len(sys.argv) > 2:
-        EXTRACTED_DIR = sys.argv[2]
-
     extract_all_course_info()

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+INPUT_DEPARTMENTS_DIR=intermediate/departments
+INPUT_CLASSES_DIR=${INPUT_DEPARTMENTS_DIR}/class-listing-fall-2016-by-subject-area
+
+OUTPUT_DEPARTMENTS_DIR=final
+OUTPUT_CLASSES_DIR=${OUTPUT_DEPARTMENTS_DIR}/subject-areas
+
+cp ${INPUT_DEPARTMENTS_DIR}/departments.json ${OUTPUT_DEPARTMENTS_DIR}
+cp ${INPUT_CLASSES_DIR}/* ${OUTPUT_CLASSES_DIR}

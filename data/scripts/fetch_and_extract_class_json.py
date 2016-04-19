@@ -144,7 +144,9 @@ def main():
 
     for subject_area in subject_areas:
         visited = set()
-        input_file = COURSES_FORMAT.format(DEPARTMENTS_DIR, COURSE_LISTING_DIR, subject_area)
+        input_file = COURSES_FORMAT.format(DEPARTMENTS_DIR,
+                                           COURSE_LISTING_DIR,
+                                           subject_area)
         with open(input_file, 'r') as f:
             courses = json.load(f)
 
@@ -164,7 +166,9 @@ def main():
                     _class = extract_single_section_info_from_json(sections_json)
                 classes[_class['displayName']] = _class
 
-        output_file = CLASSES_FORMAT.format(DEPARTMENTS_DIR, CLASS_LISTING_DIR, subject_area)
+        output_file = CLASSES_FORMAT.format(DEPARTMENTS_DIR,
+                                            CLASS_LISTING_DIR,
+                                            get_subject_area_code(subject_area))
         with open(output_file, 'w') as f:
             json.dump(classes, f)
 
