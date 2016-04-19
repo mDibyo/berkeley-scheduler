@@ -4,6 +4,7 @@
   angular.module('scheduleBuilder', [
     'ui.router',
     'ngSanitize',
+    'ngCookies',
     'ngMaterial'
   ])
     .config([
@@ -52,7 +53,9 @@
     courses
   ]);
 
-  function scheduleFactory() {
+  var savedCoursesCookieKey = 'addedCourses';
+
+  function scheduleFactory($cookies) {
     var _stale = false;
 
     var _courses = {};
@@ -61,6 +64,28 @@
     var _schedules = {};
     var _scheduleIdList = [];
     var _currentScheduleIdx = 0;
+
+    //loadCoursesFromCookie();
+
+    function loadCoursesFromCookie() {
+      var savedCourses = $cookies.getObject(savedCoursesCookieKey);
+      if (savedCourses != null) {
+        savedCourses.forEach(function(course) {
+          course.sections.forEach(function(section) {
+            section.course = course;
+          });
+          addCourseNoSave(course);
+        });
+      }
+    }
+
+    function saveCoursesToCookie() {
+      var coursesToSave = [];
+      for (var ccn in _courses) {
+        coursesToSave.push(_courses[ccn]);
+      }
+      //$cookies.putObject(savedCoursesCookieKey, coursesToSave);
+    }
 
     function setStale() {
       _stale = true;
@@ -84,7 +109,7 @@
       return null;
     }
 
-    function addCourse(course) {
+    function addCourseNoSave(course) {
       if (_courses.hasOwnProperty(course.ccn)) {
         return false;
       }
@@ -97,7 +122,12 @@
       return true;
     }
 
-    function dropCourse(course) {
+    function addCourse(course) {
+      addCourseNoSave(course);
+      saveCoursesToCookie();
+    }
+
+    function dropCourseNoSave(course) {
       if (!_courses.hasOwnProperty(course.ccn)) {
         return false;
       }
@@ -108,6 +138,11 @@
       });
       setStale();
       return true;
+    }
+
+    function dropCourse(course) {
+      dropCourseNoSave(course);
+      saveCoursesToCookie();
     }
 
     function generateSchedules() {
@@ -196,6 +231,7 @@
     };
   }
   angular.module('scheduleBuilder').factory('scheduleFactory', [
+    '$cookies',
     scheduleFactory
   ]);
 
