@@ -37,6 +37,7 @@
 
   var sampleCoursesUrl = 'assets/json/sample_courses.json';
   var departmentsUrl = 'data/final/departments.json';
+  var coursesUrlFormat = 'data/final/subject-areas/{}.json';
 
   function courses($http) {
     var sampleCoursesQ = $http.get(sampleCoursesUrl).then(function(response) {
@@ -44,6 +45,9 @@
         return Course.parse(courseJson);
       });
     });
+    function getSampleCoursesQ() {
+      return sampleCoursesQ
+    }
 
     var subjectAreasQ = $http.get(departmentsUrl).then(function(response) {
       var subjectAreas = response.data.subjectAreas;
@@ -54,10 +58,41 @@
         }
       });
     });
+    function getSubjectAreasQ() {
+      return subjectAreasQ;
+    }
+
+    var coursesQBySubjectArea = {};
+    function getCoursesQBySubjectAreaCode(code) {
+      if (code in coursesQBySubjectArea) {
+        return coursesQBySubjectArea[code];
+      }
+
+      var alphabetizedCode = alphabetizeSubjectAreaCode(code);
+      var coursesUrl = coursesUrlFormat.replace('{}', alphabetizedCode);
+      var q = $http.get(coursesUrl).then(function(response) {
+        // TODO: Fix this. Also do error handling.
+        var courses = response.data;
+        return Object.keys(courses).map(function(displayName) {
+          return Course.parse(courses[displayName]);
+        });
+      });
+      coursesQBySubjectArea[code] = q;
+      return q;
+    }
+
+    var charToRemove = [' ', '&', ',', '-', '/'];
+    function alphabetizeSubjectAreaCode(code) {
+      for (var char in charToRemove) {
+        code = code.replace(char, '');
+      }
+      return code;
+    }
 
     return {
-      sampleCoursesQ: sampleCoursesQ,
-      subjectAreasQ: subjectAreasQ
+      getSampleCoursesQ: getSampleCoursesQ,
+      getSubjectAreasQ: getSubjectAreasQ,
+      getCoursesQBySubjectAreaCode: getCoursesQBySubjectAreaCode
     }
   }
   angular.module('scheduleBuilder').factory('courses', [
@@ -268,39 +303,78 @@
 
     var vm = this;
 
-    vm.isDisabled = false;
+    vm.subjectAreaIsDisabled = false;
+    vm.courseIsDisabled = true;
+    vm.selectedCourse = null;
     vm.coursesList = [];
     vm.subjectAreasList = [];
-    vm.addedCoursesList = scheduleFactory.getAllCourses();
+    vm.searchSubjectArea = searchSubjectArea;
+    vm.selectSubjectArea = selectSubjectArea;
+    vm.searchCourse = searchCourse;
+    vm.selectCourse = selectCourse;
 
-    vm.subjectAreaSearch = subjectAreaSearch;
+    vm.addedCoursesList = scheduleFactory.getAllCourses();
     vm.setSchedulesStale = setSchedulesStale;
     vm.addCourse = addCourse;
     vm.dropCourse = dropCourse;
+
     vm.generateSchedules = scheduleFactory.generateSchedules;
 
     var selectedCourse = null;
-    courses.sampleCoursesQ.then(function(courses) {
+    courses.getSampleCoursesQ().then(function(courses) {
       vm.coursesList = courses;
     });
-    courses.subjectAreasQ.then(function(subjectAreas) {
+    courses.getSubjectAreasQ().then(function(subjectAreas) {
       vm.subjectAreasList = subjectAreas;
     });
 
-    function subjectAreaSearch(query) {
+    function searchSubjectArea(query) {
       return query
         ? vm.subjectAreasList.filter(createSubjectAreaFilterFor(query))
         : vm.subjectAreasList;
     }
 
     function createSubjectAreaFilterFor(query) {
-      var query = angular.lowercase(query);
+      query = angular.lowercase(query);
       return function filterFn(subjectArea) {
         return (
           angular.lowercase(subjectArea.code).indexOf(query) === 0 ||
           angular.lowercase(subjectArea.description).indexOf(query) === 0
         )
       };
+    }
+
+    function selectSubjectArea(subjectArea) {
+      if (subjectArea === null) {
+        vm.courseIsDisabled = true;
+        vm.coursesList = [];
+        return;
+      }
+
+      courses.getCoursesQBySubjectAreaCode(subjectArea.code).then(function(courses) {
+        vm.coursesList = courses;
+        vm.courseIsDisabled = false;
+      });
+    }
+
+    function searchCourse(query) {
+      return query
+        ? vm.coursesList.filter(createCourseFilterFor(query))
+        : vm.coursesList;
+    }
+
+    function createCourseFilterFor(query) {
+      query = angular.lowercase(query);
+      return function filterFn(course) {
+        return (
+          angular.lowercase(course.courseNumber).indexOf(query) === 0 ||
+          angular.lowercase(course.title).indexOf(query) === 0
+        )
+      };
+    }
+
+    function selectCourse(course) {
+      addCourse(course);
     }
 
     function setSchedulesStale() {
