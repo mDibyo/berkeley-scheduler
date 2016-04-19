@@ -1,13 +1,12 @@
 .set_credentials.sh
 
-/fetched-course-json
-!/fetched-course-json/.keep
+/intermediate
 
-/extracted-course-json
-!/extracted-course-json/.keep
+!/intermediate/fetched-course-json/.keep
 
-/departments
-!/departments/.keep
-!/departments/course-listing-by-department/.keep
-!/departments/course-listing-by-subject-area/.keep
-!/departments/class-listing-fall-2016-by-subject-area/.keep
+!/intermediate/extracted-course-json/.keep
+
+!/intermediate/departments/.keep
+!/intermediate/departments/course-listing-by-department/.keep
+!/intermediate/departments/course-listing-by-subject-area/.keep
+!/intermediate/departments/class-listing-fall-2016-by-subject-area/.keep

@@ -12,7 +12,7 @@ SIS_CLASS_API_APP_ID_ENV = 'SIS_CLASS_API_APP_ID'
 SIS_CLASS_API_APP_KEY_ENV = 'SIS_CLASS_API_APP_KEY'
 SIS_CLASS_API_APP_ID = SIS_CLASS_API_APP_KEY = None
 
-DEPARTMENTS_DIR = 'departments'
+DEPARTMENTS_DIR = 'intermediate/departments'
 COURSE_LISTING_DIR = 'course-listing-by-subject-area'
 CLASS_LISTING_DIR = 'class-listing-{}-by-subject-area'.format(TERM)
 
@@ -162,7 +162,6 @@ def main():
                 else:
                     sections_json = response['apiResponse']['response']['classes']['class']
                     _class = extract_single_section_info_from_json(sections_json)
-                    # not_retrieved.append([course['subjectAreaCode'], course['courseNumber']])
                 classes[_class['displayName']] = _class
 
         output_file = CLASSES_FORMAT.format(DEPARTMENTS_DIR, CLASS_LISTING_DIR, subject_area)
