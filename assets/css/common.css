@@ -22,6 +22,18 @@ td, th {
     width: 200px;
 }
 
+.subject-area li {
+    line-height: normal;
+    height: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.subject-area-description {
+    color: grey;
+    font-size: small;
+}
+
 #view-course {
     width: 800px;
 }
