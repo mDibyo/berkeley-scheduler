@@ -108,7 +108,10 @@ def extract_class_info_from_json(sections_json):
         return None
 
     primary_section_id = sections_json[0]['association']['primaryAssociatedSectionId']
-    primary_section = extracted_sections[primary_section_id]
+    if primary_section_id:
+        primary_section = extracted_sections[primary_section_id]
+    else:
+        primary_section = {'instructors': [], 'id': None}
 
     return {
         'displayName': extracted_class['course']['displayName'],
@@ -160,8 +163,8 @@ def main(only_new=False):
     with open(DEPARTMENTS_FORMAT.format(DEPARTMENTS_DIR), 'r') as f:
         subject_areas = json.load(f)['subjectAreas']
 
-    subject_areas = ['COMPSCI', 'L & S']
-
+    num_total = len(subject_areas)
+    num_complete = 0
     for subject_area in subject_areas:
         input_file = COURSES_FORMAT.format(DEPARTMENTS_DIR,
                                            COURSE_LISTING_DIR,
@@ -199,6 +202,9 @@ def main(only_new=False):
         finally:
             with open(output_file, 'w') as f:
                 json.dump(classes, f)
+
+        num_complete += 1
+        print('{}/{} subject areas completed'.format(num_complete, num_total))
 
 
 if __name__ == '__main__':
