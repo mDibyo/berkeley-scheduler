@@ -43,38 +43,37 @@ var Time = (function() {
   return Time;
 })();
 
-var TimeInterval = (function() {
-  function TimeInterval(startTime, endTime) {
+var Meeting = (function() {
+  function Meeting(startTime, endTime, days) {
     this.startTime = startTime;
     this.endTime = endTime;
+    this.days = days;
   }
 
-  var timeStringRegex = /(\d+)(?::(\d+))?-(\d+)(?::(\d+))?([AP])/;
-  var onePM = new Time(13, 0);
+  Meeting.parse = function(timeJson) {
+    if (timeJson.startTime === null || timeJson.endTime === null) {
+      return new Meeting(null, null, timeJson.days);
+    }
 
-  TimeInterval.parse = function(timeString) {
-    var timeComponents = timeStringRegex.exec(timeString);
-    var startTime = new Time(parseInt(timeComponents[1]), parseInt(timeComponents[2] || 0));
-    if (startTime.hours == 12) {
-      startTime.hours = 0;
-    }
-    var endTime = new Time(parseInt(timeComponents[3]), parseInt(timeComponents[4] || 0));
-    if (endTime.hours == 12) {
-      endTime.hours = 0;
-    }
-    if (timeComponents[5] === 'P') {
-      if (startTime.compareTo(endTime) < 0) {
-        startTime = startTime.add(Time.twelveHours);
-      }
-      endTime = endTime.add(Time.twelveHours);
-    }
-    return new TimeInterval(startTime, endTime);
+    var startTimeSplit = timeJson.startTime.split(':');
+    var startTime = new Time(parseInt(startTimeSplit[0]), parseInt(startTimeSplit[1]));
+    var endTimeSplit = timeJson.endTime.split(':');
+    var endTime = new Time(parseInt(endTimeSplit[0]), parseInt(endTimeSplit[1]));
+    return new Meeting(startTime, endTime, timeJson.days);
   };
 
-  TimeInterval.prototype.getTotalMinutes = function() {
+  Meeting.dayAbrvExpansions = {
+    M: 'Monday',
+    T: 'Tuesday',
+    W: 'Wednesday',
+    R: 'Thursday',
+    F: 'Friday'
+  };
+
+  Meeting.prototype.getTotalMinutes = function() {
     return this.endTime.getTotalMinutes() - this.startTime.getTotalMinutes();
   };
 
-  return TimeInterval;
+  return Meeting;
 })();
 

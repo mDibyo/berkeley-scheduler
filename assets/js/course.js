@@ -1,5 +1,20 @@
 'use strict';
 
+var Section = (function() {
+  function Section(sectionJson, course) {
+    angular.extend(this, sectionJson);
+
+    this.location = this.location.description;
+    this.meeting = Meeting.parse(this.time);
+    delete this.time;
+
+    this.course = course;
+    this.selected = true;
+  }
+
+  return Section;
+})();
+
 var Course = (function() {
   function Course(courseJson) {
     if (courseJson.displayName === undefined) {
@@ -14,15 +29,15 @@ var Course = (function() {
     this.id = courseJson.id;
     this.units = courseJson.units;
 
-    this.sections = courseJson.sections;
     this.sectionTypes = [];
-    this.sections.forEach(function(section) {
-      section.course = this;
-      section.selected = true;
+    this.sections = courseJson.sections.map(function(sectionJson) {
+      var section = new Section(sectionJson, this);
 
       if (this.sectionTypes.indexOf(section.type) < 0) {
         this.sectionTypes.push(section.type);
       }
+
+      return section;
     }, this);
 
     this.color = null;

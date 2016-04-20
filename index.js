@@ -40,15 +40,6 @@
   var coursesUrlFormat = 'data/final/subject-areas/{}.json';
 
   function courses($http) {
-    var sampleCoursesQ = $http.get(sampleCoursesUrl).then(function(response) {
-      return response.data.map(function(courseJson) {
-        return Course.parse(courseJson);
-      });
-    });
-    function getSampleCoursesQ() {
-      return sampleCoursesQ
-    }
-
     var subjectAreasQ = $http.get(departmentsUrl).then(function(response) {
       var subjectAreas = response.data.subjectAreas;
       return Object.keys(subjectAreas).map(function(code) {
@@ -87,7 +78,6 @@
     }
 
     return {
-      getSampleCoursesQ: getSampleCoursesQ,
       getSubjectAreasQ: getSubjectAreasQ,
       getCoursesQBySubjectAreaCode: getCoursesQBySubjectAreaCode
     }
@@ -326,10 +316,6 @@
 
     vm.generateSchedules = scheduleFactory.generateSchedules;
 
-    var selectedCourse = null;
-    courses.getSampleCoursesQ().then(function(courses) {
-      vm.coursesList = courses;
-    });
     courses.getSubjectAreasQ().then(function(subjectAreas) {
       vm.subjectAreasList = subjectAreas;
     });
@@ -417,9 +403,6 @@
 
     function dropCourse(course) {
       if (scheduleFactory.dropCourse(course)) {
-        if (course == selectedCourse) {
-          vm.setSelectedCourse(null);
-        }
         vm.addedCoursesList.remove(course);
       } else {
         console.error('Unable to drop course ', course);
@@ -530,13 +513,13 @@
       var dayTotalMinutes = (new Time(numHours, 0)).getTotalMinutes();
 
       function getMeetingPosition(section) {
-        var interval = TimeInterval.parse(section.time.split(' ', 2)[1]);
+        var interval = Meeting.parse(section.time.split(' ', 2)[1]);
         var offset = interval.startTime.getTotalMinutes() - startHourTotalMinutes;
         return offset / dayTotalMinutes * dayHeight;
       }
 
       function getMeetingHeight(section) {
-        var interval = TimeInterval.parse(section.time.split(' ', 2)[1]);
+        var interval = Meeting.parse(section.time.split(' ', 2)[1]);
         var height = interval.getTotalMinutes();
         return height / dayTotalMinutes * dayHeight;
       }

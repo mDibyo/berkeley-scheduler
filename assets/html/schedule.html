@@ -53,7 +53,7 @@
   <h3>Added Courses</h3>
   <ul>
     <li ng-repeat="course in vm.addedCoursesList">
-      <a ui-sref="schedule.viewCourse({ccn: course.ccn})">
+      <a ui-sref="schedule.viewCourse({id: course.id})">
         {{course.department}} {{course.courseNumber}}
       </a>&nbsp;
       <a href="" ng-click="vm.dropCourse(course)">drop</a>
