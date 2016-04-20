@@ -19,7 +19,7 @@
             controllerAs: 'vm'
           })
           .state('schedule.viewCourse', {
-            url: '/course/{ccn}',
+            url: '/course/{id}',
             templateUrl: 'assets/html/course_view_and_select.partial.html',
             controller: 'CourseViewAndSelectCtrl',
             controllerAs: 'vm'
@@ -71,21 +71,22 @@
       var alphabetizedCode = alphabetizeSubjectAreaCode(code);
       var coursesUrl = coursesUrlFormat.replace('{}', alphabetizedCode);
       var q = $http.get(coursesUrl).then(function(response) {
-        // TODO: Fix this. Also do error handling.
         var courses = response.data;
         return Object.keys(courses).map(function(displayName) {
           return Course.parse(courses[displayName]);
         });
+      }, function() {
+        return [];
       });
       coursesQBySubjectArea[code] = q;
       return q;
     }
 
-    var charToRemove = [' ', '&', ',', '-', '/'];
+    var reToRemove = [/ /g, /&/g, /,/g, /-/g, /\//g];
     function alphabetizeSubjectAreaCode(code) {
-      for (var char in charToRemove) {
-        code = code.replace(char, '');
-      }
+      reToRemove.forEach(function(re) {
+        code = code.replace(re, '');
+      });
       return code;
     }
 
@@ -128,8 +129,8 @@
 
     function saveCoursesToCookie() {
       var coursesToSave = [];
-      for (var ccn in _courses) {
-        coursesToSave.push(_courses[ccn]);
+      for (var id in _courses) {
+        coursesToSave.push(_courses[id]);
       }
       //$cookies.putObject(savedCoursesCookieKey, coursesToSave);
     }
@@ -140,56 +141,62 @@
 
     function getAllCourses() {
       var courses = [];
-      for (var ccn in _courses) {
-        courses.push(_courses[ccn]);
+      for (var id in _courses) {
+        courses.push(_courses[id]);
       }
       return courses;
     }
 
-    function getCourseByCcn(ccn) {
-      if (_courses.hasOwnProperty(ccn)) {
-        return _courses[ccn];
+    function getCourseById(id) {
+      if (_courses.hasOwnProperty(id)) {
+        return _courses[id];
       }
-      if (_sections.hasOwnProperty(ccn)) {
-        return _sections[ccn].course;
+      if (_sections.hasOwnProperty(id)) {
+        return _sections[id].course;
       }
       return null;
     }
 
     function addCourseNoSave(course) {
-      if (_courses.hasOwnProperty(course.ccn)) {
+      if (_courses.hasOwnProperty(course.id)) {
         return false;
       }
-      _courses[course.ccn] = course;
+      _courses[course.id] = course;
       course.add();
       course.sections.forEach(function(section) {
-        _sections[section.ccn] = section;
+        _sections[section.id] = section;
       });
       setStale();
       return true;
     }
 
     function addCourse(course) {
-      addCourseNoSave(course);
-      saveCoursesToCookie();
+      var success = addCourseNoSave(course);
+      if (success) {
+        saveCoursesToCookie();
+      }
+      return success;
     }
 
     function dropCourseNoSave(course) {
-      if (!_courses.hasOwnProperty(course.ccn)) {
+      if (!_courses.hasOwnProperty(course.id)) {
         return false;
       }
-      delete _courses[course.ccn];
+      delete _courses[course.id];
       course.drop();
       course.sections.forEach(function(section) {
-        delete _sections[section.ccn];
+        delete _sections[section.id];
       });
       setStale();
       return true;
     }
 
     function dropCourse(course) {
-      dropCourseNoSave(course);
-      saveCoursesToCookie();
+      var success = dropCourseNoSave(course);
+      if (success) {
+        saveCoursesToCookie();
+      }
+      return success;
     }
 
     function generateSchedules() {
@@ -201,8 +208,8 @@
       _scheduleIdList = [];
       _currentScheduleIdx = 0;
       var sectionsByCourseType = [];
-      for (var ccn in _courses) {
-        var course = _courses[ccn];
+      for (var id in _courses) {
+        var course = _courses[id];
         course.sectionTypes.forEach(function(sectionType) {
           sectionsByCourseType.push(course.getSectionsByType(sectionType).filter(function(section) {
             return section.selected;
@@ -265,7 +272,7 @@
       setStale: setStale,
 
       getAllCourses: getAllCourses,
-      getCourseByCcn: getCourseByCcn,
+      getCourseById: getCourseById,
       addCourse: addCourse,
       dropCourse: dropCourse,
 
@@ -345,7 +352,7 @@
     }
 
     function selectSubjectArea(subjectArea) {
-      if (subjectArea === null) {
+      if (!subjectArea) {
         vm.courseIsDisabled = true;
         vm.coursesList = [];
         return;
@@ -374,6 +381,9 @@
     }
 
     function selectCourse(course) {
+      if (!course) {
+        return;
+      }
       addCourse(course);
     }
 
@@ -414,7 +424,7 @@
 
     var vm = this;
 
-    vm.selectedCourse = scheduleFactory.getCourseByCcn($stateParams.ccn);
+    vm.selectedCourse = scheduleFactory.getCourseById($stateParams.id);
   }
   angular.module('scheduleBuilder').controller('CourseViewAndSelectCtrl', [
     '$state',

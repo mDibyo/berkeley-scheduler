@@ -1,6 +1,6 @@
 [
   {
-    "course": "HISTORY 124B",
+    "displayName": "HISTORY 124B",
     "title": "The United States from World War II to the Vietnam Era",
     "instructor": "Zubovich, Y",
     "ccn": 39471,
@@ -20,7 +20,7 @@
     ]
   },
   {
-    "course": "COMPSCI 162",
+    "displayName": "COMPSCI 162",
     "title": "Operating Systems and System Programming",
     "instructor": "Joseph, A D",
     "ccn": 26520,
@@ -62,7 +62,7 @@
     ]
   },
   {
-    "course": "COMPSCI 61A",
+    "displayName": "COMPSCI 61A",
     "title": "The Structure and Interpretation of Computer Programs",
     "instructor": "Hilfinger, P N",
     "ccn": 25902,

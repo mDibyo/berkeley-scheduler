@@ -2,13 +2,16 @@
 
 var Course = (function() {
   function Course(courseJson) {
-    var courseSplit = courseJson.course.split(' ', 2);
+    if (courseJson.displayName === undefined) {
+      console.log(courseJson);
+    }
+    var courseSplit = courseJson.displayName.split(' ', 2);
     this.department = courseSplit[0];
     this.courseNumber = courseSplit[1];
 
     this.title = courseJson.title;
-    this.instructor = courseJson.instructor;
-    this.ccn = courseJson.ccn;
+    this.instructors = courseJson.instructors;
+    this.id = courseJson.id;
     this.units = courseJson.units;
 
     this.sections = courseJson.sections;
