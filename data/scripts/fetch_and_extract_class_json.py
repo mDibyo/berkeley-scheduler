@@ -6,7 +6,7 @@ from urllib import parse as url_parse, request as url_request
 
 TERM = 'fall-2016'
 TERM_ID = 2168
-CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes?{}'
+CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes/sections?{}'
 
 SIS_CLASS_API_APP_ID_ENV = 'SIS_CLASS_API_APP_ID'
 SIS_CLASS_API_APP_KEY_ENV = 'SIS_CLASS_API_APP_KEY'
@@ -55,17 +55,35 @@ def request_course(course):
 
 def extract_section_info_from_json(section_json):
     assert len(section_json['meeting']) == 1
+    meeting_json = section_json['meeting'][0]
+
+    extracted_instructors = []
+    for instructor_json in section_json['meeting'][0]['assignedInstructor']:
+        if instructor_json['instructor']['name']:
+            extracted_instructors.append({
+                'name': instructor_json['instructor']['name'][0]['formattedName'],
+                'role': instructor_json['role']['description'],
+            })
+
     return {
         'number': section_json['class']['number'],
         'primary': section_json['association']['primary'],
         'type': section_json['component']['code'],
         'id': section_json['id'],
-        'location': section_json['meeting']['location'],
-        'instructor': section_json['meeting']['name'],
+        'location': section_json['meeting'][0]['location'],
+        'instructors': extracted_instructors,
         'time': {
-            'startTime': section_json['meeting'][0]['startTime'],
-            'endTime': section_json['meeting'][0]['endTime'],
-            'days': section_json['meeting'][0]['meetingDays']
+            'startTime': meeting_json.get('startTime', None),
+            'endTime': meeting_json.get('endTime', None),
+            'days': {
+                'Sunday': meeting_json.get('meetsSunday', None),
+                'Monday': meeting_json.get('meetsMonday', None),
+                'Tuesday': meeting_json.get('meetsTuesday', None),
+                'Wednesday': meeting_json.get('meetsWednesday', None),
+                'Thursday': meeting_json.get('meetsThursday', None),
+                'Friday': meeting_json.get('meetsFriday', None),
+                'Saturday': meeting_json.get('meetsSaturday', None),
+            }
         },
         'enrollCapacity': section_json['enrollmentStatus']['maxEnroll'],
         'enrolled': section_json['enrollmentStatus']['enrolledCount'],
@@ -95,10 +113,10 @@ def extract_class_info_from_json(sections_json):
     return {
         'displayName': extracted_class['course']['displayName'],
         'title': extracted_class['course']['title'],
-        'instructor': primary_section['instructor'],
+        'instructors': primary_section['instructors'],
         'id': primary_section['id'],
         'units': -1,
-        'sections': extracted_sections
+        'sections': list(extracted_sections.values())
     }
 
 
@@ -138,39 +156,49 @@ def extract_single_section_info_from_json(sections_json):
     }
 
 
-def main():
+def main(only_new=False):
     with open(DEPARTMENTS_FORMAT.format(DEPARTMENTS_DIR), 'r') as f:
         subject_areas = json.load(f)['subjectAreas']
 
+    subject_areas = ['COMPSCI', 'L & S']
+
     for subject_area in subject_areas:
-        visited = set()
         input_file = COURSES_FORMAT.format(DEPARTMENTS_DIR,
                                            COURSE_LISTING_DIR,
                                            subject_area)
-        with open(input_file, 'r') as f:
-            courses = json.load(f)
-
-        classes = {}
-        for course in courses:
-            if course['courseNumber'] in visited:
-                continue
-            visited.add(course['courseNumber'])
-            response = request_course(course)
-            if response and response['apiResponse']['httpStatus']['code'] == '200':
-                if 'classSections' in response['apiResponse']['response']:
-                    sections_json = \
-                        response['apiResponse']['response']['classSections']['classSection']
-                    _class = extract_class_info_from_json(sections_json)
-                else:
-                    sections_json = response['apiResponse']['response']['classes']['class']
-                    _class = extract_single_section_info_from_json(sections_json)
-                classes[_class['displayName']] = _class
-
         output_file = CLASSES_FORMAT.format(DEPARTMENTS_DIR,
                                             CLASS_LISTING_DIR,
                                             get_subject_area_code(subject_area))
-        with open(output_file, 'w') as f:
-            json.dump(classes, f)
+
+        classes = {}
+        with open(input_file, 'r') as f:
+            courses = json.load(f)
+        if only_new:
+            with open(output_file, 'r') as f:
+                classes = json.load(f)
+                visited = set(classes.keys())
+        else:
+            visited = set()
+
+        try:
+            for course in courses:
+                if course['courseNumber'] in visited:
+                    continue
+                visited.add(course['courseNumber'])
+                response = request_course(course)
+                if response and response['apiResponse']['httpStatus']['code'] == '200':
+                    if 'classSections' in response['apiResponse']['response']:
+                        sections_json = \
+                            response['apiResponse']['response']['classSections']['classSection']
+                        _class = extract_class_info_from_json(sections_json)
+                        _class['units'] = course['units']
+                    else:
+                        sections_json = response['apiResponse']['response']['classes']['class']
+                        _class = extract_single_section_info_from_json(sections_json)
+                    classes[course['courseNumber']] = _class
+        finally:
+            with open(output_file, 'w') as f:
+                json.dump(classes, f)
 
 
 if __name__ == '__main__':
@@ -184,4 +212,4 @@ if __name__ == '__main__':
         exit()
     SIS_CLASS_API_APP_KEY = os.environ[SIS_CLASS_API_APP_KEY_ENV]
 
-    main()
+    main(False)
