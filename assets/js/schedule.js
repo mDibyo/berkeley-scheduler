@@ -11,33 +11,34 @@ var Schedule = (function() {
       'Friday': []
     };
 
-    var ccnList = [];
+    var sectionIdList = [];
     sections.forEach(function (section) {
-      ccnList.push(section.ccn);
-      var ccn = section.course.ccn;
-      if (!this.courses.hasOwnProperty(ccn)) {
-        this.courses[ccn] = [];
+      sectionIdList.push(section.id);
+      var courseId = section.course.id;
+      if (!this.courses.hasOwnProperty(courseId)) {
+        this.courses[courseId] = [];
       }
-      this.courses[ccn].push(section);
+      this.courses[courseId].push(section);
 
-      var dayAbrvs = section.time.split(' ', 2)[0];
-      for (var i = 0; i < dayAbrvs.length; i++) {
-        this.meetingsByDay[Meeting.dayAbrvExpansions[dayAbrvs[i]]].push(section);
+      for (var day in section.meeting.days) {
+        if (section.meeting.days[day]) {
+          this.meetingsByDay[day].push(section);
+        }
       }
     }, this);
-    this.id = Schedule.generateId(ccnList);
+    this.id = Schedule.generateId(sectionIdList);
 
     this.selected = true;
   }
 
-  Schedule.generateId = function(ccnList) {
-    ccnList = ccnList.map(function (ccn) {
-      return parseInt(ccn);
+  Schedule.generateId = function(sectionIdList) {
+    sectionIdList = sectionIdList.map(function (id) {
+      return parseInt(id);
     });
-    ccnList.sort(function(a, b) {
+    sectionIdList.sort(function(a, b) {
       return a - b;
     });
-    return ccnList.join('.');
+    return sectionIdList.join('.');
   };
 
   Schedule.normalizeId = function(id) {

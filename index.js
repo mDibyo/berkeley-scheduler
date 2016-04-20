@@ -483,15 +483,32 @@
   ]);
 
   function sbScheduleDisplayDirective() {
+    var hours = [];
+    var halfHours = [];
+    var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+    var startHour = 8;
+    var endHour = 19;
+    var numHours = endHour - startHour;
+    for (var h = startHour; h < endHour; h++) {
+      hours.push(new Time(h, 0));
+      halfHours.push(new Time(h, 0));
+      halfHours.push(new Time(h, 30));
+    }
+
+    var dayHeight = 600;
+    var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
+    var dayTotalMinutes = (new Time(numHours, 0)).getTotalMinutes();
+
     sbScheduleDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
     function sbScheduleDisplayCtrl($state, $window, scheduleFactory) {
       BaseCtrl.call(this, $state, $window);
 
       var vm = this;
 
-      vm.hours = [];
-      vm.halfHours = [];
-      vm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+      vm.hours = hours;
+      vm.halfHours = halfHours;
+      vm.days = days;
       vm.getMeetingPosition = getMeetingPosition;
       vm.getMeetingHeight = getMeetingHeight;
       vm.getMeetingColor = getMeetingColor;
@@ -499,28 +516,13 @@
       vm.getPrevScheduleId = scheduleFactory.getPrevScheduleId;
       vm.getNextScheduleId = scheduleFactory.getNextScheduleId;
 
-      var startHour = 8;
-      var endHour = 19;
-      var numHours = endHour - startHour;
-      for (var h = startHour; h < endHour; h++) {
-        vm.hours.push(new Time(h, 0));
-        vm.halfHours.push(new Time(h, 0));
-        vm.halfHours.push(new Time(h, 30));
-      }
-
-      var dayHeight = 600;
-      var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
-      var dayTotalMinutes = (new Time(numHours, 0)).getTotalMinutes();
-
       function getMeetingPosition(section) {
-        var interval = Meeting.parse(section.time.split(' ', 2)[1]);
-        var offset = interval.startTime.getTotalMinutes() - startHourTotalMinutes;
+        var offset = section.meeting.startTime.getTotalMinutes() - startHourTotalMinutes;
         return offset / dayTotalMinutes * dayHeight;
       }
 
       function getMeetingHeight(section) {
-        var interval = Meeting.parse(section.time.split(' ', 2)[1]);
-        var height = interval.getTotalMinutes();
+        var height = section.meeting.getTotalMinutes();
         return height / dayTotalMinutes * dayHeight;
       }
 
