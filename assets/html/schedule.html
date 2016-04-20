@@ -1,13 +1,15 @@
 <div id="select-courses">
+  <h3>Add courses</h3>
   <md-content>
     <form ng-submit="$event.preventDefault()">
       <md-autocomplete
+          tabindex=1
           ng-disabled="vm.subjectAreaIsDisabled"
           md-autofocus
           md-autoselect
           md-min-length="0"
           md-search-text="subjectAreaQuery"
-          md-items="subjectArea in vm.searchSubjectArea(subjectAreaQuery)"
+          md-items="subjectArea in vm.searchSubjectArea(subjectAreaQuery) | orderBy:'-code':true"
           md-item-text="subjectArea.code"
           md-selected-item="selectedSubjectArea"
           md-selected-item-change="vm.selectSubjectArea(selectedSubjectArea)"
@@ -22,30 +24,29 @@
       <br>
 
       <md-autocomplete
+          tabindex=2
           ng-disabled="vm.courseIsDisabled"
           md-autoselect
           md-min-length="0"
           md-search-text="courseQuery"
-          md-items="course in vm.searchCourse(courseQuery)"
-          md-item-text="course.code"
+          md-items="course in vm.searchCourse(courseQuery) |
+            orderBy: [
+              vm.extractCourseNumberNumber,
+              vm.extractCourseNumberSuffix,
+              vm.extractCourseNumberPrefix
+            ]"
+          md-item-text="course.courseNumber"
           md-selected-item="vm.selectedCourse"
           md-selected-item-change="vm.selectCourse(vm.selectedCourse)"
           placeholder="Course Number"
           md-menu-class="subject-area">
         <md-item-template>
-          <div class="subject-area-code">{{subjectArea.code}}</div>
-          <div class="subject-area-description">{{subjectArea.description}}</div>
+          <div class="subject-area-code">{{course.courseNumber}}</div>
+          <div class="subject-area-description">{{course.title || ' '}}</div>
         </md-item-template>
       </md-autocomplete>
     </form>
   </md-content>
-  <h3>All courses</h3>
-  <ul>
-    <li ng-repeat="course in vm.coursesList">
-      {{course.department}} {{course.courseNumber}}
-      <a href="" ng-click="vm.addCourse(course)">add</a>
-    </li>
-  </ul>
 
   <br>
 

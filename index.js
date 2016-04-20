@@ -82,12 +82,8 @@
       return q;
     }
 
-    var reToRemove = [/ /g, /&/g, /,/g, /-/g, /\//g];
     function alphabetizeSubjectAreaCode(code) {
-      reToRemove.forEach(function(re) {
-        code = code.replace(re, '');
-      });
-      return code;
+      return code.replace(/\W/g, '');
     }
 
     return {
@@ -319,6 +315,9 @@
     vm.selectSubjectArea = selectSubjectArea;
     vm.searchCourse = searchCourse;
     vm.selectCourse = selectCourse;
+    vm.extractCourseNumberNumber = extractCourseNumberNumber;
+    vm.extractCourseNumberSuffix = extractCourseNumberSuffix;
+    vm.extractCourseNumberPrefix = extractCourseNumberPrefix;
 
     vm.addedCoursesList = scheduleFactory.getAllCourses();
     vm.setSchedulesStale = setSchedulesStale;
@@ -385,6 +384,23 @@
         return;
       }
       addCourse(course);
+    }
+
+    var courseNumberRegex = /^([a-zA-Z]*)(\d+)([a-zA-Z]*)/;
+
+    function extractCourseNumberNumber(course) {
+      var courseNumber = course.courseNumber;
+      return parseInt(courseNumberRegex.exec(courseNumber)[2]);
+    }
+
+    function extractCourseNumberSuffix(course) {
+      var courseNumber = course.courseNumber;
+      return courseNumberRegex.exec(courseNumber)[3];
+    }
+
+    function extractCourseNumberPrefix(course) {
+      var courseNumber = course.courseNumber;
+      return courseNumberRegex.exec(courseNumber)[1];
     }
 
     function setSchedulesStale() {
