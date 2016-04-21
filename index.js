@@ -145,6 +145,8 @@
 
     var _courses = {};
     var _sections = {};
+    var _addCourseListeners = [];
+    var _dropCourseListeners = [];
 
     var _schedules = {};
     var _scheduleIdList = [];
@@ -191,6 +193,7 @@
 
     function setStale() {
       _stale = true;
+      saveCoursesToCookie();
     }
 
     function getAllCourses() {
@@ -221,6 +224,9 @@
         _sections[section.id] = section;
       });
       setStale();
+      _addCourseListeners.forEach(function(listener) {
+        listener(course);
+      });
       return true;
     }
 
@@ -242,6 +248,9 @@
         delete _sections[section.id];
       });
       setStale();
+      _dropCourseListeners.forEach(function(listener) {
+        listener(course);
+      });
       return true;
     }
 
@@ -251,6 +260,14 @@
         saveCoursesToCookie();
       }
       return success;
+    }
+
+    function registerAddCourseListener(listener) {
+      _addCourseListeners.push(listener);
+    }
+
+    function registerDropCourseListener(listener) {
+      _dropCourseListeners.push(listener);
     }
 
     function generateSchedules() {
@@ -328,7 +345,9 @@
       getAllCourses: getAllCourses,
       getCourseById: getCourseById,
       addCourse: addCourse,
+      registerAddCourseListener: registerAddCourseListener,
       dropCourse: dropCourse,
+      registerDropCourseListener: registerDropCourseListener,
 
       generateSchedules: generateSchedules,
       getScheduleById: getScheduleById,
@@ -387,6 +406,14 @@
 
     courses.getSubjectAreasQ().then(function(subjectAreas) {
       vm.subjectAreasList = subjectAreas;
+    });
+
+    scheduleFactory.registerAddCourseListener(function(course) {
+      vm.addedCoursesList.push(course);
+    });
+
+    scheduleFactory.registerDropCourseListener(function(course) {
+      vm.addedCoursesList.remove(course);
     });
 
     function searchSubjectArea(query) {
@@ -463,19 +490,11 @@
     }
 
     function addCourse(course) {
-      if (scheduleFactory.addCourse(course)) {
-        vm.addedCoursesList.push(course);
-      } else {
-        console.error('Unable to add course ', course);
-      }
+      scheduleFactory.addCourse(course);
     }
 
     function dropCourse(course) {
-      if (scheduleFactory.dropCourse(course)) {
-        vm.addedCoursesList.remove(course);
-      } else {
-        console.error('Unable to drop course ', course);
-      }
+      scheduleFactory.dropCourse(course);
     }
   }
   angular.module('scheduleBuilder').controller('CourseFindCtrl', [
