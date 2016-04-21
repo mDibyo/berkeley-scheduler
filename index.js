@@ -139,15 +139,20 @@
   ]);
 
   var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  var primaryUserIdCookieKey = 'primaryUserid';
+  var primaryUserIdCookieKey = 'primaryUserId';
   var userIdListCookieKey = 'allUserIds';
   var savedCoursesCookieKeyFormat = '{}.addedCourses';
 
   function scheduleFactory($q, $cookies, reverseLookup) {
     var _stale = false;
 
-    var _primaryUserId;
-    var _userIdList = [];
+    var _cookieExpiryDate = (function() {
+      var date = new Date();
+      date.setFullYear(date.getFullYear() + 1);
+      return date;
+    })();
+    var _primaryUserId = _loadPrimaryUserIdFromCookie();
+    var _userIdList = _loadUserIdListFromCookie();
 
     var _courses = {};
     var _sections = {};
@@ -158,9 +163,7 @@
     var _scheduleIdList = [];
     var _currentScheduleIdx = 0;
 
-    _loadPrimaryUserIdFromCookie();
-
-    _loadCoursesFromCookie();
+    _loadCoursesFromCookieInto_Courses();
 
     function _generateUserId() {
       var id = '';
@@ -172,20 +175,25 @@
 
     function _loadPrimaryUserIdFromCookie() {
       var primaryUserId = $cookies.get(primaryUserIdCookieKey);
-      if (primaryUserId !== undefined) {
-        _userIdList = $cookies.getObject(userIdListCookieKey);
-      } else {
+      if (primaryUserId === undefined) {
         primaryUserId = _generateUserId();
-        $cookies.put(primaryUserIdCookieKey, primaryUserId);
-        _userIdList = [primaryUserId];
-        $cookies.putObject(userIdListCookieKey, _userIdList);
+        $cookies.put(primaryUserIdCookieKey, primaryUserId,
+          {expires: _cookieExpiryDate});
       }
-      _primaryUserId = primaryUserId;
+      return primaryUserId;
     }
 
-    console.log($cookies.get(primaryUserIdCookieKey));
+    function _loadUserIdListFromCookie() {
+      var userIdList = $cookies.getObject(userIdListCookieKey);
+      if (userIdList === undefined && _primaryUserId) {
+        userIdList = [_primaryUserId];
+        $cookies.putObject(userIdListCookieKey, _userIdList,
+          {expires: _cookieExpiryDate});
+      }
+      return userIdList;
+    }
 
-    function _loadCoursesFromCookie() {
+    function _loadCoursesFromCookieInto_Courses() {
       var savedCoursesCookieKey =
         savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
       var savedCourses = $cookies.getObject(savedCoursesCookieKey);
@@ -223,7 +231,8 @@
       }
       var savedCoursesCookieKey =
         savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
-      $cookies.putObject(savedCoursesCookieKey, courseInfosToSave);
+      $cookies.putObject(savedCoursesCookieKey, courseInfosToSave,
+        {expires: _cookieExpiryDate});
     }
 
     function setStale() {
