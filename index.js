@@ -123,9 +123,7 @@
     function getCourseQBy2arySectionId(id) {
       return _2aryTo1arySectionIdIndexQ.then(function(index) {
         return index[id];
-      }).then(function(sectionId) {
-        return getCourseQBy1arySectionId(sectionId);
-      });
+      }).then(getCourseQBy1arySectionId);
     }
 
     return {
@@ -145,7 +143,7 @@
   var userIdListCookieKey = 'allUserIds';
   var savedCoursesCookieKeyFormat = '{}.addedCourses';
 
-  function scheduleFactory($cookies, reverseLookup) {
+  function scheduleFactory($q, $cookies, reverseLookup) {
     var _stale = false;
 
     var _primaryUserId;
@@ -241,14 +239,15 @@
       return courses;
     }
 
-    function getCourseById(id) {
+    function getCourseQById(id) {
       if (_courses.hasOwnProperty(id)) {
-        return _courses[id];
+        var deferred = $q.defer();
+        deferred.resolve(_courses[id]);
+        return deferred.promise;
       }
-      if (_sections.hasOwnProperty(id)) {
-        return _sections[id].course;
-      }
-      return null;
+      var courseQ = reverseLookup.getCourseQBy1arySectionId(id);
+      courseQ.then(addCourse);
+      return courseQ;
     }
 
     function _addCourseNoSave(course) {
@@ -380,7 +379,7 @@
       setStale: setStale,
 
       getAllCourses: getAllCourses,
-      getCourseById: getCourseById,
+      getCourseQById: getCourseQById,
       addCourse: addCourse,
       registerAddCourseListener: registerAddCourseListener,
       dropCourse: dropCourse,
@@ -395,6 +394,7 @@
     };
   }
   angular.module('scheduleBuilder').factory('scheduleFactory', [
+    '$q',
     '$cookies',
     'reverseLookup',
     scheduleFactory
@@ -548,7 +548,10 @@
 
     var vm = this;
 
-    vm.selectedCourse = scheduleFactory.getCourseById($stateParams.id);
+    vm.selectedCourse = null;
+    scheduleFactory.getCourseQById($stateParams.id).then(function(course) {
+      vm.selectedCourse = course;
+    });
   }
   angular.module('scheduleBuilder').controller('CourseViewAndSelectCtrl', [
     '$state',
