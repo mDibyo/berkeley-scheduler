@@ -103,19 +103,10 @@
         return response.data;
       });
 
-    function getCourseQQBy2arySectionId(id) {
-      var _1arySectionIdQ = _2aryTo1arySectionIdIndexQ.then(function(index) {
+    function getCourseQBy1arySectionId(id) {
+      return _1arySectionIdToSubjectAreaIndexQ.then(function(index) {
         return index[id];
-      });
-      var subjectAreaInfoQ = $q.all([
-        _1arySectionIdQ,
-        _1arySectionIdToSubjectAreaIndexQ
-      ]).then(function(results) {
-        var courseId = results[0];
-        var index = results[1];
-        return index[courseId];
-      });
-      return subjectAreaInfoQ.then(function(subjectAreaInfo) {
+      }).then(function(subjectAreaInfo) {
         return courses.getCoursesQBySubjectAreaCode(subjectAreaInfo[0]).then(function(courseList) {
           var courseNumber = subjectAreaInfo[1];
           for (var i = 0; i < courseList.length; i++) {
@@ -127,8 +118,17 @@
       });
     }
 
+    function getCourseQBy2arySectionId(id) {
+      return _2aryTo1arySectionIdIndexQ.then(function(index) {
+        return index[id];
+      }).then(function(sectionId) {
+        return getCourseQBy1arySectionId(sectionId);
+      });
+    }
+
     return {
-      getCourseQQBy2arySectionId: getCourseQQBy2arySectionId
+      getCourseQBy1arySectionId: getCourseQBy1arySectionId,
+      getCourseQBy2arySectionId: getCourseQBy2arySectionId
     }
   }
   angular.module('scheduleBuilder').factory('reverseLookup', [
@@ -150,26 +150,43 @@
     var _scheduleIdList = [];
     var _currentScheduleIdx = 0;
 
-    //loadCoursesFromCookie();
+    loadCoursesFromCookie();
 
     function loadCoursesFromCookie() {
       var savedCourses = $cookies.getObject(savedCoursesCookieKey);
-      if (savedCourses != null) {
-        savedCourses.forEach(function(course) {
+      if (!savedCourses) {
+        return;
+      }
+      savedCourses.forEach(function(courseInfo) {
+        reverseLookup.getCourseQBy1arySectionId(courseInfo.id).then(function(course) {
           course.sections.forEach(function(section) {
-            section.course = course;
+            if (courseInfo.unselectedSections.indexOf(section.id) >= 0) {
+              section.selected = false;
+            }
           });
           addCourseNoSave(course);
-        });
-      }
+        })
+      });
     }
 
     function saveCoursesToCookie() {
-      var coursesToSave = [];
+      var courseInfosToSave = [];
       for (var id in _courses) {
-        coursesToSave.push(_courses[id]);
+        var selectedSections = [], unselectedSections = [];
+        _courses[id].sections.forEach(function(section) {
+          if (section.selected) {
+            selectedSections.push(section.id);
+          } else {
+            unselectedSections.push(section.id);
+          }
+        });
+        courseInfosToSave.push({
+          id: id,
+          selectedSections: selectedSections,
+          unselectedSections: unselectedSections
+        });
       }
-      //$cookies.putObject(savedCoursesCookieKey, coursesToSave);
+      $cookies.putObject(savedCoursesCookieKey, courseInfosToSave);
     }
 
     function setStale() {
