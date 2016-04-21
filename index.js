@@ -39,7 +39,9 @@
   var coursesUrlFormat = 'data/final/fa16/classes/{}.json';
 
   function courses($http) {
-    var subjectAreasQ = $http.get(departmentsUrl).then(function(response) {
+    var _coursesQBySubjectArea = {};
+
+    var _subjectAreasQ = $http.get(departmentsUrl).then(function(response) {
       var subjectAreas = response.data.subjectAreas;
       return Object.keys(subjectAreas).map(function(code) {
         return {
@@ -48,17 +50,17 @@
         }
       });
     });
+
     function getSubjectAreasQ() {
-      return subjectAreasQ;
+      return _subjectAreasQ;
     }
 
-    var coursesQBySubjectArea = {};
     function getCoursesQBySubjectAreaCode(code) {
-      if (code in coursesQBySubjectArea) {
-        return coursesQBySubjectArea[code];
+      if (code in _coursesQBySubjectArea) {
+        return _coursesQBySubjectArea[code];
       }
 
-      var alphabetizedCode = alphabetizeSubjectAreaCode(code);
+      var alphabetizedCode = _alphabetizeSubjectAreaCode(code);
       var coursesUrl = coursesUrlFormat.replace('{}', alphabetizedCode);
       var q = $http.get(coursesUrl).then(function(response) {
         var courses = response.data;
@@ -68,11 +70,11 @@
       }, function() {
         return [];
       });
-      coursesQBySubjectArea[code] = q;
+      _coursesQBySubjectArea[code] = q;
       return q;
     }
 
-    function alphabetizeSubjectAreaCode(code) {
+    function _alphabetizeSubjectAreaCode(code) {
       return code.replace(/\W/g, '');
     }
 
@@ -138,10 +140,16 @@
     reverseLookup
   ]);
 
-  var savedCoursesCookieKey = 'addedCourses';
+  var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  var primaryUserIdCookieKey = 'primaryUserid';
+  var userIdListCookieKey = 'allUserIds';
+  var savedCoursesCookieKeyFormat = '{}.addedCourses';
 
   function scheduleFactory($cookies, reverseLookup) {
     var _stale = false;
+
+    var _primaryUserId;
+    var _userIdList = [];
 
     var _courses = {};
     var _sections = {};
@@ -152,9 +160,36 @@
     var _scheduleIdList = [];
     var _currentScheduleIdx = 0;
 
-    loadCoursesFromCookie();
+    _loadPrimaryUserIdFromCookie();
 
-    function loadCoursesFromCookie() {
+    _loadCoursesFromCookie();
+
+    function _generateUserId() {
+      var id = '';
+      for (var i = 0; i < 10; i++) {
+        id += userIdCharSet[Math.floor(Math.random() * userIdCharSet.length)]
+      }
+      return id;
+    }
+
+    function _loadPrimaryUserIdFromCookie() {
+      var primaryUserId = $cookies.get(primaryUserIdCookieKey);
+      if (primaryUserId !== undefined) {
+        _userIdList = $cookies.getObject(userIdListCookieKey);
+      } else {
+        primaryUserId = _generateUserId();
+        $cookies.put(primaryUserIdCookieKey, primaryUserId);
+        _userIdList = [primaryUserId];
+        $cookies.putObject(userIdListCookieKey, _userIdList);
+      }
+      _primaryUserId = primaryUserId;
+    }
+
+    console.log($cookies.get(primaryUserIdCookieKey));
+
+    function _loadCoursesFromCookie() {
+      var savedCoursesCookieKey =
+        savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
       var savedCourses = $cookies.getObject(savedCoursesCookieKey);
       if (!savedCourses) {
         return;
@@ -166,12 +201,12 @@
               section.selected = false;
             }
           });
-          addCourseNoSave(course);
+          _addCourseNoSave(course);
         })
       });
     }
 
-    function saveCoursesToCookie() {
+    function _saveCoursesToCookie() {
       var courseInfosToSave = [];
       for (var id in _courses) {
         var selectedSections = [], unselectedSections = [];
@@ -188,12 +223,14 @@
           unselectedSections: unselectedSections
         });
       }
+      var savedCoursesCookieKey =
+        savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
       $cookies.putObject(savedCoursesCookieKey, courseInfosToSave);
     }
 
     function setStale() {
       _stale = true;
-      saveCoursesToCookie();
+      _saveCoursesToCookie();
     }
 
     function getAllCourses() {
@@ -214,7 +251,7 @@
       return null;
     }
 
-    function addCourseNoSave(course) {
+    function _addCourseNoSave(course) {
       if (_courses.hasOwnProperty(course.id)) {
         return false;
       }
@@ -231,14 +268,14 @@
     }
 
     function addCourse(course) {
-      var success = addCourseNoSave(course);
+      var success = _addCourseNoSave(course);
       if (success) {
-        saveCoursesToCookie();
+        _saveCoursesToCookie();
       }
       return success;
     }
 
-    function dropCourseNoSave(course) {
+    function _dropCourseNoSave(course) {
       if (!_courses.hasOwnProperty(course.id)) {
         return false;
       }
@@ -255,9 +292,9 @@
     }
 
     function dropCourse(course) {
-      var success = dropCourseNoSave(course);
+      var success = _dropCourseNoSave(course);
       if (success) {
-        saveCoursesToCookie();
+        _saveCoursesToCookie();
       }
       return success;
     }
