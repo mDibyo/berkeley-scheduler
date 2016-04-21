@@ -35,9 +35,8 @@
       }
     ]);
 
-  var sampleCoursesUrl = 'assets/json/sample_courses.json';
   var departmentsUrl = 'data/final/departments.json';
-  var coursesUrlFormat = 'data/final/subject-areas/{}.json';
+  var coursesUrlFormat = 'data/final/fa16/classes/{}.json';
 
   function courses($http) {
     var subjectAreasQ = $http.get(departmentsUrl).then(function(response) {
@@ -87,9 +86,61 @@
     courses
   ]);
 
+  var indicesUrlFormat = 'data/final/fa16/indices/{}.json';
+  var _2aryTo1arySectionIdIndexUrl =
+    indicesUrlFormat.replace('{}', '2ary-to-1ary-section-id');
+  var _1arySectionIdToSubjectAreaIndexUrl =
+    indicesUrlFormat.replace('{}', '1ary-section-id-to-subject-area');
+
+  function reverseLookup($http, $q, courses) {
+    var _2aryTo1arySectionIdIndexQ =
+      $http.get(_2aryTo1arySectionIdIndexUrl).then(function(response) {
+        return response.data;
+      });
+
+    var _1arySectionIdToSubjectAreaIndexQ =
+      $http.get(_1arySectionIdToSubjectAreaIndexUrl).then(function(response) {
+        return response.data;
+      });
+
+    function getCourseQQBy2arySectionId(id) {
+      var _1arySectionIdQ = _2aryTo1arySectionIdIndexQ.then(function(index) {
+        return index[id];
+      });
+      var subjectAreaInfoQ = $q.all([
+        _1arySectionIdQ,
+        _1arySectionIdToSubjectAreaIndexQ
+      ]).then(function(results) {
+        var courseId = results[0];
+        var index = results[1];
+        return index[courseId];
+      });
+      return subjectAreaInfoQ.then(function(subjectAreaInfo) {
+        return courses.getCoursesQBySubjectAreaCode(subjectAreaInfo[0]).then(function(courseList) {
+          var courseNumber = subjectAreaInfo[1];
+          for (var i = 0; i < courseList.length; i++) {
+            if (courseList[i].courseNumber === courseNumber) {
+              return courseList[i];
+            }
+          }
+        });
+      });
+    }
+
+    return {
+      getCourseQQBy2arySectionId: getCourseQQBy2arySectionId
+    }
+  }
+  angular.module('scheduleBuilder').factory('reverseLookup', [
+    '$http',
+    '$q',
+    'courses',
+    reverseLookup
+  ]);
+
   var savedCoursesCookieKey = 'addedCourses';
 
-  function scheduleFactory($cookies) {
+  function scheduleFactory($cookies, reverseLookup) {
     var _stale = false;
 
     var _courses = {};
@@ -272,6 +323,7 @@
   }
   angular.module('scheduleBuilder').factory('scheduleFactory', [
     '$cookies',
+    'reverseLookup',
     scheduleFactory
   ]);
 
