@@ -69,6 +69,8 @@ var Course = (function() {
 
   Course.registeredColors = [];
 
+  Course.courseColors = {};
+
   Course.getRegisteredColor = function() {
     var l = Course.unregisteredColors.length;
     if (l == 0) {
@@ -96,10 +98,15 @@ var Course = (function() {
   };
 
   Course.prototype.add = function() {
-    this.color = Course.getRegisteredColor();
+    if (!Course.courseColors.hasOwnProperty(this.id)) {
+      Course.courseColors[this.id] = Course.getRegisteredColor();
+      console.log('registering color');
+    }
+    this.color = Course.courseColors[this.id];
   };
 
   Course.prototype.drop = function() {
+    delete Course.courseColors[this.id];
     Course.unRegisterColor(this.color);
   };
 

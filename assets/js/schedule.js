@@ -1,7 +1,7 @@
 'use strict';
 
 var Schedule = (function() {
-  function Schedule(sections) {
+  function Schedule(userId, sections) {
     this.courses = {};
     this.meetingsByDay = {
       'Monday': [],
@@ -26,19 +26,21 @@ var Schedule = (function() {
         }
       }
     }, this);
-    this.id = Schedule.generateId(sectionIdList);
+    this.id = Schedule.generateId([userId].concat(sectionIdList));
 
     this.selected = true;
   }
 
-  Schedule.generateId = function(sectionIdList) {
-    sectionIdList = sectionIdList.map(function (id) {
+  Schedule.generateId = function(idComponentList) {
+    var userId = idComponentList.shift();
+    idComponentList = idComponentList.map(function (id) {
       return parseInt(id);
     });
-    sectionIdList.sort(function(a, b) {
+    idComponentList.sort(function(a, b) {
       return a - b;
     });
-    return sectionIdList.join('.');
+    idComponentList.unshift(userId);
+    return idComponentList.join('.');
   };
 
   Schedule.normalizeId = function(id) {
@@ -46,6 +48,16 @@ var Schedule = (function() {
       return null;
     }
     return Schedule.generateId(id.split('.'));
+  };
+
+  Schedule.getUserIdFromId = function(id) {
+    return id.split('.')[0];
+  };
+
+  Schedule.getSectionIdsFromId = function(id) {
+    return id.split('.').slice(1).map(function(id) {
+      return parseInt(id);
+    });
   };
 
   return Schedule;

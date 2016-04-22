@@ -95,6 +95,8 @@
     indicesUrlFormat.replace('{}', '1ary-section-id-to-subject-area');
 
   function reverseLookup($http, $q, courses) {
+    var _coursesCache = {};
+
     var _2aryTo1arySectionIdIndexQ =
       $http.get(_2aryTo1arySectionIdIndexUrl).then(function(response) {
         return response.data;
@@ -106,6 +108,11 @@
       });
 
     function getCourseQBy1arySectionId(id) {
+      if (id in _coursesCache) {
+        var deferred = $q.defer();
+        deferred.resolve(_coursesCache[id]);
+        return deferred.promise;
+      }
       return _1arySectionIdToSubjectAreaIndexQ.then(function(index) {
         return index[id];
       }).then(function(subjectAreaInfo) {
@@ -113,7 +120,9 @@
           var courseNumber = subjectAreaInfo[1];
           for (var i = 0; i < courseList.length; i++) {
             if (courseList[i].courseNumber === courseNumber) {
-              return courseList[i];
+              var course = courseList[i];
+              _coursesCache[id] = course;
+              return course;
             }
           }
         });
@@ -121,6 +130,11 @@
     }
 
     function getCourseQBy2arySectionId(id) {
+      if (id in _coursesCache) {
+        var deferred = $q.defer();
+        deferred.resolve(_coursesCache[id]);
+        return deferred.promise;
+      }
       return _2aryTo1arySectionIdIndexQ.then(function(index) {
         return index[id];
       }).then(getCourseQBy1arySectionId);
@@ -145,6 +159,8 @@
 
   function scheduleFactory($q, $cookies, reverseLookup) {
     var _stale = false;
+    var _inDisplayMode = false;
+    var _setInDisplayModeListeners = [];
 
     var _cookieExpiryDate = (function() {
       var date = new Date();
@@ -240,6 +256,13 @@
       _saveCoursesToCookie();
     }
 
+    function setInDisplayMode(inDisplayMode) {
+      _inDisplayMode = inDisplayMode;
+      _setInDisplayModeListeners.forEach(function(listener) {
+        listener(inDisplayMode);
+      });
+    }
+
     function getAllCourses() {
       var courses = [];
       for (var id in _courses) {
@@ -254,7 +277,7 @@
         deferred.resolve(_courses[id]);
         return deferred.promise;
       }
-      var courseQ = reverseLookup.getCourseQBy1arySectionId(id);
+      var courseQ = reverseLookup.getCourseQBy2arySectionId(id);
       courseQ.then(addCourse);
       return courseQ;
     }
@@ -339,7 +362,7 @@
           var a = array.slice(0);
           a.push(sectionsByCourseType[n][i]);
           if (n === numSections-1) {
-            var schedule = new Schedule(a);
+            var schedule = new Schedule(_primaryUserId, a);
             _schedules[schedule.id] = schedule;
             _scheduleIdList.push(schedule.id);
           } else {
@@ -352,11 +375,71 @@
       return _schedules;
     }
 
-    function getScheduleById(scheduleId) {
-      if (!_schedules.hasOwnProperty(scheduleId)) {
-        scheduleId = Schedule.normalizeId(scheduleId);
+    function getScheduleQById(scheduleId) {
+      var userId = Schedule.getUserIdFromId(scheduleId);
+      var isPrimaryUser = userId == _primaryUserId;
+      var deferred = $q.defer();
+      if (_schedules.hasOwnProperty(scheduleId)) {
+        deferred.resolve(_schedules[scheduleId]);
+        return deferred.promise;
       }
-      return _schedules[scheduleId];
+      scheduleId = Schedule.normalizeId(scheduleId);
+      if (_schedules.hasOwnProperty(scheduleId)) {
+        deferred.resolve(_schedules[scheduleId]);
+        return deferred.promise;
+      }
+
+      var sectionIdList = Schedule.getSectionIdsFromId(scheduleId);
+      var sectionList = [];
+      var sectionLookupQList = [];
+      sectionIdList.forEach(function(sectionId) {
+        if (_sections.hasOwnProperty(sectionId)) {
+          sectionList.push(_sections[sectionId]);
+        } else {
+          sectionLookupQList.push(
+            reverseLookup.getCourseQBy2arySectionId(sectionId).then(function(course) {
+              if (isPrimaryUser) {
+                if (_addCourseNoSave(course)) {
+                  // This was the first time the course was added. Only select this
+                  // section.
+                  course.sections.forEach(function (section) {
+                    if (section.id === sectionId) {
+                      section.selected = true;
+                      sectionList.push(section);
+                    } else {
+                      section.selected = false;
+                    }
+                  });
+                } else {
+                  // The course has already been added previously. Ensure this section
+                  // is selected.
+                  course = _courses[course.id];
+                  for (var i = 0; i < course.sections.length; i++) {
+                    var section = course.sections[i];
+                    if (section.id === sectionId) {
+                      sectionList.push(section);
+                      section.selected = true;
+                      break;
+                    }
+                  }
+                }
+              } else {
+                course.add();
+                for (var j = 0; j < course.sections.length; j++) {
+                  if (course.sections[j].id === sectionId) {
+                    sectionList.push(course.sections[j]);
+                    break;
+                  }
+                }
+              }
+            }));
+        }
+      });
+      return $q.all(sectionLookupQList).then(function() {
+        var schedule = new Schedule(userId, sectionList);
+        _schedules[schedule.id] = schedule;
+        return schedule;
+      });
     }
 
     function getCurrScheduleId() {
@@ -395,7 +478,7 @@
       registerDropCourseListener: registerDropCourseListener,
 
       generateSchedules: generateSchedules,
-      getScheduleById: getScheduleById,
+      getScheduleQById: getScheduleQById,
       getCurrScheduleId: getCurrScheduleId,
       getPrevScheduleId: getPrevScheduleId,
       getNextScheduleId: getNextScheduleId,
@@ -577,7 +660,10 @@
     var vm = this;
 
     scheduleFactory.setCurrentScheduleById($stateParams.scheduleId);
-    vm.selectedSchedule = scheduleFactory.getScheduleById($stateParams.scheduleId);
+    //vm.selectedSchedule = scheduleFactory.getScheduleById($stateParams.scheduleId);
+    scheduleFactory.getScheduleQById($stateParams.scheduleId).then(function(schedule) {
+      vm.selectedSchedule = schedule;
+    });
   }
   angular.module('scheduleBuilder').controller('ScheduleViewAndSelectCtrl', [
     '$state',
