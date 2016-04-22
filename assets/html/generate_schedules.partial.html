@@ -1,5 +1,12 @@
 <p align="right">
-  <a href="" ng-click="dvm.generateSchedulesAndView()">
-    Generate Schedules
-  </a>
+  <span ng-if="dvm.scheduleIsStale">
+    <a href="" ng-click="dvm.generateAndViewSchedules()">
+      Generate Schedules
+    </a>
+  </span>
+  <span ng-if="!dvm.scheduleIsStale">
+    <a href="" ng-click="dvm.viewSchedules()">
+      View Schedules
+    </a>
+  </span>
 </p>

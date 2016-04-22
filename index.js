@@ -116,16 +116,17 @@
       return _1arySectionIdToSubjectAreaIndexQ.then(function(index) {
         return index[id];
       }).then(function(subjectAreaInfo) {
-        return courses.getCoursesQBySubjectAreaCode(subjectAreaInfo[0]).then(function(courseList) {
-          var courseNumber = subjectAreaInfo[1];
-          for (var i = 0; i < courseList.length; i++) {
-            if (courseList[i].courseNumber === courseNumber) {
-              var course = courseList[i];
-              _coursesCache[id] = course;
-              return course;
+        return courses.getCoursesQBySubjectAreaCode(subjectAreaInfo[0])
+          .then(function(courseList) {
+            var courseNumber = subjectAreaInfo[1];
+            for (var i = 0; i < courseList.length; i++) {
+              if (courseList[i].courseNumber === courseNumber) {
+                var course = courseList[i];
+                _coursesCache[id] = course;
+                return course;
+              }
             }
-          }
-        });
+          });
       });
     }
 
@@ -159,6 +160,7 @@
 
   function scheduleFactory($q, $cookies, reverseLookup) {
     var _stale = false;
+    var _setStaleListeners = [];
     var _inDisplayMode = false;
     var _setInDisplayModeListeners = [];
 
@@ -251,9 +253,20 @@
         {expires: _cookieExpiryDate});
     }
 
+    function isStale() {
+      return _stale;
+    }
+
     function setStale() {
       _stale = true;
       _saveCoursesToCookie();
+      _setStaleListeners.forEach(function(listener) {
+        listener(_stale);
+      })
+    }
+
+    function registerSetStaleListener(listener) {
+      _setStaleListeners.push(listener);
     }
 
     function setInDisplayMode(inDisplayMode) {
@@ -475,7 +488,9 @@
     }
 
     return {
+      isStale: isStale,
       setStale: setStale,
+      registerSetStaleListener: registerSetStaleListener,
       setInDisplayMode: setInDisplayMode,
       registerSetInDisplayModeListener: registerSetInDisplayModeListener,
 
@@ -799,11 +814,15 @@
 
       var vm = this;
 
-      vm.message = 'Generate Schedule';
-      vm.generateSchedulesAndView = generateSchedulesAndView;
+      vm.scheduleIsStale = scheduleFactory.isStale();
+      vm.viewSchedules = viewSchedules;
+      vm.generateAndViewSchedules = generateAndViewSchedules;
 
-      function generateSchedulesAndView() {
-        scheduleFactory.generateSchedules();
+      scheduleFactory.registerSetStaleListener(function(isStale) {
+        vm.scheduleIsStale = isStale;
+      });
+
+      function viewSchedules() {
         var currScheduleId = scheduleFactory.getCurrScheduleId();
         if (currScheduleId === undefined) {
           return;
@@ -811,6 +830,11 @@
         vm.goToState('schedule.viewSchedule', {
           scheduleId: currScheduleId
         });
+      }
+
+      function generateAndViewSchedules() {
+        scheduleFactory.generateSchedules();
+        viewSchedules();
       }
     }
 
