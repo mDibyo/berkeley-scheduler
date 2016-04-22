@@ -50,15 +50,21 @@
 
   <br>
 
-  <h3>Added Courses</h3>
-  <ul>
-    <li ng-repeat="course in vm.addedCoursesList">
-      <a ui-sref="schedule.viewCourse({id: course.id})">
-        {{course.department}} {{course.courseNumber}}
-      </a>&nbsp;
-      <a href="" ng-click="vm.dropCourse(course)">drop</a>
-    </li>
-  </ul>
+  <div ng-show="vm.inDisplayMode">
+    <a href="" ng-click="vm.leaveDisplayMode()">Go back to your own schedule.</a>
+
+  </div>
+  <div ng-hide="vm.inDisplayMode">
+    <h3>Added Courses</h3>
+    <ul>
+      <li ng-repeat="course in vm.addedCoursesList">
+        <a ui-sref="schedule.viewCourse({id: course.id})">
+          {{course.department}} {{course.courseNumber}}
+        </a>&nbsp;
+        <a href="" ng-click="vm.dropCourse(course)">drop</a>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <div id="view-course">

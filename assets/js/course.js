@@ -100,7 +100,6 @@ var Course = (function() {
   Course.prototype.add = function() {
     if (!Course.courseColors.hasOwnProperty(this.id)) {
       Course.courseColors[this.id] = Course.getRegisteredColor();
-      console.log('registering color');
     }
     this.color = Course.courseColors[this.id];
   };

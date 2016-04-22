@@ -263,6 +263,10 @@
       });
     }
 
+    function registerSetInDisplayModeListener(listener) {
+      _setInDisplayModeListeners.push(listener);
+    }
+
     function getAllCourses() {
       var courses = [];
       for (var id in _courses) {
@@ -378,6 +382,9 @@
     function getScheduleQById(scheduleId) {
       var userId = Schedule.getUserIdFromId(scheduleId);
       var isPrimaryUser = userId == _primaryUserId;
+      if (!isPrimaryUser) {
+        setInDisplayMode(true);
+      }
       var deferred = $q.defer();
       if (_schedules.hasOwnProperty(scheduleId)) {
         deferred.resolve(_schedules[scheduleId]);
@@ -469,6 +476,8 @@
 
     return {
       setStale: setStale,
+      setInDisplayMode: setInDisplayMode,
+      registerSetInDisplayModeListener: registerSetInDisplayModeListener,
 
       getAllCourses: getAllCourses,
       getCourseQById: getCourseQById,
@@ -516,6 +525,7 @@
     vm.subjectAreaIsDisabled = false;
     vm.courseIsDisabled = true;
     vm.selectedCourse = null;
+    vm.inDisplayMode = false;
     vm.coursesList = [];
     vm.subjectAreasList = [];
     vm.searchSubjectArea = searchSubjectArea;
@@ -528,6 +538,7 @@
 
     vm.addedCoursesList = scheduleFactory.getAllCourses();
     vm.setSchedulesStale = setSchedulesStale;
+    vm.leaveDisplayMode = leaveDisplayMode;
     vm.addCourse = addCourse;
     vm.dropCourse = dropCourse;
 
@@ -535,6 +546,10 @@
 
     courses.getSubjectAreasQ().then(function(subjectAreas) {
       vm.subjectAreasList = subjectAreas;
+    });
+
+    scheduleFactory.registerSetInDisplayModeListener(function(inDisplayMode) {
+      vm.inDisplayMode = inDisplayMode;
     });
 
     scheduleFactory.registerAddCourseListener(function(course) {
@@ -616,6 +631,11 @@
 
     function setSchedulesStale() {
       scheduleFactory.setStale();
+    }
+
+    function leaveDisplayMode() {
+      scheduleFactory.setInDisplayMode(false);
+      vm.goToState('schedule');
     }
 
     function addCourse(course) {
