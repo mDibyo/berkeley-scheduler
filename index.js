@@ -178,8 +178,11 @@
     var _dropCourseListeners = [];
 
     var _schedules = {};
-    var _scheduleIdList = [];
-    var _currentScheduleIdx = 0;
+    var _allScheduleIdList = [];
+    var _currScheduleIdList = [];
+    var _currScheduleIdx = 0;
+    var _orderByFns = {};
+    var _filterFns = {};
 
     _loadCoursesFromCookieInto_Courses();
 
@@ -361,8 +364,8 @@
       }
 
       _schedules = {};
-      _scheduleIdList = [];
-      _currentScheduleIdx = 0;
+      _allScheduleIdList = [];
+      _currScheduleIdx = 0;
       var sectionsByCourseType = [];
       for (var id in _courses) {
         var course = _courses[id];
@@ -381,7 +384,7 @@
           if (n === numSections-1) {
             var schedule = new Schedule(_primaryUserId, a);
             _schedules[schedule.id] = schedule;
-            _scheduleIdList.push(schedule.id);
+            _allScheduleIdList.push(schedule.id);
           } else {
             generateHelper(a, n+1);
           }
@@ -463,28 +466,36 @@
     }
 
     function getCurrScheduleId() {
-      return _scheduleIdList[_currentScheduleIdx];
+      return _allScheduleIdList[_currScheduleIdx];
     }
 
     function getPrevScheduleId() {
-      var l = _scheduleIdList.length;
-      var prevScheduleIdx = (_currentScheduleIdx + l - 1) % l;
-      return _scheduleIdList[prevScheduleIdx];
+      var l = _allScheduleIdList.length;
+      var prevScheduleIdx = (_currScheduleIdx + l - 1) % l;
+      return _allScheduleIdList[prevScheduleIdx];
     }
 
     function getNextScheduleId() {
-      var nextScheduleIdx = (_currentScheduleIdx + 1) % _scheduleIdList.length;
-      return _scheduleIdList[nextScheduleIdx];
+      var nextScheduleIdx = (_currScheduleIdx + 1) % _allScheduleIdList.length;
+      return _allScheduleIdList[nextScheduleIdx];
     }
 
     function setCurrentScheduleById(scheduleId) {
       if (!_schedules.hasOwnProperty(scheduleId)) {
         scheduleId = Schedule.normalizeId(scheduleId);
       }
-      _currentScheduleIdx = _scheduleIdList.indexOf(scheduleId);
-      if (_currentScheduleIdx < 0) {
-        _currentScheduleIdx = 0;
+      _currScheduleIdx = _allScheduleIdList.indexOf(scheduleId);
+      if (_currScheduleIdx < 0) {
+        _currScheduleIdx = 0;
       }
+    }
+
+    function registerOrderByFn(name, fn) {
+      _orderByFns[name] = fn;
+    }
+
+    function registerFilterFn(name, fn) {
+      _filterFns[name] = fn;
     }
 
     return {
@@ -506,7 +517,9 @@
       getCurrScheduleId: getCurrScheduleId,
       getPrevScheduleId: getPrevScheduleId,
       getNextScheduleId: getNextScheduleId,
-      setCurrentScheduleById: setCurrentScheduleById
+      setCurrentScheduleById: setCurrentScheduleById,
+      registerOrderByFn: registerOrderByFn,
+      registerFilterFn: registerFilterFn
     };
   }
   angular.module('scheduleBuilder').factory('scheduleFactory', [
@@ -808,19 +821,102 @@
   ]);
 
   function sbGenerateSchedulesDirective() {
+
     sbGenerateSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
     function sbGenerateSchedulesCtrl($state, $window, scheduleFactory) {
       BaseCtrl.call(this, $state, $window);
 
       var vm = this;
 
+      var hours = [];
+      var halfHours = [];
+      var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+      var startHour = 8;
+      var endHour = 19;
+      //var numHours = endHour - startHour;
+      for (var h = startHour; h < endHour; h++) {
+        hours.push(new Time(h, 0));
+        halfHours.push(new Time(h, 0));
+        halfHours.push(new Time(h, 30));
+      }
+      hours.push(new Time(h, 0));
+      halfHours.push(new Time(h, 0));
+
       vm.scheduleIsStale = scheduleFactory.isStale();
+      vm.showOptions = false;
       vm.viewSchedules = viewSchedules;
       vm.generateAndViewSchedules = generateAndViewSchedules;
+      vm.toggleOptions = toggleOptions;
+      vm.reorderSchedules = reorderSchedules;
+      vm.refilterAndReorderSchedules = refilterAndReorderSchedules;
+
+      vm.preferMornings = false;
+      vm.preferAfternoons = false;
+      vm.preferEvenings = false;
+      vm.selectedDayStartTimeJson = halfHours[0];
+      vm.selectedDayEndTimeJson = halfHours[halfHours.length-1];
+      vm.dayStartTimes = [];
+      vm.dayEndTimes = [];
+      vm.updateDayStartTimes = updateDayStartTimes;
+      vm.updateDayEndTimes = updateDayEndTimes;
 
       scheduleFactory.registerSetStaleListener(function(isStale) {
         vm.scheduleIsStale = isStale;
       });
+
+      scheduleFactory.registerOrderByFn('preferMornings', function(schedule) {
+        if (!vm.preferMornings) {
+          return 1;
+        }
+
+        var totalFor = 0, total = 0;
+        for (var day in schedule.meetingsByDay) {
+          var meetings = schedule.meetingsByDay[day];
+          for (var i = 0; i < meetings.length; i++) {
+            total ++;
+            if (meetings[i].endTime.compareTo(Time.noon) < 0) {
+              totalFor ++;
+            }
+          }
+        }
+        return totalFor / total;
+      });
+
+      scheduleFactory.registerFilterFn('s', function(schedule) {
+        if (vm.selectedDayStartTimeJson == null) {
+          return true;
+        }
+
+        for (var day in schedule.meetingsByDay) {
+          var meetings = schedule.meetingsByDay[day];
+          for (var i = 0; i < meetings.length; i++) {
+            if (meetings[i].startTime.compareTo(vm.selectedDayStartTimeJson) < 0) {
+              return false;
+            }
+          }
+        }
+        return true;
+      });
+
+      scheduleFactory.registerFilterFn('selectedDayEndTime', function(schedule) {
+        if (vm.selectedDayEndTimeJson == null) {
+          return true;
+        }
+
+        for (var day in schedule.meetingsByDay) {
+          var meetings = schedule.meetingsByDay[day];
+          for (var i = 0; i < meetings.length; i++) {
+            if (meetings[i].endTime.compareTo(vm.selectedDayEndTimeJson) > 0) {
+              return false;
+            }
+          }
+        }
+        return true;
+      });
+
+      updateDayStartTimes();
+      updateDayEndTimes();
 
       function viewSchedules() {
         var currScheduleId = scheduleFactory.getCurrScheduleId();
@@ -835,6 +931,37 @@
       function generateAndViewSchedules() {
         scheduleFactory.generateSchedules();
         viewSchedules();
+      }
+
+      function toggleOptions() {
+        vm.showOptions = !vm.showOptions;
+      }
+
+      function reorderSchedules() {
+        // TODO
+      }
+
+      function refilterAndReorderSchedules() {
+        // TODO
+        reorderSchedules()
+      }
+
+      function updateDayStartTimes() {
+        var times = halfHours.slice();
+        var selectedDayEndTime = Time.parse(vm.selectedDayEndTimeJson);
+        while (times.length > 0 && times[times.length-1].compareTo(selectedDayEndTime) > 0) {
+          times.pop()
+        }
+        vm.dayStartTimes = times;
+      }
+
+      function updateDayEndTimes() {
+        var times = halfHours.slice();
+        var selectedDayStartTime = Time.parse(vm.selectedDayStartTimeJson);
+        while (times.length > 0 && times[0].compareTo(selectedDayStartTime) < 0) {
+          times.shift()
+        }
+        vm.dayEndTimes = times;
       }
     }
 

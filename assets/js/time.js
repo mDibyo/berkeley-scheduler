@@ -12,7 +12,14 @@ var Time = (function() {
     this.minutes = minutes;
   }
 
-  Time.twelveHours = new Time(12, 0);
+  Time.parse = function(timeJson) {
+    if (typeof timeJson === 'string' || timeJson instanceof String) {
+      timeJson = JSON.parse(timeJson);
+    }
+    return new Time(timeJson.hours, timeJson.minutes);
+  };
+
+  Time.noon = new Time(12, 0);
 
   Time.prototype.add = function(other) {
     return new Time(this.hours + other.hours, this.minutes + other.minutes);
@@ -50,16 +57,16 @@ var Meeting = (function() {
     this.days = days;
   }
 
-  Meeting.parse = function(timeJson) {
-    if (timeJson.startTime === null || timeJson.endTime === null) {
-      return new Meeting(null, null, timeJson.days);
+  Meeting.parse = function(meetingJson) {
+    if (meetingJson.startTime === null || meetingJson.endTime === null) {
+      return new Meeting(null, null, meetingJson.days);
     }
 
-    var startTimeSplit = timeJson.startTime.split(':');
+    var startTimeSplit = meetingJson.startTime.split(':');
     var startTime = new Time(parseInt(startTimeSplit[0]), parseInt(startTimeSplit[1]));
-    var endTimeSplit = timeJson.endTime.split(':');
+    var endTimeSplit = meetingJson.endTime.split(':');
     var endTime = new Time(parseInt(endTimeSplit[0]), parseInt(endTimeSplit[1]));
-    return new Meeting(startTime, endTime, timeJson.days);
+    return new Meeting(startTime, endTime, meetingJson.days);
   };
 
   Meeting.dayAbrvExpansions = {

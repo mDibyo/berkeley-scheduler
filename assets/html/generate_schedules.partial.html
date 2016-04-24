@@ -1,4 +1,8 @@
 <p align="right">
+  <a href="" ng-click="dvm.toggleOptions()">
+    Schedule Options
+  </a>
+
   <span ng-if="dvm.scheduleIsStale">
     <a href="" ng-click="dvm.generateAndViewSchedules()">
       Generate Schedules
@@ -10,3 +14,49 @@
     </a>
   </span>
 </p>
+
+<div ng-show="dvm.showOptions">
+  These are your options:
+
+  <br>
+
+  <md-input-container>
+    <md-checkbox ng-model="dvm.preferMornings" ng-click="dvm.reorderSchedules()">Prefer mornings</md-checkbox>
+  </md-input-container>
+  &nbsp;&nbsp;&nbsp;
+  <md-input-container>
+    <md-checkbox ng-model="dvm.preferAfternoons" ng-click="dvm.reorderSchedules()">Prefer afternoons</md-checkbox>
+  </md-input-container>
+  &nbsp;&nbsp;&nbsp;
+  <md-input-container>
+    <md-checkbox ng-model="dvm.preferEvenings" ng-click="dvm.reorderSchedules()">Prefer evenings</md-checkbox>
+  </md-input-container>
+
+  <br>
+  <div layout="row">
+  <md-input-container style="width: 150px">
+    <label>First class starting at/after</label>
+    <md-select ng-model="dvm.selectedDayStartTimeJson" ng-change="dvm.updateDayEndTimes();">
+      <md-option
+          ng-repeat="time in dvm.dayStartTimes"
+          ng-selected="$first"
+          value="{{time}}">
+        {{time.toString()}}
+      </md-option>
+    </md-select>
+  </md-input-container>
+  &nbsp;&nbsp;&nbsp;
+  <md-input-container style="width: 150px">
+    <label>Last class ending at/before</label>
+    <md-select ng-model="dvm.selectedDayEndTimeJson" ng-change="dvm.updateDayStartTimes();">
+      <md-option
+          ng-repeat="time in dvm.dayEndTimes"
+          ng-selected="$last"
+          value="{{time}}">
+        {{time.toString()}}
+      </md-option>
+    </md-select>
+  </md-input-container>
+  </div>
+  <br>
+</div>
