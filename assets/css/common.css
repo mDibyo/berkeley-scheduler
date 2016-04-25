@@ -73,6 +73,10 @@ md-autocomplete {
 
 /* Schedule */
 
+.schedule-button {
+    color: #ffffff !important;
+}
+
 #schedule-entire {
     padding: 10px;
     width: 750px;

@@ -1,6 +1,23 @@
-<a ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevScheduleId})">Previous Schedule</a>
-{{vm.currScheduleListInfo.currentIdx+1}} of {{vm.currScheduleListInfo.total}}
-<a ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})">Next Schedule</a>
+<div layout="row" layout-align="center center">
+  <div flex layout="row" layout-align="right right">
+    <div flex></div>
+    <div>
+      <md-button
+          ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevScheduleId})"
+          class="md-primary md-raised schedule-button">
+        Previous
+      </md-button>
+    </div>
+  </div>
+    {{vm.currScheduleListInfo.currentIdx+1}} of {{vm.currScheduleListInfo.total}}
+  <div flex>
+    <md-button
+        ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})"
+        class="md-primary md-raised schedule-button">
+      Next
+    </md-button>
+  </div>
+</div>
 
 <div id="schedule-entire" layout="column">
   <div class="schedule-display" layout="row">
