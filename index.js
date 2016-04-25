@@ -180,6 +180,7 @@
     var _schedules = {};
     var _allScheduleIdList = [];
     var _currScheduleIdList = [];
+    var _currScheduleListInfoChangeListeners = [];
     var _currScheduleIdx = 0;
     var _schedulingOptions = {
       preferMornings: false,
@@ -196,10 +197,10 @@
 
         var totalFor = 0, total = 0;
         for (var day in schedule.meetingsByDay) {
-          var meetings = schedule.meetingsByDay[day];
-          for (var i = 0; i < meetings.length; i++) {
+          var sections = schedule.meetingsByDay[day];
+          for (var i = 0; i < sections.length; i++) {
             total ++;
-            if (meetings[i].endTime.compareTo(Time.noon) < 0) {
+            if (sections[i].meeting.endTime.compareTo(Time.noon) <= 0) {
               totalFor ++;
             }
           }
@@ -214,9 +215,9 @@
         }
 
         for (var day in schedule.meetingsByDay) {
-          var meetings = schedule.meetingsByDay[day];
-          for (var i = 0; i < meetings.length; i++) {
-            if (meetings[i].startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
+          var sections = schedule.meetingsByDay[day];
+          for (var i = 0; i < sections.length; i++) {
+            if (sections[i].meeting.startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
               return false;
             }
           }
@@ -229,9 +230,9 @@
         }
 
         for (var day in schedule.meetingsByDay) {
-          var meetings = schedule.meetingsByDay[day];
-          for (var i = 0; i < meetings.length; i++) {
-            if (meetings[i].endTime.compareTo(_schedulingOptions.dayEndTime) > 0) {
+          var sections = schedule.meetingsByDay[day];
+          for (var i = 0; i < sections.length; i++) {
+            if (sections[i].meeting.endTime.compareTo(_schedulingOptions.dayEndTime) > 0) {
               return false;
             }
           }
@@ -449,6 +450,8 @@
       _stale = false;
       _currScheduleIdList = _allScheduleIdList.slice();
       _currScheduleIdx = 0;
+
+      _sendCurrScheduleListInfoChange();
       return _schedules;
     }
 
@@ -480,6 +483,7 @@
             .getCourseQBy2arySectionId(sectionId)
             .then(function(course) {
               if (isPrimaryUser) {
+                _stale = true;
                 if (_addCourseNoSave(course)) {
                   // This was the first time the course was added.
                   // Only select this section.
@@ -519,6 +523,9 @@
       return $q.all(sectionLookupQList).then(function() {
         var schedule = new Schedule(userId, sectionList);
         _schedules[schedule.id] = schedule;
+        if (isPrimaryUser) {
+          generateSchedules();
+        }
         return schedule;
       });
     }
@@ -538,6 +545,26 @@
       return _currScheduleIdList[nextScheduleIdx];
     }
 
+    function getCurrScheduleListInfo() {
+      return {
+        total: _currScheduleIdList.length,
+        currentIdx: _currScheduleIdx,
+        prevScheduleId: getPrevScheduleId(),
+        nextScheduleId: getNextScheduleId()
+      };
+    }
+
+    function _sendCurrScheduleListInfoChange() {
+      var info = getCurrScheduleListInfo();
+      _currScheduleListInfoChangeListeners.forEach(function(listener) {
+        listener(info);
+      });
+    }
+
+    function registerCurrScheduleListInfoChangeListener(listener) {
+      _currScheduleListInfoChangeListeners.push(listener);
+    }
+
     function setCurrentScheduleById(scheduleId) {
       if (!_schedules.hasOwnProperty(scheduleId)) {
         scheduleId = Schedule.normalizeId(scheduleId);
@@ -546,6 +573,8 @@
       if (_currScheduleIdx < 0) {
         _currScheduleIdx = 0;
       }
+
+      _sendCurrScheduleListInfoChange();
     }
 
     function getSchedulingOptions() {
@@ -562,7 +591,7 @@
       _currScheduleIdList = _allScheduleIdList.slice();
       Object.keys(_filterFns).forEach(function (option) {
         var fn = _filterFns[option];
-        _currScheduleIdList = _currScheduleIdList.map(function (scheduleId) {
+        _currScheduleIdList = _currScheduleIdList.filter(function (scheduleId) {
           return fn(_schedules[scheduleId]);
         });
       });
@@ -571,6 +600,8 @@
       if (_currScheduleIdx < 0) {
         _currScheduleIdx = 0;
       }
+
+      _sendCurrScheduleListInfoChange();
     }
 
     function reorderSchedules() {
@@ -579,7 +610,7 @@
       var orderByOptions = Object.keys(_orderByFns);
       var orderByValues = {};
       var schedule, value;
-      _currScheduleIdx.sort(function(a, b) {
+      _currScheduleIdList.sort(function(a, b) {
         if (!orderByValues.hasOwnProperty(a)) {
           schedule = _schedules[a];
           value = 0;
@@ -607,6 +638,8 @@
       if (_currScheduleIdx < 0) {
         _currScheduleIdx = 0;
       }
+
+      _sendCurrScheduleListInfoChange();
     }
 
     return {
@@ -628,6 +661,8 @@
       getCurrScheduleId: getCurrScheduleId,
       getPrevScheduleId: getPrevScheduleId,
       getNextScheduleId: getNextScheduleId,
+      getCurrScheduleListInfo: getCurrScheduleListInfo,
+      registerCurrScheduleListInfoChangeListener: registerCurrScheduleListInfoChangeListener,
       setCurrentScheduleById: setCurrentScheduleById,
       getSchedulingOptions: getSchedulingOptions,
       setSchedulingOption: setSchedulingOption,
@@ -820,10 +855,13 @@
 
     var vm = this;
 
-    scheduleFactory.setCurrentScheduleById($stateParams.scheduleId);
-    scheduleFactory.getScheduleQById($stateParams.scheduleId).then(function(schedule) {
-      vm.selectedSchedule = schedule;
-    });
+    var scheduleId = $stateParams.scheduleId;
+    if (scheduleId) {
+      scheduleFactory.setCurrentScheduleById($stateParams.scheduleId);
+      scheduleFactory.getScheduleQById($stateParams.scheduleId).then(function(schedule) {
+        vm.selectedSchedule = schedule;
+      });
+    }
   }
   angular.module('scheduleBuilder').controller('ScheduleViewAndSelectCtrl', [
     '$state',
@@ -892,12 +930,17 @@
       vm.hours = hours;
       vm.halfHours = halfHours;
       vm.days = days;
+      vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
       vm.getMeetingPosition = getMeetingPosition;
       vm.getMeetingHeight = getMeetingHeight;
       vm.getMeetingColor = getMeetingColor;
 
-      vm.getPrevScheduleId = scheduleFactory.getPrevScheduleId;
-      vm.getNextScheduleId = scheduleFactory.getNextScheduleId;
+      scheduleFactory.registerCurrScheduleListInfoChangeListener(function(info) {
+        vm.currScheduleListInfo = info;
+        vm.goToState('schedule.viewSchedule', {
+          scheduleId: scheduleFactory.getCurrScheduleId()
+        });
+      });
 
       function getMeetingPosition(section) {
         var offset = section.meeting.startTime.getTotalMinutes() - startHourTotalMinutes;
@@ -994,6 +1037,8 @@
 
       function generateAndViewSchedules() {
         scheduleFactory.generateSchedules();
+        scheduleFactory.filterSchedules();
+        scheduleFactory.reorderSchedules();
         viewSchedules();
       }
 
@@ -1031,6 +1076,7 @@
         vm.dayEndTimes = times;
 
         scheduleFactory.setSchedulingOption('dayStartTime', selectedDayStartTime);
+        scheduleFactory.filterSchedules();
       }
 
       function onSelectDayEndTime() {
@@ -1042,6 +1088,7 @@
         vm.dayStartTimes = times;
 
         scheduleFactory.setSchedulingOption('dayEndTime', selectedDayEndTime);
+        scheduleFactory.filterSchedules();
       }
     }
 

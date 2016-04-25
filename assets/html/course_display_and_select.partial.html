@@ -18,7 +18,7 @@
     <td>{{section.type}}</td>
     <td>{{section.id}}</td>
     <td>{{section.location}}</td>
-    <td>{{section.meeting.startTime.toString()}}-{{section.meeting.endTime.toString()}}</td>
+    <td>{{section.meeting.toString()}}</td>
     <td>
       <span ng-repeat="instructor in section.instructors">
         {{instructor.name}}<span ng-if="!$last"> / </span>

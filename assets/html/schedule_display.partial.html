@@ -1,5 +1,6 @@
-<a ui-sref="schedule.viewSchedule({scheduleId: vm.getPrevScheduleId()})">Previous Schedule</a>
-<a ui-sref="schedule.viewSchedule({scheduleId: vm.getNextScheduleId()})">Next Schedule</a>
+<a ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevScheduleId})">Previous Schedule</a>
+{{vm.currScheduleListInfo.currentIdx+1}} of {{vm.currScheduleListInfo.total}}
+<a ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})">Next Schedule</a>
 
 <div id="schedule-entire" layout="column">
   <div class="schedule-display" layout="row">

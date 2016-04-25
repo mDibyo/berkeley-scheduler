@@ -32,9 +32,11 @@ var Time = (function() {
   Time.prototype.toString = function() {
     var hours = this.hours;
     var suffix = ' AM';
-    if (hours > 12) {
-      hours -= 12;
+    if (hours >= 12) {
       suffix = ' PM';
+      if (hours > 12) {
+        hours -= 12;
+      }
     }
     var string = hours.toString();
     if (this.minutes != 0) {
@@ -69,16 +71,33 @@ var Meeting = (function() {
     return new Meeting(startTime, endTime, meetingJson.days);
   };
 
-  Meeting.dayAbrvExpansions = {
-    M: 'Monday',
-    T: 'Tuesday',
-    W: 'Wednesday',
-    R: 'Thursday',
-    F: 'Friday'
-  };
+  //Meeting.dayAbrvExpansions = {
+  //  M: 'Monday',
+  //  T: 'Tuesday',
+  //  W: 'Wednesday',
+  //  R: 'Thursday',
+  //  F: 'Friday'
+  //};
+  Meeting.dayAbrvs = [
+    ['Monday', 'M'],
+    ['Tuesday', 'T'],
+    ['Wednesday', 'W'],
+    ['Thursday', 'R'],
+    ['Friday', 'F']
+  ];
 
   Meeting.prototype.getTotalMinutes = function() {
     return this.endTime.getTotalMinutes() - this.startTime.getTotalMinutes();
+  };
+
+  Meeting.prototype.toString = function() {
+    var dayAbrv = '';
+    Meeting.dayAbrvs.forEach(function(day) {
+      if (this.days[day[0]]) {
+        dayAbrv += day[1];
+      }
+    }, this);
+    return dayAbrv + ' ' + this.startTime.toString() + '-' + this.endTime.toString();
   };
 
   return Meeting;

@@ -88,7 +88,7 @@ td, th {
 }
 
 .schedule-display-section {
-    /*background-color: aliceblue;*/
+    background-color: aliceblue;
     position: absolute;
     width: 100%;
 }
