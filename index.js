@@ -180,7 +180,7 @@
     var _schedules = {};
     var _allScheduleIdList = [];
     var _currScheduleIdList = [];
-    var _currScheduleListInfoChangeListeners = [];
+    var _currScheduleListInfoChangeListeners = {};
     var _currScheduleIdx = 0;
     var _schedulingOptions = {
       preferMornings: false,
@@ -554,27 +554,30 @@
       };
     }
 
-    function _sendCurrScheduleListInfoChange() {
+    function _sendCurrScheduleListInfoChange(reloadRequired) {
       var info = getCurrScheduleListInfo();
-      _currScheduleListInfoChangeListeners.forEach(function(listener) {
-        listener(info);
+      info.reloadRequired = reloadRequired;
+      Object.keys(_currScheduleListInfoChangeListeners).forEach(function(tag) {
+        _currScheduleListInfoChangeListeners[tag](info);
       });
     }
 
-    function registerCurrScheduleListInfoChangeListener(listener) {
-      _currScheduleListInfoChangeListeners.push(listener);
+    function registerCurrScheduleListInfoChangeListener(tag, listener) {
+      _currScheduleListInfoChangeListeners[tag] = listener;
     }
 
     function setCurrentScheduleById(scheduleId) {
       if (!_schedules.hasOwnProperty(scheduleId)) {
         scheduleId = Schedule.normalizeId(scheduleId);
       }
+      var reloadRequired = false;
       _currScheduleIdx = _currScheduleIdList.indexOf(scheduleId);
       if (_currScheduleIdx < 0) {
         _currScheduleIdx = 0;
+        reloadRequired = true;
       }
 
-      _sendCurrScheduleListInfoChange();
+      _sendCurrScheduleListInfoChange(reloadRequired);
     }
 
     function getSchedulingOptions() {
@@ -596,12 +599,14 @@
         });
       });
 
+      var reloadRequired = false;
       _currScheduleIdx = _currScheduleIdList.indexOf(currScheduleId);
       if (_currScheduleIdx < 0) {
         _currScheduleIdx = 0;
+        reloadRequired = true;
       }
 
-      _sendCurrScheduleListInfoChange();
+      _sendCurrScheduleListInfoChange(reloadRequired);
     }
 
     function reorderSchedules() {
@@ -634,12 +639,14 @@
         return orderByValues[b] - orderByValues[a];
       });
 
+      var reloadRequired = false;
       _currScheduleIdx = _currScheduleIdList.indexOf(currScheduleId);
       if (_currScheduleIdx < 0) {
         _currScheduleIdx = 0;
+        reloadRequired = true;
       }
 
-      _sendCurrScheduleListInfoChange();
+      _sendCurrScheduleListInfoChange(reloadRequired);
     }
 
     return {
@@ -935,12 +942,15 @@
       vm.getMeetingHeight = getMeetingHeight;
       vm.getMeetingColor = getMeetingColor;
 
-      scheduleFactory.registerCurrScheduleListInfoChangeListener(function(info) {
-        vm.currScheduleListInfo = info;
-        vm.goToState('schedule.viewSchedule', {
-          scheduleId: scheduleFactory.getCurrScheduleId()
+      scheduleFactory.registerCurrScheduleListInfoChangeListener(
+        'scheduleDisplay', function(info) {
+          vm.currScheduleListInfo = info;
+          if (info.reloadRequired) {
+            vm.goToState('schedule.viewSchedule', {
+              scheduleId: scheduleFactory.getCurrScheduleId()
+            });
+          }
         });
-      });
 
       function getMeetingPosition(section) {
         var offset = section.meeting.startTime.getTotalMinutes() - startHourTotalMinutes;
@@ -1005,8 +1015,6 @@
       vm.viewSchedules = viewSchedules;
       vm.generateAndViewSchedules = generateAndViewSchedules;
       vm.toggleOptions = toggleOptions;
-      vm.reorderSchedules = reorderSchedules;
-      vm.refilterAndReorderSchedules = refilterAndReorderSchedules;
 
       vm.preferMornings = schedulingOptions.preferMornings;
       vm.preferAfternoons = schedulingOptions.preferAfternoons;
@@ -1038,21 +1046,12 @@
       function generateAndViewSchedules() {
         scheduleFactory.generateSchedules();
         scheduleFactory.filterSchedules();
-        scheduleFactory.reorderSchedules();
+        //scheduleFactory.reorderSchedules();
         viewSchedules();
       }
 
       function toggleOptions() {
         vm.showOptions = !vm.showOptions;
-      }
-
-      function reorderSchedules() {
-        // TODO
-      }
-
-      function refilterAndReorderSchedules() {
-        // TODO
-        reorderSchedules()
       }
 
       function onChangePreferMornings() {
