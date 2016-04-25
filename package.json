@@ -11,8 +11,7 @@
     "url": "git://github.com/mDibyo/berkeley-scheduler.git"
   },
   "keywords": [
-    "uc",
-    "berkeley",
+    "uc berkeley",
     "dibyo",
     "majumdar",
     "schedule",
@@ -24,5 +23,16 @@
   "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/mDibyo/berkeley-scheduler/issues"
+  },
+  "devDependencies": {
+    "angular": "~1.5.5",
+    "angular-animate": "~1.5.5",
+    "angular-aria": "~1.5.5",
+    "angular-cookies": "~1.5.5",
+    "angular-material": "~1.0.7",
+    "angular-messages": "~1.5.5",
+    "angular-sanitize": "~1.5.5",
+    "angular-ui-router": "~0.2.18",
+    "gulp": "~3.9.1"
   }
 }
