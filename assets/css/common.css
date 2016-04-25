@@ -20,7 +20,7 @@ td, th {
 }
 .left-pane md-content {
     background: transparent;
-    color: #FDB515;
+    color: #ffffff;
 }
 .left-pane,
 .left-pane.md-locked-open-add-active,
@@ -38,20 +38,19 @@ md-autocomplete {
 .header-text {
     padding-left: 10px;
     padding-right: 10px;
+    color: #fdb515;
 }
 
 .course-list-li {
     cursor: pointer;
     height: 40px;
+    color: #ffffff;
 }
 .course-list-li:hover {
-    background: #3B7EA1;
-}
-.course-list-li:active {
-    background: #3B7EA1;
+    background: #3b7ea1;
 }
 .course-list-li.curr-course {
-    background: #3B7EA1;
+    background: #3b7ea1;
 }
 
 .subject-area li {
@@ -66,23 +65,22 @@ md-autocomplete {
     font-size: small;
 }
 
-#view-course {
-    width: 800px;
+.right-pane {
+    width: 750px;
+    padding: 10px;
 }
 
 
 /* Schedule */
 
 #schedule-entire {
-    padding: 20px;
-    /*position: relative;*/
-    width: 600px;
+    padding: 10px;
+    width: 750px;
 }
 
 .schedule-display {
     padding: 0;
     margin: 0;
-    font-size: small;
 }
 
 .schedule-display-header {
@@ -109,6 +107,8 @@ md-autocomplete {
 .schedule-display-hour {
     border-left: 1px solid black;
     border-top: 1px solid black;
+    padding: 5px;
+    text-align: center;
 }
 
 .schedule-display-hour-first-half {
@@ -121,6 +121,12 @@ md-autocomplete {
 
 .schedule-display-section {
     background-color: aliceblue;
+    color: #ffffff;
     position: absolute;
+    text-align: center;
     width: 100%;
+}
+
+.schedule-display-section-inner {
+    padding: 5px;
 }

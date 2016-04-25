@@ -40,7 +40,10 @@
              'height': vm.getMeetingHeight(meeting),
              'background-color': vm.getMeetingColor(meeting)
            }">
-        {{meeting.course.department}} {{meeting.course.courseNumber}}
+        <div class="schedule-display schedule-display-section-inner">
+          {{meeting.course.department}} {{meeting.course.courseNumber}}<br>
+          {{meeting.location}}
+        </div>
       </div>
     </div>
   </div>

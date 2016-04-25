@@ -34,9 +34,49 @@
 
         $urlRouterProvider.otherwise('schedule');
 
+        var berkeleyPrimaryPalette = {
+          '50': '#0073e1',
+          '100': '#0066c8',
+          '200': '#0059ae',
+          '300': '#004c95',
+          '400': '#003f7b',
+          '500': '#003262',
+          '600': '#002548',
+          '700': '#00182f',
+          '800': '#000b15',
+          '900': '#000000',
+          'A100': '#0080fb',
+          'A200': '#158dff',
+          'A400': '#2f99ff',
+          'A700': '#000000'
+        };
+        $mdThemingProvider
+          .definePalette('berkeley-primary',
+            berkeleyPrimaryPalette);
+
+        var berkeleyAccentPalette = {
+          '50': '#785301',
+          '100': '#916501',
+          '200': '#ab7601',
+          '300': '#c48802',
+          '400': '#dd9902',
+          '500': '#f6ab02',
+          '600': '#fdbd2e',
+          '700': '#fdc548',
+          '800': '#fecd61',
+          '900': '#fed57a',
+          'A100': '#fdbd2e',
+          'A200': '#FDB515',
+          'A400': '#f6ab02',
+          'A700': '#fedd93'
+        };
+        $mdThemingProvider
+          .definePalette('berkeley-accent',
+            berkeleyAccentPalette);
+        
         $mdThemingProvider.theme('default')
-          .primaryPalette('deep-purple')
-          .accentPalette('red');
+          .primaryPalette('berkeley-primary')
+          .accentPalette('berkeley-accent');
       }
     ]);
 
@@ -762,7 +802,9 @@
 
     scheduleFactory.registerAddCourseListener(function(course) {
       vm.addedCoursesList.push(course);
-      vm.goToState('schedule.viewCourse', {id: course.id})
+      if (vm.currCourse != null) {
+        vm.goToState('schedule.viewCourse', {id: course.id})
+      }
     });
 
     scheduleFactory.registerDropCourseListener(function(course) {
@@ -958,6 +1000,8 @@
     var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
     var dayTotalMinutes = (new Time(numHours, 0)).getTotalMinutes();
 
+    var sectionColorOpacity = '0.6';
+
     sbScheduleDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
     function sbScheduleDisplayCtrl($state, $window, scheduleFactory) {
       BaseCtrl.call(this, $state, $window);
@@ -967,6 +1011,7 @@
       vm.hours = hours;
       vm.halfHours = halfHours;
       vm.days = days;
+      vm.sectionColorOpacity = sectionColorOpacity;
       vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
       vm.getMeetingPosition = getMeetingPosition;
       vm.getMeetingHeight = getMeetingHeight;
@@ -993,7 +1038,11 @@
       }
 
       function getMeetingColor(section) {
-        return Course.colorCodes[section.course.color];
+        var color = Course.colorCodes[section.course.color],
+          r = parseInt(color.substring(1, 3), 16),
+          g = parseInt(color.substring(3, 5), 16),
+          b = parseInt(color.substring(5, 7), 16);
+        return 'rgba('+ r + ',' + g + ',' + b + ',' + vm.sectionColorOpacity + ')';
       }
     }
 

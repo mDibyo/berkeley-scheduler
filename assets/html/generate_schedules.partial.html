@@ -1,17 +1,17 @@
 <p align="right">
-  <a href="" ng-click="dvm.toggleOptions()">
-    Schedule Options
-  </a>
+  <md-button ng-click="dvm.toggleOptions()">
+    Scheduling Options
+  </md-button>
 
   <span ng-if="dvm.scheduleIsStale">
-    <a href="" ng-click="dvm.generateAndViewSchedules()">
+    <md-button class="md-accent md-raised" ng-click="dvm.generateAndViewSchedules()">
       Generate Schedules
-    </a>
+    </md-button>
   </span>
   <span ng-if="!dvm.scheduleIsStale">
-    <a href="" ng-click="dvm.viewSchedules()">
+    <md-button ng-click="dvm.viewSchedules()">
       View Schedules
-    </a>
+    </md-button>
   </span>
 </p>
 
@@ -70,5 +70,6 @@
     </md-select>
   </md-input-container>
   </div>
+  <md-divider></md-divider>
   <br>
 </div>
