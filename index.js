@@ -10,7 +10,8 @@
     .config([
       '$stateProvider',
       '$urlRouterProvider',
-      function($stateProvider, $urlRouterProvider) {
+      '$mdThemingProvider',
+      function($stateProvider, $urlRouterProvider, $mdThemingProvider) {
         $stateProvider
           .state('schedule', {
             url: '/schedule',
@@ -32,6 +33,10 @@
           });
 
         $urlRouterProvider.otherwise('schedule');
+
+        $mdThemingProvider.theme('default')
+          .primaryPalette('deep-purple')
+          .accentPalette('red');
       }
     ]);
 
@@ -173,9 +178,11 @@
     var _userIdList = _loadUserIdListFromCookie();
 
     var _courses = {};
+    var _currCourse = null;
     var _sections = {};
     var _addCourseListeners = [];
     var _dropCourseListeners = [];
+    var _setCurrCourseListeners = [];
 
     var _schedules = {};
     var _allScheduleIdList = [];
@@ -338,6 +345,17 @@
 
     function registerSetInDisplayModeListener(listener) {
       _setInDisplayModeListeners.push(listener);
+    }
+
+    function setCurrCourse(course) {
+      _currCourse = course;
+      _setCurrCourseListeners.forEach(function(listener) {
+        listener(course);
+      });
+    }
+
+    function registerSetCurrCourseListener(listener) {
+      _setCurrCourseListeners.push(listener);
     }
 
     function getAllCourses() {
@@ -656,6 +674,8 @@
       setInDisplayMode: setInDisplayMode,
       registerSetInDisplayModeListener: registerSetInDisplayModeListener,
 
+      setCurrCourse: setCurrCourse,
+      registerSetCurrCourseListener: registerSetCurrCourseListener,
       getAllCourses: getAllCourses,
       getCourseQById: getCourseQById,
       addCourse: addCourse,
@@ -711,6 +731,7 @@
     vm.inDisplayMode = false;
     vm.coursesList = [];
     vm.subjectAreasList = [];
+    vm.currCourse = null;
     vm.searchSubjectArea = searchSubjectArea;
     vm.selectSubjectArea = selectSubjectArea;
     vm.searchCourse = searchCourse;
@@ -735,12 +756,20 @@
       vm.inDisplayMode = inDisplayMode;
     });
 
+    scheduleFactory.registerSetCurrCourseListener(function(course) {
+      vm.currCourse = course;
+    });
+
     scheduleFactory.registerAddCourseListener(function(course) {
       vm.addedCoursesList.push(course);
+      vm.goToState('schedule.viewCourse', {id: course.id})
     });
 
     scheduleFactory.registerDropCourseListener(function(course) {
       vm.addedCoursesList.remove(course);
+      if (vm.addedCoursesList.length == 0) {
+        vm.goToState('schedule');
+      }
     });
 
     function searchSubjectArea(query) {
@@ -846,6 +875,7 @@
     vm.selectedCourse = null;
     scheduleFactory.getCourseQById($stateParams.id).then(function(course) {
       vm.selectedCourse = course;
+      scheduleFactory.setCurrCourse(course);
     });
   }
   angular.module('scheduleBuilder').controller('CourseViewAndSelectCtrl', [

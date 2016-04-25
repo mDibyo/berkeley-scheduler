@@ -13,13 +13,45 @@ td, th {
     width: 100%;
 }
 
-#select-courses, #view-course {
-    float: left;
-    padding: 5px;
+.left-pane {
+    background: #003262;
+    color: #ffffff;
+    height: 100%;
+}
+.left-pane md-content {
+    background: transparent;
+    color: #FDB515;
+}
+.left-pane,
+.left-pane.md-locked-open-add-active,
+.left-pane.md-locked-open {
+    width:     250px;
+    min-width: 250px;
+    max-width: 250px;
 }
 
-#select-courses {
-    width: 200px;
+md-autocomplete {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.header-text {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.course-list-li {
+    cursor: pointer;
+    height: 40px;
+}
+.course-list-li:hover {
+    background: #3B7EA1;
+}
+.course-list-li:active {
+    background: #3B7EA1;
+}
+.course-list-li.curr-course {
+    background: #3B7EA1;
 }
 
 .subject-area li {

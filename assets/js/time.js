@@ -97,6 +97,9 @@ var Meeting = (function() {
         dayAbrv += day[1];
       }
     }, this);
+    if (this.startTime == null || this.endTime == null) {
+      return dayAbrv;
+    }
     return dayAbrv + ' ' + this.startTime.toString() + '-' + this.endTime.toString();
   };
 
