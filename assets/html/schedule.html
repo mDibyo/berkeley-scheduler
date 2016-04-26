@@ -1,5 +1,6 @@
-<div layout="row">
-<md-sidenav md-component-id="left" class="left-pane" md-is-locked-open="true" flex>
+<div layout="row" layout-align="center">
+<div layout="row" md-whiteframe="10">
+<md-sidenav md-component-id="left" class="left-pane" md-is-locked-open="true" flex="no-shrink">
   <div class="header-text">
     <h3 class="md-headline">Add courses</h3>
   </div>
@@ -7,7 +8,6 @@
     <md-autocomplete
         tabindex=1
         ng-disabled="vm.subjectAreaIsDisabled"
-        md-autofocus
         md-autoselect
         md-min-length="0"
         md-search-text="subjectAreaQuery"
@@ -83,9 +83,11 @@
 </md-sidenav>
 
 <div class="right-pane">
-  <sb-generate-schedules></sb-generate-schedules>
+  <md-content layout="column" layout-padding>
+    <sb-generate-schedules></sb-generate-schedules>
 
-  <ui-view>
-  </ui-view>
+    <ui-view></ui-view>
+  </md-content>
+</div>
 </div>
 </div>

@@ -1,32 +1,30 @@
 <h3 class="md-headline">{{course.department}} {{course.courseNumber}} - {{course.title}}</h3>
 
-<md-content>
-  <table class="course-sections">
-    <tr>
-      <th></th>
-      <!--<th>Number</th>-->
-      <th>Type</th>
-      <th>Id</th>
-      <th>Location</th>
-      <th>Time</th>
-      <th>Instructor</th>
-      <th>Enrollment</th>
-      <th>Waitlist</th>
-    </tr>
-    <tr ng-repeat="section in course.sections | orderBy:'-id':true">
-      <td><input type="checkbox" ng-model="section.selected" ng-click="vm.setSchedulesStale()"></td>
-      <!--<td>{{section.number}}</td>-->
-      <td>{{section.type}}</td>
-      <td>{{section.id}}</td>
-      <td>{{section.location}}</td>
-      <td>{{section.meeting.toString()}}</td>
-      <td>
-        <span ng-repeat="instructor in section.instructors">
-          {{instructor.name}}<span ng-if="!$last"> / </span>
-        </span>
-      </td>
-      <td>{{section.enrolled}}/{{section.enrollCapacity}}</td>
-      <td>{{section.waitlisted}}/{{section.waitlistCapacity}}</td>
-    </tr>
-  </table>
-</md-content>
+<table class="course-sections">
+  <tr>
+    <th></th>
+    <!--<th>Number</th>-->
+    <th>Type</th>
+    <th>Id</th>
+    <th>Location</th>
+    <th>Time</th>
+    <th>Instructor</th>
+    <th>Enrollment</th>
+    <th>Waitlist</th>
+  </tr>
+  <tr ng-repeat="section in course.sections | orderBy:'-id':true">
+    <td><input type="checkbox" ng-model="section.selected" ng-click="vm.setSchedulesStale()"></td>
+    <!--<td>{{section.number}}</td>-->
+    <td>{{section.type}}</td>
+    <td>{{section.id}}</td>
+    <td>{{section.location}}</td>
+    <td>{{section.meeting.toString()}}</td>
+    <td>
+      <span ng-repeat="instructor in section.instructors">
+        {{instructor.name}}<span ng-if="!$last"> / </span>
+      </span>
+    </td>
+    <td>{{section.enrolled}}/{{section.enrollCapacity}}</td>
+    <td>{{section.waitlisted}}/{{section.waitlistCapacity}}</td>
+  </tr>
+</table>

@@ -1,5 +1,9 @@
 /* Find */
 
+body {
+    background-color: #FFF7E4;
+}
+
 table, td, th {
     border: 1px solid black;
     border-collapse: collapse;
@@ -66,8 +70,10 @@ md-autocomplete {
 }
 
 .right-pane {
-    width: 750px;
-    padding: 10px;
+    background-color: #ffffff;
+    height: 100%;
+    width: 800px;
+    overflow-y: auto;
 }
 
 
