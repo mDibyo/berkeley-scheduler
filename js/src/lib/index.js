@@ -8,3 +8,5 @@ require('angular-cookies');
 require('angular-material');
 require('angular-sanitize');
 require('angular-ui-router');
+
+require('./polyfills');
