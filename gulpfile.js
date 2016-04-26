@@ -16,6 +16,8 @@
     dest: 'js/final'
   };
 
+  gulp.task('default', ['build']);
+
   gulp.task('build', ['browserify']);
 
   gulp.task('browserify', ['browserify-app', 'browserify-lib']);
