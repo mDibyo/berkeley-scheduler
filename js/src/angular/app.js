@@ -8,6 +8,11 @@
     'ngMaterial'
   ]);
 
+  // Models
+  require('../models/time.js');
+  require('../models/course.js');
+  require('../models/schedule.js');
+
   // Configuration
   require('./config');
 
