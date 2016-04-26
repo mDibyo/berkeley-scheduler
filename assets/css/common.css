@@ -29,9 +29,9 @@ td, th {
 .left-pane,
 .left-pane.md-locked-open-add-active,
 .left-pane.md-locked-open {
-    width:     250px;
-    min-width: 250px;
-    max-width: 250px;
+    width:     225px;
+    min-width: 225px;
+    max-width: 225px;
 }
 
 md-autocomplete {
