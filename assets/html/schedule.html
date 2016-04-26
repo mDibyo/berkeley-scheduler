@@ -59,14 +59,15 @@
   <br>
   <br>
 
-  <div ng-show="vm.inDisplayMode">
-    <a href="" ng-click="vm.leaveDisplayMode()">Go back to your own schedule.</a>
-
+  <div ng-show="vm.inDisplayMode" layout="row" layout-align="center">
+    <md-button ng-click="vm.leaveDisplayMode()">
+      Go back to your<br> own schedule
+    </md-button>
   </div>
-  <div ng-hide="vm.inDisplayMode">
-    <div class="header-text">
-      <h3 class="md-headline">Added Courses</h3>
-    </div>
+  <div ng-hide="vm.inDisplayMode" class="header-text">
+    <h3 class="md-headline">Added Courses</h3>
+  </div>
+  <div ng-hide="vm.inDisplayMode" style="overflow-y: auto">
     <md-content>
       <div
           ng-repeat="course in vm.addedCoursesList"
@@ -79,6 +80,15 @@
         <div ng-click="vm.dropCourse(course)">drop</div>
       </div>
     </md-content>
+  </div>
+  <div flex></div>
+  <div layout="row" layout-align="center" layout-padding>
+    <md-button
+        class="md-warn md-raised"
+        href="https://github.com/mDibyo/berkeley-scheduler-issue-tracker/issues"
+        target="_newtab">
+      Give Feedback
+    </md-button>
   </div>
 </md-sidenav>
 
