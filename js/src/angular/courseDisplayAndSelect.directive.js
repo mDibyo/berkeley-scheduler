@@ -1,3 +1,5 @@
+var BaseCtrl = require('./_base.controller');
+
 function sbCourseDisplayAndSelectDirective() {
   sbCourseDisplayAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
   function sbCourseDisplayAndSelectCtrl($state, $window, scheduleFactory) {

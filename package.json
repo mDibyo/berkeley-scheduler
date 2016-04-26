@@ -33,6 +33,10 @@
     "angular-messages": "~1.5.5",
     "angular-sanitize": "~1.5.5",
     "angular-ui-router": "~0.2.18",
-    "gulp": "~3.9.1"
+    "gulp": "~3.9.1",
+    "browserify": "~13.0.0",
+    "gulp-streamify": "~1.0.2",
+    "gulp-uglify": "~1.5.3",
+    "vinyl-source-stream": "~1.1.0"
   }
 }

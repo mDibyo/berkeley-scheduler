@@ -1,4 +1,4 @@
-require('./_base.controller');
+var BaseCtrl = require('./_base.controller');
 
 CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
 function CourseFindCtrl($state, $window, courses, scheduleFactory) {

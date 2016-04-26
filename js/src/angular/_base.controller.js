@@ -14,3 +14,5 @@ function BaseCtrl($state, $window) {
     $window.open(href, '_blank');
   }
 }
+
+module.exports = BaseCtrl;

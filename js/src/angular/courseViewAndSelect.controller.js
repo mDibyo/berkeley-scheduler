@@ -1,4 +1,4 @@
-require('./_base.controller');
+var BaseCtrl = require('./_base.controller');
 
 CourseViewAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
 function CourseViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory) {

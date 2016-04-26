@@ -1,3 +1,7 @@
+var Time = require('../models/time');
+var Course = require('../models/course');
+var BaseCtrl = require('./_base.controller');
+
 function sbScheduleDisplayDirective() {
   var hours = [];
   var halfHours = [];

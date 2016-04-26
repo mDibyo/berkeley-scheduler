@@ -1,5 +1,7 @@
 'use strict';
 
+var Course = require('../models/course');
+
 var departmentsUrl = 'data/final/departments.json';
 var coursesUrlFormat = 'data/final/fa16/classes/{}.json';
 

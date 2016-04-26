@@ -1,3 +1,5 @@
+var Schedule = require('../models/schedule');
+
 var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 var primaryUserIdCookieKey = 'primaryUserId';
 var userIdListCookieKey = 'allUserIds';

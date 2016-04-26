@@ -1,3 +1,6 @@
+var Time = require('../models/time');
+var BaseCtrl = require('./_base.controller');
+
 function sbGenerateSchedulesDirective() {
 
   sbGenerateSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
