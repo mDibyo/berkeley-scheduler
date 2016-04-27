@@ -214,8 +214,8 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     return _stale;
   }
 
-  function setStale() {
-    _stale = true;
+  function setStale(isStale) {
+    _stale = isStale;
     _saveCoursesToCookie();
     _setStaleListeners.forEach(function(listener) {
       listener(_stale);
@@ -276,7 +276,7 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     course.sections.forEach(function(section) {
       _sections[section.id] = section;
     });
-    setStale();
+    setStale(true);
     _addCourseListeners.forEach(function(listener) {
       listener(course);
     });
@@ -300,7 +300,7 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     course.sections.forEach(function(section) {
       delete _sections[section.id];
     });
-    setStale();
+    setStale(true);
     _dropCourseListeners.forEach(function(listener) {
       listener(course);
     });
@@ -355,9 +355,9 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       }
     };
     generateHelper([], 0);
-    _stale = false;
     _currScheduleIdList = _allScheduleIdList.slice();
     _currScheduleIdx = 0;
+    setStale(false);
 
     _sendCurrScheduleListInfoChange();
     return _schedules;

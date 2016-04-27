@@ -26,10 +26,6 @@ Time.prototype.add = function(other) {
   return new Time(this.hours + other.hours, this.minutes + other.minutes);
 };
 
-Time.prototype.equals = function(other) {
-  return this.hours === other.hours && this.minutes === other.minutes;
-};
-
 Time.prototype.compareTo = function(other) {
   return this.getTotalMinutes() - other.getTotalMinutes();
 };
