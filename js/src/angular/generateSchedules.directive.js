@@ -35,13 +35,27 @@ function sbGenerateSchedulesDirective() {
     vm.preferMornings = schedulingOptions.preferMornings;
     vm.preferAfternoons = schedulingOptions.preferAfternoons;
     vm.preferEvenings = schedulingOptions.preferEvenings;
+    vm.partsOfDay = {
+      morning: 'preferMorning',
+      afternoon: 'preferAfternoon',
+      evening: 'preferEvening',
+      none: 'preferNone'
+    };
+    if (schedulingOptions.preferMornings) {
+      vm.preferPartOfDay = vm.partsOfDay.morning;
+    } else if (schedulingOptions.preferAfternoons) {
+      vm.preferPartOfDay = vm.partsOfDay.afternoon;
+    } else if (schedulingOptions.preferEvenings) {
+      vm.preferPartOfDay = vm.partsOfDay.evening;
+    } else {
+      vm.preferPartOfDay = vm.partsOfDay.none;
+    }
+    vm.onChangePreferPartOfDay = onChangePreferPartOfDay;
+
     vm.selectedDayStartTimeJson = schedulingOptions.dayStartTime;
     vm.selectedDayEndTimeJson = schedulingOptions.dayEndTime;
     vm.dayStartTimes = halfHours;
     vm.dayEndTimes = halfHours;
-    vm.onChangePreferMornings = onChangePreferMornings;
-    vm.onChangePreferAfternoons = onChangePreferAfternoons;
-    vm.onChangePreferEvenings = onChangePreferEvenings;
     vm.onSelectDayStartTime = onSelectDayStartTime;
     vm.onSelectDayEndTime = onSelectDayEndTime;
 
@@ -70,17 +84,30 @@ function sbGenerateSchedulesDirective() {
       vm.showOptions = !vm.showOptions;
     }
 
-    function onChangePreferMornings() {
-      scheduleFactory.setSchedulingOption('preferMornings', vm.preferMornings);
+    function onChangePreferPartOfDay() {
+      switch (vm.preferPartOfDay) {
+        case vm.partsOfDay.morning:
+          scheduleFactory.setSchedulingOption('preferMornings', true);
+          scheduleFactory.setSchedulingOption('preferAfternoons', false);
+          scheduleFactory.setSchedulingOption('preferEvenings', false);
+          break;
+        case vm.partsOfDay.afternoon:
+          scheduleFactory.setSchedulingOption('preferMornings', false);
+          scheduleFactory.setSchedulingOption('preferAfternoons', true);
+          scheduleFactory.setSchedulingOption('preferEvenings', false);
+          break;
+        case vm.partsOfDay.evening:
+          scheduleFactory.setSchedulingOption('preferMornings', false);
+          scheduleFactory.setSchedulingOption('preferAfternoons', false);
+          scheduleFactory.setSchedulingOption('preferEvenings', true);
+          break;
+        case vm.partsOfDay.none:
+          scheduleFactory.setSchedulingOption('preferMornings', false);
+          scheduleFactory.setSchedulingOption('preferAfternoons', false);
+          scheduleFactory.setSchedulingOption('preferEvenings', false);
+          break;
+      }
       scheduleFactory.reorderSchedules();
-    }
-
-    function onChangePreferAfternoons() {
-      scheduleFactory.setSchedulingOption('preferAfternoons', vm.preferAfternoons);
-    }
-
-    function onChangePreferEvenings() {
-      scheduleFactory.setSchedulingOption('preferEvenings', vm.preferEvenings);
     }
 
     function onSelectDayStartTime() {

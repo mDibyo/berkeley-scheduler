@@ -41,16 +41,40 @@ function scheduleFactory($q, $cookies, reverseLookup) {
   };
   var _orderByFns = {
     preferMornings: function(schedule) {
-      if (!_schedulingOptions.preferMornings) {
-        return 1;
-      }
-
       var totalFor = 0, total = 0;
       for (var day in schedule.meetingsByDay) {
         var sections = schedule.meetingsByDay[day];
         for (var i = 0; i < sections.length; i++) {
           total ++;
           if (sections[i].meeting.endTime.compareTo(Time.noon) <= 0) {
+            totalFor ++;
+          }
+        }
+      }
+      return totalFor / total;
+    },
+    preferAfternoons: function(schedule) {
+      var totalFor = 0, total = 0;
+      for (var day in schedule.meetingsByDay) {
+        var sections = schedule.meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          total ++;
+          if (sections[i].meeting.startTime.compareTo(Time.noon) >= 0) {
+            if (sections[i].meeting.endTime.compareTo(Time.fivePM) <= 0) {
+              totalFor ++;
+            }
+          }
+        }
+      }
+      return totalFor / total;
+    },
+    preferEvenings: function(schedule) {
+      var totalFor = 0, total = 0;
+      for (var day in schedule.meetingsByDay) {
+        var sections = schedule.meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          total ++;
+          if (sections[i].meeting.startTime.compareTo(Time.fivePM) >= 0) {
             totalFor ++;
           }
         }

@@ -15,60 +15,53 @@
   </span>
 </p>
 
-<div ng-show="dvm.showOptions">
-  <md-input-container>
-    <md-checkbox
-        ng-model="dvm.preferMornings"
-        ng-change="dvm.onChangePreferMornings()">
-      Prefer mornings
-    </md-checkbox>
-  </md-input-container>
-  &nbsp;&nbsp;&nbsp;
-  <md-input-container>
-    <md-checkbox
-        ng-model="dvm.preferAfternoons"
-        ng-change="dvm.onChangePreferAfternoons()">
-      Prefer afternoons
-    </md-checkbox>
-  </md-input-container>
-  &nbsp;&nbsp;&nbsp;
-  <md-input-container>
-    <md-checkbox
-        ng-model="dvm.preferEvenings"
-        ng-change="dvm.onChangePreferEvenings()">
-      Prefer evenings
-    </md-checkbox>
-  </md-input-container>
-
-  <br>
+<div ng-show="dvm.showOptions" layout="column">
+  <div>
+    <md-input-container>
+      <md-radio-group ng-model="dvm.preferPartOfDay" ng-change="dvm.onChangePreferPartOfDay()">
+        <md-radio-button ng-value="dvm.partsOfDay.morning">
+          Prefer mornings (-12PM)
+        </md-radio-button>
+        <md-radio-button ng-value="dvm.partsOfDay.afternoon">
+          Prefer afternoons (12PM-5PM)
+        </md-radio-button>
+        <md-radio-button ng-value="dvm.partsOfDay.evening">
+          Prefer evenings (5PM-)
+        </md-radio-button>
+        <md-radio-button ng-value="dvm.partsOfDay.none">
+          None
+        </md-radio-button>
+      </md-radio-group>
+    </md-input-container>
+  </div>
   <div layout="row">
-  <md-input-container style="width: 150px">
-    <label>First class starting at/after</label>
-    <md-select
-        ng-model="dvm.selectedDayStartTimeJson"
-        ng-change="dvm.onSelectDayStartTime();">
-      <md-option
-          ng-repeat="time in dvm.dayStartTimes"
-          ng-selected="$first"
-          value="{{time}}">
-        {{time.toString()}}
-      </md-option>
-    </md-select>
-  </md-input-container>
-  &nbsp;&nbsp;&nbsp;
-  <md-input-container style="width: 150px">
-    <label>Last class ending at/before</label>
-    <md-select
-        ng-model="dvm.selectedDayEndTimeJson"
-        ng-change="dvm.onSelectDayEndTime();">
-      <md-option
-          ng-repeat="time in dvm.dayEndTimes"
-          ng-selected="$last"
-          value="{{time}}">
-        {{time.toString()}}
-      </md-option>
-    </md-select>
-  </md-input-container>
+    <md-input-container class="schedule-option">
+      <label>First class starting at/after</label>
+      <md-select
+          ng-model="dvm.selectedDayStartTimeJson"
+          ng-change="dvm.onSelectDayStartTime();">
+        <md-option
+            ng-repeat="time in dvm.dayStartTimes"
+            ng-selected="$first"
+            value="{{time}}">
+          {{time.toString()}}
+        </md-option>
+      </md-select>
+    </md-input-container>
+    &nbsp;&nbsp;&nbsp;
+    <md-input-container class="schedule-option">
+      <label>Last class ending at/before</label>
+      <md-select
+          ng-model="dvm.selectedDayEndTimeJson"
+          ng-change="dvm.onSelectDayEndTime();">
+        <md-option
+            ng-repeat="time in dvm.dayEndTimes"
+            ng-selected="$last"
+            value="{{time}}">
+          {{time.toString()}}
+        </md-option>
+      </md-select>
+    </md-input-container>
   </div>
   <md-divider></md-divider>
   <br>

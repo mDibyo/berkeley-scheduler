@@ -20,6 +20,8 @@ Time.parse = function(timeJson) {
 
 Time.noon = new Time(12, 0);
 
+Time.fivePM = new Time(17, 0);
+
 Time.prototype.add = function(other) {
   return new Time(this.hours + other.hours, this.minutes + other.minutes);
 };
@@ -30,9 +32,9 @@ Time.prototype.compareTo = function(other) {
 
 Time.prototype.toString = function() {
   var hours = this.hours;
-  var suffix = ' AM';
+  var suffix = 'AM';
   if (hours >= 12) {
-    suffix = ' PM';
+    suffix = 'PM';
     if (hours > 12) {
       hours -= 12;
     }

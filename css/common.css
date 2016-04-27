@@ -76,6 +76,9 @@ md-autocomplete {
     overflow-y: auto;
 }
 
+md-input-container.schedule-option {
+    width: 150px;
+}
 
 /* Schedule */
 
