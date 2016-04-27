@@ -77,7 +77,7 @@ function sbScheduleDisplayDirective() {
       sbScheduleDisplayCtrl
     ],
     controllerAs: 'vm',
-    templateUrl: 'assets/html/schedule_display.partial.html'
+    templateUrl: 'html/schedule_display.partial.html'
   }
 }
 angular.module('scheduleBuilder').directive('sbScheduleDisplay', [

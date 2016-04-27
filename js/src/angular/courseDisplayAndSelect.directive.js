@@ -25,7 +25,7 @@ function sbCourseDisplayAndSelectDirective() {
       sbCourseDisplayAndSelectCtrl
     ],
     controllerAs: 'vm',
-    templateUrl: 'assets/html/course_display_and_select.partial.html'
+    templateUrl: 'html/course_display_and_select.partial.html'
   };
 }
 angular.module('scheduleBuilder').directive('sbCourseDisplayAndSelect', [

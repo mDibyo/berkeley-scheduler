@@ -6,19 +6,19 @@ angular.module('scheduleBuilder').config([
     $stateProvider
       .state('schedule', {
         url: '/schedule',
-        templateUrl: 'assets/html/schedule.html',
+        templateUrl: 'html/schedule.html',
         controller: 'CourseFindCtrl',
         controllerAs: 'vm'
       })
       .state('schedule.viewCourse', {
         url: '/course/{id}',
-        templateUrl: 'assets/html/course_view_and_select.partial.html',
+        templateUrl: 'html/course_view_and_select.partial.html',
         controller: 'CourseViewAndSelectCtrl',
         controllerAs: 'vm'
       })
       .state('schedule.viewSchedule', {
         url: '/{scheduleId}',
-        templateUrl: 'assets/html/schedule_view_and_select.partial.html',
+        templateUrl: 'html/schedule_view_and_select.partial.html',
         controller: 'ScheduleViewAndSelectCtrl',
         controllerAs: 'vm'
       });

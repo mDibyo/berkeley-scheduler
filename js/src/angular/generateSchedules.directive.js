@@ -115,7 +115,7 @@ function sbGenerateSchedulesDirective() {
       sbGenerateSchedulesCtrl
     ],
     controllerAs: 'dvm',
-    templateUrl: 'assets/html/generate_schedules.partial.html'
+    templateUrl: 'html/generate_schedules.partial.html'
   }
 }
 angular.module('scheduleBuilder').directive('sbGenerateSchedules', [
