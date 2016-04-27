@@ -86,6 +86,25 @@ md-input-container.schedule-option {
     color: #ffffff !important;
 }
 
+.schedule-share-button {
+    color: #ffffff !important;
+}
+
+#share-outer {
+    position: relative;
+    z-index: 101;
+}
+
+#share-message {
+    background-color: #003262;
+    color: #ffffff;
+    /*padding: 5px;*/
+    position: absolute;
+    text-align: center;
+    top: 0;
+    z-index: 100;
+}
+
 #schedule-entire {
     padding: 10px;
     width: 750px;

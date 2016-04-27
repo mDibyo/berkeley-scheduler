@@ -3,6 +3,13 @@
     <div flex></div>
     <div>
       <md-button
+          ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.firstScheduleId})"
+          class="md-primary md-raised schedule-button">
+        First
+      </md-button>
+    </div>
+    <div>
+      <md-button
           ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevScheduleId})"
           class="md-primary md-raised schedule-button">
         Previous
@@ -10,12 +17,32 @@
     </div>
   </div>
     {{vm.currScheduleListInfo.currentIdx+1}} of {{vm.currScheduleListInfo.total}}
-  <div flex>
-    <md-button
-        ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})"
-        class="md-primary md-raised schedule-button">
-      Next
-    </md-button>
+  <div flex layout="row">
+    <div>
+      <md-button
+          ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})"
+          class="md-primary md-raised schedule-button">
+        Next
+      </md-button>
+    </div>
+    <div flex></div>
+    <div id="share-outer">
+      <md-button
+          md-ink-ripple="false"
+          ng-mouseenter="vm.showShareMessage=true" ng-mouseleave="vm.showShareMessage=false"
+          class="md-raised">
+        Share
+      </md-button>
+      <div id="share-message" ng-show="vm.showShareMessage">
+        <md-button
+            md-ink-ripple="false"
+            ng-mouseenter="vm.showShareMessage=true" ng-mouseleave="vm.showShareMessage=false"
+            class="md-primary md-raised schedule-button">
+          Share
+        </md-button>
+        <div layout-padding>Share this schedule by sharing the url to this page.</div>
+      </div>
+    </div>
   </div>
 </div>
 

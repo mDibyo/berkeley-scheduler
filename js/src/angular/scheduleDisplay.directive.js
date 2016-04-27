@@ -33,6 +33,7 @@ function sbScheduleDisplayDirective() {
     vm.days = days;
     vm.sectionColorOpacity = sectionColorOpacity;
     vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
+    vm.showShareMessage = false;
     vm.getMeetingPosition = getMeetingPosition;
     vm.getMeetingHeight = getMeetingHeight;
     vm.getMeetingColor = getMeetingColor;

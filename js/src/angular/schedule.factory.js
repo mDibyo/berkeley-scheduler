@@ -459,6 +459,7 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     return {
       total: _currScheduleIdList.length,
       currentIdx: _currScheduleIdx,
+      firstScheduleId: _currScheduleIdList[0],
       prevScheduleId: getPrevScheduleId(),
       nextScheduleId: getNextScheduleId()
     };
