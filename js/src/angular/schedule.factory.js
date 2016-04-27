@@ -65,8 +65,8 @@ function scheduleFactory($q, $cookies, reverseLookup) {
 
       for (var day in schedule.meetingsByDay) {
         var sections = schedule.meetingsByDay[day];
-        for (var i = 0; i < sections.length; i++) {
-          if (sections[i].meeting.startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
+        if (sections.length > 0) {
+          if (sections[0].meeting.startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
             return false;
           }
         }

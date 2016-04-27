@@ -1,1 +1,7 @@
-<sb-schedule-display schedule="vm.selectedSchedule"></sb-schedule-display>
+<div ng-if="vm.selectedSchedule">
+  <sb-schedule-display schedule="vm.selectedSchedule"></sb-schedule-display>
+</div>
+<div>
+  <span ng-if="!vm.selectedSchedule" class="md-subhead">No available schedules.</span>
+</div>
+
