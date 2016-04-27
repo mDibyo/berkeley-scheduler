@@ -12,7 +12,10 @@
     <th>Enrollment</th>
     <th>Waitlist</th>
   </tr>
-  <tr ng-repeat="section in course.sections | orderBy:'-id':true">
+  <tr ng-repeat="section in course.sections | orderBy:[
+        vm.extractSectionTypeMapping,
+        'id'
+      ]">
     <td><input type="checkbox" ng-model="section.selected" ng-click="vm.setSchedulesStale()"></td>
     <!--<td>{{section.number}}</td>-->
     <td>{{section.type}}</td>

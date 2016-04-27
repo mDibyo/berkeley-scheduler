@@ -1,5 +1,8 @@
 # Changelog
 
+### v0.1.1
+- Added preferMorning, preferAfternoon and preferEvening options.
+
 
 ### v0.1.0
 This is the first release of Berkeley Scheduler. Basic functionality

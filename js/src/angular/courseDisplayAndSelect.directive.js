@@ -7,10 +7,21 @@ function sbCourseDisplayAndSelectDirective() {
 
     var vm = this;
 
+    vm.sectionTypeMapping = {
+      'LEC': 0,
+      'DIS': 3,
+      'GRP': 5,
+      'LAB': 7
+    };
     vm.setSchedulesStale = setSchedulesStale;
+    vm.extractSectionTypeMapping = extractSectionTypeMapping;
 
     function setSchedulesStale() {
       scheduleFactory.setStale();
+    }
+
+    function extractSectionTypeMapping(section) {
+      return vm.sectionTypeMapping[section.type];
     }
   }
 
