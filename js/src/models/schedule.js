@@ -25,6 +25,12 @@ function Schedule(userId, sections) {
       }
     }
   }, this);
+  for (var day in this.meetingsByDay) {
+    this.meetingsByDay[day].sort(function(a, b) {
+      return a.meeting.startTime.compareTo(b.meeting.startTime);
+    });
+  }
+
   this.id = Schedule.generateId([userId].concat(sectionIdList));
 
   this.selected = true;
