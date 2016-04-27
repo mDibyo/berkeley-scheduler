@@ -27,7 +27,7 @@ function sbGenerateSchedulesDirective() {
     var schedulingOptions = scheduleFactory.getSchedulingOptions();
 
     vm.scheduleIsStale = scheduleFactory.isStale();
-    vm.showOptions = false;
+    vm.showOptions = schedulingOptions.showOptions;
     vm.viewSchedules = viewSchedules;
     vm.generateAndViewSchedules = generateAndViewSchedules;
     vm.toggleOptions = toggleOptions;
@@ -52,12 +52,16 @@ function sbGenerateSchedulesDirective() {
     }
     vm.onChangePreferPartOfDay = onChangePreferPartOfDay;
 
-    vm.selectedDayStartTimeJson = schedulingOptions.dayStartTime;
-    vm.selectedDayEndTimeJson = schedulingOptions.dayEndTime;
+    vm.selectedDayStartTimeJson =
+      schedulingOptions.dayStartTime || halfHours[0];
+    vm.selectedDayEndTimeJson =
+      schedulingOptions.dayEndTime || halfHours[halfHours.length-1];
     vm.dayStartTimes = halfHours;
     vm.dayEndTimes = halfHours;
     vm.onSelectDayStartTime = onSelectDayStartTime;
     vm.onSelectDayEndTime = onSelectDayEndTime;
+    vm.isSelectedDayStartTime = isSelectedDayStartTime;
+    vm.isSelectedDayEndTime = isSelectedDayEndTime;
 
     scheduleFactory.registerSetStaleListener(function(isStale) {
       vm.scheduleIsStale = isStale;
@@ -76,12 +80,13 @@ function sbGenerateSchedulesDirective() {
     function generateAndViewSchedules() {
       scheduleFactory.generateSchedules();
       scheduleFactory.filterSchedules();
-      //scheduleFactory.reorderSchedules();
+      scheduleFactory.reorderSchedules();
       viewSchedules();
     }
 
     function toggleOptions() {
       vm.showOptions = !vm.showOptions;
+      scheduleFactory.setSchedulingOption('showOptions', vm.showOptions);
     }
 
     function onChangePreferPartOfDay() {
@@ -132,6 +137,18 @@ function sbGenerateSchedulesDirective() {
 
       scheduleFactory.setSchedulingOption('dayEndTime', selectedDayEndTime);
       scheduleFactory.filterSchedules();
+    }
+
+    function isSelectedDayStartTime(time) {
+      var selectedDayStartTimeJson = Time.parse(vm.selectedDayStartTimeJson);
+      return time.hours === selectedDayStartTimeJson.hours
+        && time.minutes === selectedDayStartTimeJson.minutes;
+    }
+
+    function isSelectedDayEndTime(time) {
+      var selectedDayEndTimeJson = Time.parse(vm.selectedDayEndTimeJson);
+      return time.hours === selectedDayEndTimeJson.hours
+        && time.minutes === selectedDayEndTimeJson.minutes;
     }
   }
 

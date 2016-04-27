@@ -20,13 +20,13 @@
     <md-input-container>
       <md-radio-group ng-model="dvm.preferPartOfDay" ng-change="dvm.onChangePreferPartOfDay()">
         <md-radio-button ng-value="dvm.partsOfDay.morning">
-          Prefer mornings (-12PM)
+          Prefer mornings (- 12PM)
         </md-radio-button>
         <md-radio-button ng-value="dvm.partsOfDay.afternoon">
-          Prefer afternoons (12PM-5PM)
+          Prefer afternoons (12PM - 5PM)
         </md-radio-button>
         <md-radio-button ng-value="dvm.partsOfDay.evening">
-          Prefer evenings (5PM-)
+          Prefer evenings (5PM -)
         </md-radio-button>
         <md-radio-button ng-value="dvm.partsOfDay.none">
           None
@@ -42,7 +42,7 @@
           ng-change="dvm.onSelectDayStartTime();">
         <md-option
             ng-repeat="time in dvm.dayStartTimes"
-            ng-selected="$first"
+            ng-selected="dvm.isSelectedDayStartTime(time)"
             value="{{time}}">
           {{time.toString()}}
         </md-option>
@@ -56,7 +56,7 @@
           ng-change="dvm.onSelectDayEndTime();">
         <md-option
             ng-repeat="time in dvm.dayEndTimes"
-            ng-selected="$last"
+            ng-selected="dvm.isSelectedDayEndTime(time)"
             value="{{time}}">
           {{time.toString()}}
         </md-option>

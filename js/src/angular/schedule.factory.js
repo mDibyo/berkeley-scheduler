@@ -5,6 +5,7 @@ var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 var primaryUserIdCookieKey = 'primaryUserId';
 var userIdListCookieKey = 'allUserIds';
 var savedCoursesCookieKeyFormat = '{}.addedCourses';
+var schedulingOptionsCookieKeyFormat = '{}.schedulingOptions';
 
 function scheduleFactory($q, $cookies, reverseLookup) {
   var _stale = false;
@@ -32,13 +33,7 @@ function scheduleFactory($q, $cookies, reverseLookup) {
   var _currScheduleIdList = [];
   var _currScheduleListInfoChangeListeners = {};
   var _currScheduleIdx = 0;
-  var _schedulingOptions = {
-    preferMornings: false,
-    preferAfternoons: false,
-    preferEvenings: false,
-    dayStartTime: null,
-    dayEndTime: null
-  };
+  var _schedulingOptions = _loadSchedulingOptionsFromCookie();
   var _orderByFns = {
     preferMornings: function(schedule) {
       var totalFor = 0, total = 0;
@@ -143,6 +138,34 @@ function scheduleFactory($q, $cookies, reverseLookup) {
         {expires: _cookieExpiryDate});
     }
     return userIdList;
+  }
+
+  function _loadSchedulingOptionsFromCookie() {
+    var schedulingOptionsCookieKey =
+      schedulingOptionsCookieKeyFormat.replace('{}', _primaryUserId);
+    var schedulingOptions = $cookies.getObject(schedulingOptionsCookieKey);
+    if (schedulingOptions === undefined) {
+      schedulingOptions = {}
+    }
+    schedulingOptions.showOptions =
+      schedulingOptions.showOptions || false;
+    schedulingOptions.preferMornings =
+      schedulingOptions.preferMornings || false;
+    schedulingOptions.preferAfternoons =
+      schedulingOptions.preferAfternoons || false;
+    schedulingOptions.preferEvenings =
+      schedulingOptions.preferEvenings || false;
+    schedulingOptions.dayStartTime =
+      schedulingOptions.dayStartTime || null;
+    schedulingOptions.dayEndTime =
+      schedulingOptions.dayEndTime || null;
+    return schedulingOptions;
+  }
+
+  function _saveSchedulingOptionsToCookie() {
+    var schedulingOptionsCookieKey =
+      schedulingOptionsCookieKeyFormat.replace('{}', _primaryUserId);
+    $cookies.putObject(schedulingOptionsCookieKey, _schedulingOptions);
   }
 
   function _loadCoursesFromCookieInto_Courses() {
@@ -410,6 +433,8 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       _schedules[schedule.id] = schedule;
       if (isPrimaryUser) {
         generateSchedules();
+        filterSchedules();
+        reorderSchedules();
       }
       return schedule;
     });
@@ -471,6 +496,7 @@ function scheduleFactory($q, $cookies, reverseLookup) {
 
   function setSchedulingOption(option, choice) {
     _schedulingOptions[option] = choice;
+    _saveSchedulingOptionsToCookie();
   }
 
   function filterSchedules() {

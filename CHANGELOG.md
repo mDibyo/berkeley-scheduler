@@ -2,6 +2,7 @@
 
 ### v0.1.1
 - Added preferMorning, preferAfternoon and preferEvening options.
+- Save schedule options in cookie.
 
 
 ### v0.1.0
