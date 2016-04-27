@@ -6,6 +6,7 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory) {
 
   var vm = this;
 
+  vm.scheduleIsReady = scheduleFactory.isReady();
   vm.subjectAreaIsDisabled = false;
   vm.courseIsDisabled = true;
   vm.selectedCourse = null;
@@ -33,6 +34,10 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory) {
     vm.subjectAreasList = subjectAreas;
   });
 
+  scheduleFactory.registerSetReadyListener(function(isReady) {
+    vm.scheduleIsReady = isReady;
+  });
+
   scheduleFactory.registerSetInDisplayModeListener(function(inDisplayMode) {
     vm.inDisplayMode = inDisplayMode;
   });
@@ -43,14 +48,19 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory) {
 
   scheduleFactory.registerAddCourseListener(function(course) {
     vm.addedCoursesList.push(course);
-    if (vm.currCourse != null) {
-      vm.goToState('schedule.viewCourse', {id: course.id})
+    if (!vm.scheduleIsReady) {
+      return;
     }
+    vm.goToState('schedule.viewCourse', {id: course.id});
   });
 
   scheduleFactory.registerDropCourseListener(function(course) {
     vm.addedCoursesList.remove(course);
-    if (vm.addedCoursesList.length == 0) {
+    if (vm.addedCoursesList.length != 0) {
+      vm.goToState('schedule.viewCourse', {
+        id: vm.addedCoursesList[vm.addedCoursesList.length-1].id
+      });
+    } else {
       vm.goToState('schedule');
     }
   });

@@ -8,6 +8,9 @@ var savedCoursesCookieKeyFormat = '{}.addedCourses';
 var schedulingOptionsCookieKeyFormat = '{}.schedulingOptions';
 
 function scheduleFactory($q, $cookies, reverseLookup) {
+  var _ready = false;
+  var _forReadyQs = [];
+  var _setReadyListeners = [];
   var _stale = false;
   var _setStaleListeners = [];
   var _inDisplayMode = false;
@@ -109,8 +112,10 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       return true;
     }
   };
-
   _loadCoursesFromCookieInto_Courses();
+  $q.all(_forReadyQs).then(function() {
+    _setReady();
+  });
 
   function _generateUserId() {
     var id = '';
@@ -176,14 +181,15 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       return;
     }
     savedCourses.forEach(function(courseInfo) {
-      reverseLookup.getCourseQBy1arySectionId(courseInfo.id).then(function(course) {
-        course.sections.forEach(function(section) {
-          if (courseInfo.unselectedSections.indexOf(section.id) >= 0) {
-            section.selected = false;
-          }
-        });
-        _addCourseNoSave(course);
-      })
+      _forReadyQs.push(
+        reverseLookup.getCourseQBy1arySectionId(courseInfo.id).then(function(course) {
+          course.sections.forEach(function(section) {
+            if (courseInfo.unselectedSections.indexOf(section.id) >= 0) {
+              section.selected = false;
+            }
+          });
+          _addCourseNoSave(course);
+        }));
     });
   }
 
@@ -208,6 +214,21 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
     $cookies.putObject(savedCoursesCookieKey, courseInfosToSave,
       {expires: _cookieExpiryDate});
+  }
+
+  function isReady() {
+    return _ready;
+  }
+
+  function _setReady() {
+    _ready = true;
+    _setReadyListeners.forEach(function(listener) {
+      listener(_ready);
+    });
+  }
+
+  function registerSetReadyListener(listener) {
+    _setReadyListeners.push(listener);
   }
 
   function isStale() {
@@ -562,6 +583,8 @@ function scheduleFactory($q, $cookies, reverseLookup) {
   }
 
   return {
+    isReady: isReady,
+    registerSetReadyListener: registerSetReadyListener,
     isStale: isStale,
     setStale: setStale,
     registerSetStaleListener: registerSetStaleListener,

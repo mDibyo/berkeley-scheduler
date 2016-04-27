@@ -1,4 +1,4 @@
-<div layout="row" layout-align="center">
+<div layout="row" layout-align="center" class="main">
 <div layout="row" md-whiteframe="10">
 <md-sidenav md-component-id="left" class="left-pane" md-is-locked-open="true" flex="no-shrink">
   <div layout="row" layout-align="center" layout-padding>
@@ -76,11 +76,12 @@
       <div
           ng-repeat="course in vm.addedCoursesList"
           layout="row" layout-align="center center"
+          ng-style="{'background-color': course.id === vm.currCourse.id ? '#3b7ea1' : 'transparent'}"
           class="header-text md-subhead course-list-li"
-          ng-class="{'curr-course': course.id == vm.currCourse.id}">
+          >
         <div ui-sref="schedule.viewCourse({id: course.id})" flex>
           {{course.department}} {{course.courseNumber}}
-        </div>&nbsp;
+        </div>
         <div ng-click="vm.dropCourse(course)">drop</div>
       </div>
     </md-content>

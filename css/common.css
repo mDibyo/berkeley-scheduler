@@ -1,7 +1,10 @@
-/* Find */
-
 body {
-    background-color: #FFF7E4;
+    background: #FFF7E4;
+}
+
+.main {
+    overflow-y: auto;
+    background: #FFF7E4;
 }
 
 table, td, th {
@@ -51,7 +54,7 @@ md-autocomplete {
     color: #ffffff;
 }
 .course-list-li:hover {
-    background: #3b7ea1;
+    background: #3b7ea1 !important;
 }
 .course-list-li.curr-course {
     background: #3b7ea1;
@@ -79,8 +82,6 @@ md-autocomplete {
 md-input-container.schedule-option {
     width: 150px;
 }
-
-/* Schedule */
 
 .schedule-button {
     color: #ffffff !important;
