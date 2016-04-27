@@ -19,7 +19,7 @@
   <md-input-container>
     <md-checkbox
         ng-model="dvm.preferMornings"
-        ng-click="dvm.onChangePreferMornings()">
+        ng-change="dvm.onChangePreferMornings()">
       Prefer mornings
     </md-checkbox>
   </md-input-container>
@@ -27,7 +27,7 @@
   <md-input-container>
     <md-checkbox
         ng-model="dvm.preferAfternoons"
-        ng-click="dvm.onChangePreferAfternoons()">
+        ng-change="dvm.onChangePreferAfternoons()">
       Prefer afternoons
     </md-checkbox>
   </md-input-container>
@@ -35,7 +35,7 @@
   <md-input-container>
     <md-checkbox
         ng-model="dvm.preferEvenings"
-        ng-click="dvm.onChangePreferEvenings()">
+        ng-change="dvm.onChangePreferEvenings()">
       Prefer evenings
     </md-checkbox>
   </md-input-container>
@@ -44,7 +44,9 @@
   <div layout="row">
   <md-input-container style="width: 150px">
     <label>First class starting at/after</label>
-    <md-select ng-model="dvm.selectedDayStartTimeJson" ng-change="dvm.onSelectDayStartTime();">
+    <md-select
+        ng-model="dvm.selectedDayStartTimeJson"
+        ng-change="dvm.onSelectDayStartTime();">
       <md-option
           ng-repeat="time in dvm.dayStartTimes"
           ng-selected="$first"
@@ -56,7 +58,9 @@
   &nbsp;&nbsp;&nbsp;
   <md-input-container style="width: 150px">
     <label>Last class ending at/before</label>
-    <md-select ng-model="dvm.selectedDayEndTimeJson" ng-change="dvm.onSelectDayEndTime();">
+    <md-select
+        ng-model="dvm.selectedDayEndTimeJson"
+        ng-change="dvm.onSelectDayEndTime();">
       <md-option
           ng-repeat="time in dvm.dayEndTimes"
           ng-selected="$last"

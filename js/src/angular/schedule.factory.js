@@ -1,3 +1,4 @@
+var Time = require('../models/time');
 var Schedule = require('../models/schedule');
 
 var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';

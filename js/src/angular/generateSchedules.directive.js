@@ -72,14 +72,15 @@ function sbGenerateSchedulesDirective() {
 
     function onChangePreferMornings() {
       scheduleFactory.setSchedulingOption('preferMornings', vm.preferMornings);
+      scheduleFactory.reorderSchedules();
     }
 
     function onChangePreferAfternoons() {
-      scheduleFactory.setSchedulingOption('preferMornings', vm.preferAfternoons);
+      scheduleFactory.setSchedulingOption('preferAfternoons', vm.preferAfternoons);
     }
 
     function onChangePreferEvenings() {
-      scheduleFactory.setSchedulingOption('preferMornings', vm.preferEvenings);
+      scheduleFactory.setSchedulingOption('preferEvenings', vm.preferEvenings);
     }
 
     function onSelectDayStartTime() {
