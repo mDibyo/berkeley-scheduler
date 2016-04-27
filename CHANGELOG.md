@@ -5,6 +5,7 @@
 - Save schedule options in cookie.
 - Added 'Share' option to schedule.
 - Added select for all/none of the sections for a course.
+- Fixed bug with selected course highlighting in Added Courses list.
 
 
 ### v0.1.0
