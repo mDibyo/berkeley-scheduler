@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import json
-from collections import defaultdict, namedtuple
+from collections import namedtuple
 
 
 Range = namedtuple('Range', ['start', 'end'])
@@ -52,29 +52,6 @@ def extract_all_course_info():
                 output_file = PARSED_OUTPUT_FORMAT.format(EXTRACTED_DIR, course_number)
                 with open(output_file, 'w') as f:
                     json.dump(output_courses, f, indent=4)
-        except IOError as e:
-            print(e)
-
-
-departments = {}
-subject_areas = {}
-department_courses = defaultdict(list)
-subject_area_courses = defaultdict(list)
-
-
-def store_course_info(course):
-    departments[course['departmentCode']] = course['departmentDescription']
-    department_courses[course['departmentCode']].append(course)
-    subject_areas[course['subjectAreaCode']] = course['subjectAreaDescription']
-    subject_area_courses[course['subjectAreaCode']].append(course)
-
-
-def run_range(start, end):
-    for i in range(start, end):
-        try:
-            with open(PARSED_OUTPUT_FORMAT.format(i), 'r') as f:
-                for c in json.load(f):
-                    store_course_info(c)
         except IOError as e:
             print(e)
 
