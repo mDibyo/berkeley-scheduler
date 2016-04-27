@@ -26,6 +26,9 @@
         <div class="subject-area-code">{{subjectArea.code}}</div>
         <div class="subject-area-description">{{subjectArea.description}}</div>
       </md-item-template>
+      <md-not-found>
+        No matches found.
+      </md-not-found>
     </md-autocomplete>
 
     <br>
@@ -34,6 +37,7 @@
         tabindex=2
         ng-disabled="vm.courseIsDisabled"
         md-autoselect
+        md-no-cache
         md-min-length="0"
         md-search-text="courseQuery"
         md-items="course in vm.searchCourse(courseQuery) |
@@ -51,6 +55,9 @@
         <div class="subject-area-code">{{course.courseNumber}}</div>
         <div class="subject-area-description">{{course.title || ' '}}</div>
       </md-item-template>
+      <md-not-found>
+        No courses found.
+      </md-not-found>
     </md-autocomplete>
   </form>
 
