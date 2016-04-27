@@ -3,6 +3,8 @@
 ### v0.1.1
 - Added preferMorning, preferAfternoon and preferEvening options.
 - Save schedule options in cookie.
+- Added 'Share' option to schedule.
+- Added select for all/none of the sections for a course.
 
 
 ### v0.1.0
