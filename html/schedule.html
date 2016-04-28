@@ -3,7 +3,7 @@
 <md-sidenav md-component-id="left" class="left-pane" md-is-locked-open="true" flex="no-shrink">
   <div layout="row" layout-align="center" layout-padding>
     <div>
-      <img src="images/logo.png" width="150px">
+      <img id="logo" src="images/logo.png" width="150px" ui-sref="schedule()">
     </div>
   </div>
   <div class="header-text">
@@ -61,15 +61,6 @@
     </md-autocomplete>
   </form>
 
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-
   <div ng-show="vm.inDisplayMode" layout="row" layout-align="center">
     <md-button ng-click="vm.leaveDisplayMode()">
       Go back to your<br> own schedule
@@ -81,6 +72,7 @@
   <div ng-hide="vm.inDisplayMode" style="overflow-y: auto">
     <md-content>
       <div
+          ng-if="vm.addedCoursesList.length > 0"
           ng-repeat="course in vm.addedCoursesList"
           layout="row" layout-align="center center"
           ng-style="{'background-color': course.id === vm.currCourse.id ? '#3b7ea1' : 'transparent'}"
@@ -90,6 +82,9 @@
           {{course.department}} {{course.courseNumber}}
         </div>
         <div ng-click="vm.dropCourse(course)">drop</div>
+      </div>
+      <div class="header-text md-subhead" ng-if="vm.addedCoursesList.length === 0">
+        Add courses above.
       </div>
     </md-content>
   </div>
