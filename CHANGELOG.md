@@ -1,5 +1,13 @@
 # Changelog
 
+### v0.1.2
+- Fixed autocomplete by not caching course listings and adding 'Not
+  found' messages.
+- Added options to minimize/maximize gaps in schedule.
+- Added option to remove schedules with time conflicts.
+- Made some UI changes to the schedule view.
+- Marked Berkeley Scheduler beta.
+
 ### v0.1.1
 - Added preferMorning, preferAfternoon and preferEvening options.
 - Save schedule options in cookie.
