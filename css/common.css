@@ -11,15 +11,6 @@ body {
     cursor: pointer;
 }
 
-table, td, th {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-
-td, th {
-    padding: 5px;
-}
-
 .course-sections {
     width: 100%;
 }
@@ -81,6 +72,23 @@ md-autocomplete {
     height: 100%;
     width: 775px;
     overflow-y: auto;
+}
+
+table, td, th {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 5px;
+}
+
+.section-select {
+    text-align: center;
+}
+.section-select md-checkbox {
+    width: 20px;
+    margin: 0;
 }
 
 md-input-container.schedule-option {

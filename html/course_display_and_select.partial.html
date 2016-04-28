@@ -2,7 +2,9 @@
 
 <table class="course-sections">
   <tr>
-    <th><input type="checkbox" ng-model="vm.selectAllSections" ng-change="vm.onChangeSelectAllSections()"></th>
+    <th class="section-select">
+      <md-checkbox ng-model="vm.selectAllSections" ng-change="vm.onChangeSelectAllSections()"></md-checkbox>
+    </th>
     <th>Type</th>
     <th>Id</th>
     <th>Location</th>
@@ -15,7 +17,9 @@
         vm.extractSectionTypeMapping,
         'id'
       ]">
-    <td><input type="checkbox" ng-model="section.selected" ng-change="vm.setSchedulesStale()"></td>
+    <td class="section-select">
+      <md-checkbox ng-model="section.selected" ng-change="vm.setSchedulesStale()"></md-checkbox>
+    </td>
     <td>{{section.type}}</td>
     <td>{{section.id}}</td>
     <td>{{section.location}}</td>
