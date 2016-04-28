@@ -1,8 +1,9 @@
 'use strict';
 
 require('angular');
+require('angulartics');
+require('angulartics-google-analytics');
 require('angular-aria');
-//require('angular-resource');
 require('angular-animate');
 require('angular-cookies');
 require('angular-material');

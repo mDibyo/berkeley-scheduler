@@ -1,7 +1,9 @@
 var BaseCtrl = require('./_base.controller');
 
 ScheduleViewAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
-function ScheduleViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory) {
+function ScheduleViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory, $analytics) {
+  $analytics.pageTrack('/schedule/{}'.replace('{}', $stateParams.scheduleId));
+
   BaseCtrl.call(this, $state, $window);
 
   var vm = this;
@@ -19,5 +21,6 @@ angular.module('scheduleBuilder').controller('ScheduleViewAndSelectCtrl', [
   '$window',
   '$stateParams',
   'scheduleFactory',
+  '$analytics',
   ScheduleViewAndSelectCtrl
 ]);

@@ -5,7 +5,9 @@
     'ui.router',
     'ngSanitize',
     'ngCookies',
-    'ngMaterial'
+    'ngMaterial',
+    'angulartics',
+    'angulartics.google.analytics'
   ]);
 
   // Configuration

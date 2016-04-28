@@ -1,7 +1,9 @@
 var BaseCtrl = require('./_base.controller');
 
 CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
-function CourseFindCtrl($state, $window, courses, scheduleFactory) {
+function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
+  $analytics.pageTrack('/schedule');
+
   BaseCtrl.call(this, $state, $window);
 
   var vm = this;
@@ -156,5 +158,6 @@ angular.module('scheduleBuilder').controller('CourseFindCtrl', [
   '$window',
   'courses',
   'scheduleFactory',
+  '$analytics',
   CourseFindCtrl
 ]);
