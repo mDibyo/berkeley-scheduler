@@ -49,3 +49,6 @@ crashlytics-build.properties
 
 # node modules
 node_modules/
+
+# image files
+*.xcf
