@@ -158,7 +158,7 @@ md-input-container.schedule-option {
 
 .schedule-display-section {
     background-color: aliceblue;
-    color: #ffffff;
+    /*color: #ffffff;*/
     position: absolute;
     text-align: center;
     font-size: small;

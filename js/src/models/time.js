@@ -1,7 +1,7 @@
 'use strict';
 
 function Time(hours, minutes) {
-  if (hours < 0 || hours > 23) {
+  if (hours < 0 || hours > 24) {
     console.error('invalid hours', hours);
   }
   this.hours = hours;

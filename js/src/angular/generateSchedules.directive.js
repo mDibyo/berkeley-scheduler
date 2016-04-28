@@ -14,7 +14,7 @@ function sbGenerateSchedulesDirective() {
     var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
     var startHour = 8;
-    var endHour = 19;
+    var endHour = 24;
     //var numHours = endHour - startHour;
     for (var h = startHour; h < endHour; h++) {
       hours.push(new Time(h, 0));
