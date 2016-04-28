@@ -178,6 +178,8 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       schedulingOptions.showOptions || false;
     schedulingOptions.minimizeGaps =
       schedulingOptions.minimizeGaps || false;
+    schedulingOptions.maximizeGaps =
+      schedulingOptions.maximizeGaps || false;
     schedulingOptions.preferMornings =
       schedulingOptions.preferMornings || false;
     schedulingOptions.preferAfternoons =

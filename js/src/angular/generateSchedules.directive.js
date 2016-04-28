@@ -32,12 +32,20 @@ function sbGenerateSchedulesDirective() {
     vm.generateAndViewSchedules = generateAndViewSchedules;
     vm.toggleOptions = toggleOptions;
 
-    vm.minimizeGaps = schedulingOptions.minimizeGaps;
-    vm.onChangeMinimizeGaps = onChangeMinimizeGaps;
+    vm.gapOptions = {
+      minimize: 'minimizeGaps',
+      maximize: 'maximizeGaps',
+      none: 'dontWorryAboutGaps'
+    };
+    if (schedulingOptions.minimizeGaps) {
+      vm.gapOption = vm.gapOptions.minimize;
+    } else if (schedulingOptions.maximizeGaps) {
+      vm.gapOption = vm.gapOptions.maximize;
+    } else {
+      vm.gapOption = vm.gapOptions.none;
+    }
+    vm.onChangeGapOption = onChangeGapOption;
 
-    vm.preferMornings = schedulingOptions.preferMornings;
-    vm.preferAfternoons = schedulingOptions.preferAfternoons;
-    vm.preferEvenings = schedulingOptions.preferEvenings;
     vm.partsOfDay = {
       morning: 'preferMorning',
       afternoon: 'preferAfternoon',
@@ -92,12 +100,33 @@ function sbGenerateSchedulesDirective() {
       scheduleFactory.setSchedulingOption('showOptions', vm.showOptions);
     }
 
-    function onChangeMinimizeGaps() {
-      scheduleFactory.setSchedulingOption('minimizeGaps', vm.minimizeGaps);
+    function onChangeGapOption() {
+      console.log('changing gap');
+      switch (vm.gapOption) {
+        case vm.gapOptions.minimize:
+          scheduleFactory.setSchedulingOption('minimizeGaps', true);
+          scheduleFactory.setSchedulingOption('maximizeGaps', false);
+          break;
+        case vm.gapOptions.maximize:
+          scheduleFactory.setSchedulingOption('minimizeGaps', false);
+          scheduleFactory.setSchedulingOption('maximizeGaps', true);
+          break;
+        case vm.gapOptions.none:
+          scheduleFactory.setSchedulingOption('minimizeGaps', false);
+          scheduleFactory.setSchedulingOption('maximizeGaps', false);
+          break;
+      }
+      if (vm.gapOption != null) {
+        vm.preferPartOfDay = vm.partsOfDay.none;
+        scheduleFactory.setSchedulingOption('preferMornings', false);
+        scheduleFactory.setSchedulingOption('preferAfternoons', false);
+        scheduleFactory.setSchedulingOption('preferEvenings', false);
+      }
       scheduleFactory.reorderSchedules();
     }
 
     function onChangePreferPartOfDay() {
+      console.log('changing day');
       switch (vm.preferPartOfDay) {
         case vm.partsOfDay.morning:
           scheduleFactory.setSchedulingOption('preferMornings', true);
@@ -119,6 +148,11 @@ function sbGenerateSchedulesDirective() {
           scheduleFactory.setSchedulingOption('preferAfternoons', false);
           scheduleFactory.setSchedulingOption('preferEvenings', false);
           break;
+      }
+      if (vm.preferPartOfDay != vm.partsOfDay.none) {
+        vm.gapOption = vm.gapOptions.none;
+        scheduleFactory.setSchedulingOption('minimizeGaps', false);
+        scheduleFactory.setSchedulingOption('maximizeGaps', false);
       }
       scheduleFactory.reorderSchedules();
     }

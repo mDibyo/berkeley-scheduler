@@ -15,59 +15,69 @@
   </span>
 </p>
 
-<div ng-show="dvm.showOptions" layout="column">
-  <div>
+<div ng-show="dvm.showOptions">
+  <div layout="row" layout-padding>
+    <div>
+      <md-input-container>
+        <md-radio-group ng-model="dvm.preferPartOfDay" ng-change="dvm.onChangePreferPartOfDay()">
+          <md-radio-button ng-value="dvm.partsOfDay.morning">
+            Prefer mornings (- 12PM)
+          </md-radio-button>
+          <md-radio-button ng-value="dvm.partsOfDay.afternoon">
+            Prefer afternoons (12PM - 5PM)
+          </md-radio-button>
+          <md-radio-button ng-value="dvm.partsOfDay.evening">
+            Prefer evenings (5PM -)
+          </md-radio-button>
+          <md-radio-button ng-value="dvm.partsOfDay.none">
+            None
+          </md-radio-button>
+        </md-radio-group>
+      </md-input-container>
+    </div>
+    <div>
     <md-input-container>
-      <md-checkbox ng-model="dvm.minimizeGaps" ng-change="dvm.onChangeMinimizeGaps()">
-        Minimize Gaps
-      </md-checkbox>
-    </md-input-container>
-    <md-input-container>
-      <md-radio-group ng-model="dvm.preferPartOfDay" ng-change="dvm.onChangePreferPartOfDay()">
-        <md-radio-button ng-value="dvm.partsOfDay.morning">
-          Prefer mornings (- 12PM)
+      <md-radio-group ng-model="dvm.gapOption" ng-change="dvm.onChangeGapOption()">
+        <md-radio-button ng-value="dvm.gapOptions.minimize">
+          Minimize Gaps
         </md-radio-button>
-        <md-radio-button ng-value="dvm.partsOfDay.afternoon">
-          Prefer afternoons (12PM - 5PM)
+        <md-radio-button ng-value="dvm.gapOptions.maximize">
+          Maximize Gaps
         </md-radio-button>
-        <md-radio-button ng-value="dvm.partsOfDay.evening">
-          Prefer evenings (5PM -)
-        </md-radio-button>
-        <md-radio-button ng-value="dvm.partsOfDay.none">
+        <md-radio-button ng-value="dvm.gapOptions.none">
           None
         </md-radio-button>
       </md-radio-group>
     </md-input-container>
-  </div>
-  <div layout="row">
-    <md-input-container class="schedule-option">
-      <label>First class starting at/after</label>
-      <md-select
-          ng-model="dvm.selectedDayStartTimeJson"
-          ng-change="dvm.onSelectDayStartTime();">
-        <md-option
-            ng-repeat="time in dvm.dayStartTimes"
-            ng-selected="dvm.isSelectedDayStartTime(time)"
-            value="{{time}}">
-          {{time.toString()}}
-        </md-option>
-      </md-select>
-    </md-input-container>
-    &nbsp;&nbsp;&nbsp;
-    <md-input-container class="schedule-option">
-      <label>Last class ending at/before</label>
-      <md-select
-          ng-model="dvm.selectedDayEndTimeJson"
-          ng-change="dvm.onSelectDayEndTime();">
-        <md-option
-            ng-repeat="time in dvm.dayEndTimes"
-            ng-selected="dvm.isSelectedDayEndTime(time)"
-            value="{{time}}">
-          {{time.toString()}}
-        </md-option>
-      </md-select>
-    </md-input-container>
+    </div>
+    <div layout="column">
+      <md-input-container class="schedule-option">
+        <label>First class starting at/after</label>
+        <md-select
+            ng-model="dvm.selectedDayStartTimeJson"
+            ng-change="dvm.onSelectDayStartTime();">
+          <md-option
+              ng-repeat="time in dvm.dayStartTimes"
+              ng-selected="dvm.isSelectedDayStartTime(time)"
+              value="{{time}}">
+            {{time.toString()}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="schedule-option">
+        <label>Last class ending at/before</label>
+        <md-select
+            ng-model="dvm.selectedDayEndTimeJson"
+            ng-change="dvm.onSelectDayEndTime();">
+          <md-option
+              ng-repeat="time in dvm.dayEndTimes"
+              ng-selected="dvm.isSelectedDayEndTime(time)"
+              value="{{time}}">
+            {{time.toString()}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </div>
   </div>
   <md-divider></md-divider>
-  <br>
 </div>
