@@ -41,9 +41,9 @@ function sbScheduleDisplayDirective() {
     scheduleFactory.registerCurrScheduleListInfoChangeListener(
       'scheduleDisplay', function(info) {
         vm.currScheduleListInfo = info;
-        if (info.reloadRequired) {
+        if (info.scheduleListChanged) {
           vm.goToState('schedule.viewSchedule', {
-            scheduleId: scheduleFactory.getCurrScheduleId()
+            scheduleId: info.firstScheduleId
           });
         }
       });

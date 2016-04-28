@@ -104,7 +104,6 @@ function sbGenerateSchedulesDirective() {
     }
 
     function onChangeGapOption() {
-      console.log('changing gap');
       switch (vm.gapOption) {
         case vm.gapOptions.minimize:
           scheduleFactory.setSchedulingOption('minimizeGaps', true);
@@ -129,7 +128,6 @@ function sbGenerateSchedulesDirective() {
     }
 
     function onChangePreferPartOfDay() {
-      console.log('changing day');
       switch (vm.preferPartOfDay) {
         case vm.partsOfDay.morning:
           scheduleFactory.setSchedulingOption('preferMornings', true);

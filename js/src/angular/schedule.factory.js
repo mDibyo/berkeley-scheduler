@@ -537,9 +537,9 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     };
   }
 
-  function _sendCurrScheduleListInfoChange(reloadRequired) {
+  function _sendCurrScheduleListInfoChange(scheduleListChanged) {
     var info = getCurrScheduleListInfo();
-    info.reloadRequired = reloadRequired;
+    info.scheduleListChanged = scheduleListChanged;
     Object.keys(_currScheduleListInfoChangeListeners).forEach(function(tag) {
       _currScheduleListInfoChangeListeners[tag](info);
     });
@@ -553,14 +553,14 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     if (!_schedules.hasOwnProperty(scheduleId)) {
       scheduleId = Schedule.normalizeId(scheduleId);
     }
-    var reloadRequired = false;
+    var scheduleListChanged = false;
     _currScheduleIdx = _currScheduleIdList.indexOf(scheduleId);
     if (_currScheduleIdx < 0) {
       _currScheduleIdx = 0;
-      reloadRequired = true;
+      scheduleListChanged = true;
     }
 
-    _sendCurrScheduleListInfoChange(reloadRequired);
+    _sendCurrScheduleListInfoChange(scheduleListChanged);
   }
 
   function getSchedulingOptions() {
@@ -583,14 +583,13 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       });
     });
 
-    var reloadRequired = false;
+    var scheduleListChanged = true;
     _currScheduleIdx = _currScheduleIdList.indexOf(currScheduleId);
     if (_currScheduleIdx < 0) {
       _currScheduleIdx = 0;
-      reloadRequired = true;
     }
 
-    _sendCurrScheduleListInfoChange(reloadRequired);
+    _sendCurrScheduleListInfoChange(scheduleListChanged);
   }
 
   function reorderSchedules() {
@@ -623,14 +622,13 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       return orderByValues[b] - orderByValues[a];
     });
 
-    var reloadRequired = false;
+    var scheduleListChanged = true;
     _currScheduleIdx = _currScheduleIdList.indexOf(currScheduleId);
     if (_currScheduleIdx < 0) {
       _currScheduleIdx = 0;
-      reloadRequired = true;
     }
 
-    _sendCurrScheduleListInfoChange(reloadRequired);
+    _sendCurrScheduleListInfoChange(scheduleListChanged);
   }
 
   return {
