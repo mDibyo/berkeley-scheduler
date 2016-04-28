@@ -177,9 +177,12 @@ def main(only_new=False):
         with open(input_file, 'r') as f:
             courses = json.load(f)
         if only_new:
-            with open(output_file, 'r') as f:
-                classes = json.load(f)
-                visited = set(classes.keys())
+            try:
+                with open(output_file, 'r') as f:
+                    classes = json.load(f)
+                    visited = set(classes.keys())
+            except IOError as e:
+                visited = set()
         else:
             visited = set()
 
@@ -218,4 +221,4 @@ if __name__ == '__main__':
         exit()
     SIS_CLASS_API_APP_KEY = os.environ[SIS_CLASS_API_APP_KEY_ENV]
 
-    main(False)
+    main(only_new=False)

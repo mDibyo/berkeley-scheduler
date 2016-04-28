@@ -29,6 +29,7 @@ def store_course_info(course):
 def run_for_range(start, end):
     for course_number in range(start, end):
         try:
+            print('extracting course_number {}'.format(course_number))
             with open(EXTRACTED_COURSES_FORMAT.format(
                     EXTRACTED_COURSES_DIR, course_number), 'r') as f:
                 for c in json.load(f):
@@ -49,7 +50,7 @@ def run_for_range(start, end):
                                                COURSE_LISTING_BY_DEPARTMENT_DIR,
                                                department), 'w') as f:
             json.dump(courses, f, indent=4)
-    for subject_area, courses in department_courses.items():
+    for subject_area, courses in subject_area_courses.items():
         with open(COURSES_OUTPUT_FORMAT.format(DEPARTMENTS_DIR,
                                                COURSE_LISTING_BY_SUBJECT_AREA_DIR,
                                                subject_area), 'w') as f:
