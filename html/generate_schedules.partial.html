@@ -18,6 +18,11 @@
 <div ng-show="dvm.showOptions" layout="column">
   <div>
     <md-input-container>
+      <md-checkbox ng-model="dvm.minimizeGaps" ng-change="dvm.onChangeMinimizeGaps()">
+        Minimize Gaps
+      </md-checkbox>
+    </md-input-container>
+    <md-input-container>
       <md-radio-group ng-model="dvm.preferPartOfDay" ng-change="dvm.onChangePreferPartOfDay()">
         <md-radio-button ng-value="dvm.partsOfDay.morning">
           Prefer mornings (- 12PM)

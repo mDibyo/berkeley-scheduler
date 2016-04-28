@@ -32,6 +32,9 @@ function sbGenerateSchedulesDirective() {
     vm.generateAndViewSchedules = generateAndViewSchedules;
     vm.toggleOptions = toggleOptions;
 
+    vm.minimizeGaps = schedulingOptions.minimizeGaps;
+    vm.onChangeMinimizeGaps = onChangeMinimizeGaps;
+
     vm.preferMornings = schedulingOptions.preferMornings;
     vm.preferAfternoons = schedulingOptions.preferAfternoons;
     vm.preferEvenings = schedulingOptions.preferEvenings;
@@ -87,6 +90,11 @@ function sbGenerateSchedulesDirective() {
     function toggleOptions() {
       vm.showOptions = !vm.showOptions;
       scheduleFactory.setSchedulingOption('showOptions', vm.showOptions);
+    }
+
+    function onChangeMinimizeGaps() {
+      scheduleFactory.setSchedulingOption('minimizeGaps', vm.minimizeGaps);
+      scheduleFactory.reorderSchedules();
     }
 
     function onChangePreferPartOfDay() {

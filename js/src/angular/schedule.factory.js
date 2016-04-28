@@ -38,6 +38,28 @@ function scheduleFactory($q, $cookies, reverseLookup) {
   var _currScheduleIdx = 0;
   var _schedulingOptions = _loadSchedulingOptionsFromCookie();
   var _orderByFns = {
+    minimizeGaps: function(schedule) {
+      return -_orderByFns.maximizeGaps(schedule);
+    },
+    maximizeGaps: function(schedule) {
+      var total = 0;
+      var section, horizon, i, gap;
+      for (var day in schedule.meetingsByDay) {
+        var sections = schedule.meetingsByDay[day];
+        if (sections.length >= 2) {
+          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          for (i = 1; i < sections.length; i++) {
+            section = sections[i];
+            if (horizon > 0) {
+              gap = section.meeting.startTime.getTotalMinutes() - horizon;
+              total += Math.max(0, gap) / 60;
+            }
+            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+          }
+        }
+      }
+      return total;
+    },
     preferMornings: function(schedule) {
       var totalFor = 0, total = 0;
       for (var day in schedule.meetingsByDay) {
@@ -154,6 +176,8 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     }
     schedulingOptions.showOptions =
       schedulingOptions.showOptions || false;
+    schedulingOptions.minimizeGaps =
+      schedulingOptions.minimizeGaps || false;
     schedulingOptions.preferMornings =
       schedulingOptions.preferMornings || false;
     schedulingOptions.preferAfternoons =
