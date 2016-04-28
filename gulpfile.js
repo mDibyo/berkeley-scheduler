@@ -10,8 +10,8 @@
   var paths = {
     self: 'gulpfile.js',
     src: {
-      app: 'js/src/angular/app.js',
-      lib: 'js/src/lib/index.js'
+      app: 'js/.src/angular/app.js',
+      lib: 'js/.src/lib/index.js'
     },
     dest: 'js/final'
   };
