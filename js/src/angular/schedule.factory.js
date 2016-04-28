@@ -103,6 +103,29 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     }
   };
   var _filterFns = {
+    noTimeConflicts: function(schedule) {
+      if (!_schedulingOptions.noTimeConflicts) {
+        return true;
+      }
+
+      var section, horizon, i;
+      for (var day in schedule.meetingsByDay) {
+        var sections = schedule.meetingsByDay[day];
+        if (sections.length >= 2) {
+          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          for (i = 1; i < sections.length; i++) {
+            section = sections[i];
+            if (horizon > 0) {
+              if (section.meeting.startTime.getTotalMinutes() < horizon) {
+                return false;
+              }
+            }
+            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+          }
+        }
+      }
+      return true;
+    },
     dayStartTime: function(schedule) {
       if (_schedulingOptions.dayStartTime == null) {
         return true;
@@ -190,6 +213,8 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       schedulingOptions.dayStartTime || null;
     schedulingOptions.dayEndTime =
       schedulingOptions.dayEndTime || null;
+    schedulingOptions.noTimeConflicts =
+      schedulingOptions.noTimeConflicts || false;
     return schedulingOptions;
   }
 

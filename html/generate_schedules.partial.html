@@ -51,6 +51,11 @@
     </md-input-container>
     </div>
     <div layout="column">
+      <md-input-container>
+        <md-checkbox ng-model="dvm.noTimeConflict" ng-change="dvm.onChangeNoTimeConflicts()">
+          No time conflicts
+        </md-checkbox>
+      </md-input-container>
       <md-input-container class="schedule-option">
         <label>First class starting at/after</label>
         <md-select
