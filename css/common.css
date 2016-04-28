@@ -161,6 +161,7 @@ md-input-container.schedule-option {
     color: #ffffff;
     position: absolute;
     text-align: center;
+    font-size: small;
     width: 100%;
 }
 
