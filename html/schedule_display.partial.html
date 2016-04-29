@@ -1,41 +1,52 @@
-<div ng-if="vm.showFinalsSchedule" id="finals-entire" layout="column">
-  <div class="schedule-display" layout="row">
-    <div class="schedule-display schedule-display-header-blank" flex="10"></div>
-    <div class="schedule-display finals-display-header"
-         ng-repeat="day in vm.days"
-         flex>
-      {{day}} ({{vm.dayDates[day]}})
-    </div>
+<div ng-if="vm.showFinalsSchedule">
+  <div class="finals-schedule-warn">
+    Note: This finals schedule is based on the calendar provided at
+    <a href="http://schedule.berkeley.edu/examf.html" target="_blank">schedule.berkeley.edu</a>.
+    As mentioned there, final exams are based on the day and time a course is offered
+    therefore, if the course schedule changes, then the exam group may also change. Also this
+    is only a guideline for faculty and students to get a sense of when their final exam may
+    take place. Final exams will be assigned around the first week of classes, and may not
+    follow these guidelines.
   </div>
-
-  <div class="schedule-display" layout="row">
-    <div class="schedule-display finals-display-day"
-         layout="column" flex="10">
-      <div class="schedule-display finals-display-hour"
-           ng-repeat="meeting in vm.finalMeetings"
+  <div id="finals-entire" layout="column">
+    <div class="schedule-display" layout="row">
+      <div class="schedule-display schedule-display-header-blank" flex="10"></div>
+      <div class="schedule-display finals-display-header"
+           ng-repeat="day in vm.days"
            flex>
-        {{meeting.toString()}}
+        {{day}} ({{vm.dayDates[day]}})
       </div>
     </div>
 
-    <div class="schedule-display finals-display-day"
-         ng-repeat="day in vm.days"
-         layout="column" flex>
-      <div class="schedule-display"
-           ng-repeat="meeting in vm.finalMeetings"
-           layout="column" flex>
-        <div class="schedule-display finals-display-meeting" flex></div>
+    <div class="schedule-display" layout="row">
+      <div class="schedule-display finals-display-day"
+           layout="column" flex="10">
+        <div class="schedule-display finals-display-hour"
+             ng-repeat="meeting in vm.finalMeetings"
+             flex>
+          {{meeting.toString()}}
+        </div>
       </div>
 
-      <div class="schedule-display finals-display-section"
-           ng-repeat="final in vm.getFinalsForDay(schedule.courses, day)"
-           ng-style="{
-             'top': vm.getFinalPosition(final),
-             'height': vm.getFinalHeight(),
-             'background-color': vm.getFinalColor(final)
-           }">
-        <div class="schedule-display finals-display-section-inner">
-          {{final.course.department}} {{final.course.courseNumber}}
+      <div class="schedule-display finals-display-day"
+           ng-repeat="day in vm.days"
+           layout="column" flex>
+        <div class="schedule-display"
+             ng-repeat="meeting in vm.finalMeetings"
+             layout="column" flex>
+          <div class="schedule-display finals-display-meeting" flex></div>
+        </div>
+
+        <div class="schedule-display finals-display-section"
+             ng-repeat="final in vm.getFinalsForDay(schedule.courses, day)"
+             ng-style="{
+               'top': vm.getFinalPosition(final),
+               'height': vm.getFinalHeight(),
+               'background-color': vm.getFinalColor(final)
+             }">
+          <div class="schedule-display finals-display-section-inner">
+            {{final.course.department}} {{final.course.courseNumber}}
+          </div>
         </div>
       </div>
     </div>

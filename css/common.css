@@ -70,7 +70,7 @@ md-autocomplete {
 .right-pane {
     background-color: #ffffff;
     height: 100%;
-    width: 775px;
+    width: 785px;
     overflow-y: auto;
 }
 
@@ -116,6 +116,12 @@ md-input-container.schedule-option {
     text-align: center;
     top: 0;
     z-index: 100;
+}
+
+.finals-schedule-warn {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: small;
 }
 
 #schedule-entire, #finals-entire {
