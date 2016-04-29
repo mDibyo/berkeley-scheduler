@@ -20,13 +20,14 @@ Meeting.parse = function(meetingJson) {
   return new Meeting(startTime, endTime, meetingJson.days);
 };
 
-//Meeting.dayAbrvExpansions = {
-//  M: 'Monday',
-//  T: 'Tuesday',
-//  W: 'Wednesday',
-//  R: 'Thursday',
-//  F: 'Friday'
-//};
+Meeting.dayAbrvExpansions = {
+  M: 'Monday',
+  T: 'Tuesday',
+  W: 'Wednesday',
+  R: 'Thursday',
+  F: 'Friday'
+};
+
 Meeting.dayAbrvs = [
   ['Monday', 'M'],
   ['Tuesday', 'T'],
@@ -34,6 +35,20 @@ Meeting.dayAbrvs = [
   ['Thursday', 'R'],
   ['Friday', 'F']
 ];
+
+Meeting.daysFromAbrvs = function(abrvs) {
+  var days = {
+    'Monday': false,
+    'Tuesday': false,
+    'Wednesday': false,
+    'Thursday': false,
+    'Friday': false
+  };
+  for (var i = 0; i < abrvs.length; i++) {
+    days[abrvs[i]] = true;
+  }
+  return days;
+};
 
 Meeting.prototype.getTotalMinutes = function() {
   return this.endTime.getTotalMinutes() - this.startTime.getTotalMinutes();
