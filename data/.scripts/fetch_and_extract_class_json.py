@@ -111,13 +111,20 @@ def extract_class_info_from_json(sections_json):
     if primary_section_id:
         primary_section = extracted_sections[primary_section_id]
     else:
-        primary_section = {'instructors': [], 'id': None}
+        primary_section = {
+            'instructors': [],
+            'id': None,
+            'time': None,
+            'location': None
+        }
 
     return {
         'displayName': extracted_class['course']['displayName'],
         'title': extracted_class['course']['title'],
         'instructors': primary_section['instructors'],
         'id': primary_section['id'],
+        'time': primary_section['time'],
+        'location': primary_section['location'],
         'units': -1,
         'sections': list(extracted_sections.values())
     }
@@ -164,7 +171,7 @@ def main(only_new=False):
         subject_areas = json.load(f)['subjectAreas']
 
     num_total = len(subject_areas)
-    num_complete = 0
+    completed = []
     for subject_area in subject_areas:
         input_file = COURSES_FORMAT.format(DEPARTMENTS_DIR,
                                            COURSE_LISTING_DIR,
@@ -202,12 +209,15 @@ def main(only_new=False):
                         sections_json = response['apiResponse']['response']['classes']['class']
                         _class = extract_single_section_info_from_json(sections_json)
                     classes[course['courseNumber']] = _class
+        except KeyboardInterrupt:
+            print('completed processing: {}'.format(completed))
+            break
         finally:
             with open(output_file, 'w') as f:
                 json.dump(classes, f)
 
-        num_complete += 1
-        print('{}/{} subject areas completed'.format(num_complete, num_total))
+        completed.append(subject_area)
+        print('{}/{} subject areas completed'.format(len(completed), num_total))
 
 
 if __name__ == '__main__':
