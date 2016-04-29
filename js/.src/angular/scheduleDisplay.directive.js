@@ -3,7 +3,7 @@ var Meeting = require('../models/meeting');
 var Time = require('../models/time');
 var BaseCtrl = require('./_base.controller');
 
-function sbScheduleDisplayDirective() {
+function sbScheduleDisplayDirective(scheduleFactory) {
   var hours = [];
   var halfHours = [];
   var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -46,6 +46,8 @@ function sbScheduleDisplayDirective() {
 
     var vm = this;
 
+    var schedulingOptions = scheduleFactory.getSchedulingOptions();
+    vm.showFinalsSchedule = schedulingOptions.showFinalsSchedule;
     vm.finalMeetings = finalMeetings;
 
     vm.hours = hours;
@@ -56,6 +58,7 @@ function sbScheduleDisplayDirective() {
     vm.sectionColorOpacity = sectionColorOpacity;
     vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
     vm.showShareMessage = false;
+    vm.toggleFinalsSchedule = toggleFinalsSchedule;
     vm.getFinalsForDay = getFinalsForDay;
     vm.getFinalPosition = getFinalPosition;
     vm.getFinalHeight = getFinalHeight;
@@ -73,6 +76,11 @@ function sbScheduleDisplayDirective() {
           });
         }
       });
+
+    function toggleFinalsSchedule() {
+      vm.showFinalsSchedule = !vm.showFinalsSchedule;
+      scheduleFactory.setSchedulingOption('showFinalsSchedule', vm.showFinalsSchedule);
+    }
 
     function getFinalsForDay(courses, day) {
       var finals = [];
@@ -144,5 +152,6 @@ function sbScheduleDisplayDirective() {
   }
 }
 angular.module('scheduleBuilder').directive('sbScheduleDisplay', [
+  'scheduleFactory',
   sbScheduleDisplayDirective
 ]);

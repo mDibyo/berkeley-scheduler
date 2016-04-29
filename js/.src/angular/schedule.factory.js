@@ -216,6 +216,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     if (schedulingOptions.noTimeConflicts === undefined) {
       schedulingOptions.noTimeConflicts = true;
     }
+    schedulingOptions.showFinalsSchedule =
+      schedulingOptions.showFinalsSchedule || false;
     return schedulingOptions;
   }
 

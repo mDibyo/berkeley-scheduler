@@ -1,6 +1,55 @@
+<div ng-if="vm.showFinalsSchedule" id="finals-entire" layout="column">
+  <div class="schedule-display" layout="row">
+    <div class="schedule-display schedule-display-header-blank" flex="10"></div>
+    <div class="schedule-display finals-display-header"
+         ng-repeat="day in vm.days"
+         flex>
+      {{day}} ({{vm.dayDates[day]}})
+    </div>
+  </div>
+
+  <div class="schedule-display" layout="row">
+    <div class="schedule-display finals-display-day"
+         layout="column" flex="10">
+      <div class="schedule-display finals-display-hour"
+           ng-repeat="meeting in vm.finalMeetings"
+           flex>
+        {{meeting.toString()}}
+      </div>
+    </div>
+
+    <div class="schedule-display finals-display-day"
+         ng-repeat="day in vm.days"
+         layout="column" flex>
+      <div class="schedule-display"
+           ng-repeat="meeting in vm.finalMeetings"
+           layout="column" flex>
+        <div class="schedule-display finals-display-meeting" flex></div>
+      </div>
+
+      <div class="schedule-display finals-display-section"
+           ng-repeat="final in vm.getFinalsForDay(schedule.courses, day)"
+           ng-style="{
+             'top': vm.getFinalPosition(final),
+             'height': vm.getFinalHeight(),
+             'background-color': vm.getFinalColor(final)
+           }">
+        <div class="schedule-display finals-display-section-inner">
+          {{final.course.department}} {{final.course.courseNumber}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div layout="row" layout-align="center center">
   <div flex layout="row" layout-align="right right">
     <div flex></div>
+    <div>
+      <md-button ng-click="vm.toggleFinalsSchedule()">
+        Finals Schedule
+      </md-button>
+    </div>
     <div>
       <md-button
           ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.firstScheduleId})"
@@ -41,50 +90,6 @@
           Share
         </md-button>
         <div layout-padding>Share this schedule by sharing the url to this page.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="finals-entire" layout="column">
-  <div class="schedule-display" layout="row">
-    <div class="schedule-display schedule-display-header-blank" flex="10"></div>
-    <div class="schedule-display finals-display-header"
-         ng-repeat="day in vm.days"
-         flex>
-      {{day}} ({{vm.dayDates[day]}})
-    </div>
-  </div>
-
-  <div class="schedule-display" layout="row">
-    <div class="schedule-display finals-display-day"
-         layout="column" flex="10">
-      <div class="schedule-display finals-display-hour"
-           ng-repeat="meeting in vm.finalMeetings"
-           flex>
-        {{meeting.toString()}}
-      </div>
-    </div>
-
-    <div class="schedule-display finals-display-day"
-         ng-repeat="day in vm.days"
-         layout="column" flex>
-      <div class="schedule-display"
-           ng-repeat="meeting in vm.finalMeetings"
-           layout="column" flex>
-        <div class="schedule-display finals-display-meeting" flex></div>
-      </div>
-
-      <div class="schedule-display finals-display-section"
-           ng-repeat="final in vm.getFinalsForDay(schedule.courses, day)"
-           ng-style="{
-             'top': vm.getFinalPosition(final),
-             'height': vm.getFinalHeight(),
-             'background-color': vm.getFinalColor(final)
-           }">
-        <div class="schedule-display finals-display-section-inner">
-          {{final.course.department}} {{final.course.courseNumber}}
-        </div>
       </div>
     </div>
   </div>
