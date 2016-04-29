@@ -1,5 +1,7 @@
 <div ng-if="vm.selectedSchedule">
-  <sb-schedule-display schedule="vm.selectedSchedule"></sb-schedule-display>
+  <sb-schedule-display schedule="vm.selectedSchedule">
+    Loading schedule
+  </sb-schedule-display>
 </div>
 <div>
   <span ng-if="!vm.selectedSchedule" class="md-subhead">No available schedules.</span>

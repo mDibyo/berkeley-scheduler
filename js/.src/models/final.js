@@ -1,10 +1,13 @@
 'use strict';
 
+var Meeting = require('./meeting');
+var Time = require('./time');
+
 function Final(course) {
   this.course = course;
 
   this.meeting = Final.getSubjectCourseToFinalSection(course);
-  if (this.meeting === null && course.meeting) {
+  if (!this.meeting && course.meeting) {
     var courseDays = course.meeting.days;
     if (courseDays['Saturday'] || courseDays['Sunday']) {
       this.meeting = Final.getSatSunCourseTimeToFinalSection(course);
@@ -20,26 +23,26 @@ function Final(course) {
 }
 
 Final.meetings = {
-  Monday811AM: Meeting(Time(8, 0), Time(11, 0), Meeting.daysFromAbrvs('M')),
-  Monday1130230PM: Meeting(Time(11, 30), Time(2, 30), Meeting.daysFromAbrvs('M')),
-  Monday36PM: Meeting(Time(15, 0), Time(18, 0), Meeting.daysFromAbrvs('M')),
-  Monday710PM: Meeting(Time(19, 0), Time(22, 0), Meeting.daysFromAbrvs('M')),
-  Tuesday811AM: Meeting(Time(8, 0), Time(11, 0), Meeting.daysFromAbrvs('T')),
-  Tuesday1130230PM: Meeting(Time(11, 30), Time(2, 30), Meeting.daysFromAbrvs('T')),
-  Tuesday36PM: Meeting(Time(15, 0), Time(18, 0), Meeting.daysFromAbrvs('T')),
-  Tuesday710PM: Meeting(Time(19, 0), Time(22, 0), Meeting.daysFromAbrvs('T')),
-  Wednesday811AM: Meeting(Time(8, 0), Time(11, 0), Meeting.daysFromAbrvs('W')),
-  Wednesday1130230PM: Meeting(Time(11, 30), Time(2, 30), Meeting.daysFromAbrvs('W')),
-  Wednesday36PM: Meeting(Time(15, 0), Time(18, 0), Meeting.daysFromAbrvs('W')),
-  Wednesday710PM: Meeting(Time(19, 0), Time(22, 0), Meeting.daysFromAbrvs('W')),
-  Thursday811AM: Meeting(Time(8, 0), Time(11, 0), Meeting.daysFromAbrvs('R')),
-  Thursday1130230PM: Meeting(Time(11, 30), Time(2, 30), Meeting.daysFromAbrvs('R')),
-  Thursday36PM: Meeting(Time(15, 0), Time(18, 0), Meeting.daysFromAbrvs('R')),
-  Thursday710PM: Meeting(Time(19, 0), Time(22, 0), Meeting.daysFromAbrvs('R')),
-  Friday811AM: Meeting(Time(8, 0), Time(11, 0), Meeting.daysFromAbrvs('F')),
-  Friday1130230PM: Meeting(Time(11, 30), Time(2, 30), Meeting.daysFromAbrvs('F')),
-  Friday36PM: Meeting(Time(15, 0), Time(18, 0), Meeting.daysFromAbrvs('F')),
-  Friday710PM: Meeting(Time(19, 0), Time(22, 0), Meeting.daysFromAbrvs('F'))
+  Monday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('M')),
+  Monday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('M')),
+  Monday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('M')),
+  Monday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('M')),
+  Tuesday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('T')),
+  Tuesday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('T')),
+  Tuesday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('T')),
+  Tuesday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('T')),
+  Wednesday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('W')),
+  Wednesday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('W')),
+  Wednesday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('W')),
+  Wednesday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('W')),
+  Thursday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('R')),
+  Thursday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('R')),
+  Thursday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('R')),
+  Thursday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('R')),
+  Friday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('F')),
+  Friday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('F')),
+  Friday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('F')),
+  Friday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('F'))
 };
 
 Final.elementaryForeignLangListing = {
@@ -168,3 +171,5 @@ Final.getTRCourseTimeToFinalSection = function(course) {
 Final.getSatSunCourseTimeToFinalSection = function() {
   return Final.meetings.Wednesday36PM;
 };
+
+module.exports = Final;

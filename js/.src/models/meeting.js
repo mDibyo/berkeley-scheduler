@@ -45,7 +45,7 @@ Meeting.daysFromAbrvs = function(abrvs) {
     'Friday': false
   };
   for (var i = 0; i < abrvs.length; i++) {
-    days[abrvs[i]] = true;
+    days[Meeting.dayAbrvExpansions[abrvs[i]]] = true;
   }
   return days;
 };
@@ -64,7 +64,7 @@ Meeting.prototype.toString = function() {
   if (this.startTime == null || this.endTime == null) {
     return dayAbrv;
   }
-  return dayAbrv + ' ' + this.startTime.toString() + '-' + this.endTime.toString();
+  return dayAbrv + ' ' + this.startTime.toString() + ' - ' + this.endTime.toString();
 };
 
 module.exports = Meeting;

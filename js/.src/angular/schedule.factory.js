@@ -213,8 +213,9 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       schedulingOptions.dayStartTime || null;
     schedulingOptions.dayEndTime =
       schedulingOptions.dayEndTime || null;
-    schedulingOptions.noTimeConflicts =
-      schedulingOptions.noTimeConflicts || true;
+    if (schedulingOptions.noTimeConflicts === undefined) {
+      schedulingOptions.noTimeConflicts = true;
+    }
     return schedulingOptions;
   }
 

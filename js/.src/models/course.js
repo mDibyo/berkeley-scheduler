@@ -1,5 +1,7 @@
 'use strict';
 
+var Final = require('./final');
+var Meeting = require('./meeting');
 var Section = require('./section');
 
 function Course(courseJson) {
@@ -14,6 +16,8 @@ function Course(courseJson) {
   this.instructors = courseJson.instructors;
   this.id = courseJson.id;
   this.units = courseJson.units;
+  this.meeting = Meeting.parse(courseJson.time);
+  this.finalMeeting = new Final(this);
 
   this.sectionTypes = [];
   this.sections = courseJson.sections.map(function(sectionJson) {
@@ -37,7 +41,7 @@ Course.colorCodes = {
   'deep-purple': '#673ab7',
   'indigo': '#3f51b5',
   'blue': '#2196f3',
-  'light-blue': '#03a9f4',
+  //'light-blue': '#03a9f4',
   'cyan': '#00bcd4',
   'teal': '#009688',
   'green': '#4caf50',

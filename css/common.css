@@ -118,7 +118,7 @@ md-input-container.schedule-option {
     z-index: 100;
 }
 
-#schedule-entire {
+#schedule-entire, #finals-entire {
     padding: 10px;
     width: 750px;
 }
@@ -126,6 +126,46 @@ md-input-container.schedule-option {
 .schedule-display {
     padding: 0;
     margin: 0;
+}
+
+.finals-display-header {
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    font-size: small;
+    text-align: center;
+    line-height: 25px;
+    font-weight: bold;
+}
+
+.finals-display-day {
+    height: 165px;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    position: relative;
+}
+
+.finals-display-hour {
+    border-left: 1px solid black;
+    border-top: 1px solid black;
+    font-size: small;
+    padding: 5px;
+    text-align: center;
+}
+
+.finals-display-meeting {
+    border-top: 1px solid grey;
+}
+
+.finals-display-section {
+    background-color: aliceblue;
+    position: absolute;
+    text-align: center;
+    font-size: small;
+    width: 100%;
+}
+
+.finals-display-section-inner {
+    padding: 5px;
 }
 
 .schedule-display-header {
@@ -152,6 +192,7 @@ md-input-container.schedule-option {
 .schedule-display-hour {
     border-left: 1px solid black;
     border-top: 1px solid black;
+    font-size: small;
     padding: 5px;
     text-align: center;
 }
@@ -166,7 +207,6 @@ md-input-container.schedule-option {
 
 .schedule-display-section {
     background-color: aliceblue;
-    /*color: #ffffff;*/
     position: absolute;
     text-align: center;
     font-size: small;
