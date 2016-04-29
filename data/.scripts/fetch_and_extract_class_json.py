@@ -171,8 +171,11 @@ def main(only_new=False):
         subject_areas = json.load(f)['subjectAreas']
 
     num_total = len(subject_areas)
-    completed = []
+    completed = set()
+
     for subject_area in subject_areas:
+        if subject_area in completed:
+            continue
         input_file = COURSES_FORMAT.format(DEPARTMENTS_DIR,
                                            COURSE_LISTING_DIR,
                                            subject_area)
