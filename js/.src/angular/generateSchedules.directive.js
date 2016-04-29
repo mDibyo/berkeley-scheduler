@@ -27,6 +27,7 @@ function sbGenerateSchedulesDirective() {
     var schedulingOptions = scheduleFactory.getSchedulingOptions();
 
     vm.scheduleIsStale = scheduleFactory.isStale();
+    vm.generateMessage = 'Generate Schedules';
     vm.showOptions = schedulingOptions.showOptions;
     vm.viewSchedules = viewSchedules;
     vm.generateAndViewSchedules = generateAndViewSchedules;
@@ -92,10 +93,13 @@ function sbGenerateSchedulesDirective() {
     }
 
     function generateAndViewSchedules() {
-      scheduleFactory.generateSchedules();
-      scheduleFactory.filterSchedules();
-      scheduleFactory.reorderSchedules();
-      viewSchedules();
+      vm.generateMessage = 'Generating';
+      scheduleFactory.generateSchedulesQ().then(function() {
+        scheduleFactory.filterSchedules();
+        scheduleFactory.reorderSchedules();
+        vm.generateMessage = 'Generate Schedules';
+        viewSchedules();
+      });
     }
 
     function toggleOptions() {

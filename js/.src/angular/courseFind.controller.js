@@ -30,7 +30,7 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
   vm.addCourse = addCourse;
   vm.dropCourse = dropCourse;
 
-  vm.generateSchedules = scheduleFactory.generateSchedules;
+  vm.generateSchedulesQ = scheduleFactory.generateSchedulesQ;
 
   courses.getSubjectAreasQ().then(function(subjectAreas) {
     vm.subjectAreasList = subjectAreas;

@@ -7,7 +7,7 @@ var userIdListCookieKey = 'allUserIds';
 var savedCoursesCookieKeyFormat = '{}.addedCourses';
 var schedulingOptionsCookieKeyFormat = '{}.schedulingOptions';
 
-function scheduleFactory($q, $cookies, reverseLookup) {
+function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _ready = false;
   var _forReadyQs = [];
   var _setReadyListeners = [];
@@ -395,44 +395,45 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     _dropCourseListeners.push(listener);
   }
 
-  function generateSchedules() {
-    if (!_stale) {
-      return _schedules;
-    }
-
-    _schedules = {};
-    _allScheduleIdList = [];
-    var sectionsByCourseType = [];
-    for (var id in _courses) {
-      var course = _courses[id];
-      course.sectionTypes.forEach(function(sectionType) {
-        sectionsByCourseType.push(course.getSectionsByType(sectionType).filter(function(section) {
-          return section.selected;
-        }));
-      });
-    }
-    var numSections = sectionsByCourseType.length;
-
-    var generateHelper = function(array, n) {
-      for (var i = 0, l = sectionsByCourseType[n].length; i < l; i++) {
-        var a = array.slice(0);
-        a.push(sectionsByCourseType[n][i]);
-        if (n === numSections-1) {
-          var schedule = new Schedule(_primaryUserId, a);
-          _schedules[schedule.id] = schedule;
-          _allScheduleIdList.push(schedule.id);
-        } else {
-          generateHelper(a, n+1);
-        }
+  function generateSchedulesQ() {
+    return $timeout(function() {
+      if (!_stale) {
+        return;
       }
-    };
-    generateHelper([], 0);
-    _currScheduleIdList = _allScheduleIdList.slice();
-    _currScheduleIdx = 0;
-    setStale(false);
 
-    _sendCurrScheduleListInfoChange();
-    return _schedules;
+      _schedules = {};
+      _allScheduleIdList = [];
+      var sectionsByCourseType = [];
+      for (var id in _courses) {
+        var course = _courses[id];
+        course.sectionTypes.forEach(function(sectionType) {
+          sectionsByCourseType.push(course.getSectionsByType(sectionType).filter(function(section) {
+            return section.selected;
+          }));
+        });
+      }
+      var numSections = sectionsByCourseType.length;
+
+      var generateHelper = function(array, n) {
+        for (var i = 0, l = sectionsByCourseType[n].length; i < l; i++) {
+          var a = array.slice(0);
+          a.push(sectionsByCourseType[n][i]);
+          if (n === numSections-1) {
+            var schedule = new Schedule(_primaryUserId, a);
+            _schedules[schedule.id] = schedule;
+            _allScheduleIdList.push(schedule.id);
+          } else {
+            generateHelper(a, n+1);
+          }
+        }
+      };
+      generateHelper([], 0);
+      _currScheduleIdList = _allScheduleIdList.slice();
+      _currScheduleIdx = 0;
+      setStale(false);
+
+      _sendCurrScheduleListInfoChange();
+    });
   }
 
   function getScheduleQById(scheduleId) {
@@ -504,9 +505,10 @@ function scheduleFactory($q, $cookies, reverseLookup) {
       var schedule = new Schedule(userId, sectionList);
       _schedules[schedule.id] = schedule;
       if (isPrimaryUser) {
-        generateSchedules();
-        filterSchedules();
-        reorderSchedules();
+        generateSchedulesQ().then(function() {
+          filterSchedules();
+          reorderSchedules();
+        });
       }
       return schedule;
     });
@@ -649,7 +651,7 @@ function scheduleFactory($q, $cookies, reverseLookup) {
     dropCourse: dropCourse,
     registerDropCourseListener: registerDropCourseListener,
 
-    generateSchedules: generateSchedules,
+    generateSchedulesQ: generateSchedulesQ,
     getScheduleQById: getScheduleQById,
     getCurrScheduleId: getCurrScheduleId,
     getPrevScheduleId: getPrevScheduleId,
@@ -665,6 +667,7 @@ function scheduleFactory($q, $cookies, reverseLookup) {
 }
 angular.module('scheduleBuilder').factory('scheduleFactory', [
   '$q',
+  '$timeout',
   '$cookies',
   'reverseLookup',
   scheduleFactory

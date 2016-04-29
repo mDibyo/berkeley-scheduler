@@ -37,7 +37,7 @@ Final.meetings = {
   Thursday36PM: Meeting(Time(15, 0), Time(18, 0), Meeting.daysFromAbrvs('R')),
   Thursday710PM: Meeting(Time(19, 0), Time(22, 0), Meeting.daysFromAbrvs('R')),
   Friday811AM: Meeting(Time(8, 0), Time(11, 0), Meeting.daysFromAbrvs('F')),
-  Friday1130230PM: Meeting(Time(11, 30), Time(2, 30), Meeting.daysFromAbrvs('F'))
+  Friday1130230PM: Meeting(Time(11, 30), Time(2, 30), Meeting.daysFromAbrvs('F')),
   Friday36PM: Meeting(Time(15, 0), Time(18, 0), Meeting.daysFromAbrvs('F')),
   Friday710PM: Meeting(Time(19, 0), Time(22, 0), Meeting.daysFromAbrvs('F'))
 };
