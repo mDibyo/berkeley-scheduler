@@ -173,7 +173,7 @@ def main(only_new=False):
     num_total = len(subject_areas)
     completed = set()
 
-    subject_areas = ['CHEM']
+    subject_areas = ['COG SCI']
 
     for subject_area in subject_areas:
         if subject_area in completed:
@@ -198,6 +198,12 @@ def main(only_new=False):
         else:
             visited = set()
 
+        courses.append({
+            'courseNumber': 'C100',
+            'subjectAreaCode': 'COG SCI',
+            'units': 3
+        })
+
         try:
             for course in courses:
                 if course['courseNumber'] in visited:
@@ -221,7 +227,7 @@ def main(only_new=False):
             with open(output_file, 'w') as f:
                 json.dump(classes, f)
 
-        completed.append(subject_area)
+        completed.add(subject_area)
         print('{}/{} subject areas completed'.format(len(completed), num_total))
 
 
