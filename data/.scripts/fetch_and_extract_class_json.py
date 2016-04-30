@@ -173,6 +173,8 @@ def main(only_new=False):
     num_total = len(subject_areas)
     completed = set()
 
+    subject_areas = ['CHEM']
+
     for subject_area in subject_areas:
         if subject_area in completed:
             continue
