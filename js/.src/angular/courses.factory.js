@@ -3,17 +3,27 @@
 var Course = require('../models/course');
 
 var departmentsUrl = 'data/final/departments.json';
+var subjectAreaAbbrvsUrl = 'data/final/abbreviations.json';
 var coursesUrlFormat = 'data/final/fa16/classes/{}.json';
 
-function courses($http) {
+function courses($http, $q) {
   var _coursesQBySubjectArea = {};
 
-  var _subjectAreasQ = $http.get(departmentsUrl).then(function(response) {
-    var subjectAreas = response.data.subjectAreas;
+  var _subjectAreasQ = $q.all([
+    $http.get(departmentsUrl),
+    $http.get(subjectAreaAbbrvsUrl).then(function(response) {
+      return response;
+    }, function() {
+      return {data: {}};
+    })
+  ]).then(function(responses) {
+    var subjectAreas = responses[0].data.subjectAreas;
+    var abbrvs = responses[1].data;
     return Object.keys(subjectAreas).map(function(code) {
       return {
         code: code,
-        description: subjectAreas[code]
+        description: subjectAreas[code],
+        abbreviations: code in abbrvs ? abbrvs[code] : []
       }
     });
   });
@@ -52,5 +62,6 @@ function courses($http) {
 }
 angular.module('scheduleBuilder').factory('courses', [
   '$http',
+  '$q',
   courses
 ]);

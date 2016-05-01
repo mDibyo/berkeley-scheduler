@@ -76,10 +76,15 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
   function createSubjectAreaFilterFor(query) {
     query = angular.lowercase(query);
     return function filterFn(subjectArea) {
-      return (
-        angular.lowercase(subjectArea.code).indexOf(query) === 0 ||
-        angular.lowercase(subjectArea.description).indexOf(query) === 0
-      )
+      if (angular.lowercase(subjectArea.code).indexOf(query) === 0) {
+        return true;
+      }
+      if (angular.lowercase(subjectArea.description).indexOf(query) === 0) {
+        return true;
+      }
+      return subjectArea.abbreviations.some(function(abbrv) {
+        return angular.lowercase(abbrv).indexOf(query) === 0
+      })
     };
   }
 
