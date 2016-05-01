@@ -1,0 +1,21 @@
+{
+  "CHM ENG": ["CHEME"],
+  "CIV ENG": ["CEE"],
+  "COMPSCI": ["CS"],
+  "EL ENG": ["EE"],
+  "IND ENG": ["IEOR"],
+  "INTEGBI": ["IB"],
+  "LEGALST": ["LS"],
+  "L & S": ["LS"],
+  "L&S": ["LS"],
+  "MAT SCI": ["MSE"],
+  "MCELLBI": ["MCB"],
+  "MEC ENG": ["ME"],
+  "NUC ENG": ["NE", "NUCE"],
+  "NUSCTX": ["NST"],
+  "NUTRSCI": ["NS"],
+  "POL SCI": ["PS"],
+  "POLECON": ["PE"],
+  "PUB POL": ["PP"],
+  "STAT": ["STATS"]
+}
