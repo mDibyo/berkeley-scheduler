@@ -78,6 +78,10 @@ function sbGenerateSchedulesDirective() {
     vm.noTimeConflicts = schedulingOptions.noTimeConflicts;
     vm.onChangeNoTimeConflicts = onChangeNoTimeConflicts;
 
+    vm.preferNoTimeConflicts = schedulingOptions.preferNoTimeConflicts;
+    vm.disablePreferNoTimeConflicts = vm.noTimeConflicts;
+    vm.onChangePreferNoTimeConflicts = onChangePreferNoTimeConflicts;
+
     scheduleFactory.registerSetStaleListener(function(isStale) {
       vm.scheduleIsStale = isStale;
     });
@@ -163,9 +167,15 @@ function sbGenerateSchedulesDirective() {
     }
 
     function onChangeNoTimeConflicts() {
+      vm.disablePreferNoTimeConflicts = vm.noTimeConflicts;
       scheduleFactory.setSchedulingOption('noTimeConflicts', vm.noTimeConflicts);
       scheduleFactory.filterSchedules();
       scheduleFactory.reorderSchedules();
+    }
+
+    function onChangePreferNoTimeConflicts() {
+      schedulingOptions.setSchedulingOption('preferNoTimeConflicts', vm.preferNoTimeConflicts);
+      schedulingOptions.reorderSchedules();
     }
 
     function onSelectDayStartTime() {

@@ -55,33 +55,41 @@
         <md-checkbox ng-model="dvm.noTimeConflicts" ng-change="dvm.onChangeNoTimeConflicts()">
           No time conflicts
         </md-checkbox>
+        <md-checkbox
+            ng-model="dvm.preferNoTimeConflicts"
+            ng-disabled="dvm.disablePreferNoTimeConflicts"
+            ng-change="dvm.onChangePreferNoTimeConflicts">
+          Prefer No Time Conflicts
+        </md-checkbox>
       </md-input-container>
-      <md-input-container class="schedule-option">
-        <label>First class starting at/after</label>
-        <md-select
-            ng-model="dvm.selectedDayStartTimeJson"
-            ng-change="dvm.onSelectDayStartTime();">
-          <md-option
-              ng-repeat="time in dvm.dayStartTimes"
-              ng-selected="dvm.isSelectedDayStartTime(time)"
-              value="{{time}}">
-            {{time.toString()}}
-          </md-option>
-        </md-select>
-      </md-input-container>
-      <md-input-container class="schedule-option">
-        <label>Last class ending at/before</label>
-        <md-select
-            ng-model="dvm.selectedDayEndTimeJson"
-            ng-change="dvm.onSelectDayEndTime();">
-          <md-option
-              ng-repeat="time in dvm.dayEndTimes"
-              ng-selected="dvm.isSelectedDayEndTime(time)"
-              value="{{time}}">
-            {{time.toString()}}
-          </md-option>
-        </md-select>
-      </md-input-container>
+      <div layout="row">
+        <md-input-container class="schedule-option">
+          <label>First class starting at/after</label>
+          <md-select
+              ng-model="dvm.selectedDayStartTimeJson"
+              ng-change="dvm.onSelectDayStartTime();">
+            <md-option
+                ng-repeat="time in dvm.dayStartTimes"
+                ng-selected="dvm.isSelectedDayStartTime(time)"
+                value="{{time}}">
+              {{time.toString()}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="schedule-option">
+          <label>Last class ending at/before</label>
+          <md-select
+              ng-model="dvm.selectedDayEndTimeJson"
+              ng-change="dvm.onSelectDayEndTime();">
+            <md-option
+                ng-repeat="time in dvm.dayEndTimes"
+                ng-selected="dvm.isSelectedDayEndTime(time)"
+                value="{{time}}">
+              {{time.toString()}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+      </div>
     </div>
   </div>
   <md-divider></md-divider>

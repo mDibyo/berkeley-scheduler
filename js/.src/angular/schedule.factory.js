@@ -100,6 +100,27 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         }
       }
       return totalFor / total;
+    },
+    preferNoTimeConflicts: function(schedule) {
+      var numConflicts = 0, total = 0;
+      var section, horizon, i;
+      for (var day in schedule.meetingsByDay) {
+        var sections = schedule.meetingsByDay[day];
+        total += sections.length;
+        if (sections.length >= 2) {
+          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          for (i = 1; i < sections.length; i++) {
+            section = sections[i];
+            if (horizon > 0) {
+              if (section.meeting.startTime.getTotalMinutes() < horizon) {
+                numConflicts ++;
+              }
+            }
+            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+          }
+        }
+      }
+      return numConflicts / total;
     }
   };
   var _filterFns = {
@@ -209,6 +230,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       schedulingOptions.preferAfternoons || false;
     schedulingOptions.preferEvenings =
       schedulingOptions.preferEvenings || false;
+    schedulingOptions.preferNoTimeConflicts =
+      schedulingOptions.preferNoTimeConflicts || false;
     schedulingOptions.dayStartTime =
       schedulingOptions.dayStartTime || null;
     schedulingOptions.dayEndTime =
