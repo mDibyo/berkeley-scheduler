@@ -5,6 +5,7 @@ var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 var primaryUserIdCookieKey = 'primaryUserId';
 var userIdListCookieKey = 'allUserIds';
 var savedCoursesCookieKeyFormat = '{}.addedCourses';
+var savedSchedulesCookieKeyFormat = '{}.savedSchedules';
 var schedulingOptionsCookieKeyFormat = '{}.schedulingOptions';
 
 function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
@@ -32,6 +33,9 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _setCurrCourseListeners = [];
 
   var _schedules = {};
+  var _savedSchedules = [];
+  var _addSavedScheduleListeners = [];
+  var _dropSavedScheduleListeners = [];
   var _allScheduleIdList = [];
   var _currScheduleIdList = [];
   var _currScheduleListInfoChangeListeners = {};
@@ -50,7 +54,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     dayStartTime: dayStartTime,
     dayEndTime: dayEndTime
   };
-  _loadCoursesFromCookieInto_Courses();
+  _loadCoursesFromCookieInto_courses();
+  _loadSchedulesFromCookieInto_savedSchedules();
   $q.all(_forReadyQs).then(function() {
     _setReady();
   });
@@ -122,7 +127,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     $cookies.putObject(schedulingOptionsCookieKey, _schedulingOptions);
   }
 
-  function _loadCoursesFromCookieInto_Courses() {
+  function _loadCoursesFromCookieInto_courses() {
     var savedCoursesCookieKey =
       savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
     var savedCourses = $cookies.getObject(savedCoursesCookieKey);
@@ -140,6 +145,53 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
           _addCourseNoSave(course);
         }));
     });
+  }
+
+  function _saveCoursesToCookie() {
+    var courseInfosToSave = [];
+    for (var id in _courses) {
+      var selectedSections = [], unselectedSections = [];
+      _courses[id].sections.forEach(function(section) {
+        if (section.selected) {
+          selectedSections.push(section.id);
+        } else {
+          unselectedSections.push(section.id);
+        }
+      });
+      courseInfosToSave.push({
+        id: id,
+        selectedSections: selectedSections,
+        unselectedSections: unselectedSections
+      });
+    }
+    var savedCoursesCookieKey =
+      savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
+    $cookies.putObject(savedCoursesCookieKey, courseInfosToSave,
+      {expires: _cookieExpiryDate});
+  }
+
+  function _loadSchedulesFromCookieInto_savedSchedules() {
+    var savedSchedulesCookieKey =
+      savedSchedulesCookieKeyFormat.replace('{}', _primaryUserId);
+    var savedSchedules = $cookies.getObject(savedSchedulesCookieKey);
+    if (!savedSchedules) {
+      return;
+    }
+    savedSchedules.forEach(function(scheduleId) {
+      getScheduleQById(scheduleId).then(function(schedule) {
+        _addSavedScheduleNoSave(schedule);
+      })
+    });
+  }
+
+  function _saveSchedulesToCookie() {
+    var scheduleInfosToSave = _savedSchedules.map(function(schedule) {
+      return schedule.id;
+    });
+    var savedSchedulesCookieKey =
+      savedSchedulesCookieKeyFormat.replace('{}', _primaryUserId);
+    $cookies.putObject(savedSchedulesCookieKey, scheduleInfosToSave,
+      {expires: _cookieExpiryDate});
   }
 
   // Order by functions
@@ -288,29 +340,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       }
     }
     return true;
-  }
-
-  function _saveCoursesToCookie() {
-    var courseInfosToSave = [];
-    for (var id in _courses) {
-      var selectedSections = [], unselectedSections = [];
-      _courses[id].sections.forEach(function(section) {
-        if (section.selected) {
-          selectedSections.push(section.id);
-        } else {
-          unselectedSections.push(section.id);
-        }
-      });
-      courseInfosToSave.push({
-        id: id,
-        selectedSections: selectedSections,
-        unselectedSections: unselectedSections
-      });
-    }
-    var savedCoursesCookieKey =
-      savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
-    $cookies.putObject(savedCoursesCookieKey, courseInfosToSave,
-      {expires: _cookieExpiryDate});
   }
 
   function isReady() {
@@ -679,6 +708,58 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _sendCurrScheduleListInfoChange(scheduleListChanged);
   }
 
+  function getSavedSchedules() {
+    return _savedSchedules.slice();
+  }
+
+  function _addSavedScheduleNoSave(schedule) {
+    if (_savedSchedules.some(function(savedSchedule) {
+        return savedSchedule.id === schedule.id;
+      })) {
+      return false;
+    }
+    _savedSchedules.push(schedule);
+    _addSavedScheduleListeners.forEach(function(listener) {
+      listener(schedule);
+    });
+    return true;
+  }
+
+  function addSavedSchedule(schedule) {
+    var success = _addSavedScheduleNoSave(schedule);
+    if (success) {
+      _saveSchedulesToCookie();
+    }
+    return success;
+  }
+
+  function registerAddSavedScheduleListener(listener) {
+    _addSavedScheduleListeners.push(listener);
+  }
+
+  function _dropSavedScheduleNoSave(schedule) {
+    var index = _savedSchedules.findIndex(function(savedSchedule) {
+      return savedSchedule.id === schedule.id;
+    });
+    if (index < 0) {
+      return false;
+    }
+    _savedSchedules.splice(index, 1);
+    return true;
+  }
+
+  function dropSavedSchedule(schedule) {
+    var success = _dropSavedScheduleNoSave(schedule);
+    if (success) {
+      _saveSchedulesToCookie();
+    }
+    return success;
+  }
+
+  function registerDropSavedScheduleListener(listener) {
+    _dropSavedScheduleListeners.push(listener);
+  }
+
   return {
     isReady: isReady,
     registerSetReadyListener: registerSetReadyListener,
@@ -708,7 +789,12 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     getSchedulingOptions: getSchedulingOptions,
     setSchedulingOption: setSchedulingOption,
     filterSchedules: filterSchedules,
-    reorderSchedules: reorderSchedules
+    reorderSchedules: reorderSchedules,
+    getSavedSchedules: getSavedSchedules,
+    addSavedSchedule: addSavedSchedule,
+    dropSavedSchedule: dropSavedSchedule,
+    registerAddSavedScheduleListener: registerAddSavedScheduleListener,
+    registerDropSavedScheduleListener: registerDropSavedScheduleListener
   };
 }
 angular.module('scheduleBuilder').factory('scheduleFactory', [
