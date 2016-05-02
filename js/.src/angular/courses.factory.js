@@ -10,15 +10,17 @@ function courses($http, $q) {
   var _coursesQBySubjectArea = {};
 
   var _subjectAreasQ = $q.all([
-    $http.get(departmentsUrl),
+    $http.get(departmentsUrl).then(function(response) {
+      return response.data;
+    }),
     $http.get(subjectAreaAbbrvsUrl).then(function(response) {
-      return response;
+      return response.data;
     }, function() {
-      return {data: {}};
+      return {};
     })
-  ]).then(function(responses) {
-    var subjectAreas = responses[0].data.subjectAreas;
-    var abbrvs = responses[1].data;
+  ]).then(function(results) {
+    var subjectAreas = results[0].subjectAreas;
+    var abbrvs = results[1];
     return Object.keys(subjectAreas).map(function(code) {
       return {
         code: code,
