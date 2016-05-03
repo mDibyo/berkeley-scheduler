@@ -1,6 +1,15 @@
 <p align="right">
-  
-  <md-button class="md-raised" ng-click="dvm.toggleOptions()">
+  <md-button
+      class="md-raised"
+      ng-click="dvm.toggleSavedSchedules(!dvm.showSavedSchedules)"
+      ng-class="{
+        'md-primary': dvm.savedSchedules.length > 0,
+        'schedule-button': dvm.savedSchedules.length > 0
+      }">
+    Saved Schedules
+  </md-button>
+
+  <md-button class="md-raised" ng-click="dvm.toggleOptions(!dvm.showOptions)">
     Scheduling Options
   </md-button>
 
@@ -16,7 +25,7 @@
   </span>
 </p>
 
-<div>
+<div ng-show="dvm.showSavedSchedules">
   <div ng-if="dvm.savedSchedules.length > 0">
     <div layout="row" layout-wrap>
       <div

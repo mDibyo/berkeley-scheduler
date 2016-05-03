@@ -95,6 +95,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     if (schedulingOptions === undefined) {
       schedulingOptions = {}
     }
+    schedulingOptions.showSavedSchedules =
+      schedulingOptions.showSavedSchedules || false;
     schedulingOptions.showOptions =
       schedulingOptions.showOptions || false;
     schedulingOptions.minimizeGaps =

@@ -28,10 +28,12 @@ function sbGenerateSchedulesDirective() {
 
     vm.scheduleIsStale = scheduleFactory.isStale();
     vm.generateMessage = 'Generate Schedules';
+    vm.showSavedSchedules = schedulingOptions.showSavedSchedules;
     vm.showOptions = schedulingOptions.showOptions;
+    vm.toggleSavedSchedules = toggleSavedSchedules;
+    vm.toggleOptions = toggleOptions;
     vm.viewSchedules = viewSchedules;
     vm.generateAndViewSchedules = generateAndViewSchedules;
-    vm.toggleOptions = toggleOptions;
 
     vm.gapOptions = {
       minimize: 'minimizeGaps',
@@ -120,8 +122,19 @@ function sbGenerateSchedulesDirective() {
       });
     }
 
-    function toggleOptions() {
-      vm.showOptions = !vm.showOptions;
+    function toggleSavedSchedules(showSavedSchedules) {
+      if (showSavedSchedules) {
+        toggleOptions(false);
+      }
+      vm.showSavedSchedules = showSavedSchedules;
+      scheduleFactory.setSchedulingOption('showSavedSchedules', vm.showSavedSchedules);
+    }
+
+    function toggleOptions(showOptions) {
+      if (showOptions) {
+        toggleSavedSchedules(false);
+      }
+      vm.showOptions = showOptions;
       scheduleFactory.setSchedulingOption('showOptions', vm.showOptions);
     }
 
