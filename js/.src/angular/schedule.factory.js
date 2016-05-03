@@ -745,6 +745,9 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return false;
     }
     _savedSchedules.splice(index, 1);
+    _dropSavedScheduleListeners.forEach(function(listener) {
+      listener(schedule);
+    });
     return true;
   }
 

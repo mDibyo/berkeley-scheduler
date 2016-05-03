@@ -1,4 +1,5 @@
 <p align="right">
+  
   <md-button class="md-raised" ng-click="dvm.toggleOptions()">
     Scheduling Options
   </md-button>
@@ -14,6 +15,31 @@
     </md-button>
   </span>
 </p>
+
+<div>
+  <div ng-if="dvm.savedSchedules.length > 0">
+    <div layout="row" layout-wrap>
+      <div
+          class="saved-schedule"
+          layout="column" layout-align="center center"
+          ng-repeat="schedule in dvm.savedSchedules track by schedule.id"
+          ng-click="dvm.goToState('schedule.viewSchedule', {scheduleId: schedule.id})">
+        <div class="saved-schedule-drop" ng-click="dvm.dropSavedSchedule($event, schedule)">
+          <i class="material-icons md-light">close</i>
+        </div>
+        <div flex></div>
+        <div layout-padding>
+          {{$index + 1}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-if="dvm.savedSchedules.length === 0">
+    Save your favorite schedules and they will show up here.
+  </div>
+  <br>
+  <md-divider></md-divider>
+</div>
 
 <div ng-show="dvm.showOptions">
   <div layout="row" layout-padding>
