@@ -95,6 +95,30 @@ md-input-container.schedule-option {
     width: 150px;
 }
 
+.saved-schedule {
+    width: 48px;
+    height: 60px;
+    border: 3px solid #003262;
+    cursor: pointer;
+    position: relative;
+    margin: 2px;
+}
+
+.saved-schedule-drop {
+    background-color: #003262;
+    cursor: pointer;
+    position: absolute;
+    right: -3px;
+    top: -3px;
+    z-index: 20;
+}
+
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
 .schedule-button {
     color: #ffffff !important;
 }
