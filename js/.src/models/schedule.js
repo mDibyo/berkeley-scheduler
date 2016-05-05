@@ -1,5 +1,7 @@
 'use strict';
 
+var Meeting = require('./meeting');
+
 function Schedule(userId, sections) {
   this.courses = {};
   this.meetingsByDay = {
@@ -35,6 +37,19 @@ function Schedule(userId, sections) {
 
   this.selected = true;
 }
+
+Schedule.prototype.getTimeFootprint = function() {
+  Meeting.dayAbrvs.forEach(function(dayAbrv) {
+    return dayAbrv[1] +
+      this.meetingsByDay[dayAbrv[0]].forEach(function(section) {
+        return section.meeting.startTime.getTotalMinutes() + '-' + section.meeting.endTime.getTotalMinutes();
+      }).reduce(function(a, b) {
+        return a + '.' + b;
+      });
+  }, this).reduce(function(a, b) {
+    return a + b;
+  });
+};
 
 Schedule.generateId = function(idComponentList) {
   var userId = idComponentList.shift();

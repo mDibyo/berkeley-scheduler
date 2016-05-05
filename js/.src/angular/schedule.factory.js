@@ -831,6 +831,80 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     registerDropSavedScheduleListener: registerDropSavedScheduleListener
   };
 }
+
+var ScheduleGroup = require('../models/scheduleGroup');
+
+function scheduleFactoryNew($q, $timeout, reverseLookup) {
+  var _primaryUserId = 'samplePrimaryUserId';
+  var _schedulingOptions = {};
+  var _courses = {};
+  var _currentScheduleGroup = null;
+  var _scheduleIdsByFootprint = {};
+  var _footprintList = [];
+  var _filterFns = {};
+  var _orderByFns = {};
+
+
+  function generateSchedulesQ() {
+    return $timeout(function() {
+      // Get selected course
+      var selectedCourses = Object.keys(_courses).map(function(courseId) {
+        return _courses[courseId];
+      }).filter(function(course) {
+        return course.selected;
+      });
+
+      // Get Schedule Group
+      _currentScheduleGroup = new ScheduleGroup(_primaryUserId, selectedCourses);
+
+      // Map schedules to footprints
+      _scheduleIdsByFootprint = {};
+      var footprint = null;
+      var schedule = _currentScheduleGroup.nextSchedule();
+      while (schedule != null) {
+        footprint = schedule.getTimeFootprint();
+        if (!scheduleIdsByFootprint.hasOwnProperty(footprint)) {
+          scheduleIdsByFootprint[footprint] = [];
+        }
+        scheduleIdsByFootprint[footprint].push(schedule.id);
+      }
+
+      // Filter footprints
+      _footprintList = Object.keys(scheduleIdsByFootprint);
+      Object.keys(_filterFns).forEach(function(filterFn) {
+        _footprintList = _footprintList.filter(function(footprint) {
+          return filterFn(footprint);
+        });
+      });
+
+      // Reorder footprints
+      var orderByOptions = Object.keys(_orderByFns).filter(function(option) {
+        return _schedulingOptions[option];
+      });
+      var orderByValues = {};
+      var value;
+      _footprintList.sort(function(a, b) {
+        if (!orderByValues.hasOwnProperty(a)) {
+          value = 0;
+          orderByOptions.forEach(function(option) {
+            value += _orderByFns[option](a);
+          });
+          orderByValues[a] = value;
+        }
+        if (!orderByValues.hasOwnProperty(b)) {
+          value = 0;
+          orderByOptions.forEach(function(option) {
+            value += _orderByFns[option](b);
+          });
+          orderByValues[b] = value;
+        }
+        return orderByValues[b] - orderByValues[a];
+      });
+    });
+  }
+  return {}
+}
+
 angular.module('scheduleBuilder').factory('scheduleFactory', [
   '$q',
   '$timeout',

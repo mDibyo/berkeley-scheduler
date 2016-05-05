@@ -31,12 +31,28 @@ ScheduleGroup.generateId = function(userId, courses) {
   return Schedule.generateId(idComponentList);
 };
 
-ScheduleGroup.prototype.next = function() {
-  this._updateIterator();
-  var sectionIds = this.sectionChoices.map(function(choices, index) {
-    return choices[this.sectionChoiceIterator[index]];
+ScheduleGroup.prototype._nextScheduleSectionIds = function() {
+  if (!this._updateIterator()) {
+    return [];
+  }
+  return this.sectionChoices.map(function(choices, index) {
+    return choices[index][this.sectionChoiceIterator[index]];
   }, this);
-  return this._getScheduleWithSections(sectionIds);
+};
+
+ScheduleGroup.prototype.nextSchedule = function() {
+  var sections = this._nextScheduleSectionIds();
+  return this._getScheduleWithSections(sections);
+};
+
+ScheduleGroup.prototype.nextScheduleId = function() {
+  var sectionIds = this._nextScheduleSectionIds().map(function(section) {
+    return section.id
+  });
+  if (sectionIds.length === 0) {
+    return null;
+  }
+  return Schedule.generateId([this.userId].concat(sectionIds));
 };
 
 ScheduleGroup.prototype.getScheduleWithId = function(scheduleId) {
@@ -75,6 +91,9 @@ ScheduleGroup.prototype._updateIterator = function() {
 };
 
 ScheduleGroup.prototype._getScheduleWithSections = function(sections) {
+  if (sections.length === 0) {
+    return null;
+  }
   return new Schedule(this.userId, sections);
 };
 
