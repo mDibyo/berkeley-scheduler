@@ -30,6 +30,7 @@ function Course(courseJson) {
     return section;
   }, this);
 
+  this.selected = false;
   this.color = null;
   this.view = false;
 }
@@ -88,6 +89,7 @@ Course.prototype.getSectionsByType = function(type) {
 };
 
 Course.prototype.add = function() {
+  this.selected = true;
   if (!Course.courseColors.hasOwnProperty(this.id)) {
     Course.courseColors[this.id] = Course.getRegisteredColor();
   }
@@ -95,6 +97,7 @@ Course.prototype.add = function() {
 };
 
 Course.prototype.drop = function() {
+  this.selected = false;
   delete Course.courseColors[this.id];
   Course.unRegisterColor(this.color);
 };
