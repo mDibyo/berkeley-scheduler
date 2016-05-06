@@ -115,8 +115,11 @@ function sbGenerateSchedulesDirective() {
     function generateAndViewSchedules() {
       vm.generateMessage = 'Generating';
       scheduleFactory.generateSchedulesQ().then(function() {
-        scheduleFactory.filterSchedules();
-        scheduleFactory.reorderSchedules();
+        console.log('completed generating');
+        //scheduleFactory.filterSchedules();
+        //console.log('completed filtering');
+        scheduleFactory.filterAndReorderSchedules();
+        //console.log('completed reordering');
         vm.generateMessage = 'Generate Schedules';
         viewSchedules();
       });
@@ -159,7 +162,8 @@ function sbGenerateSchedulesDirective() {
         scheduleFactory.setSchedulingOption('preferAfternoons', false);
         scheduleFactory.setSchedulingOption('preferEvenings', false);
       }
-      scheduleFactory.reorderSchedules();
+      //scheduleFactory.reorderSchedules();
+      scheduleFactory.filterAndReorderSchedules();
     }
 
     function onChangePreferPartOfDay() {
@@ -190,19 +194,22 @@ function sbGenerateSchedulesDirective() {
         scheduleFactory.setSchedulingOption('minimizeGaps', false);
         scheduleFactory.setSchedulingOption('maximizeGaps', false);
       }
-      scheduleFactory.reorderSchedules();
+      //scheduleFactory.reorderSchedules();
+      scheduleFactory.filterAndReorderSchedules();
     }
 
     function onChangeNoTimeConflicts() {
       vm.disablePreferNoTimeConflicts = vm.noTimeConflicts;
       scheduleFactory.setSchedulingOption('noTimeConflicts', vm.noTimeConflicts);
-      scheduleFactory.filterSchedules();
-      scheduleFactory.reorderSchedules();
+      //scheduleFactory.filterSchedules();
+      //scheduleFactory.reorderSchedules();
+      scheduleFactory.filterAndReorderSchedules();
     }
 
     function onChangePreferNoTimeConflicts() {
       schedulingOptions.setSchedulingOption('preferNoTimeConflicts', vm.preferNoTimeConflicts);
-      schedulingOptions.reorderSchedules();
+      //schedulingOptions.reorderSchedules();
+      scheduleFactory.filterAndReorderSchedules();
     }
 
     function onSelectDayStartTime() {
@@ -214,8 +221,9 @@ function sbGenerateSchedulesDirective() {
       vm.dayEndTimes = times;
 
       scheduleFactory.setSchedulingOption('dayStartTime', selectedDayStartTime);
-      scheduleFactory.filterSchedules();
-      scheduleFactory.reorderSchedules();
+      //scheduleFactory.filterSchedules();
+      //scheduleFactory.reorderSchedules();
+      scheduleFactory.filterAndReorderSchedules();
     }
 
     function onSelectDayEndTime() {
@@ -227,8 +235,9 @@ function sbGenerateSchedulesDirective() {
       vm.dayStartTimes = times;
 
       scheduleFactory.setSchedulingOption('dayEndTime', selectedDayEndTime);
-      scheduleFactory.filterSchedules();
-      scheduleFactory.reorderSchedules();
+      //scheduleFactory.filterSchedules();
+      //scheduleFactory.reorderSchedules();
+      scheduleFactory.filterAndReorderSchedules();
     }
 
     function isSelectedDayStartTime(time) {

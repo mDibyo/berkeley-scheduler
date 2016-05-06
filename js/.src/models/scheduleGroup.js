@@ -19,7 +19,6 @@ function ScheduleGroup(userId, courses) {
       }, this));
     }, this);
   }, this);
-
   this.resetIterator();
 }
 
@@ -36,7 +35,7 @@ ScheduleGroup.prototype._nextScheduleSectionIds = function() {
     return [];
   }
   return this.sectionChoices.map(function(choices, index) {
-    return choices[index][this.sectionChoiceIterator[index]];
+    return choices[this.sectionChoiceIterator[index]];
   }, this);
 };
 
