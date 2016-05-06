@@ -43,19 +43,171 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _currScheduleListInfoChangeListeners = {};
   var _currScheduleIdx = 0;
   var _schedulingOptions = _loadSchedulingOptionsFromCookie();
+  //var _orderByFns = {
+  //  minimizeGaps: minimizeGaps,
+  //  maximizeGaps: maximizeGaps,
+  //  preferMornings: preferMornings,
+  //  preferAfternoons: preferAfternoons,
+  //  preferEvenings: preferEvenings,
+  //  preferNoTimeConflicts: preferNoTimeConflicts
+  //};
+  //var _filterFns = {
+  //  noTimeConflicts: noTimeConflicts,
+  //  dayStartTime: dayStartTime,
+  //  dayEndTime: dayEndTime
+  //};
+
+
   var _orderByFns = {
-    minimizeGaps: minimizeGaps,
-    maximizeGaps: maximizeGaps,
-    preferMornings: preferMornings,
-    preferAfternoons: preferAfternoons,
-    preferEvenings: preferEvenings,
-    preferNoTimeConflicts: preferNoTimeConflicts
+    minimizeGaps: function(footprint) {
+      return - _orderByFns.maximizeGaps(footprint);
+    },
+    maximizeGaps: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var total = 0, section, horizon, i, gap;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        if (sections.length >= 2) {
+          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          for (i = 1; i < sections.length; i++) {
+            section = sections[i];
+            if (horizon > 0) {
+              gap = section.meeting.startTime.getTotalMinutes() - horizon;
+              total += Math.max(0, gap) / 60;
+            }
+            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+          }
+        }
+      }
+      return total;
+    },
+    preferMornings: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var totalFor = 0, total = 0;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          total ++;
+          if (sections[i].meeting.endTime.compareTo(Time.noon) <= 0) {
+            totalFor ++;
+          }
+        }
+      }
+      return totalFor / total;
+    },
+    preferAfternoons: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var totalFor = 0, total = 0;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          total ++;
+          if (sections[i].meeting.startTime.compareTo(Time.noon) >= 0) {
+            if (sections[i].meeting.endTime.compareTo(Time.fivePM) <= 0) {
+              totalFor ++;
+            }
+          }
+        }
+      }
+      return totalFor / total;
+    },
+    preferEvenings: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var totalFor = 0, total = 0;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          total ++;
+          if (sections[i].meeting.startTime.compareTo(Time.fivePM) >= 0) {
+            totalFor ++;
+          }
+        }
+      }
+      return totalFor / total;
+    },
+    preferNoTimeConflicts: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var numConflicts = 0, total = 0;
+      var section, horizon, i;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        total += sections.length;
+        if (sections.length >= 2) {
+          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          for (i = 1; i < sections.length; i++) {
+            section = sections[i];
+            if (horizon > 0) {
+              if (section.meeting.startTime.getTotalMinutes() < horizon) {
+                numConflicts ++;
+              }
+            }
+            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+          }
+        }
+      }
+      return numConflicts / total;
+    }
   };
   var _filterFns = {
-    noTimeConflicts: noTimeConflicts,
-    dayStartTime: dayStartTime,
-    dayEndTime: dayEndTime
+    noTimeConflicts: function(footprint) {
+      if (!_schedulingOptions.noTimeConflicts) {
+        return true;
+      }
+
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var section, horizon, i;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        if (sections.length >= 2) {
+          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          for (i = 1; i < sections.length; i++) {
+            section = sections[i];
+            if (horizon > 0) {
+              if (section.meeting.startTime.getTotalMinutes() < horizon) {
+                return false;
+              }
+            }
+            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+          }
+        }
+      }
+      return true;
+    },
+    dayStartTime: function(footprint) {
+      if (_schedulingOptions.dayStartTime == null) {
+        return true;
+      }
+
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        if (sections.length > 0) {
+          if (sections[0].meeting.startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
+            return false;
+          }
+        }
+      }
+      return true;
+    },
+    dayEndTime: function(footprint) {
+      if (_schedulingOptions.dayEndTime == null) {
+        return true;
+      }
+
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].meeting.endTime.compareTo(_schedulingOptions.dayEndTime) > 0) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
   };
+
+
   _loadCoursesFromCookieInto_courses();
   _loadSchedulesFromCookieInto_savedSchedules();
   $q.all(_forReadyQs).then(function() {
@@ -496,45 +648,129 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _dropCourseListeners.push(listener);
   }
 
+  //function generateSchedulesQOld() {
+  //  return $timeout(function() {
+  //    if (!_stale) {
+  //      return;
+  //    }
+  //
+  //    _schedules = {};
+  //    _allScheduleIdList = [];
+  //    var sectionsByCourseType = [];
+  //    for (var id in _courses) {
+  //      var course = _courses[id];
+  //      course.sectionTypes.forEach(function(sectionType) {
+  //        sectionsByCourseType.push(course.getSectionsByType(sectionType).filter(function(section) {
+  //          return section.selected;
+  //        }));
+  //      });
+  //    }
+  //    var numSections = sectionsByCourseType.length;
+  //
+  //    var generateHelper = function(array, n) {
+  //      for (var i = 0, l = sectionsByCourseType[n].length; i < l; i++) {
+  //        var a = array.slice(0);
+  //        a.push(sectionsByCourseType[n][i]);
+  //        if (n === numSections-1) {
+  //          var schedule = new Schedule(_primaryUserId, a);
+  //          _schedules[schedule.id] = schedule;
+  //          _allScheduleIdList.push(schedule.id);
+  //        } else {
+  //          generateHelper(a, n+1);
+  //        }
+  //      }
+  //    };
+  //    generateHelper([], 0);
+  //    _currScheduleIdList = _allScheduleIdList.slice();
+  //    _currScheduleIdx = 0;
+  //    setStale(false);
+  //
+  //    _sendCurrScheduleListInfoChange(true);
+  //  });
+  //}
+
+  var _currScheduleGroup = null;
+  //var _footprintList = [];
+  var _scheduleIdsByFootprint = {};
+
   function generateSchedulesQ() {
     return $timeout(function() {
       if (!_stale) {
         return;
       }
 
-      _schedules = {};
-      _allScheduleIdList = [];
-      var sectionsByCourseType = [];
-      for (var id in _courses) {
-        var course = _courses[id];
-        course.sectionTypes.forEach(function(sectionType) {
-          sectionsByCourseType.push(course.getSectionsByType(sectionType).filter(function(section) {
-            return section.selected;
-          }));
-        });
-      }
-      var numSections = sectionsByCourseType.length;
+      // Get selected course
+      var selectedCourses = Object.keys(_courses).map(function(courseId) {
+        return _courses[courseId];
+      }).filter(function(course) {
+        return course.selected;
+      });
 
-      var generateHelper = function(array, n) {
-        for (var i = 0, l = sectionsByCourseType[n].length; i < l; i++) {
-          var a = array.slice(0);
-          a.push(sectionsByCourseType[n][i]);
-          if (n === numSections-1) {
-            var schedule = new Schedule(_primaryUserId, a);
-            _schedules[schedule.id] = schedule;
-            _allScheduleIdList.push(schedule.id);
-          } else {
-            generateHelper(a, n+1);
-          }
+      // Get Schedule Group
+      _currScheduleGroup = new ScheduleGroup(_primaryUserId, selectedCourses);
+
+      // Map schedules to footprints
+      _scheduleIdsByFootprint = {};
+      var footprint = null;
+      var schedule = _currScheduleGroup.nextSchedule();
+      while (schedule != null) {
+        footprint = schedule.getTimeFootprint();
+        if (!_scheduleIdsByFootprint.hasOwnProperty(footprint)) {
+          _scheduleIdsByFootprint[footprint] = [];
         }
-      };
-      generateHelper([], 0);
-      _currScheduleIdList = _allScheduleIdList.slice();
-      _currScheduleIdx = 0;
-      setStale(false);
+        _scheduleIdsByFootprint[footprint].push(schedule.id);
+        schedule = _currScheduleGroup.nextSchedule();
+      }
 
-      _sendCurrScheduleListInfoChange();
+      setStale(false);
     });
+  }
+
+  function filterAndReorderSchedules() {
+    var footprintList = Object.keys(_scheduleIdsByFootprint);
+    Object.keys(_filterFns).forEach(function(option) {
+      if (!_schedulingOptions[option]) {
+        return;
+      }
+      var filterFn = _filterFns[option];
+      footprintList = footprintList.filter(function(footprint) {
+        return filterFn(footprint);
+      });
+    });
+
+    // Reorder footprints
+    var orderByOptions = Object.keys(_orderByFns).filter(function(option) {
+      return _schedulingOptions[option];
+    });
+    var orderByValues = {};
+    var value;
+    footprintList.sort(function(a, b) {
+      if (!orderByValues.hasOwnProperty(a)) {
+        value = 0;
+        orderByOptions.forEach(function(option) {
+          value += _orderByFns[option](a);
+        });
+        orderByValues[a] = value;
+      }
+      if (!orderByValues.hasOwnProperty(b)) {
+        value = 0;
+        orderByOptions.forEach(function(option) {
+          value += _orderByFns[option](b);
+        });
+        orderByValues[b] = value;
+      }
+      return orderByValues[b] - orderByValues[a];
+    });
+
+    // Flatten out into schedules
+    _currScheduleIdList = footprintList.map(function(footprint) {
+      return _scheduleIdsByFootprint[footprint];
+    }).reduce(function(a, b) {
+      return a.concat(b);
+    }, []);
+    _currScheduleIdx = 0;
+
+    _sendCurrScheduleListInfoChange(true);
   }
 
   function getScheduleQById(scheduleId) {
@@ -607,8 +843,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       _schedules[schedule.id] = schedule;
       if (isPrimaryUser) {
         generateSchedulesQ().then(function() {
-          filterSchedules();
-          reorderSchedules();
+          //filterSchedules();
+          //reorderSchedules();
         });
       }
       return schedule;
@@ -675,7 +911,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _saveSchedulingOptionsToCookie();
   }
 
-  function filterSchedules() {
+  function filterSchedulesOld() {
     var currScheduleId = getCurrScheduleId();
 
     _currScheduleIdList = _allScheduleIdList.slice();
@@ -695,7 +931,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _sendCurrScheduleListInfoChange(scheduleListChanged);
   }
 
-  function reorderSchedules() {
+  function reorderSchedulesOld() {
     var currScheduleId = getCurrScheduleId();
 
     var orderByOptions = Object.keys(_orderByFns);
@@ -821,9 +1057,15 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
     getSchedulingOptions: getSchedulingOptions,
     setSchedulingOption: setSchedulingOption,
-
-    filterSchedules: filterSchedules,
-    reorderSchedules: reorderSchedules,
+//<<<<<<< 0e61acf7f2784e78ec4e433497d8ceeffabccb0a
+//
+//    filterSchedules: filterSchedules,
+//    reorderSchedules: reorderSchedules,
+//=======
+    //filterSchedules: filterSchedules,
+    //reorderSchedules: reorderSchedules,
+    filterAndReorderSchedules: filterAndReorderSchedules,
+//>>>>>>> Integrate new schedule generator into existing system
     getSavedSchedules: getSavedSchedules,
     addSavedSchedule: addSavedSchedule,
     dropSavedSchedule: dropSavedSchedule,
@@ -838,15 +1080,166 @@ function scheduleFactoryNew($q, $timeout, reverseLookup) {
   var _primaryUserId = 'samplePrimaryUserId';
   var _schedulingOptions = {};
   var _courses = {};
+  var _stale = true;
   var _currentScheduleGroup = null;
-  var _scheduleIdsByFootprint = {};
-  var _footprintList = [];
-  var _filterFns = {};
-  var _orderByFns = {};
+  var _currScheduleIdList = [];
+  //var scheduleIdsByFootprint = {};
+  //var _footprintList = [];
+  var _orderByFns = {
+    minimizeGaps: function(footprint) {
+      return - _orderByFns.maximizeGaps(footprint);
+    },
+    maximizeGaps: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var total = 0, section, horizon, i, gap;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        if (sections.length >= 2) {
+          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          for (i = 1; i < sections.length; i++) {
+            section = sections[i];
+            if (horizon > 0) {
+              gap = section.meeting.startTime.getTotalMinutes() - horizon;
+              total += Math.max(0, gap) / 60;
+            }
+            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+          }
+        }
+      }
+      return total;
+    },
+    preferMornings: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var totalFor = 0, total = 0;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          total ++;
+          if (sections[i].meeting.endTime.compareTo(Time.noon) <= 0) {
+            totalFor ++;
+          }
+        }
+      }
+      return totalFor / total;
+    },
+    preferAfternoons: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var totalFor = 0, total = 0;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          total ++;
+          if (sections[i].meeting.startTime.compareTo(Time.noon) >= 0) {
+            if (sections[i].meeting.endTime.compareTo(Time.fivePM) <= 0) {
+              totalFor ++;
+            }
+          }
+        }
+      }
+      return totalFor / total;
+    },
+    preferEvenings: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var totalFor = 0, total = 0;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          total ++;
+          if (sections[i].meeting.startTime.compareTo(Time.fivePM) >= 0) {
+            totalFor ++;
+          }
+        }
+      }
+      return totalFor / total;
+    },
+    preferNoTimeConflicts: function(footprint) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var numConflicts = 0, total = 0;
+      var section, horizon, i;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        total += sections.length;
+        if (sections.length >= 2) {
+          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          for (i = 1; i < sections.length; i++) {
+            section = sections[i];
+            if (horizon > 0) {
+              if (section.meeting.startTime.getTotalMinutes() < horizon) {
+                numConflicts ++;
+              }
+            }
+            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+          }
+        }
+      }
+      return numConflicts / total;
+    }
+  };
+  var _filterFns = {
+    noTimeConflicts: function(footprint) {
+      if (!_schedulingOptions.noTimeConflicts) {
+        return true;
+      }
 
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var section, horizon, i;
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        if (sections.length >= 2) {
+          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          for (i = 1; i < sections.length; i++) {
+            section = sections[i];
+            if (horizon > 0) {
+              if (section.meeting.startTime.getTotalMinutes() < horizon) {
+                return false;
+              }
+            }
+            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+          }
+        }
+      }
+      return true;
+    },
+    dayStartTime: function(footprint) {
+      if (_schedulingOptions.dayStartTime == null) {
+        return true;
+      }
+
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        if (sections.length > 0) {
+          if (sections[0].meeting.startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
+            return false;
+          }
+        }
+      }
+      return true;
+    },
+    dayEndTime: function(footprint) {
+      if (_schedulingOptions.dayEndTime == null) {
+        return true;
+      }
+
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      for (var day in meetingsByDay) {
+        var sections = meetingsByDay[day];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].meeting.endTime.compareTo(_schedulingOptions.dayEndTime) > 0) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+  };
 
   function generateSchedulesQ() {
     return $timeout(function() {
+      if (!_stale) {
+        return;
+      }
+
       // Get selected course
       var selectedCourses = Object.keys(_courses).map(function(courseId) {
         return _courses[courseId];
@@ -855,12 +1248,12 @@ function scheduleFactoryNew($q, $timeout, reverseLookup) {
       });
 
       // Get Schedule Group
-      _currentScheduleGroup = new ScheduleGroup(_primaryUserId, selectedCourses);
+      _currScheduleGroup = new ScheduleGroup(_primaryUserId, selectedCourses);
 
       // Map schedules to footprints
-      _scheduleIdsByFootprint = {};
+      var scheduleIdsByFootprint = {};
       var footprint = null;
-      var schedule = _currentScheduleGroup.nextSchedule();
+      var schedule = _currScheduleGroup.nextSchedule();
       while (schedule != null) {
         footprint = schedule.getTimeFootprint();
         if (!scheduleIdsByFootprint.hasOwnProperty(footprint)) {
@@ -870,9 +1263,9 @@ function scheduleFactoryNew($q, $timeout, reverseLookup) {
       }
 
       // Filter footprints
-      _footprintList = Object.keys(scheduleIdsByFootprint);
+      var footprintList = Object.keys(scheduleIdsByFootprint);
       Object.keys(_filterFns).forEach(function(filterFn) {
-        _footprintList = _footprintList.filter(function(footprint) {
+        footprintList = footprintList.filter(function(footprint) {
           return filterFn(footprint);
         });
       });
@@ -883,7 +1276,7 @@ function scheduleFactoryNew($q, $timeout, reverseLookup) {
       });
       var orderByValues = {};
       var value;
-      _footprintList.sort(function(a, b) {
+      footprintList.sort(function(a, b) {
         if (!orderByValues.hasOwnProperty(a)) {
           value = 0;
           orderByOptions.forEach(function(option) {
@@ -900,6 +1293,17 @@ function scheduleFactoryNew($q, $timeout, reverseLookup) {
         }
         return orderByValues[b] - orderByValues[a];
       });
+
+      // Flatten out into schedules
+      _currScheduleIdList = footprintList.map(function(footprint) {
+        return scheduleIdsByFootprint[footprint];
+      }).reduce(function(a, b) {
+        return a.concat(b);
+      });
+      _currScheduleIdx = 0;
+      setStale(false);
+
+      _sendCurrScheduleListInfoChange(true);
     });
   }
   return {}

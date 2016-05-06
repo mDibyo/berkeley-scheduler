@@ -38,17 +38,21 @@ function Schedule(userId, sections) {
   this.selected = true;
 }
 
+Schedule.timeFootprints = {};
+
 Schedule.prototype.getTimeFootprint = function() {
-  Meeting.dayAbrvs.forEach(function(dayAbrv) {
+  var footprint = Meeting.dayAbrvs.map(function(dayAbrv) {
     return dayAbrv[1] +
-      this.meetingsByDay[dayAbrv[0]].forEach(function(section) {
+      this.meetingsByDay[dayAbrv[0]].map(function(section) {
         return section.meeting.startTime.getTotalMinutes() + '-' + section.meeting.endTime.getTotalMinutes();
       }).reduce(function(a, b) {
         return a + '.' + b;
       });
   }, this).reduce(function(a, b) {
-    return a + b;
-  });
+    return a + '|' + b;
+  }, '');
+  Schedule.timeFootprints[footprint] = this.meetingsByDay;
+  return footprint;
 };
 
 Schedule.generateId = function(idComponentList) {
