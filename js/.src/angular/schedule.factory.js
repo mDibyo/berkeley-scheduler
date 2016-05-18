@@ -711,18 +711,49 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
       // Map schedules to footprints
       _scheduleIdsByFootprint = {};
-      var footprint = null;
+      var deferred = $q.defer();
+      var generatorChunkSize = 1000;
       var schedule = _currScheduleGroup.nextSchedule();
-      while (schedule != null) {
-        footprint = schedule.getTimeFootprint();
-        if (!_scheduleIdsByFootprint.hasOwnProperty(footprint)) {
-          _scheduleIdsByFootprint[footprint] = [];
-        }
-        _scheduleIdsByFootprint[footprint].push(schedule.id);
-        schedule = _currScheduleGroup.nextSchedule();
+      var footprint = null;
+
+      function generateSchedulesHelperAsync() {
+        console.log('here');
+        return $timeout(function() {
+          var numGenerated = 0;
+          while (numGenerated < generatorChunkSize) {
+            if (schedule == null) {
+              deferred.resolve();
+              return;
+            }
+            footprint = schedule.getTimeFootprint();
+            if (!_scheduleIdsByFootprint.hasOwnProperty(footprint)) {
+              _scheduleIdsByFootprint[footprint] = [];
+            }
+            _scheduleIdsByFootprint[footprint].push(schedule.id);
+            numGenerated ++;
+            schedule = _currScheduleGroup.nextSchedule();
+          }
+          return generateSchedulesHelperAsync();
+        });
       }
 
-      setStale(false);
+      //var footprint = null;
+      //var schedule = _currScheduleGroup.nextSchedule();
+      //while (schedule != null) {
+      //  footprint = schedule.getTimeFootprint();
+      //  if (!_scheduleIdsByFootprint.hasOwnProperty(footprint)) {
+      //    _scheduleIdsByFootprint[footprint] = [];
+      //  }
+      //  _scheduleIdsByFootprint[footprint].push(schedule.id);
+      //  schedule = _currScheduleGroup.nextSchedule();
+      //}
+      generateSchedulesHelperAsync();
+      return deferred.promise.then(function() {
+        console.log('returning from promise');
+        setStale(false);
+        _sendCurrScheduleListInfoChange(true);
+
+      });
     });
   }
 
@@ -779,16 +810,25 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     if (!isPrimaryUser) {
       setInDisplayMode(true);
     }
-    var deferred = $q.defer();
-    if (_schedules.hasOwnProperty(scheduleId)) {
-      deferred.resolve(_schedules[scheduleId]);
-      return deferred.promise;
+
+    if (_currScheduleGroup) {
+      var schedule = _currScheduleGroup.getScheduleById(scheduleId);
+      if (schedule) {
+        var deferred = $q.defer();
+        deferred.resolve(schedule);
+        return deferred.promise;
+      }
     }
-    scheduleId = Schedule.normalizeId(scheduleId);
-    if (_schedules.hasOwnProperty(scheduleId)) {
-      deferred.resolve(_schedules[scheduleId]);
-      return deferred.promise;
-    }
+    //var deferred = $q.defer();
+    //if (_schedules.hasOwnProperty(scheduleId)) {
+    //  deferred.resolve(_schedules[scheduleId]);
+    //  return deferred.promise;
+    //}
+    //scheduleId = Schedule.normalizeId(scheduleId);
+    //if (_schedules.hasOwnProperty(scheduleId)) {
+    //  deferred.resolve(_schedules[scheduleId]);
+    //  return deferred.promise;
+    //}
 
     var sectionIdList = Schedule.getSectionIdsFromId(scheduleId);
     var sectionList = [];
@@ -843,8 +883,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       _schedules[schedule.id] = schedule;
       if (isPrimaryUser) {
         generateSchedulesQ().then(function() {
-          //filterSchedules();
-          //reorderSchedules();
+          filterAndReorderSchedules();
         });
       }
       return schedule;

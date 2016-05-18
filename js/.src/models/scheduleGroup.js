@@ -54,9 +54,13 @@ ScheduleGroup.prototype.nextScheduleId = function() {
   return Schedule.generateId([this.userId].concat(sectionIds));
 };
 
-ScheduleGroup.prototype.getScheduleWithId = function(scheduleId) {
+ScheduleGroup.prototype.getScheduleById = function(scheduleId) {
   var found = true;
-  var sections = Schedule.getSectionIdsFromId(scheduleId).map(function(sectionId) {
+  var sectionIds = Schedule.getSectionIdsFromId(scheduleId);
+  if (sectionIds.length != this.sectionChoices.length) {
+    return null;
+  }
+  var sections = sectionIds.map(function(sectionId) {
     var section = this.sections[sectionId];
     if (!section) {
       found = false;
