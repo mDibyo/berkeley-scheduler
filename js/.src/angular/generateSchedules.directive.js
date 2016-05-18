@@ -115,12 +115,10 @@ function sbGenerateSchedulesDirective() {
     function generateAndViewSchedules() {
       vm.generateMessage = 'Generating';
       scheduleFactory.generateSchedulesQ().then(function() {
-        console.log('completed generating');
-        //scheduleFactory.filterSchedules();
-        //console.log('completed filtering');
         scheduleFactory.filterAndReorderSchedules();
-        //console.log('completed reordering');
+        console.log('first here');
         vm.generateMessage = 'Generate Schedules';
+        console.log('second here');
         viewSchedules();
       });
     }
