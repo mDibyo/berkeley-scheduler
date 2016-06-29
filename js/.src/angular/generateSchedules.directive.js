@@ -116,9 +116,7 @@ function sbGenerateSchedulesDirective() {
       vm.generateMessage = 'Generating';
       scheduleFactory.generateSchedulesQ().then(function() {
         scheduleFactory.filterAndReorderSchedules();
-        console.log('first here');
         vm.generateMessage = 'Generate Schedules';
-        console.log('second here');
         viewSchedules();
       });
     }

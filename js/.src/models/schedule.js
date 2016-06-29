@@ -47,7 +47,7 @@ Schedule.prototype.getTimeFootprint = function() {
         return section.meeting.startTime.getTotalMinutes() + '-' + section.meeting.endTime.getTotalMinutes();
       }).reduce(function(a, b) {
         return a + '.' + b;
-      });
+      }, '');
   }, this).reduce(function(a, b) {
     return a + '|' + b;
   }, '');
