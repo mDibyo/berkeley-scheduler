@@ -21,11 +21,19 @@ COURSES_FORMAT = '{}/{}/{}.json'
 CLASSES_FORMAT = '{}/{}/{}.json'
 
 
-chars_to_remove = [' ', '&', ',', '/', '-']
+CHARS_TO_REMOVE = [' ', '&', ',', '/', '-']
+
+COURSES_TO_ADD = {
+    'COG SCI': [{
+        'courseNumber': 'C100',
+        'subjectAreaCode': 'COG SCI',
+        'units': 3,
+    }]
+}
 
 
 def get_subject_area_code(sac):
-    for ch in chars_to_remove:
+    for ch in CHARS_TO_REMOVE:
         sac = sac.replace(ch, '')
     return sac
 
@@ -54,15 +62,19 @@ def request_course(course):
 
 
 def extract_section_info_from_json(section_json):
-    assert len(section_json['meeting']) == 1
-    meeting_json = section_json['meeting'][0]
+    if 'meetings' in section_json:
+        # TODO: Add support for multiple meetings
+        # assert len(section_json['meetings']) == 1
+        meeting_json = section_json['meetings'][0]
+    else:
+        meeting_json = {}
 
     extracted_instructors = []
-    for instructor_json in section_json['meeting'][0]['assignedInstructor']:
-        if instructor_json['instructor']['name']:
+    for instructor_json in meeting_json.get('assignedInstructors', []):
+        if instructor_json['instructor']['names']:
             extracted_instructors.append({
-                'name': instructor_json['instructor']['name'][0]['formattedName'],
-                'role': instructor_json['role']['description'],
+                'name': instructor_json['instructor']['names'][0]['formattedName'],
+                'role': instructor_json['role'].get('description', None),
             })
 
     return {
@@ -70,7 +82,7 @@ def extract_section_info_from_json(section_json):
         'primary': section_json['association']['primary'],
         'type': section_json['component']['code'],
         'id': section_json['id'],
-        'location': section_json['meeting'][0]['location'],
+        'location': meeting_json.get('location', None),
         'instructors': extracted_instructors,
         'time': {
             'startTime': meeting_json.get('startTime', None),
@@ -173,8 +185,6 @@ def main(only_new=False):
     num_total = len(subject_areas)
     completed = set()
 
-    subject_areas = ['COG SCI']
-
     for subject_area in subject_areas:
         if subject_area in completed:
             continue
@@ -198,28 +208,30 @@ def main(only_new=False):
         else:
             visited = set()
 
-        courses.append({
-            'courseNumber': 'C100',
-            'subjectAreaCode': 'COG SCI',
-            'units': 3
-        })
+        if subject_area in COURSES_TO_ADD:
+            courses.extend(COURSES_TO_ADD[subject_area])
 
         try:
             for course in courses:
                 if course['courseNumber'] in visited:
                     continue
-                visited.add(course['courseNumber'])
-                response = request_course(course)
-                if response and response['apiResponse']['httpStatus']['code'] == '200':
-                    if 'classSections' in response['apiResponse']['response']:
-                        sections_json = \
-                            response['apiResponse']['response']['classSections']['classSection']
-                        _class = extract_class_info_from_json(sections_json)
-                        _class['units'] = course['units']
-                    else:
-                        sections_json = response['apiResponse']['response']['classes']['class']
-                        _class = extract_single_section_info_from_json(sections_json)
-                    classes[course['courseNumber']] = _class
+                try:
+                    visited.add(course['courseNumber'])
+                    response = request_course(course)
+                    if response and response['httpStatus']['code'] == '200':
+                        if 'classSections' in response['response']:
+                            sections_json = \
+                                response['response']['classSections']
+                            _class = extract_class_info_from_json(sections_json)
+                            _class['units'] = course['units']
+                        else:
+                            sections_json = response['response']['classes']['class']
+                            _class = extract_single_section_info_from_json(sections_json)
+                        classes[course['courseNumber']] = _class
+                except KeyboardInterrupt:
+                    raise
+                except Exception:
+                    continue
         except KeyboardInterrupt:
             print('completed processing: {}'.format(completed))
             break
