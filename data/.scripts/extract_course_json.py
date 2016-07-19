@@ -2,6 +2,7 @@
 
 import json
 from collections import namedtuple
+import sys
 
 
 Range = namedtuple('Range', ['start', 'end'])
@@ -54,7 +55,8 @@ def extract_all_course_info():
                     json.dump(output_courses, f, indent=4)
         except IOError as e:
             print(e)
+    return 0
 
 
 if __name__ == '__main__':
-    extract_all_course_info()
+    sys.exit(extract_all_course_info())
