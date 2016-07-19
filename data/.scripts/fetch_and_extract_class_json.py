@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import sys
 import urllib
 from urllib import parse as url_parse, request as url_request
 
@@ -230,17 +231,20 @@ def main(only_new=False):
                         classes[course['courseNumber']] = _class
                 except KeyboardInterrupt:
                     raise
-                except Exception:
+                except Exception as e:
+                    print(e)
                     continue
         except KeyboardInterrupt:
             print('completed processing: {}'.format(completed))
-            break
+            return 1
         finally:
             with open(output_file, 'w') as f:
                 json.dump(classes, f)
 
         completed.add(subject_area)
         print('{}/{} subject areas completed'.format(len(completed), num_total))
+
+    return 0
 
 
 if __name__ == '__main__':
@@ -254,4 +258,4 @@ if __name__ == '__main__':
         exit()
     SIS_CLASS_API_APP_KEY = os.environ[SIS_CLASS_API_APP_KEY_ENV]
 
-    main(only_new=False)
+    sys.exit(main(only_new=False))

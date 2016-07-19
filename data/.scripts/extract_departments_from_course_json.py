@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 import json
+import sys
 
 
 EXTRACTED_COURSES_DIR = 'intermediate/extracted-course-json'
@@ -56,6 +57,8 @@ def run_for_range(start, end):
                                                subject_area), 'w') as f:
             json.dump(courses, f, indent=4)
 
+    return 0
+
 
 if __name__ == '__main__':
-    run_for_range(1, 400)
+    sys.exit(run_for_range(1, 400))

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import sys
 
 
 TERM = 'fall-2016'
@@ -75,6 +76,8 @@ def main():
     with open(output_file, 'w') as f:
         json.dump(_1ary_section_id_to_subject_area, f)
 
+    return 0
+
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
