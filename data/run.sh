@@ -2,12 +2,14 @@
 
 source .set_credentials.sh
 
+daily=true
+
 # Fetch course info
-./.scripts/fetch_course_json.sh
-./.scripts/extract_course_json.py
+${daily} || ./.scripts/fetch_course_json.sh
+${daily} || ./.scripts/extract_course_json.py
 
 # Extract into departments
-./.scripts/extract_departments_from_course_json.py
+${daily} || ./.scripts/extract_departments_from_course_json.py
 
 # Fetch classes for a term
 ./.scripts/fetch_and_extract_class_json.py
