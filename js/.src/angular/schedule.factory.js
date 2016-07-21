@@ -4,6 +4,7 @@ var Schedule = require('../models/schedule');
 var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 var primaryUserIdCookieKey = 'primaryUserId';
 var userIdListCookieKey = 'allUserIds';
+var preferencesCookieKeyFormat = '{}.preferences';
 var savedCoursesCookieKeyFormat = '{}.addedCourses';
 var savedSchedulesCookieKeyFormat = '{}.savedSchedules';
 var schedulingOptionsCookieKeyFormat = '{}.schedulingOptions';
@@ -24,6 +25,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   })();
   var _primaryUserId = _loadPrimaryUserIdFromCookie();
   var _userIdList = _loadUserIdListFromCookie();
+  var _preferences = _loadPreferencesFromCookie();
 
   var _courses = {};
   var _currCourse = null;
@@ -88,13 +90,26 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     return userIdList;
   }
 
+  function _loadPreferencesFromCookie() {
+    var preferencesCookieKey =
+      preferencesCookieKeyFormat.replace('{}', _primaryUserId);
+    var preferences = $cookies.getObject(preferencesCookieKey) || {};
+    if (preferences.showMobUnoptDialog === undefined) {
+      preferences.showMobUnoptDialog = true;
+    }
+    return preferences;
+  }
+
+  function _savePreferencesToCookie() {
+    var preferencesCookieKey =
+      preferencesCookieKeyFormat.replace('{}', _primaryUserId);
+    $cookies.putObject(preferencesCookieKey, _preferences);
+  }
+
   function _loadSchedulingOptionsFromCookie() {
     var schedulingOptionsCookieKey =
       schedulingOptionsCookieKeyFormat.replace('{}', _primaryUserId);
-    var schedulingOptions = $cookies.getObject(schedulingOptionsCookieKey);
-    if (schedulingOptions === undefined) {
-      schedulingOptions = {}
-    }
+    var schedulingOptions = $cookies.getObject(schedulingOptionsCookieKey) || {};
     schedulingOptions.showSavedSchedules =
       schedulingOptions.showSavedSchedules || false;
     schedulingOptions.showOptions =
@@ -342,6 +357,15 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       }
     }
     return true;
+  }
+
+  function getPreferences() {
+    return angular.copy(_preferences);
+  }
+
+  function setPreference(preference, choice) {
+    _preferences[preference] = choice;
+    _savePreferencesToCookie();
   }
 
   function isReady() {
@@ -766,6 +790,9 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   return {
+    getPreferences: getPreferences,
+    setPreference: setPreference,
+
     isReady: isReady,
     registerSetReadyListener: registerSetReadyListener,
     isStale: isStale,
@@ -791,8 +818,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     getCurrScheduleListInfo: getCurrScheduleListInfo,
     registerCurrScheduleListInfoChangeListener: registerCurrScheduleListInfoChangeListener,
     setCurrentScheduleById: setCurrentScheduleById,
+
     getSchedulingOptions: getSchedulingOptions,
     setSchedulingOption: setSchedulingOption,
+
     filterSchedules: filterSchedules,
     reorderSchedules: reorderSchedules,
     getSavedSchedules: getSavedSchedules,

@@ -1,0 +1,20 @@
+<md-dialog aria-label="Mobile unoptimized dialog">
+  <md-dialog-content>
+    <div class="md-dialog-content">
+      <h3 class="md-headline">
+      Thank you for visiting Berkeley Scheduler!
+      </h3>
+      <p>
+      This website has been designed for big screens and may not work well on a small screen.
+      For the best experience, please consider visiting again on a device with a larger screen.
+      </p>
+      <md-checkbox ng-model="vm.doNotShowMobUnoptDialog">
+        Do not show again
+      </md-checkbox>
+    </div>
+  </md-dialog-content>
+
+  <md-dialog-actions>
+    <md-button class="md-raised" ng-click="vm.close()">Close</md-button>
+  </md-dialog-actions>
+</md-dialog>
