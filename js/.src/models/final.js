@@ -143,7 +143,7 @@ Final.getTRCourseTimeToFinalSection = function(course) {
     case 8:
       return Final.meetings.Wednesday36PM;
     case 9:
-      return Final.meetings.Thursday36PM;
+      return Final.meetings.Tuesday36PM;
     case 10:
       return Final.meetings.Friday36PM;
     case 11:
