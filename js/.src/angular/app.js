@@ -23,9 +23,13 @@
   require('./courseFind.controller');
   require('./courseViewAndSelect.controller');
   require('./scheduleViewAndSelect.controller');
+  require('./mobileUnoptimizedDialog.controller');
 
   // Directives
   require('./courseDisplayAndSelect.directive');
   require('./scheduleDisplay.directive');
   require('./generateSchedules.directive');
+
+  // Run
+  require('./run');
 })();
