@@ -27,9 +27,9 @@ body {
 .left-pane,
 .left-pane.md-locked-open-add-active,
 .left-pane.md-locked-open {
-    width:     225px;
-    min-width: 225px;
-    max-width: 225px;
+    width:     250px;
+    min-width: 250px;
+    max-width: 250px;
 }
 
 md-autocomplete {
@@ -55,6 +55,10 @@ md-autocomplete {
     background: #3b7ea1;
 }
 
+.start-add {
+    text-align: center;
+}
+
 .subject-area li {
     line-height: normal;
     height: auto;
@@ -70,7 +74,7 @@ md-autocomplete {
 .right-pane {
     background-color: #ffffff;
     height: 100%;
-    width: 785px;
+    max-width: 785px;
     overflow-y: auto;
 }
 
