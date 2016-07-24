@@ -1,5 +1,6 @@
 var Time = require('../models/time');
 var Schedule = require('../models/schedule');
+var ScheduleGroup = require('../models/scheduleGroup');
 
 var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 var primaryUserIdCookieKey = 'primaryUserId';
@@ -34,14 +35,17 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _dropCourseListeners = [];
   var _setCurrCourseListeners = [];
 
-  var _schedules = {};
   var _savedSchedules = [];
   var _addSavedScheduleListeners = [];
   var _dropSavedScheduleListeners = [];
+  var _currScheduleGroup = null;
+  var _scheduleIdsByFp = {};
   var _currFpList = [];
   var _currScheduleListInfoChangeListeners = {};
   var _currFpIdx = 0;
   var _currFpScheduleIdx = 0;
+  var _currScheduleIdx = 0;
+  var _numSchedules = 0;
   var _schedulingOptions = _loadSchedulingOptionsFromCookie();
   //var _orderByFns = {
   //  minimizeGaps: minimizeGaps,
@@ -651,8 +655,13 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _dropCourseListeners.push(listener);
   }
 
-  var _currScheduleGroup = null;
-  var _scheduleIdsByFp = {};
+  function _updateNumSchedules() {
+    _numSchedules = _currFpList.map(function(footprint) {
+      return _scheduleIdsByFp[footprint].length
+    }).reduce(function(a, b) {
+      return a + b;
+    }, 0);
+  }
 
   function generateSchedulesQ() {
     return $timeout(function() {
@@ -696,6 +705,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       generateSchedulesHelperAsync();
       return deferred.promise.then(function() {
         _currFpList = Object.keys(_scheduleIdsByFp);
+        _updateNumSchedules();
         setStale(false);
         _sendCurrScheduleListInfoChange(true);
 
@@ -706,6 +716,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   function filterAndReorderSchedules() {
     _currFpList = Object.keys(_scheduleIdsByFp);
 
+    // Filter footprints
     Object.keys(_filterFns).forEach(function applyFilterFn(option) {
       if (!_schedulingOptions[option]) {
         return;
@@ -742,6 +753,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
     _currFpIdx = 0;
     _currFpScheduleIdx = 0;
+    _currScheduleIdx = 0;
+    _updateNumSchedules();
     _sendCurrScheduleListInfoChange(true);
   }
 
@@ -809,7 +822,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       });
 
       var schedule = new Schedule(userId, sectionList);
-      _schedules[schedule.id] = schedule;
       if (generateSchedules) {
         return generateSchedulesQ().then(function() {
           filterAndReorderSchedules();
@@ -863,8 +875,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   function getCurrScheduleListInfo() {
     // TODO: Move to new Schedule info system
     return {
-      total: 0,
-      currentIdx: 0,
+      total: _numSchedules,
+      currentIdx: _currScheduleIdx,
       firstScheduleId: _getScheduleId(0, 0),
       prevScheduleId: getPrevScheduleId(),
       nextScheduleId: getNextScheduleId()
@@ -883,20 +895,19 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _currScheduleListInfoChangeListeners[tag] = listener;
   }
 
-
   function setCurrentScheduleByIdQ(scheduleId) {
     return getScheduleQById(scheduleId, true).then(function(schedule) {
       // TODO: Implement better searching by using footprint
-      _currFpScheduleIdx =
-        _getSchedulesByFpIdx(_currFpIdx).indexOf(scheduleId);
-      if (_currFpScheduleIdx < 0) {
-        _currFpIdx = _currFpList.length;
-        while (_currFpScheduleIdx < 0 && _currFpIdx > 0) {
-          _currFpIdx --;
-          _currFpScheduleIdx =
-            _getSchedulesByFpIdx(_currFpIdx).indexOf(scheduleId);
-        }
+      _currFpIdx = _currFpList.length;
+      _currFpScheduleIdx = -1;
+      _currScheduleIdx = _numSchedules;
+      while (_currFpScheduleIdx < 0 && _currFpIdx > 0) {
+        _currFpIdx --;
+        var schedules = _getSchedulesByFpIdx(_currFpIdx);
+        _currScheduleIdx -= schedules.length;
+        _currFpScheduleIdx = schedules.indexOf(scheduleId);
       }
+      _currScheduleIdx += _currFpScheduleIdx;
       return schedule;
     });
   }
@@ -1006,8 +1017,15 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   };
 }
 
-var ScheduleGroup = require('../models/scheduleGroup');
+angular.module('scheduleBuilder').factory('scheduleFactory', [
+  '$q',
+  '$timeout',
+  '$cookies',
+  'reverseLookup',
+  scheduleFactory
+]);
 
+/*
 function scheduleFactoryNew($q, $timeout, reverseLookup) {
   var _primaryUserId = 'samplePrimaryUserId';
   var _schedulingOptions = {};
@@ -1240,11 +1258,4 @@ function scheduleFactoryNew($q, $timeout, reverseLookup) {
   }
   return {}
 }
-
-angular.module('scheduleBuilder').factory('scheduleFactory', [
-  '$q',
-  '$timeout',
-  '$cookies',
-  'reverseLookup',
-  scheduleFactory
-]);
+*/
