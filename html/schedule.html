@@ -3,12 +3,11 @@
 <md-sidenav md-component-id="left" class="left-pane" md-is-locked-open="true" flex="no-shrink">
   <div layout="row" layout-align="center" layout-padding>
     <div>
-      <img id="logo" src="images/logo_beta.png" width="150px" ui-sref="schedule()">
+      <img id="logo" src="images/logo_beta.png" width="150px" ui-sref="schedule()" hide-xs>
+      <img id="logo" src="images/logo_beta.png" width="50px" ui-sref="schedule()" hide-gt-xs>
     </div>
   </div>
-  <div class="header-text">
-    <h3 class="md-headline">Add courses</h3>
-  </div>
+  <br>
   <form ng-submit="$event.preventDefault()">
     <md-autocomplete
         tabindex=1
@@ -61,32 +60,28 @@
     </md-autocomplete>
   </form>
 
+  <br>
   <div ng-show="vm.inDisplayMode" layout="row" layout-align="center">
     <md-button ng-click="vm.leaveDisplayMode()">
       Go back to your<br> own schedule
     </md-button>
   </div>
-  <div ng-hide="vm.inDisplayMode" class="header-text">
-    <h3 class="md-headline">Added Courses</h3>
-  </div>
-  <div ng-hide="vm.inDisplayMode" style="overflow-y: auto">
-    <md-content>
-      <div
-          ng-if="vm.addedCoursesList.length > 0"
-          ng-repeat="course in vm.addedCoursesList"
-          layout="row" layout-align="center center"
-          ng-style="{'background-color': course.id === vm.currCourse.id ? '#3b7ea1' : 'transparent'}"
-          class="header-text md-subhead course-list-li"
-          >
-        <div ui-sref="schedule.viewCourse({id: course.id})" flex>
-          {{course.department}} {{course.courseNumber}}
-        </div>
-        <div ng-click="vm.dropCourse(course)">drop</div>
+  <div ng-hide="vm.inDisplayMode">
+    <div
+        ng-if="vm.addedCoursesList.length > 0"
+        ng-repeat="course in vm.addedCoursesList"
+        layout="row" layout-align="center center"
+        ng-style="{'background-color': course.id === vm.currCourse.id ? '#3b7ea1' : 'transparent'}"
+        class="header-text md-subhead course-list-li"
+        >
+      <div ui-sref="schedule.viewCourse({id: course.id})" flex>
+        {{course.department}} {{course.courseNumber}}
       </div>
-      <div class="header-text md-subhead" ng-if="vm.addedCoursesList.length === 0">
-        Add courses above.
-      </div>
-    </md-content>
+      <div ng-click="vm.dropCourse(course)">drop</div>
+    </div>
+    <div class="header-text md-subhead start-add" ng-if="vm.addedCoursesList.length === 0">
+      Start by adding courses above
+    </div>
   </div>
   <div flex></div>
   <div layout="row" layout-align="center" layout-padding>
