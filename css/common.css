@@ -7,7 +7,7 @@ body {
     background: #FFF7E4;
 }
 
-#logo {
+.logo {
     cursor: pointer;
 }
 
@@ -19,6 +19,7 @@ body {
     background: #003262;
     color: #ffffff;
     height: 100%;
+    overflow: visible;
 }
 .left-pane md-content {
     background: transparent;
@@ -49,7 +50,7 @@ md-autocomplete {
     color: #ffffff;
 }
 .course-list-li:hover {
-    background: #3b7ea1 !important;
+    background: #3b7ea1;
 }
 .course-list-li.curr-course {
     background: #3b7ea1;
@@ -69,6 +70,11 @@ md-autocomplete {
 .subject-area-description {
     color: grey;
     font-size: small;
+}
+
+.course-select md-checkbox {
+    width: 20px;
+    margin: 0 10px 0 0;
 }
 
 .right-pane {

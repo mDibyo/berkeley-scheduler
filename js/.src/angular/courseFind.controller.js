@@ -142,7 +142,7 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
   }
 
   function setSchedulesStale() {
-    scheduleFactory.setStale();
+    scheduleFactory.setStale(true);
   }
 
   function leaveDisplayMode() {
