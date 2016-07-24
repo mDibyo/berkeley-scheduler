@@ -14,7 +14,7 @@ function Course(courseJson) {
 
   this.title = courseJson.title;
   this.instructors = courseJson.instructors;
-  this.id = courseJson.id;
+  this.id = parseInt(courseJson.id);
   this.units = courseJson.units;
   this.meeting = Meeting.parse(courseJson.time);
   this.finalMeeting = new Final(this);
