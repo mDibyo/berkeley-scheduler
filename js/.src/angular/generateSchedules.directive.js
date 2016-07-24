@@ -92,6 +92,10 @@ function sbGenerateSchedulesDirective() {
 
     scheduleFactory.registerSetStaleListener(function(isStale) {
       vm.scheduleIsStale = isStale;
+      console.log($state.current);
+      if (isStale && $state.includes('schedule.viewSchedule')) {
+        generateAndViewSchedules();
+      }
     });
 
     scheduleFactory.registerAddSavedScheduleListener(function(schedule) {
@@ -158,7 +162,6 @@ function sbGenerateSchedulesDirective() {
         scheduleFactory.setSchedulingOption('preferAfternoons', false);
         scheduleFactory.setSchedulingOption('preferEvenings', false);
       }
-      //scheduleFactory.reorderSchedules();
       scheduleFactory.filterAndReorderSchedules();
     }
 
@@ -190,21 +193,17 @@ function sbGenerateSchedulesDirective() {
         scheduleFactory.setSchedulingOption('minimizeGaps', false);
         scheduleFactory.setSchedulingOption('maximizeGaps', false);
       }
-      //scheduleFactory.reorderSchedules();
       scheduleFactory.filterAndReorderSchedules();
     }
 
     function onChangeNoTimeConflicts() {
       vm.disablePreferNoTimeConflicts = vm.noTimeConflicts;
       scheduleFactory.setSchedulingOption('noTimeConflicts', vm.noTimeConflicts);
-      //scheduleFactory.filterSchedules();
-      //scheduleFactory.reorderSchedules();
       scheduleFactory.filterAndReorderSchedules();
     }
 
     function onChangePreferNoTimeConflicts() {
       schedulingOptions.setSchedulingOption('preferNoTimeConflicts', vm.preferNoTimeConflicts);
-      //schedulingOptions.reorderSchedules();
       scheduleFactory.filterAndReorderSchedules();
     }
 
@@ -217,8 +216,6 @@ function sbGenerateSchedulesDirective() {
       vm.dayEndTimes = times;
 
       scheduleFactory.setSchedulingOption('dayStartTime', selectedDayStartTime);
-      //scheduleFactory.filterSchedules();
-      //scheduleFactory.reorderSchedules();
       scheduleFactory.filterAndReorderSchedules();
     }
 
@@ -231,8 +228,6 @@ function sbGenerateSchedulesDirective() {
       vm.dayStartTimes = times;
 
       scheduleFactory.setSchedulingOption('dayEndTime', selectedDayEndTime);
-      //scheduleFactory.filterSchedules();
-      //scheduleFactory.reorderSchedules();
       scheduleFactory.filterAndReorderSchedules();
     }
 

@@ -540,6 +540,9 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function setStale(isStale) {
+    if (isStale === undefined) {
+      isStale = true
+    }
     _stale = isStale;
     _saveCoursesToCookie();
     _setStaleListeners.forEach(function(listener) {
@@ -653,10 +656,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
   function generateSchedulesQ() {
     return $timeout(function() {
-      if (!_stale) {
-        return;
-      }
-
       // Get selected course
       var selectedCourses = Object.keys(_courses).map(function(courseId) {
         return _courses[courseId];
@@ -775,7 +774,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         sectionLookupQList.push(reverseLookup
           .getCourseQBy2arySectionId(sectionId)
           .then(function(course) {
-            _stale = true;
+            setStale(true);
             courseIdList.push(course.id);
             if (_addCourseNoSave(course)) {
               // This was the first time the course was added.
@@ -886,7 +885,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
 
   function setCurrentScheduleByIdQ(scheduleId) {
-    function setCurrentScheduleByIdHelper(scheduleId) {
+    return getScheduleQById(scheduleId, true).then(function(schedule) {
       // TODO: Implement better searching by using footprint
       _currFpScheduleIdx =
         _getSchedulesByFpIdx(_currFpIdx).indexOf(scheduleId);
@@ -898,22 +897,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
             _getSchedulesByFpIdx(_currFpIdx).indexOf(scheduleId);
         }
       }
-    }
-
-    var schedule = null;
-    var deferred = $q.defer();
-    if (_currScheduleGroup) {
-      schedule = _currScheduleGroup.getScheduleById(scheduleId);
-    }
-
-    if (schedule !== null) {
-      deferred.resolve(schedule);
-    } else {
-      deferred.resolve(getScheduleQById(scheduleId, true));
-    }
-
-    return deferred.promise.then(function(schedule) {
-      setCurrentScheduleByIdHelper(schedule.id);
       return schedule;
     });
   }

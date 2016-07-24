@@ -3,8 +3,8 @@
 <md-sidenav md-component-id="left" class="left-pane" md-is-locked-open="true" flex="no-shrink">
   <div layout="row" layout-align="center" layout-padding>
     <div>
-      <img id="logo" src="images/logo_beta.png" width="150px" ui-sref="schedule()" hide-xs>
-      <img id="logo" src="images/logo_beta.png" width="50px" ui-sref="schedule()" hide-gt-xs>
+      <img class="logo" src="images/logo_beta.png" width="150px" ui-sref="schedule()" hide-xs>
+      <img class="logo" src="images/logo_beta.png" width="50px" ui-sref="schedule()" hide-gt-xs>
     </div>
   </div>
   <br>
@@ -71,10 +71,16 @@
         ng-if="vm.addedCoursesList.length > 0"
         ng-repeat="course in vm.addedCoursesList"
         layout="row" layout-align="center center"
-        ng-style="{'background-color': course.id === vm.currCourse.id ? '#3b7ea1' : 'transparent'}"
-        class="header-text md-subhead course-list-li"
-        >
-      <div ui-sref="schedule.viewCourse({id: course.id})" flex>
+        ui-sref-active="curr-course"
+        class="header-text md-subhead course-list-li">
+      <div layout="row" layout-align="start center" class="course-select">
+        <md-checkbox
+            ng-model="course.selected"
+            ng-change="vm.setSchedulesStale()"
+            aria-label="Select course"></md-checkbox>
+      </div>
+      <div ui-sref="schedule.viewCourse({id: course.id})"
+           flex layout="row" layout-align="start center">
         {{course.department}} {{course.courseNumber}}
       </div>
       <div ng-click="vm.dropCourse(course)">drop</div>
