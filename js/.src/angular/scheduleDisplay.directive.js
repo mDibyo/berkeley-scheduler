@@ -68,9 +68,14 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     vm.getMeetingHeight = getMeetingHeight;
     vm.getMeetingColor = getMeetingColor;
 
+    vm.getPrevScheduleId = function() {
+      return vm.currScheduleListInfo.prevScheduleId;
+    };
+
     scheduleFactory.registerCurrScheduleListInfoChangeListener(
       'scheduleDisplay', function(info) {
         vm.currScheduleListInfo = info;
+        // TODO: Figure out if this operation is required
         if (info.scheduleListChanged) {
           vm.goToState('schedule.viewSchedule', {
             scheduleId: info.firstScheduleId
