@@ -29,6 +29,11 @@ COURSES_TO_ADD = {
         'courseNumber': 'C100',
         'subjectAreaCode': 'COG SCI',
         'units': 3,
+    }],
+    'MAT SCI': [{
+        'courseNumber': 'C211',
+        'subjectAreaCode': 'MAT SCI',
+        'units': 3,
     }]
 }
 
