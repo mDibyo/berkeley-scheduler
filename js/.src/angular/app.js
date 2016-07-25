@@ -22,6 +22,7 @@
   require('./_base.controller');
   require('./courseFind.controller');
   require('./courseViewAndSelect.controller');
+  require('./generatingSchedules.controller');
   require('./scheduleViewAndSelect.controller');
   require('./mobileUnoptimizedDialog.controller');
 

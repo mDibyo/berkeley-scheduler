@@ -16,6 +16,12 @@ angular.module('scheduleBuilder').config([
         controller: 'CourseViewAndSelectCtrl',
         controllerAs: 'vm'
       })
+      .state('schedule.generatingSchedules', {
+        url: '/generating/{scheduleGroupId}',
+        templateUrl: 'html/generating_schedules.partial.html',
+        controller: 'GeneratingSchedulesCtrl',
+        controllerAs: 'vm'
+      })
       .state('schedule.viewSchedule', {
         url: '/{scheduleId}',
         templateUrl: 'html/schedule_view_and_select.partial.html',
