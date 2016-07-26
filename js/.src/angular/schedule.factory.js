@@ -8,7 +8,7 @@ var primaryUserIdCookieKey = 'primaryUserId';
 var userIdListCookieKey = 'allUserIds';
 var preferencesCookieKeyFormat = '{}.preferences';
 var savedCoursesCookieKeyFormat = '{}.addedCourses';
-var savedSchedulesCookieKeyFormat = '{}.savedSchedules';
+var savedScheduleIdsCookieKeyFormat = '{}.savedScheduleIds';
 var schedulingOptionsCookieKeyFormat = '{}.schedulingOptions';
 
 function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
@@ -36,9 +36,9 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _dropCourseListeners = [];
   var _setCurrCourseListeners = [];
 
-  var _savedSchedules = [];
-  var _addSavedScheduleListeners = [];
-  var _dropSavedScheduleListeners = [];
+  var _savedScheduleIds = [];
+  var _addSavedScheduleIdListeners = [];
+  var _dropSavedScheduleIdListeners = [];
   var _currScheduleGroup = null;
   var _scheduleIdsByFp = {};
   var _currFpList = [];
@@ -214,7 +214,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
 
   _loadCoursesFromCookieInto_courses();
-  _loadSchedulesFromCookieInto_savedSchedules();
+  _loadScheduleIdsFromCookieInto_savedScheduleIds();
   $q.all(_forReadyQs).then(function() {
     _setReady();
   });
@@ -344,27 +344,24 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       {expires: _cookieExpiryDate});
   }
 
-  function _loadSchedulesFromCookieInto_savedSchedules() {
-    var savedSchedulesCookieKey =
-      savedSchedulesCookieKeyFormat.replace('{}', _primaryUserId);
-    var savedSchedules = $cookies.getObject(savedSchedulesCookieKey);
-    if (!savedSchedules) {
+  function _loadScheduleIdsFromCookieInto_savedScheduleIds() {
+    var savedScheduleIdsCookieKey =
+      savedScheduleIdsCookieKeyFormat.replace('{}', _primaryUserId);
+    var savedScheduleIds = $cookies.getObject(savedScheduleIdsCookieKey);
+    if (!savedScheduleIds) {
       return;
     }
-    savedSchedules.forEach(function(scheduleId) {
-      getScheduleQById(scheduleId, false).then(function(schedule) {
-        _addSavedScheduleNoSave(schedule);
-      })
+    savedScheduleIds.forEach(function(scheduleId) {
+      //getScheduleQById(scheduleId, false).then(function(schedule) {
+      _addSavedScheduleByIdNoSave(scheduleId);
+      //})
     });
   }
 
-  function _saveSchedulesToCookie() {
-    var scheduleInfosToSave = _savedSchedules.map(function(schedule) {
-      return schedule.id;
-    });
-    var savedSchedulesCookieKey =
-      savedSchedulesCookieKeyFormat.replace('{}', _primaryUserId);
-    $cookies.putObject(savedSchedulesCookieKey, scheduleInfosToSave,
+  function _saveScheduleIdsToCookie() {
+    var savedScheduleIdsCookieKey =
+      savedScheduleIdsCookieKeyFormat.replace('{}', _primaryUserId);
+    $cookies.putObject(savedScheduleIdsCookieKey, _savedScheduleIds,
       {expires: _cookieExpiryDate});
   }
 
@@ -1053,59 +1050,55 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _saveSchedulingOptionsToCookie();
   }
 
-  function getSavedSchedules() {
-    return _savedSchedules.slice();
+  function getSavedScheduleIds() {
+    return _savedScheduleIds.slice();
   }
 
-  function _addSavedScheduleNoSave(schedule) {
-    if (_savedSchedules.some(function(savedSchedule) {
-        return savedSchedule.id === schedule.id;
-      })) {
+  function _addSavedScheduleByIdNoSave(scheduleId) {
+    if (_savedScheduleIds.indexOf(scheduleId) >= 0) {
       return false;
     }
-    _savedSchedules.push(schedule);
-    _addSavedScheduleListeners.forEach(function(listener) {
-      listener(schedule);
+    _savedScheduleIds.push(scheduleId);
+    _addSavedScheduleIdListeners.forEach(function(listener) {
+      listener(scheduleId);
     });
     return true;
   }
 
-  function addSavedSchedule(schedule) {
-    var success = _addSavedScheduleNoSave(schedule);
+  function addSavedScheduleById(scheduleId) {
+    var success = _addSavedScheduleByIdNoSave(scheduleId);
     if (success) {
-      _saveSchedulesToCookie();
+      _saveScheduleIdsToCookie();
     }
     return success;
   }
 
-  function registerAddSavedScheduleListener(listener) {
-    _addSavedScheduleListeners.push(listener);
+  function registerAddSavedScheduleIdListener(listener) {
+    _addSavedScheduleIdListeners.push(listener);
   }
 
-  function _dropSavedScheduleNoSave(schedule) {
-    var index = _savedSchedules.findIndex(function(savedSchedule) {
-      return savedSchedule.id === schedule.id;
-    });
+  function _dropSavedScheduleByIdNoSave(scheduleId) {
+    var index = _savedScheduleIds.indexOf(scheduleId);
     if (index < 0) {
       return false;
     }
-    _savedSchedules.splice(index, 1);
-    _dropSavedScheduleListeners.forEach(function(listener) {
-      listener(schedule);
+    _savedScheduleIds.splice(index, 1);
+    _dropSavedScheduleIdListeners.forEach(function(listener) {
+      listener(scheduleId);
     });
     return true;
   }
 
-  function dropSavedSchedule(schedule) {
-    var success = _dropSavedScheduleNoSave(schedule);
+  function dropSavedScheduleById(scheduleId) {
+    var success = _dropSavedScheduleByIdNoSave(scheduleId);
     if (success) {
-      _saveSchedulesToCookie();
+      _saveScheduleIdsToCookie();
     }
     return success;
   }
 
-  function registerDropSavedScheduleListener(listener) {
-    _dropSavedScheduleListeners.push(listener);
+  function registerDropSavedScheduleIdListener(listener) {
+    _dropSavedScheduleIdListeners.push(listener);
   }
 
   return {
@@ -1145,11 +1138,11 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     getSchedulingOptions: getSchedulingOptions,
     setSchedulingOption: setSchedulingOption,
     filterAndReorderSchedules: filterAndReorderSchedules,
-    getSavedSchedules: getSavedSchedules,
-    addSavedSchedule: addSavedSchedule,
-    dropSavedSchedule: dropSavedSchedule,
-    registerAddSavedScheduleListener: registerAddSavedScheduleListener,
-    registerDropSavedScheduleListener: registerDropSavedScheduleListener
+    getSavedScheduleIds: getSavedScheduleIds,
+    addSavedScheduleById: addSavedScheduleById,
+    dropSavedScheduleById: dropSavedScheduleById,
+    registerAddSavedScheduleIdListener: registerAddSavedScheduleIdListener,
+    registerDropSavedScheduleIdListener: registerDropSavedScheduleIdListener
   };
 }
 
