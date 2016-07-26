@@ -58,7 +58,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     vm.sectionColorOpacity = sectionColorOpacity;
     vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
     vm.showShareMessage = false;
-    vm.addSavedSchedule = scheduleFactory.addSavedSchedule;
+    vm.addSavedScheduleById = scheduleFactory.addSavedScheduleById;
     vm.toggleFinalsSchedule = toggleFinalsSchedule;
     vm.getFinalsForDay = getFinalsForDay;
     vm.getFinalPosition = getFinalPosition;

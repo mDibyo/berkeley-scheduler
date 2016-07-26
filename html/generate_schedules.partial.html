@@ -3,8 +3,8 @@
       class="md-raised"
       ng-click="dvm.toggleSavedSchedules(!dvm.showSavedSchedules)"
       ng-class="{
-        'md-primary': dvm.savedSchedules.length > 0,
-        'schedule-button': dvm.savedSchedules.length > 0
+        'md-primary': dvm.savedScheduleIds.length > 0,
+        'schedule-button': dvm.savedScheduleIds.length > 0
       }">
     Saved Schedules
   </md-button>
@@ -26,14 +26,14 @@
 </p>
 
 <div ng-show="dvm.showSavedSchedules">
-  <div ng-if="dvm.savedSchedules.length > 0">
+  <div ng-if="dvm.savedScheduleIds.length > 0">
     <div layout="row" layout-wrap>
       <div
           class="saved-schedule"
           layout="column" layout-align="center center"
-          ng-repeat="schedule in dvm.savedSchedules track by schedule.id"
-          ng-click="dvm.goToState('schedule.viewSchedule', {scheduleId: schedule.id})">
-        <div class="saved-schedule-drop" ng-click="dvm.dropSavedSchedule($event, schedule)">
+          ng-repeat="scheduleId in dvm.savedScheduleIds track by scheduleId"
+          ng-click="dvm.goToState('schedule.viewSchedule', {scheduleId: scheduleId})">
+        <div class="saved-schedule-drop" ng-click="dvm.dropSavedScheduleById($event, scheduleId)">
           <i class="material-icons md-light">close</i>
         </div>
         <div flex></div>
@@ -43,7 +43,7 @@
       </div>
     </div>
   </div>
-  <div ng-if="dvm.savedSchedules.length === 0">
+  <div ng-if="dvm.savedScheduleIds.length === 0">
     Save your favorite schedules and they will show up here
   </div>
   <br>
