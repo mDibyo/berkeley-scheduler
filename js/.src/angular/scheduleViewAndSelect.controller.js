@@ -9,10 +9,20 @@ function ScheduleViewAndSelectCtrl($state, $window, $stateParams, scheduleFactor
   var vm = this;
 
   var scheduleId = $stateParams.scheduleId;
+
+  vm.selectedSchedule = null;
+
+  //if (scheduleId) {
+  //  scheduleFactory.setCurrentScheduleByIdQ($stateParams.scheduleId).then(function(schedule) {
+  //    vm.selectedSchedule = schedule;
+  //  });
+  //}
   if (scheduleId) {
-    scheduleFactory.setCurrentScheduleByIdQ($stateParams.scheduleId).then(function(schedule) {
-      vm.selectedSchedule = schedule;
-    });
+    vm.selectedSchedule = scheduleFactory.setCurrentScheduleById($stateParams.scheduleId);
+  }
+
+  if (vm.selectedSchedule === null) {
+    vm.goToState('schedule.generatingSchedules', {startScheduleId: scheduleId});
   }
 }
 angular.module('scheduleBuilder').controller('ScheduleViewAndSelectCtrl', [

@@ -31,10 +31,16 @@ function Done(numGenerated) {
   this.numGenerated = numGenerated;
 }
 
+Failed.prototype = Object.create(_ScheduleGenerationStatusBase.prototype);
+function Failed() {
+  _ScheduleGenerationStatusBase.call(this, 'failed');
+}
+
 var scheduleGenerationStatus = {
   Stale: Stale,
   Generating: Generating,
   FilteringAndReordering: FilteringAndReordering,
-  Done: Done
+  Done: Done,
+  Failed: Failed
 };
 module.exports = scheduleGenerationStatus;

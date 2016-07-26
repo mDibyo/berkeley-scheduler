@@ -92,9 +92,8 @@ function sbGenerateSchedulesDirective() {
 
     scheduleFactory.registerSetStaleListener(function(isStale) {
       vm.scheduleIsStale = isStale;
-      console.log($state.current);
       if (isStale && $state.includes('schedule.viewSchedule')) {
-        generateAndViewSchedules();
+        vm.generateAndViewSchedules();
       }
     });
 
