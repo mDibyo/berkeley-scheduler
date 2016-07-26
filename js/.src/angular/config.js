@@ -17,7 +17,7 @@ angular.module('scheduleBuilder').config([
         controllerAs: 'vm'
       })
       .state('schedule.generatingSchedules', {
-        url: '/generating/{scheduleGroupId}',
+        url: '/generate?scheduleGroupId&startScheduleId',
         templateUrl: 'html/generating_schedules.partial.html',
         controller: 'GeneratingSchedulesCtrl',
         controllerAs: 'vm'

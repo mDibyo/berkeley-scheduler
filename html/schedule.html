@@ -48,7 +48,7 @@
         md-item-text="course.courseNumber"
         md-selected-item="vm.selectedCourse"
         md-selected-item-change="vm.selectCourse(vm.selectedCourse)"
-        placeholder="Course Number"
+        placeholder="Course Number/Title"
         md-menu-class="subject-area">
       <md-item-template>
         <div class="subject-area-code">{{course.courseNumber}}</div>
@@ -100,7 +100,7 @@
   </div>
 </md-sidenav>
 
-<div class="right-pane">
+<div class="right-pane" flex="nogrow">
   <md-content layout="column" layout-padding>
     <sb-generate-schedules></sb-generate-schedules>
 
