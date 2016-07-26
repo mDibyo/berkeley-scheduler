@@ -12,11 +12,14 @@ function ScheduleGroup(userId, courses) {
   this.courses.forEach(function(course) {
     course.sectionTypes.forEach(function(sectionType) {
       this.sectionChoices.push(course
-          .getSectionsByType(sectionType)
-          .filter(function(section) {
-        this.sections[section.id] = section;
-        return section.selected;
-      }, this));
+        .getSectionsByType(sectionType)
+        .map(function(section) {
+          this.sections[section.id] = section;
+          return section;
+        }, this)
+        .filter(function(section) {
+          return section.selected;
+        }, this));
     }, this);
   }, this);
   this.resetIterator();
@@ -28,6 +31,21 @@ ScheduleGroup.generateId = function(userId, courses) {
   });
   idComponentList.unshift(userId);
   return Schedule.generateId(idComponentList);
+};
+
+ScheduleGroup.normalizeId = function(id) {
+  if (id === null) {
+    return null;
+  }
+  return Schedule.generateId(id.split('.'));
+};
+
+ScheduleGroup.getCourseIdsFromId = function(id) {
+  return Schedule.getSectionIdsFromId(id);
+};
+
+ScheduleGroup.getUserIdFromId = function(id) {
+  return Schedule.getUserIdFromId(id);
 };
 
 ScheduleGroup.prototype._nextScheduleSectionIds = function() {

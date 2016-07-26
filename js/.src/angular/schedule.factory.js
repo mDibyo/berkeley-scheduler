@@ -1,6 +1,7 @@
 var Time = require('../models/time');
 var Schedule = require('../models/schedule');
 var ScheduleGroup = require('../models/scheduleGroup');
+var scheduleGenerationStatus = require('../models/scheduleGenerationStatus');
 
 var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 var primaryUserIdCookieKey = 'primaryUserId';
@@ -590,9 +591,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
   function getCourseQById(id) {
     if (_courses.hasOwnProperty(id)) {
-      var deferred = $q.defer();
-      deferred.resolve(_courses[id]);
-      return deferred.promise;
+      //var deferred = $q.defer();
+      //deferred.resolve(_courses[id]);
+      //return deferred.promise;
+      return $q.when(_courses[id]);
     }
     var courseQ = reverseLookup.getCourseQBy2arySectionId(id);
     courseQ.then(addCourse);
@@ -758,6 +760,104 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _sendCurrScheduleListInfoChange(true);
   }
 
+  function setCurrentScheduleGroupById(scheduleGroupId) {
+    if (_currScheduleGroup !== null) {
+      if (_currScheduleGroup.id === ScheduleGroup.normalizeId(scheduleGroupId)) {
+        return;
+      }
+    }
+
+    var userId = ScheduleGroup.getUserIdFromId(scheduleGroupId);
+    var courseIdList = ScheduleGroup.getCourseIdsFromId(scheduleGroupId);
+    var courseList = [];
+    var courseLookupQList = [];
+    courseIdList.forEach(function(courseId) {
+      var course = _courses[courseId];
+      if (course) {
+        courseList.push(course);
+      } else {
+        courseLookupQList.push(reverseLookup
+          .getCourseQBy1arySectionId(courseId)
+          .then(function(course) {
+            courseList.push(course);
+            addCourse(course);
+          }));
+      }
+    });
+
+    return $q.all(courseLookupQList).then(function() {
+      Object.keys(_courses).forEach(function(courseId) {
+        _courses[courseId].selected = courseIdList.indexOf(parseInt(courseId)) >= 0;
+      });
+
+      _currScheduleGroup = new ScheduleGroup(userId, courseList);
+    });
+  }
+
+  function setCurrentScheduleGroupByScheduleIdQ(scheduleId) {
+    if (getScheduleByIdFromCurrentScheduleGroup(scheduleId) !== null) {
+      return $q.when();
+    }
+
+    var userId = Schedule.getUserIdFromId(scheduleId);
+    var sectionIdList = Schedule.getSectionIdsFromId(scheduleId);
+    var courseIdList = [];
+    var sectionList = [];
+    var sectionLookupQList = [];
+    sectionIdList.forEach(function(sectionId) {
+      if (_sections.hasOwnProperty(sectionId)) {
+        var section = _sections[sectionId];
+        sectionList.push(section);
+        courseIdList.push(section.course.id);
+      } else {
+        sectionLookupQList.push(reverseLookup
+          .getCourseQBy2arySectionId(sectionId)
+          .then(function(course) {
+            setStale(true);
+            courseIdList.push(course.id);
+            if (_addCourseNoSave(course)) {
+              // This was the first time the course was added.
+              // Only select this section.
+              course.sections.forEach(function (section) {
+                if (section.id === sectionId) {
+                  section.selected = true;
+                  sectionList.push(section);
+                } else {
+                  section.selected = false;
+                }
+              });
+            } else {
+              // The course has already been added previously.
+              // Ensure this section is selected.
+              course = _courses[course.id];
+              for (var i = 0; i < course.sections.length; i++) {
+                var section = course.sections[i];
+                if (section.id === sectionId) {
+                  sectionList.push(section);
+                  section.selected = true;
+                  break;
+                }
+              }
+            }
+          }));
+      }
+    });
+    return $q.all(sectionLookupQList).then(function() {
+      var courseList = [];
+      Object.keys(_courses).forEach(function(courseId) {
+        if (courseIdList.indexOf(parseInt(courseId)) >= 0) {
+          var course = _courses[courseId];
+          course.selected = true;
+          courseList.push(course);
+        } else {
+          _courses[courseId].selected = false;
+        }
+      });
+
+      _currScheduleGroup = new ScheduleGroup(userId, courseList);
+    });
+  }
+
   function getScheduleQById(scheduleId, generateSchedules) {
     var userId = Schedule.getUserIdFromId(scheduleId);
     //var isPrimaryUser = userId == _primaryUserId;
@@ -768,9 +868,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     if (_currScheduleGroup) {
       var schedule = _currScheduleGroup.getScheduleById(scheduleId);
       if (schedule) {
-        var deferred = $q.defer();
-        deferred.resolve(schedule);
-        return deferred.promise;
+        //var deferred = $q.defer();
+        //deferred.resolve(schedule);
+        //return deferred.promise;
+        return $q.when(schedule);
       }
     }
 
@@ -895,6 +996,37 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _currScheduleListInfoChangeListeners[tag] = listener;
   }
 
+  function getScheduleByIdFromCurrentScheduleGroup(scheduleId) {
+    if (_currScheduleGroup) {
+      return _currScheduleGroup.getScheduleById(scheduleId);
+    }
+    return null;
+  }
+
+  function setCurrentScheduleById(scheduleId) {
+    if (isStale()) {
+      return null;
+    }
+
+    var schedule = getScheduleByIdFromCurrentScheduleGroup(scheduleId);
+    if (schedule === null) {
+      return schedule;
+    }
+
+    // TODO: Implement better searching by using footprint
+    _currFpIdx = _currFpList.length;
+    _currFpScheduleIdx = -1;
+    _currScheduleIdx = _numSchedules;
+    while (_currFpScheduleIdx < 0 && _currFpIdx > 0) {
+      _currFpIdx --;
+      var schedules = _getSchedulesByFpIdx(_currFpIdx);
+      _currScheduleIdx -= schedules.length;
+      _currFpScheduleIdx = schedules.indexOf(scheduleId);
+    }
+    _currScheduleIdx += _currFpScheduleIdx;
+    return schedule;
+  }
+
   function setCurrentScheduleByIdQ(scheduleId) {
     return getScheduleQById(scheduleId, true).then(function(schedule) {
       // TODO: Implement better searching by using footprint
@@ -998,13 +1130,17 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     registerDropCourseListener: registerDropCourseListener,
 
     generateSchedulesQ: generateSchedulesQ,
-    getScheduleQById: getScheduleQById,
+    setCurrentScheduleGroupById: setCurrentScheduleGroupById,
+    setCurrentScheduleGroupByScheduleIdQ: setCurrentScheduleGroupByScheduleIdQ,
+    getScheduleByIdFromCurrentScheduleGroup: getScheduleByIdFromCurrentScheduleGroup,
+    //getScheduleQById: getScheduleQById,
     getCurrScheduleId: getCurrScheduleId,
     getPrevScheduleId: getPrevScheduleId,
     getNextScheduleId: getNextScheduleId,
     getCurrScheduleListInfo: getCurrScheduleListInfo,
     registerCurrScheduleListInfoChangeListener: registerCurrScheduleListInfoChangeListener,
-    setCurrentScheduleByIdQ: setCurrentScheduleByIdQ,
+    setCurrentScheduleById: setCurrentScheduleById,
+    //setCurrentScheduleByIdQ: setCurrentScheduleByIdQ,
 
     getSchedulingOptions: getSchedulingOptions,
     setSchedulingOption: setSchedulingOption,
