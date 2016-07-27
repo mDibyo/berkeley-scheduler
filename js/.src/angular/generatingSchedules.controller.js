@@ -9,14 +9,19 @@ function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $statePa
 
   var vm = this;
 
+  vm.scheduleGenerationStatus = scheduleFactory.getScheduleGenerationStatus();
+  console.log(vm.scheduleGenerationStatus);
+  scheduleFactory.registerScheduleGenerationStatusListener('generatingSchedules', function(scheduleGenerationStatus) {
+    vm.scheduleGenerationStatus = scheduleGenerationStatus;
+  });
+
   var deferred = $q.defer();
   var scheduleGroupId = $stateParams.scheduleGroupId;
   var startScheduleId = $stateParams.startScheduleId;
   if (scheduleGroupId) {
     deferred.resolve(scheduleFactory.setCurrentScheduleGroupById(scheduleGroupId));
   } else if (startScheduleId) {
-    deferred.resolve(scheduleFactory.setCurrentScheduleGroupByScheduleIdQ(startScheduleId).then(function() {
-    }));
+    deferred.resolve(scheduleFactory.setCurrentScheduleGroupByScheduleIdQ(startScheduleId));
   }
 
   deferred.promise.then(function() {
