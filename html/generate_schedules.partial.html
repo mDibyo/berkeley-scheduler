@@ -15,7 +15,8 @@
 
   <span ng-if="dvm.scheduleIsStale">
     <md-button class="md-accent md-raised" ng-click="dvm.generateAndViewSchedules()">
-      {{dvm.generateMessage}}
+      <span ng-if="$state.includes('schedule.generatingSchedules')">Generating</span>
+      <span ng-if="!$state.includes('schedule.generatingSchedules')">Generate Schedules</span>
     </md-button>
   </span>
   <span ng-if="!dvm.scheduleIsStale">
