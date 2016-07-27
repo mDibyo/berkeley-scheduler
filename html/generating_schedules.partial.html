@@ -1,3 +1,19 @@
-<md-content>
-
+<md-content flex="grow">
+  <div ng-if="vm.scheduleGenerationStatus.status === 'generating'">
+    generated {{ vm.scheduleGenerationStatus.numGenerated }}
+  </div>
+  <div ng-if="vm.scheduleGenerationStatus.status === 'filteringAndReordering'">
+    <div ng-if="vm.scheduleGenerationStatus.filtering">
+      filtering
+    </div>
+    <div ng-if="!vm.scheduleGenerationStatus.filtering">
+      reordering
+    </div>
+  </div>
+  <div ng-if="vm.scheduleGenerationStatus.status === 'done'">
+    done
+  </div>
+  <div ng-if="vm.scheduleGenerationStatus.status === 'failed'">
+    failed
+  </div>
 </md-content>

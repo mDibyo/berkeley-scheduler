@@ -11,7 +11,6 @@ function CourseViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory,
   vm.selectedCourse = null;
   scheduleFactory.getCourseQById($stateParams.id).then(function(course) {
     vm.selectedCourse = course;
-    scheduleFactory.setCurrCourse(course);
   });
 }
 angular.module('scheduleBuilder').controller('CourseViewAndSelectCtrl', [
