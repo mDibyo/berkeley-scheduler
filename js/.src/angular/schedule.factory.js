@@ -30,11 +30,9 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _preferences = _loadPreferencesFromCookie();
 
   var _courses = {};
-  var _currCourse = null;
   var _sections = {};
   var _addCourseListeners = [];
   var _dropCourseListeners = [];
-  var _setCurrCourseListeners = [];
 
   var _savedScheduleIds = [];
   var _addSavedScheduleIdListeners = [];
@@ -42,6 +40,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _currScheduleGroup = null;
   var _scheduleIdsByFp = {};
   var _currFpList = [];
+  var _scheduleGenerationStatusListeners = {};
   var _currScheduleListInfoChangeListeners = {};
   var _currFpIdx = 0;
   var _currFpScheduleIdx = 0;
@@ -569,17 +568,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _setInDisplayModeListeners.push(listener);
   }
 
-  function setCurrCourse(course) {
-    _currCourse = course;
-    _setCurrCourseListeners.forEach(function(listener) {
-      listener(course);
-    });
-  }
-
-  function registerSetCurrCourseListener(listener) {
-    _setCurrCourseListeners.push(listener);
-  }
-
   function getAllCourses() {
     var courses = [];
     for (var id in _courses) {
@@ -666,15 +654,23 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       // Map schedules to footprints
       _scheduleIdsByFp = {};
       var deferred = $q.defer();
+      var totalGenerated = 0;
       var generatorChunkSize = 1000;
       var schedule = _currScheduleGroup.nextSchedule();
       var footprint = null;
+
+      function updateTotalAndBroadcastStatus(numGenerated) {
+        totalGenerated += numGenerated;
+        _broadcastScheduleGenerationStatus(
+          new scheduleGenerationStatus.Generating(totalGenerated))
+      }
 
       function generateSchedulesHelperAsync() {
         return $timeout(function generateSchedulesChunkHelperSync() {
           var numGenerated = 0;
           while (numGenerated < generatorChunkSize) {
             if (schedule == null) {
+              totalGenerated += numGenerated;
               deferred.resolve();
               return;
             }
@@ -686,6 +682,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
             numGenerated ++;
             schedule = _currScheduleGroup.nextSchedule();
           }
+          updateTotalAndBroadcastStatus(numGenerated);
           return generateSchedulesHelperAsync();
         });
       }
@@ -702,7 +699,11 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function filterAndReorderSchedules() {
+    _currFpList = Object.keys(_scheduleIdsByFp);
+
     // Filter footprints
+    _broadcastScheduleGenerationStatus(
+      new scheduleGenerationStatus.FilteringAndReordering(_numSchedules, true));
     Object.keys(_filterFns).forEach(function applyFilterFn(option) {
       if (!_schedulingOptions[option]) {
         return;
@@ -714,6 +715,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     });
 
     // Reorder footprints
+    _broadcastScheduleGenerationStatus(
+      new scheduleGenerationStatus.FilteringAndReordering(_numSchedules, false));
     var orderByOptions = Object.keys(_orderByFns).filter(function(option) {
       return _schedulingOptions[option];
     });
@@ -853,6 +856,23 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
       _currScheduleGroup = new ScheduleGroup(userId, courseList);
     });
+  }
+
+  function _broadcastScheduleGenerationStatus(scheduleGenerationStatus) {
+    Object.keys(_scheduleGenerationStatusListeners).forEach(function(tag) {
+      _scheduleGenerationStatusListeners[tag](scheduleGenerationStatus);
+    });
+  }
+
+  function getScheduleGenerationStatus() {
+    if (isStale()) {
+      return new scheduleGenerationStatus.Stale();
+    }
+    return new scheduleGenerationStatus.Done(_numSchedules);
+  }
+
+  function registerScheduleGenerationStatusListener(tag, listener) {
+    _scheduleGenerationStatusListeners[tag] = listener;
   }
 
   function _getSchedulesByFpIdx(fpIdx) {
@@ -1020,8 +1040,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     setInDisplayMode: setInDisplayMode,
     registerSetInDisplayModeListener: registerSetInDisplayModeListener,
 
-    setCurrCourse: setCurrCourse,
-    registerSetCurrCourseListener: registerSetCurrCourseListener,
     getAllCourses: getAllCourses,
     getCourseQById: getCourseQById,
     addCourse: addCourse,
@@ -1037,6 +1055,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     getCurrScheduleId: getCurrScheduleId,
     getPrevScheduleId: getPrevScheduleId,
     getNextScheduleId: getNextScheduleId,
+    getScheduleGenerationStatus: getScheduleGenerationStatus,
+    registerScheduleGenerationStatusListener: registerScheduleGenerationStatusListener,
     getCurrScheduleListInfo: getCurrScheduleListInfo,
     registerCurrScheduleListInfoChangeListener: registerCurrScheduleListInfoChangeListener,
     setCurrentScheduleById: setCurrentScheduleById,

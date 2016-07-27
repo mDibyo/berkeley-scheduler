@@ -15,7 +15,6 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
   vm.inDisplayMode = false;
   vm.coursesList = [];
   vm.subjectAreasList = [];
-  vm.currCourse = null;
   vm.searchSubjectArea = searchSubjectArea;
   vm.selectSubjectArea = selectSubjectArea;
   vm.searchCourse = searchCourse;
@@ -42,10 +41,6 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
 
   scheduleFactory.registerSetInDisplayModeListener(function(inDisplayMode) {
     vm.inDisplayMode = inDisplayMode;
-  });
-
-  scheduleFactory.registerSetCurrCourseListener(function(course) {
-    vm.currCourse = course;
   });
 
   scheduleFactory.registerAddCourseListener(function(course) {
