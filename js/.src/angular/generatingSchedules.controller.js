@@ -3,7 +3,7 @@ var BaseCtrl = require('./_base.controller');
 GeneratingSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
 function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $stateParams, $q, scheduleFactory, $analytics) {
   $analytics.pageTrack(
-    '/schedule/generating?{}'.replace('{}', $httpParamSerializer($stateParams)));
+    '/schedule/generate?{}'.replace('{}', $httpParamSerializer($stateParams)));
 
   BaseCtrl.call(this, $state, $window);
 

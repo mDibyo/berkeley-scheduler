@@ -108,7 +108,7 @@ function sbGenerateSchedulesDirective() {
     function viewSchedules() {
       var currScheduleId = scheduleFactory.getCurrScheduleId();
       if (currScheduleId === undefined) {
-        return;
+        generateAndViewSchedules();
       }
       vm.goToState('schedule.viewSchedule', {
         scheduleId: currScheduleId
@@ -116,12 +116,16 @@ function sbGenerateSchedulesDirective() {
     }
 
     function generateAndViewSchedules() {
-      vm.generateMessage = 'Generating';
-      scheduleFactory.generateSchedulesQ().then(function() {
-        scheduleFactory.filterAndReorderSchedules();
-        vm.generateMessage = 'Generate Schedules';
-        viewSchedules();
+      console.log(scheduleFactory.getCurrentScheduleGroupId());
+      vm.goToState('schedule.generatingSchedules', {
+        scheduleGroupId: scheduleFactory.getCurrentScheduleGroupId()
       });
+      //vm.generateMessage = 'Generating';
+      //scheduleFactory.generateSchedulesQ().then(function() {
+      //  scheduleFactory.filterAndReorderSchedules();
+      //  vm.generateMessage = 'Generate Schedules';
+      //  viewSchedules();
+      //});
     }
 
     function toggleSavedSchedules(showSavedSchedules) {
