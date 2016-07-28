@@ -1,36 +1,32 @@
 body {
     background: #FFF7E4;
+    overflow: auto;
 }
 
 .main {
-    overflow-y: auto;
     background: #FFF7E4;
+    overflow: visible;
 }
 
 .logo {
     cursor: pointer;
 }
 
-.course-sections {
-    width: 100%;
+.parent-pane {
+    max-width: 1000px;
+    overflow: visible;
 }
 
 .left-pane {
     background: #003262;
     color: #ffffff;
-    height: 100%;
     overflow: visible;
+    min-width: 210px;
+    max-height: none !important;
 }
 .left-pane md-content {
     background: transparent;
     color: #ffffff;
-}
-.left-pane,
-.left-pane.md-locked-open-add-active,
-.left-pane.md-locked-open {
-    width:     250px;
-    min-width: 250px;
-    max-width: 250px;
 }
 
 md-autocomplete {
@@ -80,8 +76,12 @@ md-autocomplete {
 .right-pane {
     background-color: #ffffff;
     height: 100%;
-    max-width: 785px;
     overflow-y: auto;
+    max-height: none !important;
+}
+
+.right-pane-item {
+    width: 100%;
 }
 
 table, td, th {
@@ -160,7 +160,6 @@ md-input-container.schedule-option {
 
 #schedule-entire, #finals-entire {
     padding: 10px;
-    width: 750px;
 }
 
 .schedule-display {

@@ -1,10 +1,9 @@
 <div layout="row" layout-align="center" class="main">
-<div layout="row" md-whiteframe="10">
-<md-sidenav md-component-id="left" class="left-pane" md-is-locked-open="true" flex="no-shrink">
+<div layout="row" md-whiteframe="10" class="parent-pane" flex>
+<div class="left-pane" id="left-pane" flex="25" layout="column">
   <div layout="row" layout-align="center" layout-padding>
     <div>
-      <img class="logo" src="images/logo_beta.png" width="150px" ui-sref="schedule()" hide-xs>
-      <img class="logo" src="images/logo_beta.png" width="50px" ui-sref="schedule()" hide-gt-xs>
+      <img class="logo" src="images/logo_beta.png" width="150px" ui-sref="schedule()">
     </div>
   </div>
   <br>
@@ -90,7 +89,7 @@
     </div>
   </div>
   <div flex></div>
-  <div layout="row" layout-align="center" layout-padding>
+  <div layout="row" layout-align="center" layout-padding flex-offset="100">
     <md-button
         class="md-warn md-raised"
         href="https://github.com/mDibyo/berkeley-scheduler-issue-tracker"
@@ -98,9 +97,9 @@
       Give Feedback
     </md-button>
   </div>
-</md-sidenav>
+</div>
 
-<div class="right-pane" flex="nogrow">
+<div class="right-pane" id="right-pane" flex>
   <md-content layout="column" layout-padding>
     <sb-generate-schedules></sb-generate-schedules>
 
