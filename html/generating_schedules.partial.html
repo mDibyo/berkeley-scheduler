@@ -1,4 +1,4 @@
-<md-content flex="grow">
+<div class="right-pane-item">
   <div ng-if="vm.scheduleGenerationStatus.status === 'generating'">
     generated {{ vm.scheduleGenerationStatus.numGenerated }}
   </div>
@@ -16,4 +16,4 @@
   <div ng-if="vm.scheduleGenerationStatus.status === 'failed'">
     failed
   </div>
-</md-content>
+</div>
