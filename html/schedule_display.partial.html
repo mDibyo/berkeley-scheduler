@@ -42,7 +42,8 @@
              ng-style="{
                'top': vm.getFinalPosition(final),
                'height': vm.getFinalHeight(),
-               'background-color': vm.getFinalColor(final)
+               'background-color': vm.getFinalBackgroundColor(final),
+               'border-color': vm.getFinalBorderColor(final),
              }">
           <div class="schedule-display finals-display-section-inner">
             {{final.course.department}} {{final.course.courseNumber}}
@@ -55,35 +56,32 @@
 
 <div layout="row" layout-align="center center">
   <div flex layout="row" layout-align="right right">
-    <div flex></div>
     <div>
       <md-button class="md-raised" ng-click="vm.toggleFinalsSchedule()">
         Finals Schedule
       </md-button>
     </div>
+    <div flex></div>
     <div>
-      <md-button
-          ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.firstScheduleId})"
-          class="md-primary md-raised schedule-button">
-        First
-      </md-button>
+      <i class="material-icons md-48 schedule-nav"
+         ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.firstScheduleId})">
+        first_page
+      </i>
     </div>
     <div>
-      <md-button
-          ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevScheduleId})"
-          class="md-primary md-raised schedule-button">
-        Previous
-      </md-button>
+      <i class="material-icons md-48 schedule-nav"
+         ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevScheduleId})">
+        chevron_left
+      </i>
     </div>
   </div>
     {{vm.currScheduleListInfo.currentIdx+1}} of {{vm.currScheduleListInfo.total}}
   <div flex layout="row">
     <div>
-      <md-button
-          ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})"
-          class="md-primary md-raised schedule-button">
-        Next
-      </md-button>
+      <i class="material-icons md-48 schedule-nav"
+         ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})">
+        chevron_right
+      </i>
     </div>
     <div flex></div>
     <div>
@@ -145,13 +143,16 @@
 
       <!--Sections-->
       <div class="schedule-display schedule-display-section"
+           layout="row" layout-align="center center"
            ng-repeat="meeting in schedule.meetingsByDay[day]"
            ng-style="{
              'top': vm.getMeetingPosition(meeting),
              'height': vm.getMeetingHeight(meeting),
-             'background-color': vm.getMeetingColor(meeting)
+             'background-color': vm.getMeetingBackgroundColor(meeting),
+             'border-color': vm.getMeetingBorderColor(meeting),
            }">
-        <div class="schedule-display schedule-display-section-inner">
+        <div class="schedule-display schedule-display-section-inner"
+             title="{{meeting.course.department}} {{meeting.course.courseNumber}} {{meeting.type}}&#13;&#10;{{meeting.location}}">
           {{meeting.course.department}} {{meeting.course.courseNumber}} {{meeting.type}}<br>
           {{meeting.location}}
         </div>

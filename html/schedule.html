@@ -76,13 +76,16 @@
         <md-checkbox
             ng-model="course.selected"
             ng-change="vm.setSchedulesStale()"
+            class="course-select"
             aria-label="Select course"></md-checkbox>
       </div>
       <div ui-sref="schedule.viewCourse({id: course.id})"
            flex layout="row" layout-align="start center">
         {{course.department}} {{course.courseNumber}}
       </div>
-      <div ng-click="vm.dropCourse(course)">drop</div>
+      <div ng-click="vm.dropCourse(course)">
+        <i class="material-icons course-unselect">remove_circle</i>
+      </div>
     </div>
     <div class="header-text md-subhead start-add" ng-if="vm.addedCoursesList.length === 0">
       Start by adding courses above
