@@ -1,126 +1,126 @@
 body {
-    background: #FFF7E4;
-    overflow: auto;
+  background: #FFF7E4;
+  overflow: auto;
 }
 
 .main {
-    background: #FFF7E4;
-    overflow: visible;
+  background: #FFF7E4;
+  overflow: visible;
 }
 
 .logo {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .parent-pane {
-    max-width: 1000px;
-    overflow: visible;
+  max-width: 1000px;
+  overflow: visible;
 }
 
 .left-pane {
-    background: #003262;
-    color: #ffffff;
-    overflow: visible;
-    min-width: 210px;
-    max-height: none !important;
+  background: #003262;
+  color: #ffffff;
+  overflow: visible;
+  min-width: 210px;
+  max-height: none !important;
 }
 .left-pane md-content {
-    background: transparent;
-    color: #ffffff;
+  background: transparent;
+  color: #ffffff;
 }
 
 md-autocomplete {
-    margin-left: 10px;
-    margin-right: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .header-text {
-    padding-left: 10px;
-    padding-right: 10px;
-    color: #fdb515;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: #fdb515;
 }
 
 .course-list-li {
-    cursor: pointer;
-    height: 40px;
-    color: #ffffff;
+  cursor: pointer;
+  height: 40px;
+  color: #ffffff;
 }
 .course-list-li:hover {
-    background: #3b7ea1;
+  background: #3b7ea1;
 }
 .course-list-li.curr-course {
-    background: #3b7ea1;
+  background: #3b7ea1;
 }
 
 .start-add {
-    text-align: center;
+  text-align: center;
 }
 
 .subject-area li {
-    line-height: normal;
-    height: auto;
-    padding-top: 5px;
-    padding-bottom: 5px;
+  line-height: normal;
+  height: auto;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .subject-area-description {
-    color: grey;
-    font-size: small;
+  color: grey;
+  font-size: small;
 }
 
 .course-select md-checkbox {
-    width: 20px;
-    margin: 0 10px 0 0;
+  width: 20px;
+  margin: 0 10px 0 0;
 }
 
 .right-pane {
-    background-color: #ffffff;
-    height: 100%;
-    overflow-y: auto;
-    max-height: none !important;
+  background-color: #ffffff;
+  height: 100%;
+  overflow-y: auto;
+  max-height: none !important;
 }
 
 .right-pane-item {
-    width: 100%;
+  width: 100%;
 }
 
 table, td, th {
-    border: 1px solid black;
-    border-collapse: collapse;
+  border: 1px solid black;
+  border-collapse: collapse;
 }
 
 td, th {
-    padding: 5px;
+  padding: 5px;
 }
 
 .section-select {
-    text-align: center;
+  text-align: center;
 }
 .section-select md-checkbox {
-    width: 20px;
-    margin: 0;
+  width: 20px;
+  margin: 0;
 }
 
 md-input-container.schedule-option {
-    width: 150px;
+  width: 150px;
 }
 
 .saved-schedule {
-    width: 48px;
-    height: 60px;
-    border: 3px solid #003262;
-    cursor: pointer;
-    position: relative;
-    margin: 2px;
+  width: 48px;
+  height: 60px;
+  border: 3px solid #003262;
+  cursor: pointer;
+  position: relative;
+  margin: 2px;
 }
 
 .saved-schedule-drop {
-    background-color: #003262;
-    cursor: pointer;
-    position: absolute;
-    right: -3px;
-    top: -3px;
-    z-index: 20;
+  background-color: #003262;
+  cursor: pointer;
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  z-index: 20;
 }
 
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
@@ -130,128 +130,128 @@ md-input-container.schedule-option {
 .material-icons.md-48 { font-size: 48px; }
 
 .schedule-button {
-    color: #ffffff !important;
+  color: #ffffff !important;
 }
 
 .schedule-share-button {
-    color: #ffffff !important;
+  color: #ffffff !important;
 }
 
 #share-outer {
-    position: relative;
-    z-index: 101;
+  position: relative;
+  z-index: 101;
 }
 
 #share-message {
-    background-color: #003262;
-    color: #ffffff;
-    /*padding: 5px;*/
-    position: absolute;
-    text-align: center;
-    top: 0;
-    z-index: 100;
+  background-color: #003262;
+  color: #ffffff;
+  /*padding: 5px;*/
+  position: absolute;
+  text-align: center;
+  top: 0;
+  z-index: 100;
 }
 
 .finals-schedule-warn {
-    padding-left: 10px;
-    padding-right: 10px;
-    font-size: small;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: small;
 }
 
 #schedule-entire, #finals-entire {
-    padding: 10px;
+  padding: 10px;
 }
 
 .schedule-display {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .finals-display-header {
-    border-top: 1px solid black;
-    border-right: 1px solid black;
-    font-size: small;
-    text-align: center;
-    line-height: 25px;
-    font-weight: bold;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  font-size: small;
+  text-align: center;
+  line-height: 25px;
+  font-weight: bold;
 }
 
 .finals-display-day {
-    height: 165px;
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
-    position: relative;
+  height: 165px;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  position: relative;
 }
 
 .finals-display-hour {
-    border-left: 1px solid black;
-    border-top: 1px solid black;
-    font-size: small;
-    padding: 5px;
-    text-align: center;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+  font-size: small;
+  padding: 5px;
+  text-align: center;
 }
 
 .finals-display-meeting {
-    border-top: 1px solid grey;
+  border-top: 1px solid grey;
 }
 
 .finals-display-section {
-    background-color: aliceblue;
-    position: absolute;
-    text-align: center;
-    font-size: small;
-    width: 100%;
+  background-color: aliceblue;
+  position: absolute;
+  text-align: center;
+  font-size: small;
+  width: 100%;
 }
 
 .finals-display-section-inner {
-    padding: 5px;
+  padding: 5px;
 }
 
 .schedule-display-header {
-    border-top: 1px solid black;
-    border-right: 1px solid black;
-    text-align: center;
-    line-height: 25px;
-    font-weight: bold;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  text-align: center;
+  line-height: 25px;
+  font-weight: bold;
 }
 
 .schedule-display-header-blank {
-    border-top: 1px solid black;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
 }
 
 .schedule-display-day {
-    height: 600px;
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
-    position: relative;
+  height: 600px;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  position: relative;
 }
 
 .schedule-display-hour {
-    border-left: 1px solid black;
-    border-top: 1px solid black;
-    font-size: small;
-    padding: 5px;
-    text-align: center;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+  font-size: small;
+  padding: 5px;
+  text-align: center;
 }
 
 .schedule-display-hour-first-half {
-    border-top: 1px solid grey;
+  border-top: 1px solid grey;
 }
 
 .schedule-display-hour-second-half {
-    border-top: 1px dashed grey;
+  border-top: 1px dashed grey;
 }
 
 .schedule-display-section {
-    background-color: aliceblue;
-    position: absolute;
-    text-align: center;
-    font-size: small;
-    width: 100%;
+  background-color: aliceblue;
+  position: absolute;
+  text-align: center;
+  font-size: small;
+  width: 100%;
 }
 
 .schedule-display-section-inner {
-    padding: 5px;
+  padding: 5px;
 }
