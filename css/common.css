@@ -70,7 +70,13 @@ md-autocomplete {
 
 .course-select md-checkbox {
   width: 20px;
-  margin: 0 10px 0 0;
+  margin: 2px 10px 2px 2px;
+}
+.course-select md-checkbox div.md-icon {
+  border-color: rgba(256, 256, 256, 0.75);
+}
+.course-select md-checkbox div.md-icon::after {
+  border-color: #003262;
 }
 
 .right-pane {
@@ -123,7 +129,9 @@ md-input-container.schedule-option {
   z-index: 20;
 }
 
-.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light { color: #ffffff; }
+.material-icons.course-unselect { color: #ed4e33; }
+.material-icons.schedule-nav { color: #003262; cursor: pointer; }
 .material-icons.md-18 { font-size: 18px; }
 .material-icons.md-24 { font-size: 24px; }
 .material-icons.md-36 { font-size: 36px; }
@@ -197,6 +205,8 @@ md-input-container.schedule-option {
 
 .finals-display-section {
   background-color: aliceblue;
+  border: 1px solid;
+  box-sizing: border-box;
   position: absolute;
   text-align: center;
   font-size: small;
@@ -246,6 +256,8 @@ md-input-container.schedule-option {
 
 .schedule-display-section {
   background-color: aliceblue;
+  border: 1px solid;
+  box-sizing: border-box;
   position: absolute;
   text-align: center;
   font-size: small;
@@ -253,5 +265,10 @@ md-input-container.schedule-option {
 }
 
 .schedule-display-section-inner {
-  padding: 5px;
+  max-height: 100%;
+  margin: 3px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

@@ -63,10 +63,12 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     vm.getFinalsForDay = getFinalsForDay;
     vm.getFinalPosition = getFinalPosition;
     vm.getFinalHeight = getFinalHeight;
-    vm.getFinalColor = getFinalColor;
+    vm.getFinalBackgroundColor = getFinalBackgroundColor;
+    vm.getFinalBorderColor = getFinalBorderColor;
     vm.getMeetingPosition = getMeetingPosition;
     vm.getMeetingHeight = getMeetingHeight;
-    vm.getMeetingColor = getMeetingColor;
+    vm.getMeetingBackgroundColor = getMeetingBackgroundColor;
+    vm.getMeetingBorderColor = getMeetingBorderColor;
 
     vm.getPrevScheduleId = function() {
       return vm.currScheduleListInfo.prevScheduleId;
@@ -116,12 +118,16 @@ function sbScheduleDisplayDirective(scheduleFactory) {
       return finalsDayHeight / 4;
     }
 
-    function getFinalColor(final) {
+    function getFinalBackgroundColor(final) {
       var color = Course.colorCodes[final.course.color],
         r = parseInt(color.substring(1, 3), 16),
         g = parseInt(color.substring(3, 5), 16),
         b = parseInt(color.substring(5, 7), 16);
       return 'rgba('+ r + ',' + g + ',' + b + ',' + vm.finalColorOpacity + ')';
+    }
+
+    function getFinalBorderColor(final) {
+      return Course.colorCodes[final.course.color];
     }
 
     function getMeetingPosition(section) {
@@ -134,12 +140,16 @@ function sbScheduleDisplayDirective(scheduleFactory) {
       return height / dayTotalMinutes * dayHeight;
     }
 
-    function getMeetingColor(section) {
+    function getMeetingBackgroundColor(section) {
       var color = Course.colorCodes[section.course.color],
         r = parseInt(color.substring(1, 3), 16),
         g = parseInt(color.substring(3, 5), 16),
         b = parseInt(color.substring(5, 7), 16);
       return 'rgba('+ r + ',' + g + ',' + b + ',' + vm.sectionColorOpacity + ')';
+    }
+
+    function getMeetingBorderColor(section) {
+      return Course.colorCodes[section.course.color];
     }
   }
 
