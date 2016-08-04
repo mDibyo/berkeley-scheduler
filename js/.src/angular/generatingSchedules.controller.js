@@ -26,9 +26,11 @@ function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $statePa
   deferred.promise.then(function() {
     scheduleFactory.generateSchedulesQ().then(function() {
       scheduleFactory.filterAndReorderSchedules();
-      vm.goToState('schedule.viewSchedule', {
-        scheduleId: startScheduleId || scheduleFactory.getCurrScheduleId()
-      });
+      if ($state.includes('schedule.generatingSchedules')) {
+        vm.goToState('schedule.viewSchedule', {
+          scheduleId: startScheduleId || scheduleFactory.getCurrScheduleId()
+        });
+      }
     })
   });
 

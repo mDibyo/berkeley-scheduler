@@ -13,13 +13,17 @@
     Scheduling Options
   </md-button>
 
-  <span ng-if="dvm.scheduleIsStale">
+  <span ng-if="dvm.scheduleGenerationStatus.status === 'stale'">
     <md-button class="md-accent md-raised" ng-click="dvm.generateAndViewSchedules()">
-      <span ng-if="$state.includes('schedule.generatingSchedules')">Generating</span>
-      <span ng-if="!$state.includes('schedule.generatingSchedules')">Generate Schedules</span>
+      Generate Schedules
     </md-button>
   </span>
-  <span ng-if="!dvm.scheduleIsStale">
+  <span ng-if="dvm.scheduleGenerationStatus.status === 'generating' || dvm.scheduleGenerationStatus.status === 'filteringAndReordering'">
+    <md-button class="md-accent md-raised" ng-click="dvm.generateAndViewSchedules()">
+      Generating
+    </md-button>
+  </span>
+  <span ng-if="dvm.scheduleGenerationStatus.status === 'done'">
     <md-button class="md-accent md-raised" ng-click="dvm.viewSchedules()">
       View Schedules
     </md-button>
