@@ -1,19 +1,22 @@
 <div class="right-pane-item">
-  <div ng-if="vm.scheduleGenerationStatus.status === 'generating'">
-    generated {{ vm.scheduleGenerationStatus.numGenerated }}
-  </div>
-  <div ng-if="vm.scheduleGenerationStatus.status === 'filteringAndReordering'">
-    <div ng-if="vm.scheduleGenerationStatus.filtering">
-      filtering
+  <div class="generating-schedules">
+    Finding the most awesome schedule for you based on your preferences!
+
+    <div ng-if="vm.scheduleGenerationStatus.status === 'generating'">
+      <md-progress-linear
+        md-mode="determinate"
+        ng-value="vm.scheduleGenerationStatus.numGenerated / vm.scheduleGenerationStatus.total * 100">
+      </md-progress-linear>
+
+      generated {{ vm.scheduleGenerationStatus.numGenerated }} schedules
     </div>
-    <div ng-if="!vm.scheduleGenerationStatus.filtering">
-      reordering
+    <div ng-if="vm.scheduleGenerationStatus.status === 'done'">
+      <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+      putting final touches
     </div>
-  </div>
-  <div ng-if="vm.scheduleGenerationStatus.status === 'done'">
-    done
-  </div>
-  <div ng-if="vm.scheduleGenerationStatus.status === 'failed'">
-    failed
+    <div ng-if="vm.scheduleGenerationStatus.status === 'failed'">
+      <md-progress-linear md-mode="indeterminate" ng-disabled="true"></md-progress-linear>
+        could not generate any valid schedules.
+    </div>
   </div>
 </div>
