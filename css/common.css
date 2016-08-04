@@ -82,8 +82,8 @@ md-autocomplete {
 .right-pane {
   background-color: #ffffff;
   height: 100%;
-  overflow-y: auto;
   max-height: none !important;
+  overflow-y: auto;
 }
 
 .right-pane-item {
@@ -103,8 +103,25 @@ td, th {
   text-align: center;
 }
 .section-select md-checkbox {
-  width: 20px;
   margin: 0;
+  width: 20px;
+}
+
+.generating-schedules {
+  text-align: center;
+}
+
+md-progress-linear {
+  padding-top: 20px!important;
+  margin-bottom: 20px!important;
+}
+
+.md-container.md-mode-determinate {
+  background-color: #003262;
+}
+
+.md-bar.md-bar2 {
+  background-color: #fdb515;
 }
 
 md-input-container.schedule-option {
@@ -112,12 +129,12 @@ md-input-container.schedule-option {
 }
 
 .saved-schedule {
-  width: 48px;
-  height: 60px;
   border: 3px solid #003262;
   cursor: pointer;
-  position: relative;
+  height: 60px;
   margin: 2px;
+  position: relative;
+  width: 48px;
 }
 
 .saved-schedule-drop {
@@ -129,9 +146,14 @@ md-input-container.schedule-option {
   z-index: 20;
 }
 
+.schedule-nav-row {
+  padding: 0 3px 0 3px;
+}
+
 .material-icons.md-light { color: #ffffff; }
 .material-icons.course-unselect { color: #ed4e33; }
 .material-icons.schedule-nav { color: #003262; cursor: pointer; }
+.material-icons.schedule-nav:hover { color: #3b7ea1; }
 .material-icons.md-18 { font-size: 18px; }
 .material-icons.md-24 { font-size: 24px; }
 .material-icons.md-36 { font-size: 36px; }
@@ -153,7 +175,6 @@ md-input-container.schedule-option {
 #share-message {
   background-color: #003262;
   color: #ffffff;
-  /*padding: 5px;*/
   position: absolute;
   text-align: center;
   top: 0;
