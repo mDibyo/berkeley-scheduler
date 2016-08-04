@@ -26,7 +26,7 @@ function sbGenerateSchedulesDirective() {
 
     var schedulingOptions = scheduleFactory.getSchedulingOptions();
 
-    vm.scheduleIsStale = scheduleFactory.isStale();
+    vm.scheduleGenerationStatus = scheduleFactory.getScheduleGenerationStatus();
     vm.showSavedSchedules = schedulingOptions.showSavedSchedules;
     vm.showOptions = schedulingOptions.showOptions;
     vm.toggleSavedSchedules = toggleSavedSchedules;
@@ -89,9 +89,9 @@ function sbGenerateSchedulesDirective() {
       scheduleFactory.dropSavedScheduleById(scheduleId);
     };
 
-    scheduleFactory.registerSetStaleListener(function(isStale) {
-      vm.scheduleIsStale = isStale;
-      if (isStale && $state.includes('schedule.viewSchedule')) {
+    scheduleFactory.registerScheduleGenerationStatusListener('generateSchedules', function(status) {
+      vm.scheduleGenerationStatus = status;
+      if (status.status === 'stale' && $state.includes('schedule.viewSchedule')) {
         vm.generateAndViewSchedules();
       }
     });

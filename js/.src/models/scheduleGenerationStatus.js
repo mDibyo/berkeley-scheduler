@@ -18,19 +18,18 @@ function Generating(numGenerated, total) {
 }
 
 FilteringAndReordering.prototype = Object.create(_ScheduleGenerationStatusBase.prototype);
-function FilteringAndReordering(numGenerated, filtering) {
+function FilteringAndReordering(total, filtering) {
   _ScheduleGenerationStatusBase.call(this, 'filteringAndReordering');
 
-  this.numGenerated = numGenerated;
+  this.total = total;
   this.filtering = filtering;
 }
 
 Done.prototype = Object.create(_ScheduleGenerationStatusBase.prototype);
-function Done(total, numGenerated) {
+function Done(total) {
   _ScheduleGenerationStatusBase.call(this, 'done');
 
   this.total = total;
-  this.numGenerated = numGenerated;
 }
 
 Failed.prototype = Object.create(_ScheduleGenerationStatusBase.prototype);

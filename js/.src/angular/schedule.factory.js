@@ -16,8 +16,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _ready = false;
   var _forReadyQs = [];
   var _setReadyListeners = [];
-  var _stale = false;
-  var _setStaleListeners = [];
   var _inDisplayMode = false;
   var _setInDisplayModeListeners = [];
 
@@ -542,16 +540,15 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _setReadyListeners.push(listener);
   }
 
-  function isStale() {
-    return _stale;
+  function _isStale() {
+    return _lastScheduleGenerationStatus.status === 'stale';
   }
 
   function setStale(stale) {
     if (stale === undefined) {
       stale = true
     }
-    _stale = stale;
-    if (_stale) {
+    if (stale) {
       Object.keys(_generatingSchedulesStops).forEach(function(instanceId) {
         _generatingSchedulesStops[instanceId] = true;
       });
@@ -559,14 +556,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         new scheduleGenerationStatus.Stale());
     }
     _saveCoursesToCookie();
-
-    _setStaleListeners.forEach(function(listener) {
-      listener(_stale);
-    })
-  }
-
-  function registerSetStaleListener(listener) {
-    _setStaleListeners.push(listener);
   }
 
   function setInDisplayMode(inDisplayMode) {
@@ -730,6 +719,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function filterAndReorderSchedules() {
+    if (_isStale()) {
+      return;
+    }
+
     _currFpList = Object.keys(_scheduleIdsByFp);
 
     // Filter footprints
@@ -775,6 +768,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _currFpScheduleIdx = 0;
     _currScheduleIdx = 0;
     _updateNumSchedules();
+    _setAndBroadcastScheduleGenerationStatus(
+      new scheduleGenerationStatus.Done(_numSchedules));
     _sendCurrScheduleListInfoChange(true);
   }
 
@@ -785,7 +780,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function getCurrentScheduleGroupId() {
-    if (_currScheduleGroup === null || isStale()) {
+    if (_currScheduleGroup === null || _isStale()) {
       var courseList = Object.keys(_courses).map(function(courseId) {
         return _courses[courseId];
       }).filter(function(course) {
@@ -981,7 +976,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function setCurrentScheduleById(scheduleId) {
-    if (isStale()) {
+    if (_isStale()) {
       return null;
     }
 
@@ -1070,9 +1065,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
     isReady: isReady,
     registerSetReadyListener: registerSetReadyListener,
-    isStale: isStale,
     setStale: setStale,
-    registerSetStaleListener: registerSetStaleListener,
     setInDisplayMode: setInDisplayMode,
     registerSetInDisplayModeListener: registerSetInDisplayModeListener,
 
