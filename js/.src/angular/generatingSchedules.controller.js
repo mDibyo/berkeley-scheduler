@@ -10,7 +10,6 @@ function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $statePa
   var vm = this;
 
   vm.scheduleGenerationStatus = scheduleFactory.getScheduleGenerationStatus();
-  console.log(vm.scheduleGenerationStatus);
   scheduleFactory.registerScheduleGenerationStatusListener('generatingSchedules', function(scheduleGenerationStatus) {
     vm.scheduleGenerationStatus = scheduleGenerationStatus;
   });

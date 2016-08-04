@@ -10,10 +10,11 @@ function Stale() {
 }
 
 Generating.prototype = Object.create(_ScheduleGenerationStatusBase.prototype);
-function Generating(numGenerated) {
+function Generating(numGenerated, total) {
   _ScheduleGenerationStatusBase.call(this, 'generating');
 
   this.numGenerated = numGenerated;
+  this.total = total;
 }
 
 FilteringAndReordering.prototype = Object.create(_ScheduleGenerationStatusBase.prototype);
@@ -25,9 +26,10 @@ function FilteringAndReordering(numGenerated, filtering) {
 }
 
 Done.prototype = Object.create(_ScheduleGenerationStatusBase.prototype);
-function Done(numGenerated) {
+function Done(total, numGenerated) {
   _ScheduleGenerationStatusBase.call(this, 'done');
 
+  this.total = total;
   this.numGenerated = numGenerated;
 }
 

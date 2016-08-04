@@ -12,11 +12,6 @@ function ScheduleViewAndSelectCtrl($state, $window, $stateParams, scheduleFactor
 
   vm.selectedSchedule = null;
 
-  //if (scheduleId) {
-  //  scheduleFactory.setCurrentScheduleByIdQ($stateParams.scheduleId).then(function(schedule) {
-  //    vm.selectedSchedule = schedule;
-  //  });
-  //}
   if (scheduleId) {
     vm.selectedSchedule = scheduleFactory.setCurrentScheduleById($stateParams.scheduleId);
   }

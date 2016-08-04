@@ -4,6 +4,7 @@ var ScheduleGroup = require('../models/scheduleGroup');
 var scheduleGenerationStatus = require('../models/scheduleGenerationStatus');
 
 var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+var generatingSchedulesInstanceIdCharSet = userIdCharSet;
 var primaryUserIdCookieKey = 'primaryUserId';
 var userIdListCookieKey = 'allUserIds';
 var preferencesCookieKeyFormat = '{}.preferences';
@@ -40,6 +41,9 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _currScheduleGroup = null;
   var _scheduleIdsByFp = {};
   var _currFpList = [];
+  var _generatingSchedulesStops = {};
+  var _generatingSchedulesQ = null;
+  var _lastScheduleGenerationStatus = null;
   var _scheduleGenerationStatusListeners = {};
   var _currScheduleListInfoChangeListeners = {};
   var _currFpIdx = 0;
@@ -218,10 +222,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _setReady();
   });
 
-  function _generateUserId() {
+  function _generateId(charSet, numChars) {
     var id = '';
-    for (var i = 0; i < 10; i++) {
-      id += userIdCharSet[Math.floor(Math.random() * userIdCharSet.length)]
+    for (var i = 0; i < numChars; i++) {
+      id += charSet[Math.floor(Math.random() * charSet.length)]
     }
     return id;
   }
@@ -229,7 +233,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   function _loadPrimaryUserIdFromCookie() {
     var primaryUserId = $cookies.get(primaryUserIdCookieKey);
     if (primaryUserId === undefined) {
-      primaryUserId = _generateUserId();
+      primaryUserId = _generateId(userIdCharSet, 10);
       $cookies.put(primaryUserIdCookieKey, primaryUserId,
         {expires: _cookieExpiryDate});
     }
@@ -542,12 +546,20 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     return _stale;
   }
 
-  function setStale(isStale) {
-    if (isStale === undefined) {
-      isStale = true
+  function setStale(stale) {
+    if (stale === undefined) {
+      stale = true
     }
-    _stale = isStale;
+    _stale = stale;
+    if (_stale) {
+      Object.keys(_generatingSchedulesStops).forEach(function(instanceId) {
+        _generatingSchedulesStops[instanceId] = true;
+      });
+      _setAndBroadcastScheduleGenerationStatus(
+        new scheduleGenerationStatus.Stale());
+    }
     _saveCoursesToCookie();
+
     _setStaleListeners.forEach(function(listener) {
       listener(_stale);
     })
@@ -650,59 +662,78 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function generateSchedulesQ() {
-    return $timeout(function() {
-      // Map schedules to footprints
-      _scheduleIdsByFp = {};
-      var deferred = $q.defer();
-      var totalGenerated = 0;
-      var generatorChunkSize = 1000;
-      var schedule = _currScheduleGroup.nextSchedule();
-      var footprint = null;
+    if (_generatingSchedulesQ === null) {
+      _generatingSchedulesQ = $timeout(function () {
+        var instanceId = _generateId(generatingSchedulesInstanceIdCharSet, 4);
+        _generatingSchedulesStops[instanceId] = false;
 
-      function updateTotalAndBroadcastStatus(numGenerated) {
-        totalGenerated += numGenerated;
-        _broadcastScheduleGenerationStatus(
-          new scheduleGenerationStatus.Generating(totalGenerated))
-      }
+        // Map schedules to footprints
+        _scheduleIdsByFp = {};
+        var deferred = $q.defer();
+        var totalNumSchedules = _currScheduleGroup.getTotalNumSchedules();
+        var totalGenerated = 0;
+        var generatorChunkSize = 128;
+        var schedule = _currScheduleGroup.nextSchedule();
+        var footprint = null;
 
-      function generateSchedulesHelperAsync() {
-        return $timeout(function generateSchedulesChunkHelperSync() {
-          var numGenerated = 0;
-          while (numGenerated < generatorChunkSize) {
-            if (schedule == null) {
-              totalGenerated += numGenerated;
-              deferred.resolve();
+        function updateTotalAndSetAndBroadcastStatus(numGenerated) {
+          totalGenerated += numGenerated;
+          _setAndBroadcastScheduleGenerationStatus(
+            new scheduleGenerationStatus.Generating(totalGenerated, totalNumSchedules))
+        }
+
+        function generateSchedulesHelperAsync() {
+          return $timeout(function generateSchedulesChunkHelperSync() {
+            if (_generatingSchedulesStops[instanceId]) {
+              _generatingSchedulesQ = null;
+              deferred.reject();
+              delete _generatingSchedulesStops[instanceId];
               return;
             }
-            footprint = schedule.getTimeFootprint();
-            if (!_scheduleIdsByFp.hasOwnProperty(footprint)) {
-              _scheduleIdsByFp[footprint] = [];
+
+            var numGenerated = 0;
+            while (numGenerated < generatorChunkSize) {
+              if (schedule == null) {
+                totalGenerated += numGenerated;
+                _generatingSchedulesQ = null;
+                deferred.resolve();
+                delete _generatingSchedulesStops[instanceId];
+                return;
+              }
+              footprint = schedule.getTimeFootprint();
+              if (!_scheduleIdsByFp.hasOwnProperty(footprint)) {
+                _scheduleIdsByFp[footprint] = [];
+              }
+              _scheduleIdsByFp[footprint].push(schedule.id);
+              numGenerated++;
+              schedule = _currScheduleGroup.nextSchedule();
             }
-            _scheduleIdsByFp[footprint].push(schedule.id);
-            numGenerated ++;
-            schedule = _currScheduleGroup.nextSchedule();
-          }
-          updateTotalAndBroadcastStatus(numGenerated);
-          return generateSchedulesHelperAsync();
-        });
-      }
+            updateTotalAndSetAndBroadcastStatus(numGenerated);
+            return generateSchedulesHelperAsync();
+          });
+        }
 
-      generateSchedulesHelperAsync();
-      return deferred.promise.then(function() {
-        _currFpList = Object.keys(_scheduleIdsByFp);
-        _updateNumSchedules();
         setStale(false);
-        _sendCurrScheduleListInfoChange(true);
-
+        updateTotalAndSetAndBroadcastStatus(0);
+        generateSchedulesHelperAsync();
+        return deferred.promise.then(function () {
+          _currFpList = Object.keys(_scheduleIdsByFp);
+          _updateNumSchedules();
+          _sendCurrScheduleListInfoChange(true);
+        });
+      }).then(function() {
+        _generatingSchedulesQ = null;
       });
-    });
+    }
+
+    return _generatingSchedulesQ;
   }
 
   function filterAndReorderSchedules() {
     _currFpList = Object.keys(_scheduleIdsByFp);
 
     // Filter footprints
-    _broadcastScheduleGenerationStatus(
+    _setAndBroadcastScheduleGenerationStatus(
       new scheduleGenerationStatus.FilteringAndReordering(_numSchedules, true));
     Object.keys(_filterFns).forEach(function applyFilterFn(option) {
       if (!_schedulingOptions[option]) {
@@ -715,7 +746,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     });
 
     // Reorder footprints
-    _broadcastScheduleGenerationStatus(
+    _setAndBroadcastScheduleGenerationStatus(
       new scheduleGenerationStatus.FilteringAndReordering(_numSchedules, false));
     var orderByOptions = Object.keys(_orderByFns).filter(function(option) {
       return _schedulingOptions[option];
@@ -747,6 +778,12 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _sendCurrScheduleListInfoChange(true);
   }
 
+  function _setCurrentScheduleGroup(scheduleGroup, replace) {
+    if (replace || scheduleGroup.id !== _currScheduleGroup.id) {
+      _currScheduleGroup = scheduleGroup;
+    }
+  }
+
   function getCurrentScheduleGroupId() {
     if (_currScheduleGroup === null || isStale()) {
       var courseList = Object.keys(_courses).map(function(courseId) {
@@ -754,7 +791,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       }).filter(function(course) {
         return course.selected;
       });
-      _currScheduleGroup = new ScheduleGroup(_primaryUserId, courseList);
+      _setCurrentScheduleGroup(new ScheduleGroup(_primaryUserId, courseList), true);
     }
 
     return _currScheduleGroup.id;
@@ -790,7 +827,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         _courses[courseId].selected = courseIdList.indexOf(parseInt(courseId)) >= 0;
       });
 
-      _currScheduleGroup = new ScheduleGroup(userId, courseList);
+      _setCurrentScheduleGroup(new ScheduleGroup(userId, courseList), false);
     });
   }
 
@@ -854,21 +891,20 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         }
       });
 
-      _currScheduleGroup = new ScheduleGroup(userId, courseList);
+      _setCurrentScheduleGroup(new ScheduleGroup(userId, courseList), false);
     });
   }
 
-  function _broadcastScheduleGenerationStatus(scheduleGenerationStatus) {
+  function _setAndBroadcastScheduleGenerationStatus(scheduleGenerationStatus) {
+    _lastScheduleGenerationStatus = scheduleGenerationStatus;
+
     Object.keys(_scheduleGenerationStatusListeners).forEach(function(tag) {
       _scheduleGenerationStatusListeners[tag](scheduleGenerationStatus);
     });
   }
 
   function getScheduleGenerationStatus() {
-    if (isStale()) {
-      return new scheduleGenerationStatus.Stale();
-    }
-    return new scheduleGenerationStatus.Done(_numSchedules);
+    return _lastScheduleGenerationStatus;
   }
 
   function registerScheduleGenerationStatusListener(tag, listener) {
