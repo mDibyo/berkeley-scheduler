@@ -1,5 +1,19 @@
 # Changelog
 
+### v0.2.0
+- Adapted to SIS API changes.
+- Added Finals schedule based on guidelines posted at
+  http://schedule.berkeley.edu/examf.html.
+- Worked on UI, adding icons and loader bars, and stylizing buttons.
+- Made subject areas searchable by abbreviations (for eg. CS for
+  COMPSCI and COG SCI).
+- Added ability to save schedules.
+- Added option to prefer no time conflicts.
+- Made schedule generation asynchronous so user could do other things
+  while it was happening.
+- Allow exploring and saving schedules for different combination of
+  classes.
+
 ### v0.1.2
 - Fixed autocomplete by not caching course listings and adding 'Not
   found' messages.
