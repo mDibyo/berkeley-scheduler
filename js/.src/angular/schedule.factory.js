@@ -41,7 +41,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _currFpList = [];
   var _generatingSchedulesStops = {};
   var _generatingSchedulesQ = null;
-  var _lastScheduleGenerationStatus = null;
+  var _lastScheduleGenerationStatus = scheduleGenerationStatus.Stale();
   var _scheduleGenerationStatusListeners = {};
   var _currScheduleListInfoChangeListeners = {};
   var _currFpIdx = 0;
