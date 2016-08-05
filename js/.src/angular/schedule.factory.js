@@ -213,7 +213,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     }
   };
 
-
   _loadCoursesFromCookieInto_courses();
   _loadScheduleIdsFromCookieInto_savedScheduleIds();
   $q.all(_forReadyQs).then(function() {
@@ -605,6 +604,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   function addCourse(course) {
     var success = _addCourseNoSave(course);
     if (success) {
+      course.selected = true;
       _saveCoursesToCookie();
     }
     return success;
@@ -768,8 +768,14 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _currFpScheduleIdx = 0;
     _currScheduleIdx = 0;
     _updateNumSchedules();
-    _setAndBroadcastScheduleGenerationStatus(
-      new scheduleGenerationStatus.Done(_numSchedules));
+
+    var newScheduleGenerationStatus = null;
+    if (_numSchedules > 0) {
+      newScheduleGenerationStatus = new scheduleGenerationStatus.Done(_numSchedules);
+    } else {
+      newScheduleGenerationStatus = new scheduleGenerationStatus.Failed();
+    }
+    _setAndBroadcastScheduleGenerationStatus(newScheduleGenerationStatus);
     _sendCurrScheduleListInfoChange(true);
   }
 
