@@ -769,18 +769,71 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _currScheduleIdx = 0;
     _updateNumSchedules();
 
-    var newScheduleGenerationStatus = null;
     if (_numSchedules > 0) {
-      newScheduleGenerationStatus = new scheduleGenerationStatus.Done(_numSchedules);
+      _setAndBroadcastScheduleGenerationStatus(
+        new scheduleGenerationStatus.Done(_numSchedules));
     } else {
-      newScheduleGenerationStatus = new scheduleGenerationStatus.Failed();
+      _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed());
+      _findAndSetReasonForScheduleGenerationFailure();
     }
-    _setAndBroadcastScheduleGenerationStatus(newScheduleGenerationStatus);
     _sendCurrScheduleListInfoChange(true);
   }
 
+  function _findAndSetReasonForScheduleGenerationFailure() {
+    if (_currScheduleGroup && _currScheduleGroup.getTotalNumSchedules() <= 0) {
+      // Not enough sections were selected
+      var courses = _currScheduleGroup.courses;
+      for (var i = 0; i < courses.length; i++) {
+        var course = courses[i];
+        for (var j = 0; j < course.sectionTypes.length; j++) {
+          var selectedSections =
+            course.getSectionsByType(course.sectionTypes[j]).filter(function(section) {
+              return section.selected;
+            });
+          if (selectedSections.length <= 0) {
+            _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
+              'No sections of type '
+              + course.sectionTypes[j]
+              + ' were selected for '
+              + course.getName()
+              + '.'
+            ));
+            return;
+          }
+        }
+      }
+    }
+
+    // Check if any filtering option is discarding all schedules
+    var fpList = Object.keys(_scheduleIdsByFp);
+
+    fpList = fpList.filter(function(footprint) {
+      return _filterFns.noTimeConflicts(footprint);
+    });
+    if (fpList.length <= 0) {
+      _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
+        'Schedules without time conflicts could not be found.'
+      ));
+      return;
+    }
+
+    fpList = fpList.filter(function(footprint) {
+      return _filterFns.dayStartTime(footprint);
+    }).filter(function(footprint) {
+      return _filterFns.dayEndTime(footprint);
+    });
+    if (fpList.length <= 0) {
+      _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
+        'No schedules were found with all classes within the '
+        + 'selected start and end time of day.'
+      ));
+    }
+  }
+
   function _setCurrentScheduleGroup(scheduleGroup, replace) {
-    if (replace || scheduleGroup.id !== _currScheduleGroup.id) {
+    if (replace
+        || _currScheduleGroup === null
+        || scheduleGroup.id !== _currScheduleGroup.id) {
       _currScheduleGroup = scheduleGroup;
     }
   }
