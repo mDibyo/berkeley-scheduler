@@ -104,6 +104,12 @@ function sbGenerateSchedulesDirective() {
       vm.savedScheduleIds.remove(scheduleId);
     });
 
+    function maybeFilterAndReorderSchedules() {
+      if (vm.scheduleGenerationStatus.status === 'done') {
+        scheduleFactory.filterAndReorderSchedules();
+      }
+    }
+
     function viewSchedules() {
       var currScheduleId = scheduleFactory.getCurrScheduleId();
       if (currScheduleId === undefined) {
@@ -157,7 +163,7 @@ function sbGenerateSchedulesDirective() {
         scheduleFactory.setSchedulingOption('preferAfternoons', false);
         scheduleFactory.setSchedulingOption('preferEvenings', false);
       }
-      scheduleFactory.filterAndReorderSchedules();
+      maybeFilterAndReorderSchedules();
     }
 
     function onChangePreferPartOfDay() {
@@ -188,18 +194,18 @@ function sbGenerateSchedulesDirective() {
         scheduleFactory.setSchedulingOption('minimizeGaps', false);
         scheduleFactory.setSchedulingOption('maximizeGaps', false);
       }
-      scheduleFactory.filterAndReorderSchedules();
+      maybeFilterAndReorderSchedules();
     }
 
     function onChangeNoTimeConflicts() {
       vm.disablePreferNoTimeConflicts = vm.noTimeConflicts;
       scheduleFactory.setSchedulingOption('noTimeConflicts', vm.noTimeConflicts);
-      scheduleFactory.filterAndReorderSchedules();
+      maybeFilterAndReorderSchedules();
     }
 
     function onChangePreferNoTimeConflicts() {
       schedulingOptions.setSchedulingOption('preferNoTimeConflicts', vm.preferNoTimeConflicts);
-      scheduleFactory.filterAndReorderSchedules();
+      maybeFilterAndReorderSchedules();
     }
 
     function onSelectDayStartTime() {
@@ -211,7 +217,7 @@ function sbGenerateSchedulesDirective() {
       vm.dayEndTimes = times;
 
       scheduleFactory.setSchedulingOption('dayStartTime', selectedDayStartTime);
-      scheduleFactory.filterAndReorderSchedules();
+      maybeFilterAndReorderSchedules();
     }
 
     function onSelectDayEndTime() {
@@ -223,7 +229,7 @@ function sbGenerateSchedulesDirective() {
       vm.dayStartTimes = times;
 
       scheduleFactory.setSchedulingOption('dayEndTime', selectedDayEndTime);
-      scheduleFactory.filterAndReorderSchedules();
+      maybeFilterAndReorderSchedules();
     }
 
     function isSelectedDayStartTime(time) {
