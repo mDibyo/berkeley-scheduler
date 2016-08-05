@@ -105,7 +105,8 @@ function sbGenerateSchedulesDirective() {
     });
 
     function maybeFilterAndReorderSchedules() {
-      if (vm.scheduleGenerationStatus.status === 'done') {
+      var status = vm.scheduleGenerationStatus.status;
+      if (status === 'done' || status === 'failed') {
         scheduleFactory.filterAndReorderSchedules();
       }
     }

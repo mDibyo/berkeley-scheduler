@@ -89,7 +89,6 @@ Course.prototype.getSectionsByType = function(type) {
 };
 
 Course.prototype.add = function() {
-  this.selected = true;
   if (!Course.courseColors.hasOwnProperty(this.id)) {
     Course.courseColors[this.id] = Course.getRegisteredColor();
   }

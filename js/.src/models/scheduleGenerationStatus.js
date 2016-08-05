@@ -33,8 +33,10 @@ function Done(total) {
 }
 
 Failed.prototype = Object.create(_ScheduleGenerationStatusBase.prototype);
-function Failed() {
+function Failed(reason) {
   _ScheduleGenerationStatusBase.call(this, 'failed');
+
+  this.reason = reason;
 }
 
 var scheduleGenerationStatus = {

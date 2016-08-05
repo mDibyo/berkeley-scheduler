@@ -120,8 +120,12 @@ md-progress-linear {
   background-color: #003262;
 }
 
-.md-bar.md-bar2 {
+.schedule-generating .md-bar.md-bar2 {
   background-color: #fdb515;
+}
+
+.schedule-generating-failed .md-bar.md-bar2 {
+  background-color: #ed4e33;
 }
 
 md-input-container.schedule-option {
