@@ -12,6 +12,13 @@ function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $statePa
   vm.scheduleGenerationStatus = scheduleFactory.getScheduleGenerationStatus();
   scheduleFactory.registerScheduleGenerationStatusListener('generatingSchedules', function(scheduleGenerationStatus) {
     vm.scheduleGenerationStatus = scheduleGenerationStatus;
+
+    if (vm.scheduleGenerationStatus.status === 'done'
+        && $state.includes('schedule.generatingSchedules')) {
+      vm.goToState('schedule.viewSchedule', {
+        scheduleId: startScheduleId || scheduleFactory.getCurrScheduleId()
+      });
+    }
   });
 
   var deferred = $q.defer();
@@ -26,11 +33,6 @@ function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $statePa
   deferred.promise.then(function() {
     scheduleFactory.generateSchedulesQ().then(function() {
       scheduleFactory.filterAndReorderSchedules();
-      if ($state.includes('schedule.generatingSchedules')) {
-        vm.goToState('schedule.viewSchedule', {
-          scheduleId: startScheduleId || scheduleFactory.getCurrScheduleId()
-        });
-      }
     })
   });
 

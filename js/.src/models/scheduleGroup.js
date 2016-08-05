@@ -107,6 +107,10 @@ ScheduleGroup.prototype.resetIterator = function() {
 };
 
 ScheduleGroup.prototype._updateIterator = function() {
+  if (this.getTotalNumSchedules() === 0) {
+    return false;
+  }
+
   var incrementPos = 0;
   while (incrementPos < this.sectionChoiceIterator.length) {
     this.sectionChoiceIterator[incrementPos] ++;

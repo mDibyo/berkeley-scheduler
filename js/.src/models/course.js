@@ -82,6 +82,10 @@ Course.parse = function(data) {
   return new Course(data);
 };
 
+Course.prototype.getName = function() {
+  return this.department + ' ' + this.courseNumber;
+};
+
 Course.prototype.getSectionsByType = function(type) {
   return this.sections.filter(function(section) {
     return section.type === type;

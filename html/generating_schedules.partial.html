@@ -2,7 +2,10 @@
   <div class="generating-schedules" ng-if="vm.scheduleGenerationStatus.status === 'stale'">
     Generate schedules by clicking the button above.
   </div>
-  <div class="generating-schedules" ng-if="vm.scheduleGenerationStatus.status !== 'stale'">
+  <div class="generating-schedules" ng-if="
+      vm.scheduleGenerationStatus.status !== 'stale' &&
+      vm.scheduleGenerationStatus.status !== 'failed'
+    ">
     Finding the most awesome schedule for you based on your preferences!
 
     <div ng-if="vm.scheduleGenerationStatus.status === 'generating'">
@@ -12,19 +15,22 @@
         ng-value="vm.scheduleGenerationStatus.numGenerated / vm.scheduleGenerationStatus.total * 100">
       </md-progress-linear>
 
-      generated {{ vm.scheduleGenerationStatus.numGenerated }} schedules
+      Generated {{ vm.scheduleGenerationStatus.numGenerated }} schedules.
     </div>
     <div ng-if="vm.scheduleGenerationStatus.status === 'done'">
       <md-progress-linear md-mode="indeterminate"></md-progress-linear>
       putting final touches
     </div>
-    <div ng-if="vm.scheduleGenerationStatus.status === 'failed'">
-      <md-progress-linear
-        class="schedule-generating-failed"
-        md-mode="determinate"
-        ng-disabled="true">
-      </md-progress-linear>
-        could not generate any valid schedules.
-    </div>
+  </div>
+  <div ng-if="vm.scheduleGenerationStatus.status === 'failed'">
+    <md-progress-linear
+      class="schedule-generating-failed"
+      md-mode="determinate"
+      ng-disabled="true">
+    </md-progress-linear>
+    Could not generate any valid schedules.
+    <span ng-if="vm.scheduleGenerationStatus.reason">
+      {{ vm.scheduleGenerationStatus.reason }}
+    </span>
   </div>
 </div>
