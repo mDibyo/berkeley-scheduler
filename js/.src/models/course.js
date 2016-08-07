@@ -13,6 +13,7 @@ function Course(courseJson) {
   this.courseNumber = courseSplit[1];
 
   this.title = courseJson.title;
+  this.description = courseJson.description;
   this.id = parseInt(courseJson.id);
   this.units = courseJson.units;
 
