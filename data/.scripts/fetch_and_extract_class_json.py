@@ -104,11 +104,12 @@ def extract_section_info_from_json(section_json):
     extracted_meetings = [extract_meeting_info_from_json(meeting_json)
                           for meeting_json in section_json.get('meetings', [])]
     return {
-        'number': section_json['number'],
+        'number': section_json.get('number', ''),
         'primary': section_json['association']['primary'],
         'type': section_json['component']['code'],
         'id': section_json['id'],
         'meetings': extracted_meetings,
+        'status': section_json['enrollmentStatus']['status'],
         'enrollCapacity': section_json['enrollmentStatus']['maxEnroll'],
         'enrolled': section_json['enrollmentStatus']['enrolledCount'],
         'waitlistCapacity': section_json['enrollmentStatus']['maxWaitlist'],
@@ -119,7 +120,7 @@ def extract_section_info_from_json(section_json):
 
 def extract_class_info_from_json(sections_json):
     if not sections_json:
-        return None
+        return {}
 
     extracted_class = sections_json[0]['class']
 
@@ -129,7 +130,7 @@ def extract_class_info_from_json(sections_json):
         extracted_sections[section['id']] = section
 
     if not extracted_sections:
-        return None
+        return {}
 
     primary_section_id = sections_json[0]['association']['primaryAssociatedSectionId']
     if primary_section_id:
@@ -181,7 +182,7 @@ def extract_single_section_info_from_json(sections_json):
             extracted_class['allowedUnits']['maximum']
         ],
         'sections': [{
-            'number': extracted_class['number'],
+            'number': extracted_class.get('number', ''),
             'primary': True,
             'type': extracted_class['primaryComponent']['code'],
             'id': None,
@@ -246,7 +247,10 @@ def main(only_new=False):
                             sections_json = \
                                 response['response']['classSections']
                             _class = extract_class_info_from_json(sections_json)
-                            _class['units'] = course['units']
+                            _class.update({
+                                'description': course['description'],
+                                'units': course['units'],
+                            })
                         else:
                             sections_json = response['response']['classes']['class']
                             _class = extract_single_section_info_from_json(sections_json)

@@ -26,6 +26,7 @@ def extract_course_info_from_json(course_json):
         'subjectAreaDescription': course_json['subjectArea']['description'],
         'courseNumber': course_json['catalogNumber']['formatted'],
         'title': course_json['title'],
+        'description': course_json['description'],
         'proposedInstructors': course_json['proposedInstructors'],
         'units': course_json['credit']
     }
