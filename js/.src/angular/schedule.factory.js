@@ -882,17 +882,17 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return schedule;
     }
 
-    // TODO: Implement better searching by using footprint
-    _currFpIdx = _currFpList.length;
-    _currFpScheduleIdx = -1;
-    _currScheduleIdx = _numSchedules;
-    while (_currFpScheduleIdx < 0 && _currFpIdx > 0) {
-      _currFpIdx --;
+    var footprint = schedule.getTimeFootprint();
+    _currScheduleIdx = 0;
+    for (_currFpIdx = 0; _currFpIdx < _currFpList.length; i++) {
       var schedules = _getSchedulesByFpIdx(_currFpIdx);
-      _currScheduleIdx -= schedules.length;
-      _currFpScheduleIdx = schedules.indexOf(scheduleId);
+      if (_currFpList[_currFpIdx] === footprint) {
+        _currFpScheduleIdx = schedules.indexOf(scheduleId);
+        _currScheduleIdx += _currFpScheduleIdx;
+        break;
+      }
+      _currScheduleIdx += schedules.length;
     }
-    _currScheduleIdx += _currFpScheduleIdx;
     return schedule;
   }
 
