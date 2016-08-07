@@ -21,15 +21,15 @@ function Schedule(userId, sections) {
     }
     this.courses[courseId].push(section);
 
-    for (var day in section.meeting.days) {
-      if (section.meeting.days[day]) {
+    for (var day in section.meetings[0].days) {
+      if (section.meetings[0].days[day]) {
         this.meetingsByDay[day].push(section);
       }
     }
   }, this);
   for (var day in this.meetingsByDay) {
     this.meetingsByDay[day].sort(function(a, b) {
-      return a.meeting.startTime.compareTo(b.meeting.startTime);
+      return a.meetings[0].startTime.compareTo(b.meetings[0].startTime);
     });
   }
 
@@ -44,7 +44,7 @@ Schedule.prototype.getTimeFootprint = function() {
   var footprint = Meeting.dayAbrvs.map(function(dayAbrv) {
     return dayAbrv[1] +
       this.meetingsByDay[dayAbrv[0]].map(function(section) {
-        return section.meeting.startTime.getTotalMinutes() + '-' + section.meeting.endTime.getTotalMinutes();
+        return section.meetings[0].startTime.getTotalMinutes() + '-' + section.meetings[0].endTime.getTotalMinutes();
       }).reduce(function(a, b) {
         return a + '.' + b;
       }, '');

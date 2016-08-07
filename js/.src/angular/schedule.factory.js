@@ -58,14 +58,14 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       for (var day in meetingsByDay) {
         var sections = meetingsByDay[day];
         if (sections.length >= 2) {
-          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          horizon = sections[0].meetings[0].endTime.getTotalMinutes();
           for (i = 1; i < sections.length; i++) {
             section = sections[i];
             if (horizon > 0) {
-              gap = section.meeting.startTime.getTotalMinutes() - horizon;
+              gap = section.meetings[0].startTime.getTotalMinutes() - horizon;
               total += Math.max(0, gap) / 60;
             }
-            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+            horizon = Math.max(horizon, section.meetings[0].endTime.getTotalMinutes());
           }
         }
       }
@@ -78,7 +78,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         var sections = meetingsByDay[day];
         for (var i = 0; i < sections.length; i++) {
           total ++;
-          if (sections[i].meeting.endTime.compareTo(Time.noon) <= 0) {
+          if (sections[i].meetings[0].endTime.compareTo(Time.noon) <= 0) {
             totalFor ++;
           }
         }
@@ -92,8 +92,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         var sections = meetingsByDay[day];
         for (var i = 0; i < sections.length; i++) {
           total ++;
-          if (sections[i].meeting.startTime.compareTo(Time.noon) >= 0) {
-            if (sections[i].meeting.endTime.compareTo(Time.fivePM) <= 0) {
+          if (sections[i].meetings[0].startTime.compareTo(Time.noon) >= 0) {
+            if (sections[i].meetings[0].endTime.compareTo(Time.fivePM) <= 0) {
               totalFor ++;
             }
           }
@@ -108,7 +108,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         var sections = meetingsByDay[day];
         for (var i = 0; i < sections.length; i++) {
           total ++;
-          if (sections[i].meeting.startTime.compareTo(Time.fivePM) >= 0) {
+          if (sections[i].meetings[0].startTime.compareTo(Time.fivePM) >= 0) {
             totalFor ++;
           }
         }
@@ -123,15 +123,15 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         var sections = meetingsByDay[day];
         total += sections.length;
         if (sections.length >= 2) {
-          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          horizon = sections[0].meetings[0].endTime.getTotalMinutes();
           for (i = 1; i < sections.length; i++) {
             section = sections[i];
             if (horizon > 0) {
-              if (section.meeting.startTime.getTotalMinutes() < horizon) {
+              if (section.meetings[0].startTime.getTotalMinutes() < horizon) {
                 numConflicts ++;
               }
             }
-            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+            horizon = Math.max(horizon, section.meetings[0].endTime.getTotalMinutes());
           }
         }
       }
@@ -149,15 +149,15 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       for (var day in meetingsByDay) {
         var sections = meetingsByDay[day];
         if (sections.length >= 2) {
-          horizon = sections[0].meeting.endTime.getTotalMinutes();
+          horizon = sections[0].meetings[0].endTime.getTotalMinutes();
           for (i = 1; i < sections.length; i++) {
             section = sections[i];
             if (horizon > 0) {
-              if (section.meeting.startTime.getTotalMinutes() < horizon) {
+              if (section.meetings[0].startTime.getTotalMinutes() < horizon) {
                 return false;
               }
             }
-            horizon = Math.max(horizon, section.meeting.endTime.getTotalMinutes());
+            horizon = Math.max(horizon, section.meetings[0].endTime.getTotalMinutes());
           }
         }
       }
@@ -172,7 +172,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       for (var day in meetingsByDay) {
         var sections = meetingsByDay[day];
         if (sections.length > 0) {
-          if (sections[0].meeting.startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
+          if (sections[0].meetings[0].startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
             return false;
           }
         }
@@ -188,7 +188,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       for (var day in meetingsByDay) {
         var sections = meetingsByDay[day];
         for (var i = 0; i < sections.length; i++) {
-          if (sections[i].meeting.endTime.compareTo(_schedulingOptions.dayEndTime) > 0) {
+          if (sections[i].meetings[0].endTime.compareTo(_schedulingOptions.dayEndTime) > 0) {
             return false;
           }
         }
@@ -649,8 +649,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     });
     if (fpList.length <= 0) {
       _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
-        'No schedules were found with all classes within the '
-        + 'selected start and end time of day.'
+        'No schedules were found with all classes within the selected start '
+        + 'and end time of day. Change your Scheduling Options, add more '
+        + 'sections to your existing classes, or check for a different set of '
+        + 'classes. '
       ));
     }
   }
@@ -783,7 +785,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function getScheduleGenerationStatus() {
-    return _lastScheduleGenerationStatus;
+    return _lastScheduleGenerationStatus || new scheduleGenerationStatus.Stale();
   }
 
   function registerScheduleGenerationStatusListener(tag, listener) {
