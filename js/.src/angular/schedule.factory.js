@@ -338,9 +338,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return;
     }
     savedScheduleIds.forEach(function(scheduleId) {
-      //getScheduleQById(scheduleId, false).then(function(schedule) {
       _addSavedScheduleByIdNoSave(scheduleId);
-      //})
     });
   }
 
@@ -873,7 +871,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
     var footprint = schedule.getTimeFootprint();
     _currScheduleIdx = 0;
-    for (_currFpIdx = 0; _currFpIdx < _currFpList.length; i++) {
+    for (_currFpIdx = 0; _currFpIdx < _currFpList.length; _currFpIdx++) {
       var schedules = _getSchedulesByFpIdx(_currFpIdx);
       if (_currFpList[_currFpIdx] === footprint) {
         _currFpScheduleIdx = schedules.indexOf(scheduleId);
