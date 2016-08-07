@@ -17,7 +17,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
 
   var finalMeetings = [
     new Meeting(new Time(8, 0), new Time(11, 0), {}),
-    new Meeting(new Time(11, 30), new Time(2, 30), {}),
+    new Meeting(new Time(11, 30), new Time(14, 30), {}),
     new Meeting(new Time(15, 0), new Time(18, 0), {}),
     new Meeting(new Time(19, 0), new Time(22, 0), {})
   ];
