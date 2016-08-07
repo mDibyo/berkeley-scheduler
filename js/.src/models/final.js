@@ -24,23 +24,23 @@ function Final(course) {
 
 Final.meetings = {
   Monday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('M')),
-  Monday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('M')),
+  Monday1130230PM: new Meeting(new Time(11, 30), new Time(14, 30), Meeting.daysFromAbrvs('M')),
   Monday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('M')),
   Monday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('M')),
   Tuesday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('T')),
-  Tuesday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('T')),
+  Tuesday1130230PM: new Meeting(new Time(11, 30), new Time(14, 30), Meeting.daysFromAbrvs('T')),
   Tuesday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('T')),
   Tuesday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('T')),
   Wednesday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('W')),
-  Wednesday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('W')),
+  Wednesday1130230PM: new Meeting(new Time(11, 30), new Time(14, 30), Meeting.daysFromAbrvs('W')),
   Wednesday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('W')),
   Wednesday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('W')),
   Thursday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('R')),
-  Thursday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('R')),
+  Thursday1130230PM: new Meeting(new Time(11, 30), new Time(14, 30), Meeting.daysFromAbrvs('R')),
   Thursday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('R')),
   Thursday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('R')),
   Friday811AM: new Meeting(new Time(8, 0), new Time(11, 0), Meeting.daysFromAbrvs('F')),
-  Friday1130230PM: new Meeting(new Time(11, 30), new Time(2, 30), Meeting.daysFromAbrvs('F')),
+  Friday1130230PM: new Meeting(new Time(11, 30), new Time(14, 30), Meeting.daysFromAbrvs('F')),
   Friday36PM: new Meeting(new Time(15, 0), new Time(18, 0), Meeting.daysFromAbrvs('F')),
   Friday710PM: new Meeting(new Time(19, 0), new Time(22, 0), Meeting.daysFromAbrvs('F'))
 };
