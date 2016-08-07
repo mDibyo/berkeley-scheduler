@@ -13,10 +13,11 @@ function Course(courseJson) {
   this.courseNumber = courseSplit[1];
 
   this.title = courseJson.title;
-  this.instructors = courseJson.instructors;
   this.id = parseInt(courseJson.id);
   this.units = courseJson.units;
-  this.meeting = Meeting.parse(courseJson.time);
+
+  var meetings = courseJson.meetings;
+  this.meetings = meetings.map(Meeting.parse);
   this.finalMeeting = new Final(this);
 
   this.sectionTypes = [];

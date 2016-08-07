@@ -1,4 +1,4 @@
-<h3 class="md-headline">{{course.getName()}} - {{course.title}}</h3>
+<h3 class="md-headline">{{ course.getName() }} - {{ course.title }}</h3>
 
 <table class="right-pane-item">
   <tr>
@@ -8,6 +8,7 @@
           ng-change="vm.onChangeSelectAllSections()"
           aria-label="Select all/no sections"></md-checkbox>
     </th>
+    <th>Number</th>
     <th>Type</th>
     <th>Id</th>
     <th>Location</th>
@@ -27,16 +28,17 @@
           aria-label="Select section">
       </md-checkbox>
     </td>
-    <td>{{section.type}}</td>
-    <td>{{section.id}}</td>
-    <td>{{section.location}}</td>
-    <td>{{section.meeting.toString()}}</td>
+    <td>{{ section.number }}</td>
+    <td>{{ section.type }}</td>
+    <td>{{ section.id }}</td>
+    <td>{{ section.meetings[0].location }}</td>
+    <td>{{ section.meetings[0].toString() }}</td>
     <td>
-      <span ng-repeat="instructor in section.instructors">
-        {{instructor.name}}<span ng-if="!$last"> / </span>
+      <span ng-repeat="instructor in section.meetings[0].instructors">
+        {{ instructor.name }}<span ng-if="!$last"> / </span>
       </span>
     </td>
-    <td>{{section.enrolled}}/{{section.enrollCapacity}}</td>
-    <td>{{section.waitlisted}}/{{section.waitlistCapacity}}</td>
+    <td>{{ section.enrolled }}/{{ section.enrollCapacity }}</td>
+    <td>{{ section.waitlisted }}/{{ section.waitlistCapacity }}</td>
   </tr>
 </table>

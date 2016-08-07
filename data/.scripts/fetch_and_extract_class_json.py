@@ -5,6 +5,7 @@ import sys
 import urllib
 from urllib import parse as url_parse, request as url_request
 
+
 TERM = 'fall-2016'
 TERM_ID = 2168
 CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes/sections?{}'
@@ -67,42 +68,47 @@ def request_course(course):
         return {}
 
 
-def extract_section_info_from_json(section_json):
-    if 'meetings' in section_json:
-        # TODO: Add support for multiple meetings
-        # assert len(section_json['meetings']) == 1
-        meeting_json = section_json['meetings'][0]
-    else:
-        meeting_json = {}
+def extract_instructor_info_from_json(instructor_json):
+    return {
+        'name': instructor_json['instructor']['names'][0]['formattedName'],
+        'role': instructor_json['role'].get('description', None),
+    }
 
+
+def extract_meeting_info_from_json(meeting_json):
     extracted_instructors = []
     for instructor_json in meeting_json.get('assignedInstructors', []):
         if instructor_json['instructor']['names']:
-            extracted_instructors.append({
-                'name': instructor_json['instructor']['names'][0]['formattedName'],
-                'role': instructor_json['role'].get('description', None),
-            })
-
+            extracted_instructors.append(
+                extract_instructor_info_from_json(instructor_json)
+            )
     return {
-        'number': section_json['class']['number'],
+        'startTime': meeting_json.get('startTime', None),
+        'endTime': meeting_json.get('endTime', None),
+        'days': {
+            'Sunday': meeting_json.get('meetsSunday', None),
+            'Monday': meeting_json.get('meetsMonday', None),
+            'Tuesday': meeting_json.get('meetsTuesday', None),
+            'Wednesday': meeting_json.get('meetsWednesday', None),
+            'Thursday': meeting_json.get('meetsThursday', None),
+            'Friday': meeting_json.get('meetsFriday', None),
+            'Saturday': meeting_json.get('meetsSaturday', None),
+        },
+        'dayAbbrvs': meeting_json.get('meetsDays', None),
+        'location': meeting_json.get('location', None),
+        'instructors': extracted_instructors,
+    }
+
+
+def extract_section_info_from_json(section_json):
+    extracted_meetings = [extract_meeting_info_from_json(meeting_json)
+                          for meeting_json in section_json.get('meetings', [])]
+    return {
+        'number': section_json['number'],
         'primary': section_json['association']['primary'],
         'type': section_json['component']['code'],
         'id': section_json['id'],
-        'location': meeting_json.get('location', None),
-        'instructors': extracted_instructors,
-        'time': {
-            'startTime': meeting_json.get('startTime', None),
-            'endTime': meeting_json.get('endTime', None),
-            'days': {
-                'Sunday': meeting_json.get('meetsSunday', None),
-                'Monday': meeting_json.get('meetsMonday', None),
-                'Tuesday': meeting_json.get('meetsTuesday', None),
-                'Wednesday': meeting_json.get('meetsWednesday', None),
-                'Thursday': meeting_json.get('meetsThursday', None),
-                'Friday': meeting_json.get('meetsFriday', None),
-                'Saturday': meeting_json.get('meetsSaturday', None),
-            }
-        },
+        'meetings': extracted_meetings,
         'enrollCapacity': section_json['enrollmentStatus']['maxEnroll'],
         'enrolled': section_json['enrollmentStatus']['enrolledCount'],
         'waitlistCapacity': section_json['enrollmentStatus']['maxWaitlist'],
@@ -130,19 +136,30 @@ def extract_class_info_from_json(sections_json):
         primary_section = extracted_sections[primary_section_id]
     else:
         primary_section = {
-            'instructors': [],
             'id': None,
-            'time': None,
-            'location': None
+            'meetings': [{
+                'startTime': None,
+                'endTime': None,
+                'days': {
+                    'Sunday': None,
+                    'Monday': None,
+                    'Tuesday': None,
+                    'Wednesday': None,
+                    'Thursday': None,
+                    'Friday': None,
+                    'Saturday': None,
+                },
+                'dayAbbrvs': '',
+                'location': None,
+                'instructors': [],
+            }],
         }
 
     return {
         'displayName': extracted_class['course']['displayName'],
         'title': extracted_class['course']['title'],
-        'instructors': primary_section['instructors'],
         'id': primary_section['id'],
-        'time': primary_section['time'],
-        'location': primary_section['location'],
+        'meetings': primary_section['meetings'],
         'units': -1,
         'sections': list(extracted_sections.values())
     }
