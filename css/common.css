@@ -128,8 +128,22 @@ md-progress-linear {
   background-color: #ed4e33;
 }
 
+.scheduling-options .md-button {
+  line-height: normal;
+}
+.scheduling-options md-checkbox {
+  margin: 0px 10px 0px 0px;
+}
+
+.md-caption.part-of-day {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
 md-input-container.schedule-option {
-  width: 150px;
+  margin: 0 8px 0 8px;
+  padding: 0 2px 0 2px;
+  width: 175px;
 }
 
 .saved-schedule {
