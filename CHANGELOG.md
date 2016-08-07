@@ -1,5 +1,13 @@
 # Changelog
 
+### v0.2.1
+- Added descriptions to classes.
+- Added analysis/reporting when schedule generation fails
+- Removed 'Display Mode' originally meant for viewing other people's
+  schedules. This is no longer required since schedule generation is
+  now permitted for different combinations of classes.
+- Fixed bug with displayed time for 11:30am-2:30pm Final.
+
 ### v0.2.0
 - Adapted to SIS API changes.
 - Added Finals schedule based on guidelines posted at
