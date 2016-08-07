@@ -2,22 +2,25 @@
 
 var Time = require('./time.js');
 
-function Meeting(startTime, endTime, days) {
+function Meeting(startTime, endTime, days, location, instructors) {
   this.startTime = startTime;
   this.endTime = endTime;
   this.days = days;
+  this.location = location;
+  this.instructors = instructors;
 }
 
 Meeting.parse = function(meetingJson) {
+  var location = meetingJson.location.description || null;
   if (meetingJson.startTime === null || meetingJson.endTime === null) {
-    return new Meeting(null, null, meetingJson.days);
+    return new Meeting(null, null, meetingJson.days, location, meetingJson.instructors);
   }
 
   var startTimeSplit = meetingJson.startTime.split(':');
   var startTime = new Time(parseInt(startTimeSplit[0]), parseInt(startTimeSplit[1]));
   var endTimeSplit = meetingJson.endTime.split(':');
   var endTime = new Time(parseInt(endTimeSplit[0]), parseInt(endTimeSplit[1]));
-  return new Meeting(startTime, endTime, meetingJson.days);
+  return new Meeting(startTime, endTime, meetingJson.days, location, meetingJson.instructors);
 };
 
 Meeting.dayAbrvExpansions = {

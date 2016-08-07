@@ -7,8 +7,8 @@ function Final(course) {
   this.course = course;
 
   this.meeting = Final.getSubjectCourseToFinalSection(course);
-  if (!this.meeting && course.meeting) {
-    var courseDays = course.meeting.days;
+  if (!this.meeting && course.meetings.length) {
+    var courseDays = course.meetings[0].days;
     if (courseDays['Saturday'] || courseDays['Sunday']) {
       this.meeting = Final.getSatSunCourseTimeToFinalSection(course);
     } else if (courseDays['Monday'] ||
@@ -89,7 +89,7 @@ Final.getSubjectCourseToFinalSection = function(course) {
 };
 
 Final.getMTWRFCourseTimeToFinalSection = function(course) {
-  switch (course.meeting.startTime.hours) {
+  switch (course.meetings[0].startTime.hours) {
     case 0:
     case 1:
     case 2:
@@ -130,7 +130,7 @@ Final.getMTWRFCourseTimeToFinalSection = function(course) {
 };
 
 Final.getTRCourseTimeToFinalSection = function(course) {
-  switch (course.meeting.startTime.hours) {
+  switch (course.meetings[0].startTime.hours) {
     case 0:
     case 1:
     case 2:

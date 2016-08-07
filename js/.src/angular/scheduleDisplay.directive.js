@@ -131,12 +131,12 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     }
 
     function getMeetingPosition(section) {
-      var offset = section.meeting.startTime.getTotalMinutes() - startHourTotalMinutes;
+      var offset = section.meetings[0].startTime.getTotalMinutes() - startHourTotalMinutes;
       return offset / dayTotalMinutes * dayHeight;
     }
 
     function getMeetingHeight(section) {
-      var height = section.meeting.getTotalMinutes();
+      var height = section.meetings[0].getTotalMinutes();
       return height / dayTotalMinutes * dayHeight;
     }
 

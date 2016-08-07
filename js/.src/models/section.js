@@ -6,11 +6,10 @@ function Section(sectionJson, course) {
   angular.extend(this, sectionJson);
 
   this.id = parseInt(this.id);
-  // TODO: Investigate why location is set to null
-  if (this.location !== null) {
-    this.location = this.location.description;
-  }
-  this.meeting = Meeting.parse(this.time);
+
+  var meetingsJson = this.meetings;
+  // TODO: Add support for multiple meetings
+  this.meetings = meetingsJson.map(Meeting.parse);
   delete this.time;
 
   this.course = course;
