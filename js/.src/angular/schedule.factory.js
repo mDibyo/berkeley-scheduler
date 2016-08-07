@@ -16,8 +16,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _ready = false;
   var _forReadyQs = [];
   var _setReadyListeners = [];
-  var _inDisplayMode = false;
-  var _setInDisplayModeListeners = [];
 
   var _cookieExpiryDate = (function() {
     var date = new Date();
@@ -393,17 +391,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         new scheduleGenerationStatus.Stale());
     }
     _saveCoursesToCookie();
-  }
-
-  function setInDisplayMode(inDisplayMode) {
-    _inDisplayMode = inDisplayMode;
-    _setInDisplayModeListeners.forEach(function(listener) {
-      listener(inDisplayMode);
-    });
-  }
-
-  function registerSetInDisplayModeListener(listener) {
-    _setInDisplayModeListeners.push(listener);
   }
 
   function getAllCourses() {
@@ -963,8 +950,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     isReady: isReady,
     registerSetReadyListener: registerSetReadyListener,
     setStale: setStale,
-    setInDisplayMode: setInDisplayMode,
-    registerSetInDisplayModeListener: registerSetInDisplayModeListener,
 
     getAllCourses: getAllCourses,
     getCourseQById: getCourseQById,

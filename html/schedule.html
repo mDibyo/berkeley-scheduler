@@ -60,12 +60,7 @@
   </form>
 
   <br>
-  <div ng-show="vm.inDisplayMode" layout="row" layout-align="center">
-    <md-button ng-click="vm.leaveDisplayMode()">
-      Go back to your<br> own schedule
-    </md-button>
-  </div>
-  <div ng-hide="vm.inDisplayMode">
+  <div>
     <div
         ng-if="vm.addedCoursesList.length > 0"
         ng-repeat="course in vm.addedCoursesList"
