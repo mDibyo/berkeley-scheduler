@@ -4,7 +4,7 @@ var Meeting = require('./meeting');
 
 function Schedule(userId, sections) {
   this.courses = {};
-  this.meetingsByDay = {
+  this.sectionsByDay = {
     'Monday': [],
     'Tuesday': [],
     'Wednesday': [],
@@ -23,12 +23,12 @@ function Schedule(userId, sections) {
 
     for (var day in section.meetings[0].days) {
       if (section.meetings[0].days[day]) {
-        this.meetingsByDay[day].push(section);
+        this.sectionsByDay[day].push(section);
       }
     }
   }, this);
-  for (var day in this.meetingsByDay) {
-    this.meetingsByDay[day].sort(function(a, b) {
+  for (var day in this.sectionsByDay) {
+    this.sectionsByDay[day].sort(function(a, b) {
       return a.meetings[0].startTime.compareTo(b.meetings[0].startTime);
     });
   }
@@ -43,7 +43,7 @@ Schedule.timeFootprints = {};
 Schedule.prototype.getTimeFootprint = function() {
   var footprint = Meeting.dayAbrvs.map(function(dayAbrv) {
     return dayAbrv[1] +
-      this.meetingsByDay[dayAbrv[0]].map(function(section) {
+      this.sectionsByDay[dayAbrv[0]].map(function(section) {
         return section.meetings[0].startTime.getTotalMinutes() + '-' + section.meetings[0].endTime.getTotalMinutes();
       }).reduce(function(a, b) {
         return a + '.' + b;
@@ -51,7 +51,7 @@ Schedule.prototype.getTimeFootprint = function() {
   }, this).reduce(function(a, b) {
     return a + '|' + b;
   }, '');
-  Schedule.timeFootprints[footprint] = this.meetingsByDay;
+  Schedule.timeFootprints[footprint] = this.sectionsByDay;
   return footprint;
 };
 
