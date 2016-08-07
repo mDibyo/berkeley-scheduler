@@ -12,7 +12,6 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
   vm.subjectAreaIsDisabled = false;
   vm.courseIsDisabled = true;
   vm.selectedCourse = null;
-  vm.inDisplayMode = false;
   vm.coursesList = [];
   vm.subjectAreasList = [];
   vm.searchSubjectArea = searchSubjectArea;
@@ -25,7 +24,6 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
 
   vm.addedCoursesList = scheduleFactory.getAllCourses();
   vm.setSchedulesStale = setSchedulesStale;
-  vm.leaveDisplayMode = leaveDisplayMode;
   vm.addCourse = addCourse;
   vm.dropCourse = dropCourse;
 
@@ -37,10 +35,6 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
 
   scheduleFactory.registerSetReadyListener(function(isReady) {
     vm.scheduleIsReady = isReady;
-  });
-
-  scheduleFactory.registerSetInDisplayModeListener(function(inDisplayMode) {
-    vm.inDisplayMode = inDisplayMode;
   });
 
   scheduleFactory.registerAddCourseListener(function(course) {
@@ -138,11 +132,6 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
 
   function setSchedulesStale() {
     scheduleFactory.setStale(true);
-  }
-
-  function leaveDisplayMode() {
-    scheduleFactory.setInDisplayMode(false);
-    vm.goToState('schedule');
   }
 
   function addCourse(course) {
