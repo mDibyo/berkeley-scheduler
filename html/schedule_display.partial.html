@@ -144,17 +144,17 @@
       <!--Sections-->
       <div class="schedule-display schedule-display-section"
            layout="row" layout-align="center center"
-           ng-repeat="meeting in schedule.meetingsByDay[day]"
+           ng-repeat="section in schedule.sectionsByDay[day]"
            ng-style="{
-             'top': vm.getMeetingPosition(meeting),
-             'height': vm.getMeetingHeight(meeting),
-             'background-color': vm.getMeetingBackgroundColor(meeting),
-             'border-color': vm.getMeetingBorderColor(meeting),
+             'top': vm.getSectionPosition(section),
+             'height': vm.getSectionHeight(section),
+             'background-color': vm.getSectionBackgroundColor(section),
+             'border-color': vm.getSectionBorderColor(section),
            }">
         <div class="schedule-display schedule-display-section-inner"
-             title="{{meeting.course.department}} {{meeting.course.courseNumber}} {{meeting.type}}&#13;&#10;{{meeting.location}}">
-          {{meeting.course.department}} {{meeting.course.courseNumber}} {{meeting.type}}<br>
-          {{meeting.location}}
+             title="{{section.course.department}} {{section.course.courseNumber}} {{section.type}}&#13;&#10;{{section.meetings[0].location}}">
+          {{section.course.department}} {{section.course.courseNumber}} {{section.type}}<br>
+          {{section.meetings[0].location}}
         </div>
       </div>
     </div>
