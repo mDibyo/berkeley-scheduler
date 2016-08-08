@@ -50,7 +50,10 @@
           ng-repeat="scheduleId in dvm.savedScheduleIds track by scheduleId"
           ng-click="dvm.goToState('schedule.viewSchedule', {scheduleId: scheduleId})">
         <div class="saved-schedule-drop" ng-click="dvm.dropSavedScheduleById($event, scheduleId)">
-          <i class="material-icons md-light">close</i>
+          <md-icon class="material-icons md-light"
+                   md-svg-icon="close"
+                   title="Discard">
+          </md-icon>
         </div>
         <div flex></div>
         <div layout-padding>
@@ -69,7 +72,7 @@
 <div ng-show="dvm.showOptions" class="scheduling-options">
   <md-list layout="column">
     <md-list-item ng-click="null">
-      <div flex="25" class="md-body-2">
+      <div flex="25" class="md-body-2 scheduling-option-category">
         Preferred Time of Day
       </div>
       <md-radio-group flex ng-model="dvm.preferPartOfDay" ng-change="dvm.onChangePreferPartOfDay()" layout="row" layout-margin>
@@ -89,12 +92,12 @@
           <span class="md-caption part-of-day">(5PM &mdash;)</span>
         </md-radio-button>
         <md-radio-button ng-value="dvm.partsOfDay.none">
-          None
+          No preference
         </md-radio-button>
       </md-radio-group>
     </md-list-item>
     <md-list-item ng-click="null">
-      <div flex="25" class="md-body-2">
+      <div flex="25" class="md-body-2 scheduling-option-category">
         Gaps
       </div>
       <md-radio-group flex ng-model="dvm.gapOption" ng-change="dvm.onChangeGapOption()" layout="row" layout-margin>
@@ -105,12 +108,12 @@
           Maximize Gaps
         </md-radio-button>
         <md-radio-button ng-value="dvm.gapOptions.none">
-          None
+          No preference
         </md-radio-button>
       </md-radio-group>
     </md-list-item>
     <md-list-item ng-click="null">
-      <div flex="25" class="md-body-2">
+      <div flex="25" class="md-body-2 scheduling-option-category">
         Time conflicts
       </div>
       <div layout="row" layout-margin>
@@ -130,7 +133,7 @@
       </div>
     </md-list-item>
     <md-list-item ng-click="null">
-      <div flex="25" class="md-body-2">
+      <div flex="25" class="md-body-2 scheduling-option-category">
         Time restrictions
       </div>
       <div layout="row" layout-margin>

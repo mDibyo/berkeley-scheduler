@@ -2,7 +2,8 @@ angular.module('scheduleBuilder').config([
   '$stateProvider',
   '$urlRouterProvider',
   '$mdThemingProvider',
-  function($stateProvider, $urlRouterProvider, $mdThemingProvider) {
+  '$mdIconProvider',
+  function($stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider) {
     $stateProvider
       .state('schedule', {
         url: '/schedule',
@@ -50,7 +51,6 @@ angular.module('scheduleBuilder').config([
     $mdThemingProvider
       .definePalette('berkeley-primary',
         berkeleyPrimaryPalette);
-
     var berkeleyAccentPalette = {
       '50': '#785301',
       '100': '#916501',
@@ -70,9 +70,12 @@ angular.module('scheduleBuilder').config([
     $mdThemingProvider
       .definePalette('berkeley-accent',
         berkeleyAccentPalette);
-
     $mdThemingProvider.theme('default')
       .primaryPalette('berkeley-primary')
       .accentPalette('berkeley-accent');
+
+    $mdIconProvider
+      .defaultViewBoxSize(48)
+      .defaultIconSet('svg/final/sprite.defs.svg');
   }
 ]);

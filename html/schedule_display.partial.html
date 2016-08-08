@@ -63,25 +63,30 @@
     </div>
     <div flex></div>
     <div>
-      <i class="material-icons md-48 schedule-nav"
-         ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.firstScheduleId})">
-        first_page
-      </i>
+      <md-icon class="md-48 schedule-nav"
+               md-svg-icon="page-first"
+               title="First schedule"
+               ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.firstScheduleId})">
+      </md-icon>
     </div>
     <div>
-      <i class="material-icons md-48 schedule-nav"
-         ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevScheduleId})">
-        chevron_left
-      </i>
+      <md-icon class="md-48 schedule-nav"
+               md-svg-icon="chevron-left"
+               title="Previous Schedule"
+               ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevScheduleId})">
+      </md-icon>
     </div>
   </div>
+  <div class="current-schedule-index">
     {{vm.currScheduleListInfo.currentIdx+1}} of {{vm.currScheduleListInfo.total}}
+  </div>
   <div flex layout="row">
     <div>
-      <i class="material-icons md-48 schedule-nav"
-         ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})">
-        chevron_right
-      </i>
+      <md-icon class="md-48 schedule-nav"
+               md-svg-icon="chevron-right"
+               title="Next schedule"
+               ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})">
+      </md-icon>
     </div>
     <div flex></div>
     <div>

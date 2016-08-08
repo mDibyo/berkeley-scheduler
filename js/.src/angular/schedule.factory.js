@@ -374,6 +374,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function _isStale() {
+    _lastScheduleGenerationStatus = _lastScheduleGenerationStatus || new scheduleGenerationStatus.Stale();
     return _lastScheduleGenerationStatus.status === 'stale';
   }
 
