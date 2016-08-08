@@ -61,14 +61,8 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     vm.addSavedScheduleById = scheduleFactory.addSavedScheduleById;
     vm.toggleFinalsSchedule = toggleFinalsSchedule;
     vm.getFinalsForDay = getFinalsForDay;
-    vm.getFinalPosition = getFinalPosition;
-    vm.getFinalHeight = getFinalHeight;
-    vm.getFinalBackgroundColor = getFinalBackgroundColor;
-    vm.getFinalBorderColor = getFinalBorderColor;
-    vm.getSectionPosition = getSectionPosition;
-    vm.getSectionHeight = getSectionHeight;
-    vm.getSectionBackgroundColor = getSectionBackgroundColor;
-    vm.getSectionBorderColor = getSectionBorderColor;
+    vm.getFinalStyle = getFinalStyle;
+    vm.getSectionViewStyle = getSectionViewStyle;
 
     scheduleFactory.registerCurrScheduleListInfoChangeListener(
       'scheduleDisplay', function(info) {
@@ -97,7 +91,16 @@ function sbScheduleDisplayDirective(scheduleFactory) {
       return finals;
     }
 
-    function getFinalPosition(final) {
+    function getFinalStyle(final) {
+      return {
+        'top': getFinalTop(final),
+        'height': getFinalHeight(final),
+        'background-color': getFinalBackgroundColor(final),
+        'border-color': getFinalBorderColor(final)
+      }
+    }
+
+    function getFinalTop(final) {
       switch (final.meeting.startTime.hours) {
         case 8:  // 8-11 AM
           return 0;
@@ -126,26 +129,36 @@ function sbScheduleDisplayDirective(scheduleFactory) {
       return Course.colorCodes[final.course.color];
     }
 
-    function getSectionPosition(section) {
-      var offset = section.meetings[0].startTime.getTotalMinutes() - startHourTotalMinutes;
+    function getSectionViewStyle(sectionView) {
+      return {
+        'top': getSectionViewTop(sectionView),
+        'left': getSectionViewLeft(sectionView),
+        'height': getSectionViewHeight(sectionView),
+        'width': getSectionViewWidth(sectionView),
+        'background-color': getSectionViewBackgroundColor(sectionView),
+      }
+    }
+
+    function getSectionViewTop(sectionView) {
+      var offset = sectionView.startTime.getTotalMinutes() - startHourTotalMinutes;
       return offset / dayTotalMinutes * dayHeight;
     }
 
-    function getSectionHeight(section) {
-      var height = section.meetings[0].getTotalMinutes();
+    function getSectionViewLeft(sectionView) {
+      return (sectionView.slotIdx / sectionView.group.slots.length) * 100 + '%';
+    }
+
+    function getSectionViewHeight(sectionView) {
+      var height = sectionView.totalMinutes + 1;
       return height / dayTotalMinutes * dayHeight;
     }
 
-    function getSectionBackgroundColor(section) {
-      var color = Course.colorCodes[section.course.color],
-        r = parseInt(color.substring(1, 3), 16),
-        g = parseInt(color.substring(3, 5), 16),
-        b = parseInt(color.substring(5, 7), 16);
-      return 'rgba('+ r + ',' + g + ',' + b + ',' + vm.sectionColorOpacity + ')';
+    function getSectionViewWidth(sectionView) {
+      return (1/sectionView.group.slots.length) * 100 + '%';
     }
 
-    function getSectionBorderColor(section) {
-      return Course.colorCodes[section.course.color];
+    function getSectionViewBackgroundColor(sectionView) {
+      return Course.colorCodes[sectionView.course.color];
     }
   }
 

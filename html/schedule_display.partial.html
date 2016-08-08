@@ -39,12 +39,7 @@
 
         <div class="schedule-display finals-display-section"
              ng-repeat="final in vm.getFinalsForDay(schedule.courses, day)"
-             ng-style="{
-               'top': vm.getFinalPosition(final),
-               'height': vm.getFinalHeight(),
-               'background-color': vm.getFinalBackgroundColor(final),
-               'border-color': vm.getFinalBorderColor(final),
-             }">
+             ng-style="vm.getFinalStyle(final)">
           <div class="schedule-display finals-display-section-inner">
             {{final.course.department}} {{final.course.courseNumber}}
           </div>
@@ -161,21 +156,19 @@
       </div>
 
       <!--Sections-->
-      <div class="schedule-display schedule-display-section"
-           layout="row" layout-align="center center"
-           ng-repeat="section in schedule.sectionsByDay[day]"
-           ng-style="{
-             'top': vm.getSectionPosition(section),
-             'height': vm.getSectionHeight(section),
-             'background-color': vm.getSectionBackgroundColor(section),
-             'border-color': vm.getSectionBorderColor(section),
-           }">
-        <div class="schedule-display schedule-display-section-inner"
-             title="{{section.course.department}} {{section.course.courseNumber}} {{section.type}}&#13;&#10;{{section.meetings[0].location}}">
-          {{section.course.department}} {{section.course.courseNumber}} {{section.type}}<br>
-          {{section.meetings[0].location}}
+      <span ng-repeat="sectionGroup in schedule.getSectionGroupsForDay(day)">
+        <div class="schedule-display schedule-display-section"
+             layout="row" layout-align="center center"
+             ng-repeat="sectionView in sectionGroup.getSectionViews()"
+             ng-style="vm.getSectionViewStyle(sectionView)">
+          <div class="schedule-display schedule-display-section-inner"
+               title="{{sectionView.course.department}} {{sectionView.course.courseNumber}} {{sectionView.type}}&#13;&#10;{{sectionView.location}}">
+            {{sectionView.course.department}} {{sectionView.course.courseNumber}} {{sectionView.type}}<br>
+            {{sectionView.location}}
+          </div>
+
         </div>
-      </div>
+      </span>
     </div>
   </div>
 
