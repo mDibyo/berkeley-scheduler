@@ -1,6 +1,7 @@
 'use strict';
 
 var Meeting = require('./meeting');
+var ScheduleSectionGroup = require('./scheduleSectionGroup');
 
 function Schedule(userId, sections) {
   this.courses = {};
@@ -11,6 +12,7 @@ function Schedule(userId, sections) {
     'Thursday': [],
     'Friday': []
   };
+  this.sectionGroupsByDay = {};
 
   var sectionIdList = [];
   sections.forEach(function (section) {
@@ -53,6 +55,34 @@ Schedule.prototype.getTimeFootprint = function() {
   }, '');
   Schedule.timeFootprints[footprint] = this.sectionsByDay;
   return footprint;
+};
+
+Schedule.prototype.getSectionGroupsForDay = function(day) {
+  if (!this.sectionGroupsByDay.hasOwnProperty(day)) {
+    this.sectionGroupsByDay[day] = this._generateSectionGroupsForDay(day);
+  }
+  return this.sectionGroupsByDay[day];
+};
+
+Schedule.prototype._generateSectionGroupsForDay = function(day) {
+  if (!this.sectionsByDay[day].length) {
+    return [];
+  }
+
+  var sections = this.sectionsByDay[day];
+  var sectionGroups = [];
+  var currSectionGroup = new ScheduleSectionGroup(sections[0], day);
+  for (var i = 1; i < sections.length; i++) {
+    var section = sections[i];
+    if (currSectionGroup.hasOverlap(section)) {
+      currSectionGroup.add(section);
+    } else {
+      sectionGroups.push(currSectionGroup);
+      currSectionGroup = new ScheduleSectionGroup(section, day);
+    }
+  }
+  sectionGroups.push(currSectionGroup);
+  return sectionGroups;
 };
 
 Schedule.generateId = function(idComponentList) {
