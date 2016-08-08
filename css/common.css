@@ -135,6 +135,10 @@ md-progress-linear {
   margin: 0px 10px 0px 0px;
 }
 
+.scheduling-option-category {
+  margin-right: -20px;
+}
+
 .md-caption.part-of-day {
   font-size: 11px;
   color: rgba(0, 0, 0, 0.54);
@@ -169,13 +173,20 @@ md-input-container.schedule-option {
 }
 
 .material-icons.md-light { color: #ffffff; }
-.material-icons.course-unselect { color: #ed4e33; }
-.material-icons.schedule-nav { color: #003262; cursor: pointer; }
-.material-icons.schedule-nav:hover { color: #3b7ea1; }
-.material-icons.md-18 { font-size: 18px; }
-.material-icons.md-24 { font-size: 24px; }
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.md-48 { font-size: 48px; }
+md-icon.course-unselect { color: #ed4e33; }
+md-icon.schedule-nav { color: #003262; cursor: pointer; }
+md-icon.schedule-nav:hover {
+  background-color: #3b7ea1;
+  color: #ffffff;
+}
+md-icon.md-18 { font-size: 18px; }
+md-icon.md-24 { font-size: 24px; }
+md-icon.md-36 { font-size: 36px; }
+md-icon.md-48 {width: 48px;height: 48px;}
+
+.current-schedule-index {
+  padding: 8px;
+}
 
 .schedule-button {
   color: #ffffff !important;
