@@ -4,8 +4,9 @@ angular.module('scheduleBuilder').run([
   '$rootScope',
   '$mdDialog',
   '$mdMedia',
+  '$templateRequest',
   'scheduleFactory',
-  function($window, $state, $rootScope, $mdDialog, $mdMedia, scheduleFactory) {
+  function($window, $state, $rootScope, $mdDialog, $mdMedia, $templateRequest, scheduleFactory) {
     $rootScope.$state = $state;
 
     var bodyHeight = null;
@@ -47,5 +48,8 @@ angular.module('scheduleBuilder').run([
         clickOutsideToClose: true
       });
     }
+
+    // Pre-fetch SVG assets
+    $templateRequest('svg/final/sprite.defs.svg');
   }
 ]);
