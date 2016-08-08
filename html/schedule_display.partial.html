@@ -65,14 +65,21 @@
     <div>
       <md-icon class="md-48 schedule-nav"
                md-svg-icon="page-first"
-               title="First schedule"
+               title="Skip to first schedule"
                ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.firstScheduleId})">
       </md-icon>
     </div>
     <div>
       <md-icon class="md-48 schedule-nav"
+               md-svg-icon="chevron-double-left"
+               title="Skip to previous set of schedules with different section times"
+               ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevFpFirstScheduleId})">
+      </md-icon>
+    </div>
+    <div>
+      <md-icon class="md-48 schedule-nav"
                md-svg-icon="chevron-left"
-               title="Previous Schedule"
+               title="Go to previous Schedule"
                ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.prevScheduleId})">
       </md-icon>
     </div>
@@ -84,8 +91,15 @@
     <div>
       <md-icon class="md-48 schedule-nav"
                md-svg-icon="chevron-right"
-               title="Next schedule"
+               title="Go to next schedule"
                ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextScheduleId})">
+      </md-icon>
+    </div>
+    <div>
+      <md-icon class="md-48 schedule-nav"
+               md-svg-icon="chevron-double-right"
+               title="Skip to next set of schedules with different section times"
+               ui-sref="schedule.viewSchedule({scheduleId: vm.currScheduleListInfo.nextFpFirstScheduleId})">
       </md-icon>
     </div>
     <div flex></div>

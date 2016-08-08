@@ -70,10 +70,6 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     vm.getSectionBackgroundColor = getSectionBackgroundColor;
     vm.getSectionBorderColor = getSectionBorderColor;
 
-    vm.getPrevScheduleId = function() {
-      return vm.currScheduleListInfo.prevScheduleId;
-    };
-
     scheduleFactory.registerCurrScheduleListInfoChangeListener(
       'scheduleDisplay', function(info) {
         vm.currScheduleListInfo = info;

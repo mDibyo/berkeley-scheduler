@@ -803,7 +803,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     return _getScheduleId(_currFpIdx, _currFpScheduleIdx);
   }
 
-  function getPrevScheduleId() {
+  function _getPrevScheduleId() {
     var l = _currFpList.length;
     if (l <= 0) {
       return null;
@@ -817,7 +817,16 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     return _getScheduleId(prevFpIdx, prevFpScheduleIdx);
   }
 
-  function getNextScheduleId() {
+  function _getPrevFpFirstScheduleId() {
+    var l = _currFpList.length;
+    if (l <= 0) {
+      return null;
+    }
+    var prevFpIdx = (_currFpIdx + l - 1) % l;
+    return _getScheduleId(prevFpIdx, 0);
+  }
+
+  function _getNextScheduleId() {
     var l = _currFpList.length;
     if (l <= 0) {
       return null;
@@ -831,13 +840,24 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     return _getScheduleId(nextFpIdx, nextFpScheduleIdx);
   }
 
+  function _getNextFpFirstScheduleId() {
+    var l = _currFpList.length;
+    if (l <= 0) {
+      return null;
+    }
+    var nextFpIdx = (_currFpIdx + 1) % l;
+    return _getScheduleId(nextFpIdx, 0);
+  }
+
   function getCurrScheduleListInfo() {
     return {
       total: _numSchedules,
       currentIdx: _currScheduleIdx,
       firstScheduleId: _getScheduleId(0, 0),
-      prevScheduleId: getPrevScheduleId(),
-      nextScheduleId: getNextScheduleId()
+      prevScheduleId: _getPrevScheduleId(),
+      prevFpFirstScheduleId: _getPrevFpFirstScheduleId(),
+      nextScheduleId: _getNextScheduleId(),
+      nextFpFirstScheduleId: _getNextFpFirstScheduleId()
     };
   }
 
@@ -965,8 +985,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     setCurrentScheduleGroupByScheduleIdQ: setCurrentScheduleGroupByScheduleIdQ,
     getScheduleByIdFromCurrentScheduleGroup: getScheduleByIdFromCurrentScheduleGroup,
     getCurrScheduleId: getCurrScheduleId,
-    getPrevScheduleId: getPrevScheduleId,
-    getNextScheduleId: getNextScheduleId,
     getScheduleGenerationStatus: getScheduleGenerationStatus,
     registerScheduleGenerationStatusListener: registerScheduleGenerationStatusListener,
     getCurrScheduleListInfo: getCurrScheduleListInfo,
