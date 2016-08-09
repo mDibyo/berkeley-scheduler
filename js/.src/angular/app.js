@@ -28,8 +28,8 @@
 
   // Directives
   require('./courseDisplayAndSelect.directive');
-  require('./scheduleDisplay.directive');
   require('./generateSchedules.directive');
+  require('./scheduleDisplay.directive');
 
   // Run
   require('./run');
