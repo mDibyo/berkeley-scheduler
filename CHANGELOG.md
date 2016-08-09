@@ -1,5 +1,13 @@
 # Changelog
 
+### v0.2.2
+- Cleaned up Scheduling Options UI.
+- Switched to SVG assets for icons.
+- Added buttons to skip to schedules with different section times in
+  schedule display view.
+- Added handling for showing sections with time conflicts in schedule
+  display view.
+
 ### v0.2.1
 - Added descriptions to classes.
 - Added analysis/reporting when schedule generation fails
