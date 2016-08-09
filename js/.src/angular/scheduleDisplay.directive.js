@@ -1,6 +1,7 @@
 var Course = require('../models/course');
 var Meeting = require('../models/meeting');
 var Time = require('../models/time');
+
 var BaseCtrl = require('./_base.controller');
 
 function sbScheduleDisplayDirective(scheduleFactory) {
@@ -63,6 +64,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     vm.getFinalsForDay = getFinalsForDay;
     vm.getFinalStyle = getFinalStyle;
     vm.getSectionViewStyle = getSectionViewStyle;
+    vm.getSectionViewHoverStyle = getSectionViewHoverStyle;
 
     scheduleFactory.registerCurrScheduleListInfoChangeListener(
       'scheduleDisplay', function(info) {
@@ -135,7 +137,15 @@ function sbScheduleDisplayDirective(scheduleFactory) {
         'left': getSectionViewLeft(sectionView),
         'height': getSectionViewHeight(sectionView),
         'width': getSectionViewWidth(sectionView),
-        'background-color': getSectionViewBackgroundColor(sectionView),
+        'background-color': getSectionViewBackgroundColor(sectionView)
+      }
+    }
+
+    function getSectionViewHoverStyle(sectionView) {
+      return {
+        'top': getSectionViewTop(sectionView),
+        'height': getSectionViewHeight(sectionView),
+        'background-color': getSectionViewBackgroundColor(sectionView)
       }
     }
 

@@ -157,16 +157,26 @@
 
       <!--Sections-->
       <span ng-repeat="sectionGroup in schedule.getSectionGroupsForDay(day)">
-        <div class="schedule-display schedule-display-section"
-             layout="row" layout-align="center center"
-             ng-repeat="sectionView in sectionGroup.getSectionViews()"
-             ng-style="vm.getSectionViewStyle(sectionView)">
-          <div class="schedule-display schedule-display-section-inner"
-               title="{{sectionView.course.department}} {{sectionView.course.courseNumber}} {{sectionView.type}}&#13;&#10;{{sectionView.location}}">
-            {{sectionView.course.department}} {{sectionView.course.courseNumber}} {{sectionView.type}}<br>
-            {{sectionView.location}}
+        <div ng-repeat="sectionView in sectionGroup.getSectionViews()" class="schedule-display-section-parent">
+          <div class="schedule-display schedule-display-section"
+               layout="row" layout-align="center center"
+               ng-style="vm.getSectionViewStyle(sectionView)">
+            <div class="schedule-display schedule-display-section-inner"
+                 title="{{sectionView.course.department}} {{sectionView.course.courseNumber}} {{sectionView.type}}&#13;&#10;{{sectionView.location}}">
+              {{sectionView.course.department}} {{sectionView.course.courseNumber}} {{sectionView.type}}<br>
+              {{sectionView.location}}
+            </div>
           </div>
 
+          <div class="schedule-display schedule-display-section-hover"
+               layout="row" layout-align="center center"
+               ng-style="vm.getSectionViewHoverStyle(sectionView)">
+            <div class="schedule-display schedule-display-section-inner"
+                 title="{{sectionView.course.department}} {{sectionView.course.courseNumber}} {{sectionView.type}}&#13;&#10;{{sectionView.location}}">
+              {{sectionView.course.department}} {{sectionView.course.courseNumber}} {{sectionView.type}}<br>
+              {{sectionView.location}}
+            </div>
+          </div>
         </div>
       </span>
     </div>
