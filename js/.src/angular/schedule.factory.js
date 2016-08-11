@@ -622,8 +622,14 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
   function _findAndSetReasonForScheduleGenerationFailure() {
     if (_currScheduleGroup && _currScheduleGroup.getTotalNumSchedules() <= 0) {
-      // Not enough sections were selected
+      // Not enough courses/sections were selected
       var courses = _currScheduleGroup.courses;
+      if (courses.length <= 0) {
+        _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
+          'No classes were selected.'
+        ));
+        return;
+      }
       for (var i = 0; i < courses.length; i++) {
         var course = courses[i];
         for (var j = 0; j < course.sectionTypes.length; j++) {
