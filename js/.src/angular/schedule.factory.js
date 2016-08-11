@@ -71,6 +71,19 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       }
       return total;
     },
+    minimizeNumberOfDays: function(footprint) {
+      return - _orderByFns.maximizeNumberOfDays(footprint);
+    },
+    maximizeNumberOfDays: function(footprint) {
+      var sectionsByDay = Schedule.timeFootprints[footprint];
+      var total = 0;
+      for (var day in sectionsByDay) {
+        if (sectionsByDay[day].length > 0) {
+          total += 1;
+        }
+      }
+      return total;
+    },
     preferMornings: function(footprint) {
       var sectionsByDay = Schedule.timeFootprints[footprint];
       var totalFor = 0, total = 0;
@@ -259,6 +272,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       schedulingOptions.minimizeGaps || false;
     schedulingOptions.maximizeGaps =
       schedulingOptions.maximizeGaps || false;
+    schedulingOptions.minimizeNumberOfDays =
+      schedulingOptions.minimizeNumberOfDays || false;
+    schedulingOptions.maximizeNumberOfDays =
+      schedulingOptions.maximizeNumberOfDays || false;
     schedulingOptions.preferMornings =
       schedulingOptions.preferMornings || false;
     schedulingOptions.preferAfternoons =
@@ -901,6 +918,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       }
       _currScheduleIdx += schedules.length;
     }
+    _currScheduleIdx = _currScheduleIdx % _numSchedules;
     return schedule;
   }
 
