@@ -95,7 +95,7 @@ def extract_meeting_info_from_json(meeting_json):
             'Saturday': meeting_json.get('meetsSaturday', None),
         },
         'dayAbbrvs': meeting_json.get('meetsDays', None),
-        'location': meeting_json.get('location', None),
+        'location': meeting_json.get('location', {}),
         'instructors': extracted_instructors,
     }
 
@@ -242,17 +242,17 @@ def main(only_new=False):
                 try:
                     visited.add(course['courseNumber'])
                     response = request_course(course)
-                    if response and response['httpStatus']['code'] == '200':
-                        if 'classSections' in response['response']:
+                    if response and response['ApiResponse']['httpStatus']['code'] == '200':
+                        if 'classSections' in response['ApiResponse']['response']:
                             sections_json = \
-                                response['response']['classSections']
+                                response['ApiResponse']['response']['classSections']
                             _class = extract_class_info_from_json(sections_json)
                             _class.update({
                                 'description': course['description'],
                                 'units': course['units'],
                             })
                         else:
-                            sections_json = response['response']['classes']['class']
+                            sections_json = response['ApiResponse']['response']['classes']['class']
                             _class = extract_single_section_info_from_json(sections_json)
                         classes[course['courseNumber']] = _class
                 except KeyboardInterrupt:
