@@ -135,7 +135,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
           }
         }
       }
-      return numConflicts / total;
+      return - (numConflicts / total);
     }
   };
   var _filterFns = {
@@ -908,9 +908,13 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     return angular.copy(_schedulingOptions);
   }
 
-  function setSchedulingOption(option, choice) {
-    _schedulingOptions[option] = choice;
-    _saveSchedulingOptionsToCookie();
+  function setSchedulingOption(option, choice, save) {
+    if (_schedulingOptions.hasOwnProperty(option)) {
+      _schedulingOptions[option] = choice;
+    }
+    if (save === undefined || save) {
+      _saveSchedulingOptionsToCookie();
+    }
   }
 
   function getSavedScheduleIds() {

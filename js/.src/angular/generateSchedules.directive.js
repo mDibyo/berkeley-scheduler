@@ -34,36 +34,37 @@ function sbGenerateSchedulesDirective() {
     vm.viewSchedules = viewSchedules;
     vm.generateAndViewSchedules = generateAndViewSchedules;
 
-    vm.gapOptions = {
-      minimize: 'minimizeGaps',
-      maximize: 'maximizeGaps',
-      none: 'dontWorryAboutGaps'
+    vm.sortingOptions = {
+      preferMornings: 'preferMornings',
+      preferAfternoons: 'preferAfternoons',
+      preferEvenings: 'preferEvenings',
+      minimizeGaps: 'minimizeGaps',
+      maximizeGaps: 'maximizeGaps',
+      preferNoTimeConflicts: 'preferNoTimeConflicts',
+      noPreference: 'noPreference'
     };
-    if (schedulingOptions.minimizeGaps) {
-      vm.gapOption = vm.gapOptions.minimize;
-    } else if (schedulingOptions.maximizeGaps) {
-      vm.gapOption = vm.gapOptions.maximize;
-    } else {
-      vm.gapOption = vm.gapOptions.none;
+    vm.selectedSortingOption = vm.sortingOptions.noPreference;
+    for (var option in vm.sortingOptions) {
+      if (schedulingOptions[option]) {
+        vm.selectedSortingOption = option;
+        break;
+      }
     }
-    vm.onChangeGapOption = onChangeGapOption;
 
-    vm.partsOfDay = {
-      morning: 'preferMorning',
-      afternoon: 'preferAfternoon',
-      evening: 'preferEvening',
-      none: 'preferNone'
-    };
-    if (schedulingOptions.preferMornings) {
-      vm.preferPartOfDay = vm.partsOfDay.morning;
-    } else if (schedulingOptions.preferAfternoons) {
-      vm.preferPartOfDay = vm.partsOfDay.afternoon;
-    } else if (schedulingOptions.preferEvenings) {
-      vm.preferPartOfDay = vm.partsOfDay.evening;
-    } else {
-      vm.preferPartOfDay = vm.partsOfDay.none;
+    vm.onChangeSortingOption = onChangeSortingOption;
+
+    function onChangeSortingOption() {
+      scheduleFactory.setSchedulingOption('preferMornings', false, false);
+      scheduleFactory.setSchedulingOption('preferAfternoons', false, false);
+      scheduleFactory.setSchedulingOption('preferEvenings', false, false);
+      scheduleFactory.setSchedulingOption('minimizeGaps', false, false);
+      scheduleFactory.setSchedulingOption('maximizeGaps', false, false);
+      scheduleFactory.setSchedulingOption('preferNoTimeConflicts', false, false);
+
+      console.log(vm.selectedSortingOption);
+      scheduleFactory.setSchedulingOption(vm.selectedSortingOption, true, true);
+      maybeFilterAndReorderSchedules();
     }
-    vm.onChangePreferPartOfDay = onChangePreferPartOfDay;
 
     vm.selectedDayStartTimeJson =
       schedulingOptions.dayStartTime || halfHours[0];
@@ -78,10 +79,6 @@ function sbGenerateSchedulesDirective() {
 
     vm.noTimeConflicts = schedulingOptions.noTimeConflicts;
     vm.onChangeNoTimeConflicts = onChangeNoTimeConflicts;
-
-    vm.preferNoTimeConflicts = schedulingOptions.preferNoTimeConflicts;
-    vm.disablePreferNoTimeConflicts = vm.noTimeConflicts;
-    vm.onChangePreferNoTimeConflicts = onChangePreferNoTimeConflicts;
 
     vm.savedScheduleIds = scheduleFactory.getSavedScheduleIds();
     vm.dropSavedScheduleById = function($event, scheduleId) {
@@ -143,69 +140,9 @@ function sbGenerateSchedulesDirective() {
       scheduleFactory.setSchedulingOption('showOptions', vm.showOptions);
     }
 
-    function onChangeGapOption() {
-      switch (vm.gapOption) {
-        case vm.gapOptions.minimize:
-          scheduleFactory.setSchedulingOption('minimizeGaps', true);
-          scheduleFactory.setSchedulingOption('maximizeGaps', false);
-          break;
-        case vm.gapOptions.maximize:
-          scheduleFactory.setSchedulingOption('minimizeGaps', false);
-          scheduleFactory.setSchedulingOption('maximizeGaps', true);
-          break;
-        case vm.gapOptions.none:
-          scheduleFactory.setSchedulingOption('minimizeGaps', false);
-          scheduleFactory.setSchedulingOption('maximizeGaps', false);
-          break;
-      }
-      if (vm.gapOption != null) {
-        vm.preferPartOfDay = vm.partsOfDay.none;
-        scheduleFactory.setSchedulingOption('preferMornings', false);
-        scheduleFactory.setSchedulingOption('preferAfternoons', false);
-        scheduleFactory.setSchedulingOption('preferEvenings', false);
-      }
-      maybeFilterAndReorderSchedules();
-    }
-
-    function onChangePreferPartOfDay() {
-      switch (vm.preferPartOfDay) {
-        case vm.partsOfDay.morning:
-          scheduleFactory.setSchedulingOption('preferMornings', true);
-          scheduleFactory.setSchedulingOption('preferAfternoons', false);
-          scheduleFactory.setSchedulingOption('preferEvenings', false);
-          break;
-        case vm.partsOfDay.afternoon:
-          scheduleFactory.setSchedulingOption('preferMornings', false);
-          scheduleFactory.setSchedulingOption('preferAfternoons', true);
-          scheduleFactory.setSchedulingOption('preferEvenings', false);
-          break;
-        case vm.partsOfDay.evening:
-          scheduleFactory.setSchedulingOption('preferMornings', false);
-          scheduleFactory.setSchedulingOption('preferAfternoons', false);
-          scheduleFactory.setSchedulingOption('preferEvenings', true);
-          break;
-        case vm.partsOfDay.none:
-          scheduleFactory.setSchedulingOption('preferMornings', false);
-          scheduleFactory.setSchedulingOption('preferAfternoons', false);
-          scheduleFactory.setSchedulingOption('preferEvenings', false);
-          break;
-      }
-      if (vm.preferPartOfDay != vm.partsOfDay.none) {
-        vm.gapOption = vm.gapOptions.none;
-        scheduleFactory.setSchedulingOption('minimizeGaps', false);
-        scheduleFactory.setSchedulingOption('maximizeGaps', false);
-      }
-      maybeFilterAndReorderSchedules();
-    }
-
     function onChangeNoTimeConflicts() {
       vm.disablePreferNoTimeConflicts = vm.noTimeConflicts;
       scheduleFactory.setSchedulingOption('noTimeConflicts', vm.noTimeConflicts);
-      maybeFilterAndReorderSchedules();
-    }
-
-    function onChangePreferNoTimeConflicts() {
-      schedulingOptions.setSchedulingOption('preferNoTimeConflicts', vm.preferNoTimeConflicts);
       maybeFilterAndReorderSchedules();
     }
 

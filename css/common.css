@@ -128,11 +128,22 @@ md-progress-linear {
   background-color: #ed4e33;
 }
 
+.scheduling-options fieldset {
+  border: 0.5px solid rgba(0, 0, 0, 0.27);
+  margin: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.scheduling-options md-radio-button {
+  margin: 8px !important;
+}
+
 .scheduling-options .md-button {
   line-height: normal;
 }
 .scheduling-options md-checkbox {
-  margin: 0px 10px 0px 0px;
+  margin: 0;
 }
 
 .scheduling-option-category {
