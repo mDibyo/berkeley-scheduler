@@ -11,7 +11,9 @@ function Meeting(startTime, endTime, days, location, instructors) {
 }
 
 Meeting.parse = function(meetingJson) {
-  var location = meetingJson.location.description || null;
+  if (meetingJson.location) {
+    var location = meetingJson.location.description || null;
+  }
   if (meetingJson.startTime === null || meetingJson.endTime === null) {
     return new Meeting(null, null, meetingJson.days, location, meetingJson.instructors);
   }
