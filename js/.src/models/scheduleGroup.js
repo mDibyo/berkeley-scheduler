@@ -58,6 +58,10 @@ ScheduleGroup.prototype._nextScheduleSectionIds = function() {
 };
 
 ScheduleGroup.prototype.getTotalNumSchedules = function() {
+  if (this.sectionChoices.length <= 0) {
+    return 0;
+  }
+
   return this.sectionChoices.map(function(sectionChoice) {
     return sectionChoice.length;
   }).reduce(function(a, b) {
