@@ -40,6 +40,8 @@ function sbGenerateSchedulesDirective() {
       preferEvenings: 'preferEvenings',
       minimizeGaps: 'minimizeGaps',
       maximizeGaps: 'maximizeGaps',
+      minimizeNumberOfDays: 'minimizeNumberOfDays',
+      maximizeNumberOfDays: 'maximizeNumberOfDays',
       preferNoTimeConflicts: 'preferNoTimeConflicts',
       noPreference: 'noPreference'
     };
@@ -61,7 +63,6 @@ function sbGenerateSchedulesDirective() {
       scheduleFactory.setSchedulingOption('maximizeGaps', false, false);
       scheduleFactory.setSchedulingOption('preferNoTimeConflicts', false, false);
 
-      console.log(vm.selectedSortingOption);
       scheduleFactory.setSchedulingOption(vm.selectedSortingOption, true, true);
       maybeFilterAndReorderSchedules();
     }
