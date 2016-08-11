@@ -23,9 +23,11 @@ function Schedule(userId, sections) {
     }
     this.courses[courseId].push(section);
 
-    for (var day in section.meetings[0].days) {
-      if (section.meetings[0].days[day]) {
-        this.sectionsByDay[day].push(section);
+    if (section.meetings.length > 0) {
+      for (var day in section.meetings[0].days) {
+        if (section.meetings[0].days[day]) {
+          this.sectionsByDay[day].push(section);
+        }
       }
     }
   }, this);
