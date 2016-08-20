@@ -170,6 +170,11 @@ md-input-container.schedule-option {
   width: 48px;
 }
 
+md-tooltip.saved-schedule-description .md-content {
+  height: auto;
+  line-height: 18px;
+}
+
 .saved-schedule-drop {
   background-color: #003262;
   cursor: pointer;
