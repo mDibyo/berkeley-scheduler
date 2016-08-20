@@ -150,7 +150,7 @@ md-progress-linear {
   margin-right: -20px;
 }
 
-.md-caption.part-of-day {
+.md-caption.scheduling-subtext {
   font-size: 11px;
   color: rgba(0, 0, 0, 0.54);
 }
