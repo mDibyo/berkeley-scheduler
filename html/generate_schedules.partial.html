@@ -72,7 +72,10 @@
 <div ng-show="dvm.showOptions" class="scheduling-options">
   <fieldset>
     <legend>
-      <h5 class="md-subhead">Sorting options</h5>
+      <h5 class="md-subhead">
+        Sorting options
+        <span class="md-caption scheduling-subtext">(only one option selectable)</span>
+      </h5>
     </legend>
     <md-list layout="column">
       <md-radio-group ng-model="dvm.selectedSortingOption" ng-change="dvm.onChangeSortingOption()">
@@ -84,17 +87,17 @@
             <md-radio-button ng-value="dvm.sortingOptions.preferMornings">
               Mornings
               <br>
-              <span class="md-caption part-of-day">(&mdash; 12PM)</span>
+              <span class="md-caption scheduling-subtext">(&mdash; 12PM)</span>
             </md-radio-button>
             <md-radio-button ng-value="dvm.sortingOptions.preferAfternoons">
               Afternoons
               <br>
-              <span class="md-caption part-of-day">(12PM &mdash; 5PM)</span>
+              <span class="md-caption scheduling-subtext">(12PM &mdash; 5PM)</span>
             </md-radio-button>
             <md-radio-button ng-value="dvm.sortingOptions.preferEvenings">
               Evenings
               <br>
-              <span class="md-caption part-of-day">(5PM &mdash;)</span>
+              <span class="md-caption scheduling-subtext">(5PM &mdash;)</span>
             </md-radio-button>
           </div>
         </md-list-item>
