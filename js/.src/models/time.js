@@ -31,13 +31,14 @@ Time.prototype.compareTo = function(other) {
 };
 
 Time.prototype.toString = function() {
-  var hours = this.hours;
+  var hours = this.hours % 24;
   var suffix = 'AM';
   if (hours >= 12) {
     suffix = 'PM';
-    if (hours > 12) {
-      hours -= 12;
-    }
+  }
+  hours = hours % 12;
+  if (hours == 0) {
+    hours = 12;
   }
   var string = hours.toString();
   if (this.minutes != 0) {
