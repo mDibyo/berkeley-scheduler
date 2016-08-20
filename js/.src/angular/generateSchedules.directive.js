@@ -81,10 +81,10 @@ function sbGenerateSchedulesDirective() {
     vm.noTimeConflicts = schedulingOptions.noTimeConflicts;
     vm.onChangeNoTimeConflicts = onChangeNoTimeConflicts;
 
-    vm.savedScheduleIds = scheduleFactory.getSavedScheduleIds();
-    vm.dropSavedScheduleById = function($event, scheduleId) {
+    vm.savedSchedules = scheduleFactory.getSavedSchedules();
+    vm.dropSavedSchedule = function($event, schedule) {
       $event.stopPropagation();
-      scheduleFactory.dropSavedScheduleById(scheduleId);
+      scheduleFactory.dropSavedSchedule(schedule);
     };
 
     scheduleFactory.registerScheduleGenerationStatusListener('generateSchedules', function(status) {
@@ -94,12 +94,12 @@ function sbGenerateSchedulesDirective() {
       }
     });
 
-    scheduleFactory.registerAddSavedScheduleIdListener(function(scheduleId) {
-      vm.savedScheduleIds.push(scheduleId);
+    scheduleFactory.registerAddSavedScheduleListener(function(schedule) {
+      vm.savedSchedules.push(schedule);
     });
 
-    scheduleFactory.registerDropSavedScheduleIdListener(function(scheduleId) {
-      vm.savedScheduleIds.remove(scheduleId);
+    scheduleFactory.registerDropSavedScheduleIdListener(function(schedule) {
+      vm.savedSchedules.remove(schedule);
     });
 
     function maybeFilterAndReorderSchedules() {
