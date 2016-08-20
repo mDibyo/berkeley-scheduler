@@ -1,9 +1,12 @@
 angular.module('scheduleBuilder').config([
+  '$compileProvider',
   '$stateProvider',
   '$urlRouterProvider',
   '$mdThemingProvider',
   '$mdIconProvider',
-  function($stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider) {
+  function($compileProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider) {
+    $compileProvider.debugInfoEnabled(false);
+
     $stateProvider
       .state('schedule', {
         url: '/schedule',
