@@ -93,7 +93,7 @@
       <md-radio-group ng-model="dvm.selectedSortingOption" ng-change="dvm.onChangeSortingOption()">
         <md-list-item ng-click="null">
           <div flex="30" class="md-body-2 scheduling-option-category">
-            Preferred Time of Day
+            Preferred time of day
           </div>
           <div flex layout="row" layout-margin>
             <md-radio-button ng-value="dvm.sortingOptions.preferMornings">
@@ -151,7 +151,6 @@
         </md-list-item>
         <md-list-item ng-click="null">
           <div flex="30" class="md-body-2 scheduling-option-category">
-
           </div>
           <div flex layout="row" layout-margin>
             <md-radio-button ng-value="dvm.sortingOptions.noPreference">
@@ -168,37 +167,49 @@
     </legend>
     <md-list layout="column">
       <md-list-item ng-click="null">
-        <div>
-          <md-checkbox ng-model="dvm.noTimeConflicts" ng-change="dvm.onChangeNoTimeConflicts()">
-            No time conflicts
-          </md-checkbox>
+        <div flex="30" class="md-body-2 scheduling-option-category">
+          Time conflicts
         </div>
-        <md-input-container class="schedule-option">
-          <label>First class starting at/after</label>
-          <md-select
-            ng-model="dvm.selectedDayStartTimeJson"
-            ng-change="dvm.onSelectDayStartTime();">
-            <md-option
-              ng-repeat="time in dvm.dayStartTimes"
-              ng-selected="dvm.isSelectedDayStartTime(time)"
-              value="{{time}}">
-              {{time.toString()}}
-            </md-option>
-          </md-select>
-        </md-input-container>
-        <md-input-container class="schedule-option">
-          <label>Last class ending at/before</label>
-          <md-select
-            ng-model="dvm.selectedDayEndTimeJson"
-            ng-change="dvm.onSelectDayEndTime();">
-            <md-option
-              ng-repeat="time in dvm.dayEndTimes"
-              ng-selected="dvm.isSelectedDayEndTime(time)"
-              value="{{time}}">
-              {{time.toString()}}
-            </md-option>
-          </md-select>
-        </md-input-container>
+        <div flex layout="row" layout-margin>
+          <md-input-container>
+            <md-checkbox ng-model="dvm.noTimeConflicts" ng-change="dvm.onChangeNoTimeConflicts()">
+              No time conflicts
+            </md-checkbox>
+          </md-input-container>
+        </div>
+      </md-list-item>
+      <md-list-item ng-click="null">
+        <div flex="30" class="md-body-2 scheduling-option-category">
+          Time of day restrictions
+        </div>
+        <div flex layout="row" layout-margin>
+          <md-input-container class="schedule-option">
+            <label>First class starting at/after</label>
+            <md-select
+              ng-model="dvm.selectedDayStartTimeJson"
+              ng-change="dvm.onSelectDayStartTime();">
+              <md-option
+                ng-repeat="time in dvm.dayStartTimes"
+                ng-selected="dvm.isSelectedDayStartTime(time)"
+                value="{{time}}">
+                {{time.toString()}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container class="schedule-option">
+            <label>Last class ending at/before</label>
+            <md-select
+              ng-model="dvm.selectedDayEndTimeJson"
+              ng-change="dvm.onSelectDayEndTime();">
+              <md-option
+                ng-repeat="time in dvm.dayEndTimes"
+                ng-selected="dvm.isSelectedDayEndTime(time)"
+                value="{{time}}">
+                {{time.toString()}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+        </div>
       </md-list-item>
     </md-list>
   </fieldset>
