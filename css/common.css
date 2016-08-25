@@ -261,7 +261,8 @@ md-icon.md-48 {width: 48px;height: 48px;}
   border-left: 1px solid black;
   border-top: 1px solid black;
   font-size: small;
-  padding: 5px;
+  overflow: hidden;
+  padding: 0 5px 0 5px;
   text-align: center;
 }
 
@@ -271,7 +272,6 @@ md-icon.md-48 {width: 48px;height: 48px;}
 
 .finals-display-section {
   background-color: aliceblue;
-  border: 1px solid;
   box-sizing: border-box;
   position: absolute;
   text-align: center;
@@ -279,8 +279,24 @@ md-icon.md-48 {width: 48px;height: 48px;}
   width: 100%;
 }
 
+.final-display-section-parent:hover > .finals-display-section-hover {
+  display: flex;
+}
+
 .finals-display-section-inner {
-  padding: 5px;
+  color: #ffffff;
+  margin: 3px;
+  text-overflow: ellipsis;
+}
+
+.finals-display-section-hover {
+  box-sizing: border-box;
+  display: none;
+  font-size: small;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 1;
 }
 
 .schedule-display-header {
@@ -308,7 +324,6 @@ md-icon.md-48 {width: 48px;height: 48px;}
   border-left: 1px solid black;
   border-top: 1px solid black;
   font-size: small;
-  padding: 5px;
   text-align: center;
 }
 
@@ -322,6 +337,8 @@ md-icon.md-48 {width: 48px;height: 48px;}
 
 .schedule-display-section {
   background-color: aliceblue;
+  border-bottom: 1px dashed grey;
+  border-top: 1px dashed grey;
   box-sizing: border-box;
   position: absolute;
   text-align: center;
@@ -345,6 +362,8 @@ md-icon.md-48 {width: 48px;height: 48px;}
 
 .schedule-display-section-hover {
   background-color: aliceblue;
+  border-bottom: 1px dashed grey;
+  border-top: 1px dashed grey;
   box-sizing: border-box;
   display: none;
   position: absolute;
@@ -353,4 +372,3 @@ md-icon.md-48 {width: 48px;height: 48px;}
   width: 100%;
   z-index: 1;
 }
-
