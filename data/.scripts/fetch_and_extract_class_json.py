@@ -35,7 +35,12 @@ COURSES_TO_ADD = {
         'courseNumber': 'C211',
         'subjectAreaCode': 'MAT SCI',
         'units': 3,
-    }]
+    }],
+    'EPS': [{
+        'courseNumber': 'C162',
+        'subjectAreaCode': 'EPS',
+        'units': 4,
+    }],
 }
 
 
@@ -248,7 +253,7 @@ def main(only_new=False):
                                 response['ApiResponse']['response']['classSections']
                             _class = extract_class_info_from_json(sections_json)
                             _class.update({
-                                'description': course['description'],
+                                'description': course.get('description', ''),
                                 'units': course['units'],
                             })
                         else:
