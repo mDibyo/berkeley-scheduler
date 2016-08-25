@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <div class="schedule-display finals-display-day"
+      <div class="schedule-display finals-display-day final-display-section-parent"
            ng-repeat="day in vm.days"
            layout="column" flex>
         <div class="schedule-display"
@@ -37,11 +37,22 @@
           <div class="schedule-display finals-display-meeting" flex></div>
         </div>
 
-        <div class="schedule-display finals-display-section"
-             ng-repeat="final in vm.getFinalsForDay(schedule.courses, day)"
-             ng-style="vm.getFinalStyle(final)">
-          <div class="schedule-display finals-display-section-inner">
-            {{final.course.department}} {{final.course.courseNumber}}
+        <div class="final-display-section-parent"
+             ng-repeat="final in vm.getFinalsForDay(schedule.courses, day)">
+          <div class="schedule-display finals-display-section"
+               layout="row" layout-align="center center"
+               ng-style="vm.getFinalStyle(final)">
+            <div class="schedule-display finals-display-section-inner">
+              {{final.course.department}} {{final.course.courseNumber}}
+            </div>
+          </div>
+
+          <div class="schedule-display finals-display-section-hover"
+               layout="row" layout-align="center center"
+               ng-style="vm.getFinalHoverStyle(final)">
+            <div class="schedule-display finals-display-section-inner">
+              {{final.course.department}} {{final.course.courseNumber}}
+            </div>
           </div>
         </div>
       </div>

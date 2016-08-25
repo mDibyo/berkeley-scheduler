@@ -64,6 +64,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     vm.toggleFinalsSchedule = toggleFinalsSchedule;
     vm.getFinalsForDay = getFinalsForDay;
     vm.getFinalStyle = getFinalStyle;
+    vm.getFinalHoverStyle = getFinalHoverStyle;
     vm.getSectionViewStyle = getSectionViewStyle;
     vm.getSectionViewHoverStyle = getSectionViewHoverStyle;
 
@@ -85,22 +86,61 @@ function sbScheduleDisplayDirective(scheduleFactory) {
 
     function getFinalsForDay(courses, day) {
       var finals = [];
+      var finalSlots = [[], [], [], []];
       for (var courseId in courses) {
         var final = courses[courseId][0].course.finalMeeting;
-        if (final.meeting && final.meeting.days[day]) {
-          finals.push(final)
+        // TODO: The attempt to clone with `angular.extend` was part of a hack for displaying
+        // conflicting finals in order to get a release out of the door. It was abandoned
+        // because it was recursively triggering angular digests. We should not be
+        // modifying the finals object as we are doing below. Refactor.
+        // var clonedFinal = angular.extend({}, final);
+        var clonedFinal = final;
+        if (clonedFinal.meeting && clonedFinal.meeting.days[day]) {
+          switch (final.meeting.startTime.hours) {
+            case 8:
+              finalSlots[0].push(clonedFinal);
+              break;
+            case 11:
+              finalSlots[1].push(clonedFinal);
+              break;
+            case 15:
+              finalSlots[2].push(clonedFinal);
+              break;
+            case 19:
+              finalSlots[3].push(clonedFinal);
+              break;
+          }
+          finals.push(clonedFinal);
         }
       }
+
+      finalSlots.forEach(function(slot) {
+        var slotLength = slot.length;
+        for (var slotIdx = 0; slotIdx < slotLength; slotIdx++) {
+          slot[slotIdx].slotIdx = slotIdx;
+          slot[slotIdx].slotLength = slotLength;
+        }
+      });
+
       return finals;
     }
 
     function getFinalStyle(final) {
       return {
         'top': getFinalTop(final),
+        'left': getFinalLeft(final),
         'height': getFinalHeight(final),
-        'background-color': getFinalBackgroundColor(final),
-        'border-color': getFinalBorderColor(final)
-      }
+        'width': getFinalWidth(final),
+        'background-color': getFinalBackgroundColor(final)
+      };
+    }
+
+    function getFinalHoverStyle(final) {
+      return {
+        'top': getFinalTop(final),
+        'height': getFinalHeight(),
+        'background-color': getFinalBackgroundColor(final)
+      };
     }
 
     function getFinalTop(final) {
@@ -116,19 +156,19 @@ function sbScheduleDisplayDirective(scheduleFactory) {
       }
     }
 
+    function getFinalLeft(final) {
+      return (final.slotIdx / final.slotLength) * 100 + '%';
+    }
+
     function getFinalHeight() {
       return finalsDayHeight / 4;
     }
 
-    function getFinalBackgroundColor(final) {
-      var color = Course.colorCodes[final.course.color],
-        r = parseInt(color.substring(1, 3), 16),
-        g = parseInt(color.substring(3, 5), 16),
-        b = parseInt(color.substring(5, 7), 16);
-      return 'rgba('+ r + ',' + g + ',' + b + ',' + vm.finalColorOpacity + ')';
+    function getFinalWidth(final) {
+      return (1/final.slotLength) * 100 + '%';
     }
 
-    function getFinalBorderColor(final) {
+    function getFinalBackgroundColor(final) {
       return Course.colorCodes[final.course.color];
     }
 
@@ -139,7 +179,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
         'height': getSectionViewHeight(sectionView),
         'width': getSectionViewWidth(sectionView),
         'background-color': getSectionViewBackgroundColor(sectionView)
-      }
+      };
     }
 
     function getSectionViewHoverStyle(sectionView) {
@@ -147,7 +187,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
         'top': getSectionViewTop(sectionView),
         'height': getSectionViewHeight(sectionView),
         'background-color': getSectionViewBackgroundColor(sectionView)
-      }
+      };
     }
 
     function getSectionViewTop(sectionView) {
