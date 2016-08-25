@@ -42,7 +42,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
   var sectionColorOpacity = '0.6';
 
   sbScheduleDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function sbScheduleDisplayCtrl($state, $window, scheduleFactory) {
+  function sbScheduleDisplayCtrl($state, $window, $mdDialog, scheduleFactory) {
     BaseCtrl.call(this, $state, $window);
 
     var vm = this;
@@ -60,6 +60,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
     vm.showShareMessage = false;
     vm.addSavedSchedule = scheduleFactory.addSavedSchedule;
+    vm.exportScheduleToCalendar = exportScheduleToCalendar;
     vm.toggleFinalsSchedule = toggleFinalsSchedule;
     vm.getFinalsForDay = getFinalsForDay;
     vm.getFinalStyle = getFinalStyle;
@@ -104,13 +105,13 @@ function sbScheduleDisplayDirective(scheduleFactory) {
 
     function getFinalTop(final) {
       switch (final.meeting.startTime.hours) {
-        case 8:  // 8-11 AM
+        case 8: // 8-11 AM
           return 0;
         case 11: // 11:30-2:30 PM
           return 1 / 4 * finalsDayHeight;
-        case 15:  // 3-6 PM
+        case 15: // 3-6 PM
           return 1 / 2 * finalsDayHeight;
-        case 19:  // 7-10 PM
+        case 19: // 7-10 PM
           return 3 / 4 * finalsDayHeight;
       }
     }
@@ -170,6 +171,18 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     function getSectionViewBackgroundColor(sectionView) {
       return Course.colorCodes[sectionView.course.color];
     }
+
+    function exportScheduleToCalendar(schedule) {
+      $mdDialog.show({
+        templateUrl: 'html/export_to_calendar.dialog.html',
+        controller: 'ExportToCalendarDialogCtrl',
+        controllerAs: 'vm',
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        escapeToClose: true,
+        locals: {schedule: schedule}
+      })
+    }
   }
 
   return {
@@ -179,6 +192,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     controller: [
       '$state',
       '$window',
+      '$mdDialog',
       'scheduleFactory',
       sbScheduleDisplayCtrl
     ],
