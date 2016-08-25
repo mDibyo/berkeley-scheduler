@@ -37,11 +37,36 @@
     })
       .bundle()
       .pipe(source('app.min.js'))
-      .pipe(streamify(uglify()))
       .pipe(gulp.dest(paths.dest.js));
   });
 
   gulp.task('browserify-lib', function() {
+    return browserify([paths.src.js.lib])
+      .bundle()
+      .pipe(source('lib.min.js'))
+      .pipe(gulp.dest(paths.dest.js));
+  });
+
+  gulp.task('release', ['js-release', 'svg']);
+
+  gulp.task('js-release', ['browserify-release']);
+
+  gulp.task('browserify-release', [
+    'browserify-release-app',
+    'browserify-release-lib'
+  ]);
+
+  gulp.task('browserify-release-app', function() {
+    return browserify([paths.src.js.app], {
+      debug: true
+    })
+      .bundle()
+      .pipe(source('app.min.js'))
+      .pipe(streamify(uglify()))
+      .pipe(gulp.dest(paths.dest.js));
+  });
+
+  gulp.task('browserify-release-lib', function() {
     return browserify([paths.src.js.lib])
       .bundle()
       .pipe(source('lib.min.js'))
