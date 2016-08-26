@@ -1070,7 +1070,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   };
 }
 
-angular.module('scheduleBuilder').factory('scheduleFactory', [
+angular.module('berkeleyScheduler').factory('scheduleFactory', [
   '$q',
   '$timeout',
   '$cookies',

@@ -14,7 +14,7 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, schedule) {
     $mdDialog.hide();
   }
 }
-angular.module('scheduleBuilder').controller('ExportToCalendarDialogCtrl', [
+angular.module('berkeleyScheduler').controller('ExportToCalendarDialogCtrl', [
   '$state',
   '$window',
   '$mdDialog',

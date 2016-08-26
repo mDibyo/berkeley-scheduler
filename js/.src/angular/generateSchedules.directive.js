@@ -1,10 +1,10 @@
 var Time = require('../models/time');
 var BaseCtrl = require('./_base.controller');
 
-function sbGenerateSchedulesDirective() {
+function bsGenerateSchedulesDirective() {
 
-  sbGenerateSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function sbGenerateSchedulesCtrl($state, $window, scheduleFactory) {
+  bsGenerateSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
+  function bsGenerateSchedulesCtrl($state, $window, scheduleFactory) {
     BaseCtrl.call(this, $state, $window);
 
     var vm = this;
@@ -189,12 +189,12 @@ function sbGenerateSchedulesDirective() {
       '$state',
       '$window',
       'scheduleFactory',
-      sbGenerateSchedulesCtrl
+      bsGenerateSchedulesCtrl
     ],
     controllerAs: 'dvm',
     templateUrl: 'html/generate_schedules.partial.html'
   }
 }
-angular.module('scheduleBuilder').directive('sbGenerateSchedules', [
-  sbGenerateSchedulesDirective
+angular.module('berkeleyScheduler').directive('bsGenerateSchedules', [
+  bsGenerateSchedulesDirective
 ]);

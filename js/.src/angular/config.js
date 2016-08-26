@@ -1,4 +1,4 @@
-angular.module('scheduleBuilder').config([
+angular.module('berkeleyScheduler').config([
   '$compileProvider',
   '$stateProvider',
   '$urlRouterProvider',

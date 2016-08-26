@@ -62,7 +62,7 @@ function courses($http, $q) {
     getCoursesQBySubjectAreaCode: getCoursesQBySubjectAreaCode
   }
 }
-angular.module('scheduleBuilder').factory('courses', [
+angular.module('berkeleyScheduler').factory('courses', [
   '$http',
   '$q',
   courses

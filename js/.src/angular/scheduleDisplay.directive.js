@@ -4,7 +4,7 @@ var Time = require('../models/time');
 
 var BaseCtrl = require('./_base.controller');
 
-function sbScheduleDisplayDirective(scheduleFactory) {
+function bsScheduleDisplayDirective(scheduleFactory) {
   var hours = [];
   var halfHours = [];
   var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -240,7 +240,7 @@ function sbScheduleDisplayDirective(scheduleFactory) {
     templateUrl: 'html/schedule_display.partial.html'
   }
 }
-angular.module('scheduleBuilder').directive('sbScheduleDisplay', [
+angular.module('berkeleyScheduler').directive('bsScheduleDisplay', [
   'scheduleFactory',
-  sbScheduleDisplayDirective
+  bsScheduleDisplayDirective
 ]);
