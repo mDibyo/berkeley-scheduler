@@ -1,7 +1,7 @@
 var BaseCtrl = require('./_base.controller');
 
-CourseViewAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
-function CourseViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory, $analytics) {
+ViewCourseCtrl.prototype = Object.create(BaseCtrl.prototype);
+function ViewCourseCtrl($state, $window, $stateParams, scheduleFactory, $analytics) {
   $analytics.pageTrack('/schedule/course/{}'.replace('{}', $stateParams.id));
 
   BaseCtrl.call(this, $state, $window);
@@ -13,11 +13,11 @@ function CourseViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory,
     vm.selectedCourse = course;
   });
 }
-angular.module('berkeleyScheduler').controller('CourseViewAndSelectCtrl', [
+angular.module('berkeleyScheduler').controller('ViewCourseCtrl', [
   '$state',
   '$window',
   '$stateParams',
   'scheduleFactory',
   '$analytics',
-  CourseViewAndSelectCtrl
+  ViewCourseCtrl
 ]);
