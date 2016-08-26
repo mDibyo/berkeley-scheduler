@@ -1,8 +1,8 @@
 var BaseCtrl = require('./_base.controller');
 
-function bsCourseDisplayAndSelectDirective() {
-  bsCourseDisplayAndSelectCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function bsCourseDisplayAndSelectCtrl($state, $window, $scope, scheduleFactory) {
+function bsCourseDisplayDirective() {
+  bsCourseDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
+  function bsCourseDisplayCtrl($state, $window, $scope, scheduleFactory) {
     BaseCtrl.call(this, $state, $window);
 
     var vm = this;
@@ -49,12 +49,12 @@ function bsCourseDisplayAndSelectDirective() {
       '$window',
       '$scope',
       'scheduleFactory',
-      bsCourseDisplayAndSelectCtrl
+      bsCourseDisplayCtrl
     ],
     controllerAs: 'vm',
-    templateUrl: 'html/course_display_and_select.partial.html'
+    templateUrl: 'html/course_display.partial.html'
   };
 }
-angular.module('berkeleyScheduler').directive('bsCourseDisplayAndSelect', [
-  bsCourseDisplayAndSelectDirective
+angular.module('berkeleyScheduler').directive('bsCourseDisplay', [
+  bsCourseDisplayDirective
 ]);

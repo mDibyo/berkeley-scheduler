@@ -21,14 +21,14 @@
   // Controllers
   require('./_base.controller');
   require('./courseFind.controller');
-  require('./courseViewAndSelect.controller');
   require('./exportToCalendarDialog.controller');
   require('./generatingSchedules.controller');
-  require('./scheduleViewAndSelect.controller');
   require('./mobileUnoptimizedDialog.controller');
+  require('./viewCourse.controller');
+  require('./viewSchedule.controller');
 
   // Directives
-  require('./courseDisplayAndSelect.directive');
+  require('./courseDisplay.directive');
   require('./generateSchedules.directive');
   require('./scheduleDisplay.directive');
 
