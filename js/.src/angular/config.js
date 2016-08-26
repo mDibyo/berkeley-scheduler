@@ -16,8 +16,8 @@ angular.module('berkeleyScheduler').config([
       })
       .state('schedule.viewCourse', {
         url: '/course/{id}',
-        templateUrl: 'html/course_view_and_select.partial.html',
-        controller: 'CourseViewAndSelectCtrl',
+        templateUrl: 'html/view_course.partial.html',
+        controller: 'ViewCourseCtrl',
         controllerAs: 'vm'
       })
       .state('schedule.generatingSchedules', {
@@ -28,8 +28,8 @@ angular.module('berkeleyScheduler').config([
       })
       .state('schedule.viewSchedule', {
         url: '/{scheduleId}',
-        templateUrl: 'html/schedule_view_and_select.partial.html',
-        controller: 'ScheduleViewAndSelectCtrl',
+        templateUrl: 'html/view_schedule.partial.html',
+        controller: 'ViewScheduleCtrl',
         controllerAs: 'vm'
       });
 
