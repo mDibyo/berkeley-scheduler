@@ -58,7 +58,7 @@ function reverseLookup($http, $q, courses) {
     getCourseQBy2arySectionId: getCourseQBy2arySectionId
   }
 }
-angular.module('scheduleBuilder').factory('reverseLookup', [
+angular.module('berkeleyScheduler').factory('reverseLookup', [
   '$http',
   '$q',
   'courses',

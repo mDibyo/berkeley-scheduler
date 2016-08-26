@@ -37,7 +37,7 @@ function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $statePa
   });
 
 }
-angular.module('scheduleBuilder').controller('GeneratingSchedulesCtrl', [
+angular.module('berkeleyScheduler').controller('GeneratingSchedulesCtrl', [
   '$state',
   '$window',
   '$httpParamSerializer',

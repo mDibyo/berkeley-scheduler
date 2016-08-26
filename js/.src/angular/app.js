@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  angular.module('scheduleBuilder', [
+  angular.module('berkeleyScheduler', [
     'ui.router',
     'ngSanitize',
     'ngCookies',

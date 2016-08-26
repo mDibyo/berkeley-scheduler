@@ -13,7 +13,7 @@ function CourseViewAndSelectCtrl($state, $window, $stateParams, scheduleFactory,
     vm.selectedCourse = course;
   });
 }
-angular.module('scheduleBuilder').controller('CourseViewAndSelectCtrl', [
+angular.module('berkeleyScheduler').controller('CourseViewAndSelectCtrl', [
   '$state',
   '$window',
   '$stateParams',

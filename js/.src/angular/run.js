@@ -1,4 +1,4 @@
-angular.module('scheduleBuilder').run([
+angular.module('berkeleyScheduler').run([
   '$window',
   '$state',
   '$rootScope',
