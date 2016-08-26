@@ -142,7 +142,7 @@ function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
     scheduleFactory.dropCourse(course);
   }
 }
-angular.module('scheduleBuilder').controller('CourseFindCtrl', [
+angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
   '$state',
   '$window',
   'courses',

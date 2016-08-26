@@ -20,7 +20,7 @@ function ScheduleViewAndSelectCtrl($state, $window, $stateParams, scheduleFactor
     vm.goToState('schedule.generatingSchedules', {startScheduleId: scheduleId});
   }
 }
-angular.module('scheduleBuilder').controller('ScheduleViewAndSelectCtrl', [
+angular.module('berkeleyScheduler').controller('ScheduleViewAndSelectCtrl', [
   '$state',
   '$window',
   '$stateParams',

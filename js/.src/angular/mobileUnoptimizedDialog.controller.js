@@ -14,7 +14,7 @@ function MobileUnoptimizedDialogCtrl($state, $window, $mdDialog, scheduleFactory
     $mdDialog.hide();
   }
 }
-angular.module('scheduleBuilder').controller('MobileUnoptimizedDialogCtrl', [
+angular.module('berkeleyScheduler').controller('MobileUnoptimizedDialogCtrl', [
   '$state',
   '$window',
   '$mdDialog',
