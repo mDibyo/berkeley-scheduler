@@ -284,10 +284,18 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       schedulingOptions.preferEvenings || false;
     schedulingOptions.preferNoTimeConflicts =
       schedulingOptions.preferNoTimeConflicts || false;
-    schedulingOptions.dayStartTime =
-      schedulingOptions.dayStartTime || null;
-    schedulingOptions.dayEndTime =
-      schedulingOptions.dayEndTime || null;
+    if (schedulingOptions.dayStartTime) {
+      var time = schedulingOptions.dayStartTime;
+      schedulingOptions.dayStartTime = new Time(time.hours, time.minutes);
+    } else {
+      schedulingOptions.dayStartTime = null;
+    }
+    if (schedulingOptions.dayEndTime) {
+      var time = schedulingOptions.dayEndTime;
+      schedulingOptions.dayEndTime = new Time(time.hours, time.minutes);
+    } else {
+      schedulingOptions.dayEndTime = null;
+    }
     if (schedulingOptions.noTimeConflicts === undefined) {
       schedulingOptions.noTimeConflicts = true;
     }
