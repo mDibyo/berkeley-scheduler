@@ -5,7 +5,7 @@ function bsGenerateSchedulesDirective() {
 
   bsGenerateSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
   function bsGenerateSchedulesCtrl($state, $window, scheduleFactory) {
-    BaseCtrl.call(this, $state, $window);
+    BaseCtrl.call(this, $state, $window, scheduleFactory);
 
     var vm = this;
 

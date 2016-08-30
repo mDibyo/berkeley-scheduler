@@ -43,7 +43,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
 
   sbScheduleDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
   function sbScheduleDisplayCtrl($state, $window, $mdDialog, scheduleFactory) {
-    BaseCtrl.call(this, $state, $window);
+    BaseCtrl.call(this, $state, $window, scheduleFactory);
 
     var vm = this;
 

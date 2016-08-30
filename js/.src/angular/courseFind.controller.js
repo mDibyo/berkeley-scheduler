@@ -4,7 +4,7 @@ CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
 function CourseFindCtrl($state, $window, courses, scheduleFactory, $analytics) {
   $analytics.pageTrack('/schedule');
 
-  BaseCtrl.call(this, $state, $window);
+  BaseCtrl.call(this, $state, $window, scheduleFactory);
 
   var vm = this;
 
