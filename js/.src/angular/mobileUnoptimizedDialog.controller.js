@@ -2,7 +2,7 @@ var BaseCtrl = require('./_base.controller');
 
 MobileUnoptimizedDialogCtrl.prototype = Object.create(BaseCtrl.prototype);
 function MobileUnoptimizedDialogCtrl($state, $window, $mdDialog, scheduleFactory) {
-  BaseCtrl.call(this, $state, $window);
+  BaseCtrl.call(this, $state, $window, scheduleFactory);
 
   var vm = this;
 
