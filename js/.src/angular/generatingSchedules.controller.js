@@ -5,7 +5,7 @@ function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $statePa
   $analytics.pageTrack(
     '/schedule/generate?{}'.replace('{}', $httpParamSerializer($stateParams)));
 
-  BaseCtrl.call(this, $state, $window);
+  BaseCtrl.call(this, $state, $window, scheduleFactory);
 
   var vm = this;
 

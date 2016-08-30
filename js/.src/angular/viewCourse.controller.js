@@ -4,7 +4,7 @@ ViewCourseCtrl.prototype = Object.create(BaseCtrl.prototype);
 function ViewCourseCtrl($state, $window, $stateParams, scheduleFactory, $analytics) {
   $analytics.pageTrack('/schedule/course/{}'.replace('{}', $stateParams.id));
 
-  BaseCtrl.call(this, $state, $window);
+  BaseCtrl.call(this, $state, $window, scheduleFactory);
 
   var vm = this;
 

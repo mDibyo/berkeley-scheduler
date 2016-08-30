@@ -27,7 +27,7 @@ angular.module('berkeleyScheduler').config([
         controllerAs: 'vm'
       })
       .state('schedule.viewSchedule', {
-        url: '/{scheduleId}',
+        url: '/{scheduleId}?noTimeConflicts',
         templateUrl: 'html/view_schedule.partial.html',
         controller: 'ViewScheduleCtrl',
         controllerAs: 'vm'

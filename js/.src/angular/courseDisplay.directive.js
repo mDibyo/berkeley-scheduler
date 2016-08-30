@@ -3,7 +3,7 @@ var BaseCtrl = require('./_base.controller');
 function bsCourseDisplayDirective() {
   bsCourseDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
   function bsCourseDisplayCtrl($state, $window, $scope, scheduleFactory) {
-    BaseCtrl.call(this, $state, $window);
+    BaseCtrl.call(this, $state, $window, scheduleFactory);
 
     var vm = this;
 
