@@ -1,9 +1,12 @@
 <md-dialog aria-label="Export to Calendar dialog">
   <md-dialog-content>
-    {{ vm.schedule.id }}
+    <div class="md-dialog-content md-body-1">
+      Your schedule will be saved as <span class="md-body-2 highlighted-text">{{ vm.calendarFilename }}</span>.
+    </div>
   </md-dialog-content>
 
   <md-dialog-actions>
-    <md-button class="md-raised" ng-click="vm.close()">Close</md-button>
+    <md-button class="md-raised md-primary schedule-button" ng-click="vm.save()">Save</md-button>
+    <md-button class="md-raised" ng-click="vm.cancel()">Cancel</md-button>
   </md-dialog-actions>
 </md-dialog>

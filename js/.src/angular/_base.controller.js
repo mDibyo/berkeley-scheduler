@@ -5,6 +5,7 @@ function BaseCtrl($state, $window, scheduleFactory) {
 
   vm.goToState = goToState;
   vm.goToExternal = goToExternal;
+  vm.getHref = getHref;
 
   function goToState(to, params, options) {
     if (to === 'schedule.viewSchedule') {
@@ -22,6 +23,10 @@ function BaseCtrl($state, $window, scheduleFactory) {
     var schedulingOptions = scheduleFactory.getSchedulingOptions();
     params.noTimeConflicts = schedulingOptions.noTimeConflicts;
     $state.go('schedule.viewSchedule', params, options);
+  }
+
+  function getHref(state, params, options) {
+    return 'http://berkeleyscheduler.com/' + $state.href(state, params, options);
   }
 }
 
