@@ -58,7 +58,6 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     vm.finalColorOpacity = finalColorOpacity;
     vm.sectionColorOpacity = sectionColorOpacity;
     vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
-    vm.showShareMessage = false;
     vm.addSavedSchedule = scheduleFactory.addSavedSchedule;
     vm.exportScheduleToCalendar = exportScheduleToCalendar;
     vm.toggleFinalsSchedule = toggleFinalsSchedule;
