@@ -138,22 +138,13 @@
         </md-menu-content>
       </md-menu>
     </div>
-    <div id="share-outer">
-      <md-button
-          md-ink-ripple="false"
-          ng-mouseenter="vm.showShareMessage=true" ng-mouseleave="vm.showShareMessage=false"
-          class="md-raised">
+    <div>
+      <md-button class="md-raised" md-no-ink>
         Share
+        <md-tooltip>
+          Share this schedule by sharing the url to this page.
+        </md-tooltip>
       </md-button>
-      <div id="share-message" ng-show="vm.showShareMessage">
-        <md-button
-            md-ink-ripple="false"
-            ng-mouseenter="vm.showShareMessage=true" ng-mouseleave="vm.showShareMessage=false"
-            class="md-primary md-raised schedule-button">
-          Share
-        </md-button>
-        <div layout-padding>Share this schedule by sharing the url to this page.</div>
-      </div>
     </div>
   </div>
 </div>
