@@ -1,12 +1,19 @@
 <md-dialog aria-label="Export to Calendar dialog">
   <md-dialog-content>
     <div class="md-dialog-content md-body-1">
-      Your schedule will be saved as <span class="md-body-2 highlighted-text">{{ vm.calendarFilename }}</span>.
+      <p>
+        Your schedule will be downloaded as <span class="md-body-2 highlighted-text">{{ vm.calendarFilename }}</span>.
+      </p>
+      <p>
+        Follow Step 2 from
+        <a href="https://support.google.com/calendar/answer/37118">Import events to Google Calendar</a>
+        to import your classes into Google Calendar.
+      </p>
     </div>
   </md-dialog-content>
 
   <md-dialog-actions>
-    <md-button class="md-raised md-primary schedule-button" ng-click="vm.save()">Save</md-button>
+    <md-button class="md-raised md-primary schedule-button" ng-click="vm.download()">Download</md-button>
     <md-button class="md-raised" ng-click="vm.cancel()">Cancel</md-button>
   </md-dialog-actions>
 </md-dialog>

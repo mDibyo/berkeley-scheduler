@@ -1,20 +1,25 @@
 var BaseCtrl = require('./_base.controller');
 
-//var nodeCal = require('node-cal');
 var ical = require('ical-generator');
 var fileSaver = require('file-saver');
 
 
 var MILLISECONDSPERMINUTE = 60 * 1000;
 
-var startDates = {
-  Monday: function() { return new Date(2016, 7, 29); },
-  Tuesday: function() { return new Date(2016, 7, 30) },
-  Wednesday: function() { return new Date(2016, 7, 24) },
-  Thursday: function() { return new Date(2016, 7, 25) },
-  Friday: function() { return new Date(2016, 7, 26) }
+function getStartDate() {
+  return new Date(2016, 7, 24);
+}
+
+var repeatingUntil = new Date(2016, 11, 3);
+var repeatingByDayAbbrvs = {
+  Sunday: 'su',
+  Monday: 'mo',
+  Tuesday: 'tu',
+  Wednesday: 'we',
+  Thursday: 'th',
+  Friday: 'fr',
+  Saturday: 'sa'
 };
-var recurrentUntilDate = new Date(2016, 11, 3);
 
 ExportToCalendarDialogCtrl.prototype = Object.create(BaseCtrl.prototype);
 function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory, schedule) {
@@ -23,10 +28,8 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
   var vm = this;
   vm.schedule = schedule;
   vm.calendarFilename = 'fa16 academic calendar.ics';
-  vm.save = save;
+  vm.download = download;
   vm.cancel = cancel;
-
-  console.log(schedule);
 
   var calendar = ical({
     domain: 'berkeleyscheduler.com',
@@ -48,34 +51,40 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
     vm.schedule.courses[courseId].forEach(function(section) {
       var course = section.course;
       var meeting = section.meetings[0];
-      for (var day in meeting.days) {
+      var repeatingByDay = [];
+      for (var day in repeatingByDayAbbrvs) {
         if (meeting.days[day]) {
-          var startDate = startDates[day]();
-          startDate.setHours(meeting.startTime.hours, meeting.startTime.minutes);
-          var endDate = new Date(startDate.getTime() + meeting.getTotalMinutes() * MILLISECONDSPERMINUTE);
-          calendar.createEvent({
-            uid: 'fa16/' + course.id + '/' + section.id + '/' + day + meeting.startTime.toString(),
-            start: startDate,
-            end: endDate,
-            repeating: {
-              freq: 'WEEKLY',
-              until: recurrentUntilDate
-            },
-            summary: course.department + ' ' + course.courseNumber + ' ' + section.type + ' ' + section.number,
-            description: course.description,
-            location: meeting.location,
-            organizer: {
-              name: 'Berkeley Scheduler',
-              email: 'berkeley-scheduler@berkeley.edu'
-            },
-            url: vm.getHref('schedule.viewCourse', {id: course.id})
-          });
+          repeatingByDay.push(repeatingByDayAbbrvs[day]);
         }
+      }
+
+      if (repeatingByDay.length > 0) {
+        var startDate = getStartDate();
+        startDate.setHours(meeting.startTime.hours, meeting.startTime.minutes);
+        var endDate = new Date(startDate.getTime() + meeting.getTotalMinutes() * MILLISECONDSPERMINUTE);
+        calendar.createEvent({
+          uid: 'fa16/' + course.id + '/' + section.id,
+          start: startDate,
+          end: endDate,
+          repeating: {
+            freq: 'WEEKLY',
+            until: repeatingUntil,
+            byDay: repeatingByDay
+          },
+          summary: course.department + ' ' + course.courseNumber + ' ' + section.type + ' ' + section.number,
+          description: course.description,
+          location: meeting.location,
+          organizer: {
+            name: 'Berkeley Scheduler',
+            email: 'berkeley-scheduler@berkeley.edu'
+          },
+          url: vm.getHref('schedule.viewCourse', {id: course.id})
+        });
       }
     })
   });
 
-  function save() {
+  function download() {
     var blob = new Blob([calendar.toString()], {type: 'text/calendar;charset=utf-8'});
     fileSaver.saveAs(blob, vm.calendarFilename);
   }
