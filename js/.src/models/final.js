@@ -114,7 +114,8 @@ Final.getSubjectCourseToFinalSection = function(course) {
     }
   } else if (course.department === 'CHEM') {
     if (course.courseNumber === '1A' || course.courseNumber === '1B' ||
-        course.courseNumber === '3A' || course.courseNumber === '3B') {
+        course.courseNumber === '3A' || course.courseNumber === '3B' ||
+        course.courseNumber === '4A' || course.courseNumber === '4B') {
       return Final.meetings.Monday36PM;
     }
   } else if (course.department in Final.elementaryForeignLangListing) {
