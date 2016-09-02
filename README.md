@@ -81,3 +81,14 @@ directory. Before doing that, it copies the old output in data/final to
 data/recover. If something goes wrong, and you only realize it after
 `finalize` has completed, run `./recover.sh` to restore the old output.
 
+
+### Acknowledgements
+
+I would like to thank everyone who has contributed to the development
+of this project, for providing feedback and brainstorming ideas with me.
+
+There are however a few people who have contributed a lot to this
+project, and I would like to acknowledge them. Mihir Patil,
+Revati Kapshikhar, Tiffany Qi and Viraj Mahesh: thanks a lot for all the
+support, the feedback, the help you guys provided to me. Without you
+guys, this would not have happened.
