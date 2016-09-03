@@ -87,6 +87,7 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
   function download() {
     var blob = new Blob([calendar.toString()], {type: 'text/calendar;charset=utf-8'});
     fileSaver.saveAs(blob, vm.calendarFilename);
+    $mdDialog.hide();
   }
 
   function cancel() {
