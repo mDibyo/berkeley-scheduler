@@ -3,6 +3,8 @@
 
   var gulp = require('gulp');
   var browserify = require('browserify');
+  var jscs = require('gulp-jscs');
+  var jshint = require('gulp-jshint');
   var source = require('vinyl-source-stream');
   var streamify = require('gulp-streamify');
   var svgSprite = require('gulp-svg-sprite');
@@ -27,7 +29,23 @@
 
   gulp.task('build', ['js', 'svg']);
 
-  gulp.task('js', ['browserify']);
+  gulp.task('js', ['js-lint', 'browserify']);
+
+  gulp.task('js-lint', ['jscs', 'jshint']);
+
+  gulp.task('jshint', function() {
+    return gulp.src([paths.self, paths.src.js.app, paths.src.js.lib])
+      .pipe(jshint())
+      .pipe(jshint.reporter('jshint-stylish'))
+      .pipe(jshint.reporter('fail'));
+  });
+
+  gulp.task('jscs', function() {
+    return gulp.src([paths.self, paths.src.js.app, paths.src.js.lib])
+      .pipe(jscs())
+      .pipe(jscs.reporter('jscs-stylish'))
+      .pipe(jscs.reporter('fail'));
+  });
 
   gulp.task('browserify', ['browserify-app', 'browserify-lib']);
 
@@ -49,7 +67,7 @@
 
   gulp.task('release', ['js-release', 'svg']);
 
-  gulp.task('js-release', ['browserify-release']);
+  gulp.task('js-release', ['js-lint', 'browserify-release']);
 
   gulp.task('browserify-release', [
     'browserify-release-app',
