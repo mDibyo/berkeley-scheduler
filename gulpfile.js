@@ -27,6 +27,8 @@
 
   gulp.task('default', ['browserify-app']);
 
+  gulp.task('test', ['js-lint']);
+
   gulp.task('build', ['js', 'svg']);
 
   gulp.task('js', ['js-lint', 'browserify']);
