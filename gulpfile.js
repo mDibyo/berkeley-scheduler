@@ -14,15 +14,12 @@
     self: 'gulpfile.js',
     src: {
       js: {
-        app: 'js/.src/angular/app.js',
-        lib: 'js/.src/lib/index.js'
+        app: 'client/js/angular/app.js',
+        lib: 'client/js/lib/index.js'
       },
-      svg: 'svg/.src/*.svg'
+      svg: 'client/svg/*.svg'
     },
-    dest: {
-      js: 'js/final',
-      svg: 'svg/final'
-    }
+    dest: 'final'
   };
 
   gulp.task('default', ['browserify-app']);
@@ -57,14 +54,14 @@
     })
       .bundle()
       .pipe(source('app.min.js'))
-      .pipe(gulp.dest(paths.dest.js));
+      .pipe(gulp.dest(paths.dest));
   });
 
   gulp.task('browserify-lib', function() {
     return browserify([paths.src.js.lib])
       .bundle()
       .pipe(source('lib.min.js'))
-      .pipe(gulp.dest(paths.dest.js));
+      .pipe(gulp.dest(paths.dest));
   });
 
   gulp.task('release', ['js-release', 'svg']);
@@ -83,7 +80,7 @@
       .bundle()
       .pipe(source('app.min.js'))
       .pipe(streamify(uglify()))
-      .pipe(gulp.dest(paths.dest.js));
+      .pipe(gulp.dest(paths.dest));
   });
 
   gulp.task('browserify-release-lib', function() {
@@ -91,7 +88,7 @@
       .bundle()
       .pipe(source('lib.min.js'))
       .pipe(streamify(uglify()))
-      .pipe(gulp.dest(paths.dest.js));
+      .pipe(gulp.dest(paths.dest));
   });
 
   gulp.task('svg', function() {
@@ -104,6 +101,6 @@
           }
         }
       }))
-      .pipe(gulp.dest(paths.dest.svg));
+      .pipe(gulp.dest(paths.dest));
   });
 })();

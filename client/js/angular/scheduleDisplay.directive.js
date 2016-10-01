@@ -236,7 +236,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
       sbScheduleDisplayCtrl
     ],
     controllerAs: 'vm',
-    templateUrl: 'html/schedule_display.partial.html'
+    templateUrl: 'client/html/schedule_display.partial.html'
   }
 }
 angular.module('berkeleyScheduler').directive('bsScheduleDisplay', [
