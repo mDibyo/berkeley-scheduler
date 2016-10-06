@@ -1,5 +1,9 @@
 .set_credentials.sh
 
+# Python
+**/*.pyc
+**/__pycache__
+
 /intermediate
 
 !/intermediate/fetched-course-json/.keep

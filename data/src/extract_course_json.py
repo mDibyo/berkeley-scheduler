@@ -4,17 +4,10 @@ import json
 from collections import namedtuple
 import sys
 
+from utils import *
+
 
 Range = namedtuple('Range', ['start', 'end'])
-
-FETCHED_DIR = 'intermediate/fetched-course-json'
-EXTRACTED_DIR = 'intermediate/extracted-course-json'
-
-INPUT_FORMAT = '{}/response.{}.json'
-PARSED_OUTPUT_FORMAT = '{}/response_extracted.{}.json'
-DEPARTMENTS_OUTPUT_FORMAT = 'out/departments/{}.json'
-SUBJECT_AREAS_OUTPUT_FORMAT = 'out/subject-areas/{}.json'
-
 FILE_RANGE = Range(1, 400)
 
 
@@ -46,13 +39,11 @@ def extract_course_info_from_file(f):
 
 def extract_all_course_info():
     for course_number in range(FILE_RANGE.start, FILE_RANGE.end):
-        input_file = INPUT_FORMAT.format(FETCHED_DIR, course_number)
         try:
-            with open(input_file, 'r') as f:
+            with open(fetched_courses(course_number), 'r') as f:
                 output_courses = extract_course_info_from_file(f)
             if output_courses:
-                output_file = PARSED_OUTPUT_FORMAT.format(EXTRACTED_DIR, course_number)
-                with open(output_file, 'w') as f:
+                with open(extracted_courses(course_number), 'w') as f:
                     json.dump(output_courses, f, indent=4)
         except IOError as e:
             print(e)
