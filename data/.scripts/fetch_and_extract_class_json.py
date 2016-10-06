@@ -6,8 +6,8 @@ import urllib
 from urllib import parse as url_parse, request as url_request
 
 
-TERM = 'fall-2016'
-TERM_ID = 2168
+TERM = 'spring-2017'
+TERM_ID = 2172
 CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes/sections?{}'
 
 SIS_CLASS_API_APP_ID_ENV = 'SIS_CLASS_API_APP_ID'
