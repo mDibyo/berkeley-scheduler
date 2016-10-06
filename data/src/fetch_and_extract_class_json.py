@@ -5,25 +5,8 @@ import sys
 import urllib
 from urllib import parse as url_parse, request as url_request
 
+from utils import *
 
-TERM = 'spring-2017'
-TERM_ID = 2172
-CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes/sections?{}'
-
-SIS_CLASS_API_APP_ID_ENV = 'SIS_CLASS_API_APP_ID'
-SIS_CLASS_API_APP_KEY_ENV = 'SIS_CLASS_API_APP_KEY'
-SIS_CLASS_API_APP_ID = SIS_CLASS_API_APP_KEY = None
-
-DEPARTMENTS_DIR = 'intermediate/departments'
-COURSE_LISTING_DIR = 'course-listing-by-subject-area'
-CLASS_LISTING_DIR = 'class-listing-{}-by-subject-area'.format(TERM)
-
-DEPARTMENTS_FORMAT = '{}/departments.json'
-COURSES_FORMAT = '{}/{}/{}.json'
-CLASSES_FORMAT = '{}/{}/{}.json'
-
-
-CHARS_TO_REMOVE = [' ', '&', ',', '/', '-']
 
 COURSES_TO_ADD = {
     'COG SCI': [{
@@ -44,17 +27,11 @@ COURSES_TO_ADD = {
 }
 
 
-def get_subject_area_code(sac):
-    for ch in CHARS_TO_REMOVE:
-        sac = sac.replace(ch, '')
-    return sac
-
-
 def request_course(course):
     print('{} {}'.format(course['subjectAreaCode'], course['courseNumber']))
 
     params = url_parse.urlencode({
-        'subject-area-code': get_subject_area_code(course['subjectAreaCode']),
+        'subject-area-code': cleaned_subject_area_code(course['subjectAreaCode']),
         'catalog-number': course['courseNumber'],
         'term-id': TERM_ID
     })
@@ -208,7 +185,7 @@ def extract_single_section_info_from_json(sections_json):
 
 
 def main(only_new=False):
-    with open(DEPARTMENTS_FORMAT.format(DEPARTMENTS_DIR), 'r') as f:
+    with open(departments(), 'r') as f:
         subject_areas = json.load(f)['subjectAreas']
 
     num_total = len(subject_areas)
@@ -217,12 +194,8 @@ def main(only_new=False):
     for subject_area in subject_areas:
         if subject_area in completed:
             continue
-        input_file = COURSES_FORMAT.format(DEPARTMENTS_DIR,
-                                           COURSE_LISTING_DIR,
-                                           subject_area)
-        output_file = CLASSES_FORMAT.format(DEPARTMENTS_DIR,
-                                            CLASS_LISTING_DIR,
-                                            get_subject_area_code(subject_area))
+        input_file = course_listing_by_subject_area(subject_area)
+        output_file = class_listing_by_subject_area(subject_area)
 
         classes = {}
         with open(input_file, 'r') as f:
