@@ -16,6 +16,8 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     'Friday': '12/16'
   };
 
+  var enableFinalsSchedule = false;
+
   var finalMeetings = [
     new Meeting(new Time(8, 0), new Time(11, 0), {}),
     new Meeting(new Time(11, 30), new Time(14, 30), {}),
@@ -48,6 +50,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     var vm = this;
 
     var schedulingOptions = scheduleFactory.getSchedulingOptions();
+    vm.enableFinalsSchedule = enableFinalsSchedule;
     vm.showFinalsSchedule = schedulingOptions.showFinalsSchedule;
     vm.finalMeetings = finalMeetings;
 

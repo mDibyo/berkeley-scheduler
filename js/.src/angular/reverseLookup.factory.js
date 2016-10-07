@@ -1,6 +1,6 @@
 'use strict';
 
-var indicesUrlFormat = 'data/final/fa16/indices/{}.json';
+var indicesUrlFormat = 'data/final/sp17/indices/{}.json';
 var _2aryTo1arySectionIdIndexUrl =
   indicesUrlFormat.replace('{}', '2ary-to-1ary-section-id');
 var _1arySectionIdToSubjectAreaIndexUrl =
