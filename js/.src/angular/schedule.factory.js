@@ -1,3 +1,7 @@
+'use strict';
+
+var constants = require('../constants');
+
 var Time = require('../models/time');
 var Schedule = require('../models/schedule');
 var ScheduleGroup = require('../models/scheduleGroup');
@@ -234,6 +238,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     return primaryUserId;
   }
 
+  function _getPrimaryUserIdTermIdentifier() {
+    return _primaryUserId + '.' + constants.TERM_ABBREV;
+  }
+
   function _loadUserIdListFromCookie() {
     var userIdList = $cookies.getObject(userIdListCookieKey);
     if (userIdList === undefined && _primaryUserId) {
@@ -311,8 +319,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function _loadCoursesFromCookieInto_courses() {
-    var savedCoursesCookieKey =
-      savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
+    var savedCoursesCookieKey = savedCoursesCookieKeyFormat
+      .replace('{}', _getPrimaryUserIdTermIdentifier());
     var savedCourses = $cookies.getObject(savedCoursesCookieKey);
     if (!savedCourses) {
       return;
@@ -349,15 +357,15 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         unselectedSections: unselectedSections
       });
     }
-    var savedCoursesCookieKey =
-      savedCoursesCookieKeyFormat.replace('{}', _primaryUserId);
+    var savedCoursesCookieKey = savedCoursesCookieKeyFormat
+      .replace('{}', _getPrimaryUserIdTermIdentifier());
     $cookies.putObject(savedCoursesCookieKey, courseInfosToSave,
       {expires: _cookieExpiryDate});
   }
 
   function _loadScheduleIdsFromCookieInto_savedSchedules() {
-    var savedScheduleIdsCookieKey =
-      savedScheduleIdsCookieKeyFormat.replace('{}', _primaryUserId);
+    var savedScheduleIdsCookieKey = savedScheduleIdsCookieKeyFormat
+      .replace('{}', _getPrimaryUserIdTermIdentifier());
     var savedScheduleIds = $cookies.getObject(savedScheduleIdsCookieKey);
     if (!savedScheduleIds) {
       return;
@@ -370,8 +378,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   }
 
   function _saveScheduleIdsToCookie() {
-    var savedScheduleIdsCookieKey =
-      savedScheduleIdsCookieKeyFormat.replace('{}', _primaryUserId);
+    var savedScheduleIdsCookieKey = savedScheduleIdsCookieKeyFormat
+      .replace('{}', _getPrimaryUserIdTermIdentifier());
     $cookies.putObject(savedScheduleIdsCookieKey, _savedSchedules.map(function(schedule) {
       return schedule.id;
     }), {expires: _cookieExpiryDate});
