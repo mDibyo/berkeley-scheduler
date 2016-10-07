@@ -1,10 +1,11 @@
 'use strict';
 
+var constants = require('../constants');
 var Course = require('../models/course');
 
 var departmentsUrl = 'data/final/departments.json';
 var subjectAreaAbbrvsUrl = 'data/final/abbreviations.json';
-var coursesUrlFormat = 'data/final/sp17/classes/{}.json';
+var coursesUrlFormat = 'data/final/' + constants.TERM_ABBREV + '/classes/{}.json';
 
 function courses($http, $q) {
   var _coursesQBySubjectArea = {};
