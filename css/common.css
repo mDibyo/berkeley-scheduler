@@ -29,6 +29,12 @@ body {
   color: #ffffff;
 }
 
+.banner {
+  background: #fdb515;
+  color: #003262;
+  font-weight: 500;
+}
+
 md-autocomplete {
   margin-left: 10px;
   margin-right: 10px;

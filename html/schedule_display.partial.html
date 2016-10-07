@@ -1,4 +1,4 @@
-<div ng-if="vm.showFinalsSchedule">
+<div ng-if="vm.enableFinalsSchedule && vm.showFinalsSchedule">
   <div class="finals-schedule-warn">
     Note: This finals schedule is based on the calendar provided at
     <a href="http://schedule.berkeley.edu/examf.html" target="_blank">schedule.berkeley.edu</a>.
@@ -63,9 +63,12 @@
 <div layout="row" layout-align="center center" class="schedule-nav-row">
   <div flex layout="row">
     <div>
-      <md-button class="md-raised" ng-click="vm.toggleFinalsSchedule()">
+      <md-button class="md-raised" ng-click="vm.toggleFinalsSchedule()" ng-disabled="!vm.enableFinalsSchedule">
         Finals Schedule
       </md-button>
+      <md-tooltip>
+        Coming soon!
+      </md-tooltip>
     </div>
     <div flex></div>
     <div>
