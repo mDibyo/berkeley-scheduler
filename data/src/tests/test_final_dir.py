@@ -29,7 +29,8 @@ class TestCourses(unittest.TestCase):
     def test_courses(self):
         subject_areas = self.departments_json['subjectAreas']
         for subject_area in subject_areas:
-            with self.subTest(subject_area=subject_area):
+            listing = final_class_listing_by_subject_area(subject_area)
+            with self.subTest(subject_area=subject_area, listing=listing):
                 listing = final_class_listing_by_subject_area(subject_area)
                 self.assertTrue(os.path.exists(listing))
                 with open(listing, 'r') as f:

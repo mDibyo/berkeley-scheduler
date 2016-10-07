@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-TERM='fall-2016'
-TERM_ABBRV='fa16'
+TERM='spring-2017'
+TERM_ABBRV='sp17'
 
 INPUT_DEPARTMENTS_DIR=intermediate/departments
 INPUT_CLASSES_DIR=${INPUT_DEPARTMENTS_DIR}/class-listing-${TERM}-by-subject-area

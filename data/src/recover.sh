@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TERM_ABBRV='fa16'
+TERM_ABBRV='sp17'
 
 RECOVER_DIR=recover
 RECOVER_CLASSES_DIR=${RECOVER_DIR}/classes
