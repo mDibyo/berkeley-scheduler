@@ -2,8 +2,8 @@
 
 import os.path
 
-TERM = 'fall-2016'
-TERM_ABBRV = 'fa16'
+TERM = 'spring-2017'
+TERM_ABBRV = 'sp17'
 TERM_ID = 2172
 CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes/sections?{}'
 
