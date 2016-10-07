@@ -1,3 +1,7 @@
+'use strict';
+
+var constants = require('../constants');
+
 angular.module('berkeleyScheduler').config([
   '$compileProvider',
   '$stateProvider',
@@ -7,9 +11,11 @@ angular.module('berkeleyScheduler').config([
   function($compileProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider) {
     $compileProvider.debugInfoEnabled(false);
 
+    var scheduleUrl = '/' + constants.TERM_ABBREV;
+
     $stateProvider
       .state('schedule', {
-        url: '/schedule',
+        url: scheduleUrl,
         templateUrl: 'html/schedule.html',
         controller: 'CourseFindCtrl',
         controllerAs: 'vm'
@@ -33,7 +39,7 @@ angular.module('berkeleyScheduler').config([
         controllerAs: 'vm'
       });
 
-    $urlRouterProvider.otherwise('schedule');
+    $urlRouterProvider.otherwise(scheduleUrl);
 
     var berkeleyPrimaryPalette = {
       '50': '#0073e1',
