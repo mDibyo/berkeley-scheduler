@@ -60,7 +60,7 @@ def extract_instructor_info_from_json(instructor_json):
 def extract_meeting_info_from_json(meeting_json):
     extracted_instructors = []
     for instructor_json in meeting_json.get('assignedInstructors', []):
-        if instructor_json['instructor']['names']:
+        if 'names' in instructor_json['instructor'] and instructor_json['instructor']['names']:
             extracted_instructors.append(
                 extract_instructor_info_from_json(instructor_json)
             )
@@ -220,17 +220,17 @@ def main(only_new=False):
                 try:
                     visited.add(course['courseNumber'])
                     response = request_course(course)
-                    if response and response['ApiResponse']['httpStatus']['code'] == '200':
-                        if 'classSections' in response['ApiResponse']['response']:
+                    if response and response['apiResponse']['httpStatus']['code'] == '200':
+                        if 'classSections' in response['apiResponse']['response']:
                             sections_json = \
-                                response['ApiResponse']['response']['classSections']
+                                response['apiResponse']['response']['classSections']
                             _class = extract_class_info_from_json(sections_json)
                             _class.update({
                                 'description': course.get('description', ''),
                                 'units': course['units'],
                             })
                         else:
-                            sections_json = response['ApiResponse']['response']['classes']['class']
+                            sections_json = response['apiResponse']['response']['classes']['class']
                             _class = extract_single_section_info_from_json(sections_json)
                         classes[course['courseNumber']] = _class
                 except KeyboardInterrupt:

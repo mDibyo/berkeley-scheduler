@@ -1,0 +1,63 @@
+-rw-rw-r-- 1 dibyo dibyo  85K Oct  5 18:20 AFRO-AM.json
+-rw-rw-r-- 1 dibyo dibyo 1.7K Oct  5 18:20 AGR CHM.json
+-rw-rw-r-- 1 dibyo dibyo  47K Oct  5 18:20 A,RESEC.json
+-rw-rw-r-- 1 dibyo dibyo 220K Oct  5 18:20 BIO ENG.json
+-rw-rw-r-- 1 dibyo dibyo 1.8K Oct  5 18:20 BUDD ST.json
+-rw-rw-r-- 1 dibyo dibyo 518K Oct  5 18:20 BUS ADM.json
+-rw-rw-r-- 1 dibyo dibyo 194K Oct  5 18:20 CHM ENG.json
+-rw-rw-r-- 1 dibyo dibyo 583K Oct  5 18:20 CIV ENG.json
+-rw-rw-r-- 1 dibyo dibyo  51K Oct  5 18:20 COG SCI.json
+-rw-rw-r-- 1 dibyo dibyo 195K Oct  5 18:20 COM LIT.json
+-rw-rw-r-- 1 dibyo dibyo  58K Oct  5 18:20 C,RESST.json
+-rw-rw-r-- 1 dibyo dibyo 5.7K Oct  5 18:20 CRIT TH.json
+-rw-rw-r-- 1 dibyo dibyo 275K Oct  5 18:20 CY PLAN.json
+-rw-rw-r-- 1 dibyo dibyo  23K Oct  5 18:20 DEV STD.json
+-rw-rw-r-- 1 dibyo dibyo 182K Oct  5 18:20 DRM ART.json
+-rw-rw-r-- 1 dibyo dibyo  63K Oct  5 18:20 EA LANG.json
+-rw-rw-r-- 1 dibyo dibyo  50K Oct  5 18:20 ED-SCSE.json
+-rw-rw-r-- 1 dibyo dibyo  70K Oct  5 18:20 EDUC-AE.json
+-rw-rw-r-- 1 dibyo dibyo 122K Oct  5 18:20 EDUC-LL.json
+-rw-rw-r-- 1 dibyo dibyo 394K Oct  5 18:20 EL ENG.json
+-rw-rw-r-- 1 dibyo dibyo  90K Oct  5 18:20 ENE,RES.json
+-rw-rw-r-- 1 dibyo dibyo  78K Oct  5 18:20 ENV DES.json
+-rw-rw-r-- 1 dibyo dibyo  28K Oct  5 18:20 ENV SCI.json
+-rw-rw-r-- 1 dibyo dibyo  22K Oct  5 18:20 ETH GRP.json
+-rw-rw-r-- 1 dibyo dibyo 178K Oct  5 18:20 ETH STD.json
+-rw-rw-r-- 1 dibyo dibyo  12K Oct  5 18:20 EURA ST.json
+-rw-rw-r-- 1 dibyo dibyo  36K Oct  5 18:20 HIN-URD.json
+-rw-rw-r-- 1 dibyo dibyo  47K Oct  5 18:20 HUM BIO.json
+-rw-rw-r-- 1 dibyo dibyo 140K Oct  5 18:20 IEOR.json
+-rw-rw-r-- 1 dibyo dibyo 239K Oct  5 18:20 IND ENG.json
+-rw-rw-r-- 1 dibyo dibyo 4.2K Oct  5 18:20 LAN PRO.json
+-rw-rw-r-- 1 dibyo dibyo 217K Oct  5 18:20 LD ARCH.json
+-rw-rw-r-- 1 dibyo dibyo 328K Oct  5 18:20 L & S.json
+-rw-rw-r-- 1 dibyo dibyo 3.1K Oct  5 18:20 L&S.json
+drwxrwxr-x 2 dibyo dibyo 4.0K Oct  5 18:20 MALAY/
+-rw-rw-r-- 1 dibyo dibyo 136K Oct  5 18:20 MAT SCI.json
+-rw-rw-r-- 1 dibyo dibyo 440K Oct  5 18:20 MEC ENG.json
+-rw-rw-r-- 1 dibyo dibyo  15K Oct  5 18:20 MED ST.json
+-rw-rw-r-- 1 dibyo dibyo  33K Oct  5 18:20 M E STU.json
+-rw-rw-r-- 1 dibyo dibyo  25K Oct  5 18:20 MIL AFF.json
+-rw-rw-r-- 1 dibyo dibyo  19K Oct  5 18:20 MIL SCI.json
+-rw-rw-r-- 1 dibyo dibyo 2.6K Oct  5 18:20 NAT RES.json
+-rw-rw-r-- 1 dibyo dibyo  19K Oct  5 18:20 NAV SCI.json
+-rw-rw-r-- 1 dibyo dibyo 275K Oct  5 18:20 NE STUD.json
+-rw-rw-r-- 1 dibyo dibyo 112K Oct  5 18:20 NUC ENG.json
+-rw-rw-r-- 1 dibyo dibyo  801 Oct  5 18:20 OC ENG.json
+-rw-rw-r-- 1 dibyo dibyo  52K Oct  5 18:20 OR LANG.json
+-rw-rw-r-- 1 dibyo dibyo 679K Oct  5 18:20 PB HLTH.json
+-rw-rw-r-- 1 dibyo dibyo  33K Oct  5 18:20 PHY OPT.json
+-rw-rw-r-- 1 dibyo dibyo 114K Oct  5 18:20 PHYS ED.json
+-rw-rw-r-- 1 dibyo dibyo  32K Oct  5 18:20 PL PATH.json
+-rw-rw-r-- 1 dibyo dibyo 842K Oct  5 18:20 POL SCI.json
+-rw-rw-r-- 1 dibyo dibyo 215K Oct  5 18:20 PUB POL.json
+-rw-rw-r-- 1 dibyo dibyo  13K Oct  5 18:20 ROM PHL.json
+-rw-rw-r-- 1 dibyo dibyo  96K Oct  5 18:20 S ASIAN.json
+-rw-rw-r-- 1 dibyo dibyo  15K Oct  5 18:20 SOC SCI.json
+-rw-rw-r-- 1 dibyo dibyo 304K Oct  5 18:20 SOC WEL.json
+-rw-rw-r-- 1 dibyo dibyo 206K Oct  5 18:20 SPANPOR.json
+-rw-rw-r-- 1 dibyo dibyo 9.7K Oct  5 18:20 SP PROG.json
+-rw-rw-r-- 1 dibyo dibyo  90K Oct  5 18:20 S,SEASN.json
+-rw-rw-r-- 1 dibyo dibyo  22K Oct  5 18:20 SUBJ A.json
+-rw-rw-r-- 1 dibyo dibyo  58K Oct  5 18:20 VIS SCI.json
+-rw-rw-r-- 1 dibyo dibyo  36K Oct  5 18:20 VIS STD.json
