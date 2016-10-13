@@ -216,7 +216,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
 
     function exportScheduleToCalendar(schedule) {
       $mdDialog.show({
-        templateUrl: 'html/export_to_calendar.dialog.html',
+        templateUrl: 'assets/static/html/export_to_calendar.dialog.html',
         controller: 'ExportToCalendarDialogCtrl',
         controllerAs: 'vm',
         parent: angular.element(document.body),
@@ -239,7 +239,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
       sbScheduleDisplayCtrl
     ],
     controllerAs: 'vm',
-    templateUrl: 'client/html/schedule_display.partial.html'
+    templateUrl: 'assets/static/html/schedule_display.partial.html'
   }
 }
 angular.module('berkeleyScheduler').directive('bsScheduleDisplay', [

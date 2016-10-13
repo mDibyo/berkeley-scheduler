@@ -52,7 +52,7 @@ function bsCourseDisplayDirective() {
       bsCourseDisplayCtrl
     ],
     controllerAs: 'vm',
-    templateUrl: 'client/html/course_display.partial.html'
+    templateUrl: 'assets/static/html/course_display.partial.html'
   };
 }
 angular.module('berkeleyScheduler').directive('bsCourseDisplay', [

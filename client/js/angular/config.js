@@ -16,25 +16,25 @@ angular.module('berkeleyScheduler').config([
     $stateProvider
       .state('schedule', {
         url: scheduleUrl,
-        templateUrl: 'client/html/schedule.html',
+        templateUrl: 'assets/static/html/schedule.html',
         controller: 'CourseFindCtrl',
         controllerAs: 'vm'
       })
       .state('schedule.viewCourse', {
         url: '/course/{id}',
-        templateUrl: 'client/html/view_course.partial.html',
+        templateUrl: 'assets/static/html/view_course.partial.html',
         controller: 'ViewCourseCtrl',
         controllerAs: 'vm'
       })
       .state('schedule.generatingSchedules', {
         url: '/generate?scheduleGroupId&startScheduleId',
-        templateUrl: 'client/html/generating_schedules.partial.html',
+        templateUrl: 'assets/static/html/generating_schedules.partial.html',
         controller: 'GeneratingSchedulesCtrl',
         controllerAs: 'vm'
       })
       .state('schedule.viewSchedule', {
         url: '/{scheduleId}?noTimeConflicts',
-        templateUrl: 'client/html/view_schedule.partial.html',
+        templateUrl: 'assets/static/html/view_schedule.partial.html',
         controller: 'ViewScheduleCtrl',
         controllerAs: 'vm'
       });
@@ -83,6 +83,6 @@ angular.module('berkeleyScheduler').config([
 
     $mdIconProvider
       .defaultViewBoxSize(48)
-      .defaultIconSet('assets/sprite.defs.svg');
+      .defaultIconSet('assets/gen/sprite.defs.svg');
   }
 ]);
