@@ -41,7 +41,7 @@ angular.module('berkeleyScheduler').run([
       scheduleFactory.getPreferences()['showMobUnoptDialog'];
     if (showMobUnoptDialog && $mdMedia('xs')) {
       $mdDialog.show({
-        templateUrl: 'html/mobile_unoptimized.dialog.html',
+        templateUrl: 'assets/static/html/mobile_unoptimized.dialog.html',
         controller: 'MobileUnoptimizedDialogCtrl',
         controllerAs: 'vm',
         parent: angular.element(document.body),
@@ -50,6 +50,6 @@ angular.module('berkeleyScheduler').run([
     }
 
     // Pre-fetch SVG assets
-    $templateRequest('assets/sprite.defs.svg');
+    $templateRequest('assets/gen/sprite.defs.svg');
   }
 ]);

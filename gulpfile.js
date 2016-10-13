@@ -19,7 +19,7 @@
       },
       svg: 'client/svg/*.svg'
     },
-    dest: 'assets'
+    dest: 'assets/gen'
   };
 
   gulp.task('default', ['browserify-app']);
