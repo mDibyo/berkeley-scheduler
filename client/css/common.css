@@ -144,6 +144,11 @@ md-progress-linear {
   background-color: #ed4e33;
 }
 
+.selected-button {
+  background-color: #3b7ea1 !important;
+  color: #ffffff !important;
+}
+
 .scheduling-options fieldset {
   border: 1px solid rgba(0, 0, 0, 0.27);
   margin: 0;
@@ -185,6 +190,9 @@ md-input-container.schedule-option {
   position: relative;
   width: 48px;
 }
+.saved-schedule.curr-saved-schedule {
+  border: 3px solid #3b7ea1;
+}
 
 md-tooltip.saved-schedule-description .md-content {
   height: auto;
@@ -198,6 +206,9 @@ md-tooltip.saved-schedule-description .md-content {
   right: -3px;
   top: -3px;
   z-index: 20;
+}
+.curr-saved-schedule > .saved-schedule-drop {
+  background-color: #3b7ea1;
 }
 
 .schedule-nav-row {
