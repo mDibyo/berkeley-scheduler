@@ -5,12 +5,15 @@
       ng-click="dvm.toggleSavedSchedules(!dvm.showSavedSchedules)"
       ng-class="{
         'md-primary': dvm.savedSchedules.length > 0,
-        'schedule-button': dvm.savedSchedules.length > 0
+        'schedule-button': dvm.savedSchedules.length > 0,
+        'selected-button': dvm.showSavedSchedules
       }">
     Saved Schedules
   </md-button>
 
-  <md-button class="md-raised md-primary schedule-button" ng-click="dvm.toggleOptions(!dvm.showOptions)">
+  <md-button class="md-raised md-primary schedule-button"
+             ng-class="{'selected-button': dvm.showOptions}"
+             ng-click="dvm.toggleOptions(!dvm.showOptions)">
     Scheduling Options
   </md-button>
 
@@ -42,16 +45,16 @@
   </span>
 </div>
 
-<br>
-
 <div ng-show="dvm.showSavedSchedules">
+  <br>
   <div ng-if="dvm.savedSchedules.length > 0">
     <div layout="row" layout-wrap>
       <div
           class="saved-schedule"
           layout="column" layout-align="center center"
           ng-repeat="schedule in dvm.savedSchedules track by schedule.id"
-          ng-click="dvm.goToState('schedule.viewSchedule', {scheduleId: schedule.id})">
+          ui-sref-active="curr-saved-schedule"
+          ui-sref="schedule.viewSchedule({scheduleId: schedule.id})">
         <md-tooltip class="saved-schedule-description">
           <div>
           <span ng-repeat="(courseId, courseSections) in schedule.courses">
@@ -83,6 +86,7 @@
 </div>
 
 <div ng-show="dvm.showOptions" class="scheduling-options">
+  <br>
   <fieldset>
     <legend>
       <h5 class="md-subhead">
