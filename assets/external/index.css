@@ -1,0 +1,34 @@
+body {
+  background: #FFF7E4;
+  font-family: 'Raleway', sans-serif;
+  overflow: hidden;
+}
+body > div {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow-y: scroll;
+}
+
+#logo {
+  padding: 50px;
+}
+
+#container {
+  height: 100%;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+#container > div {
+  border: 1px solid;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  text-align: center;
+}
