@@ -192,7 +192,7 @@ function bsGenerateSchedulesDirective() {
       bsGenerateSchedulesCtrl
     ],
     controllerAs: 'dvm',
-    templateUrl: 'html/generate_schedules.partial.html'
+    templateUrl: 'client/html/generate_schedules.partial.html'
   }
 }
 angular.module('berkeleyScheduler').directive('bsGenerateSchedules', [

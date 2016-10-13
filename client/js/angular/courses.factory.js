@@ -3,9 +3,9 @@
 var constants = require('../constants');
 var Course = require('../models/course');
 
-var departmentsUrl = 'data/final/departments.json';
-var subjectAreaAbbrvsUrl = 'data/final/abbreviations.json';
-var coursesUrlFormat = 'data/final/' + constants.TERM_ABBREV + '/classes/{}.json';
+var departmentsUrl = 'data/departments.json';
+var subjectAreaAbbrvsUrl = 'data/abbreviations.json';
+var coursesUrlFormat = 'data/' + constants.TERM_ABBREV + '/classes/{}.json';
 
 function courses($http, $q) {
   var _coursesQBySubjectArea = {};

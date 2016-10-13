@@ -9,4 +9,4 @@ install:
 
 script:
   - npm test
-  - cd data && python3 -m unittest
+  - cd server/update && python3 -m unittest

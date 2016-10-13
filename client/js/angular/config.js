@@ -16,25 +16,25 @@ angular.module('berkeleyScheduler').config([
     $stateProvider
       .state('schedule', {
         url: scheduleUrl,
-        templateUrl: 'html/schedule.html',
+        templateUrl: 'client/html/schedule.html',
         controller: 'CourseFindCtrl',
         controllerAs: 'vm'
       })
       .state('schedule.viewCourse', {
         url: '/course/{id}',
-        templateUrl: 'html/view_course.partial.html',
+        templateUrl: 'client/html/view_course.partial.html',
         controller: 'ViewCourseCtrl',
         controllerAs: 'vm'
       })
       .state('schedule.generatingSchedules', {
         url: '/generate?scheduleGroupId&startScheduleId',
-        templateUrl: 'html/generating_schedules.partial.html',
+        templateUrl: 'client/html/generating_schedules.partial.html',
         controller: 'GeneratingSchedulesCtrl',
         controllerAs: 'vm'
       })
       .state('schedule.viewSchedule', {
         url: '/{scheduleId}?noTimeConflicts',
-        templateUrl: 'html/view_schedule.partial.html',
+        templateUrl: 'client/html/view_schedule.partial.html',
         controller: 'ViewScheduleCtrl',
         controllerAs: 'vm'
       });
@@ -58,8 +58,7 @@ angular.module('berkeleyScheduler').config([
       'A700': '#000000'
     };
     $mdThemingProvider
-      .definePalette('berkeley-primary',
-        berkeleyPrimaryPalette);
+      .definePalette('berkeley-primary', berkeleyPrimaryPalette);
     var berkeleyAccentPalette = {
       '50': '#785301',
       '100': '#916501',
@@ -77,14 +76,13 @@ angular.module('berkeleyScheduler').config([
       'A700': '#fedd93'
     };
     $mdThemingProvider
-      .definePalette('berkeley-accent',
-        berkeleyAccentPalette);
+      .definePalette('berkeley-accent', berkeleyAccentPalette);
     $mdThemingProvider.theme('default')
       .primaryPalette('berkeley-primary')
       .accentPalette('berkeley-accent');
 
     $mdIconProvider
       .defaultViewBoxSize(48)
-      .defaultIconSet('svg/final/sprite.defs.svg');
+      .defaultIconSet('assets/sprite.defs.svg');
   }
 ]);
