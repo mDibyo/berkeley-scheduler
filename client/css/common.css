@@ -98,6 +98,14 @@ md-autocomplete {
   width: 100%;
 }
 
+.generate-schedules, .view-course, .generating-schedules, .view-schedule {
+  padding: 15px;
+}
+
+.generate-schedules {
+  background-color: #ddd5c7;
+}
+
 table, td, th {
   border: 1px solid black;
   border-collapse: collapse;
