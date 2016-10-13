@@ -50,6 +50,6 @@ angular.module('berkeleyScheduler').run([
     }
 
     // Pre-fetch SVG assets
-    $templateRequest('svg/final/sprite.defs.svg');
+    $templateRequest('assets/sprite.defs.svg');
   }
 ]);
