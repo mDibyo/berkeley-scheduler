@@ -149,6 +149,20 @@ md-progress-linear {
   color: #ffffff !important;
 }
 
+.ng-hide-add, .ng-hide-remove {
+  display: block !important;
+  /*background-color: #ed4e33;*/
+}
+
+.generate-schedules-dropdown {
+  transition: max-height 0.75s;
+  max-height: 100%;
+  overflow: hidden;
+}
+.generate-schedules-dropdown.ng-hide {
+  max-height: 0;
+}
+
 .scheduling-options fieldset {
   border: 1px solid rgba(0, 0, 0, 0.27);
   margin: 0;

@@ -22,7 +22,7 @@
       putting final touches
     </div>
   </div>
-  <div ng-if="vm.scheduleGenerationStatus.status === 'failed'">
+  <div class="generating-schedules" ng-if="vm.scheduleGenerationStatus.status === 'failed'">
     <md-progress-linear
       class="schedule-generating-failed"
       md-mode="determinate"
