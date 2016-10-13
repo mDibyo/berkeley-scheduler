@@ -4,8 +4,8 @@
 : "${SIS_COURSE_API_APP_ID:?app_id not set}"
 : "${SIS_COURSE_API_APP_KEY:?app_key not set}"
 
-INTERMEDIATE_DIR=intermediate
-OUTPUT_DIR=${INTERMEDIATE_DIR}/fetched-class-json
+SERVER_DIR=$(cd $(dirname ${BASH_SOURCE[0]})/.. && pwd )
+OUTPUT_DIR=${SERVER_DIR}/data/intermediate/fetched-class-json
 
 mkdir -p ${OUTPUT_DIR}
 
