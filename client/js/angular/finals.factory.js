@@ -4,11 +4,9 @@ var constants = require('../constants');
 var Final = require('../models/final');
 var Meeting = require('../models/meeting');
 
-var constantsTERM_ABBREV = 'fa16';
-
 var foreignLanguageListingUrl = 'data/foreignLanguageListing.json';
-var finalMeetingsUrl = 'data/' + constantsTERM_ABBREV + '/finals/meetings.json';
-var finalRulesUrl = 'data/' + constantsTERM_ABBREV + '/finals/rules.json';
+var finalMeetingsUrl = 'data/' + constants.TERM_ABBREV + '/finals/meetings.json';
+var finalRulesUrl = 'data/' + constants.TERM_ABBREV + '/finals/rules.json';
 
 function finals($http, $q) {
   var finalsByCourseId = {};
