@@ -46,8 +46,14 @@ function courses($http, $q, finals) {
       var coursesData = response.data;
       var finalQs = [];
 
-      var courses = Object.keys(coursesData).map(function(displayName) {
-        var course = Course.parse(coursesData[displayName]);
+      var courses = Object.keys(coursesData).filter(function(displayName) {
+        return coursesData[displayName].printInScheduleOfClasses;
+      }).map(function(displayName) {
+        var courseData = coursesData[displayName];
+        courseData.sections = courseData.sections.filter(function(sectionData) {
+          return sectionData.printInScheduleOfClasses;
+        });
+        var course = Course.parse(courseData);
         if (displayName === '108A') {
           console.log(coursesData[displayName]);
         }
