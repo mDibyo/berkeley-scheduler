@@ -1,6 +1,5 @@
 'use strict';
 
-var Final = require('./final');
 var Meeting = require('./meeting');
 var Section = require('./section');
 
@@ -19,7 +18,7 @@ function Course(courseJson) {
 
   var meetings = courseJson.meetings;
   this.meetings = meetings.map(Meeting.parse);
-  this.finalMeeting = new Final(this);
+  this.finalMeeting = null;
 
   this.sectionTypes = [];
   this.sections = courseJson.sections.map(function(sectionJson) {
@@ -82,6 +81,10 @@ Course.unRegisterColor = function(color) {
 
 Course.parse = function(data) {
   return new Course(data);
+};
+
+Course.prototype.setFinalMeeting = function(finalMeeting) {
+  this.finalMeeting = finalMeeting;
 };
 
 Course.prototype.getName = function() {

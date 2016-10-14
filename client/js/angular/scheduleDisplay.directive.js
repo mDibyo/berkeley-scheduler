@@ -16,7 +16,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     'Friday': '12/16'
   };
 
-  var enableFinalsSchedule = false;
+  var enableFinalsSchedule = true;
 
   var finalMeetings = [
     new Meeting(new Time(8, 0), new Time(11, 0), {}),
