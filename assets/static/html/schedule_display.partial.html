@@ -2,9 +2,9 @@
 <div ng-if="vm.enableFinalsSchedule && vm.showFinalsSchedule">
   <div class="finals-schedule-warn">
     Note: This finals schedule is based on the calendar provided at
-    <a href="http://schedule.berkeley.edu/examf.html" target="_blank">schedule.berkeley.edu</a>.
-    As mentioned there, final exams are based on the day and time a course is offered
-    therefore, if the course schedule changes, the exam group may also change. Also this
+    <a href="http://schedule.berkeley.edu/examsp.html" target="_blank">schedule.berkeley.edu</a>.
+    As mentioned there, final exams are based on the day and time a course is offered,
+    therefore if the course schedule changes, the exam group may also change. Also this
     is only a guideline for faculty and students to get a sense of when their final exam may
     take place. Final exams will be assigned around the first week of classes, and may not
     follow these guidelines.
@@ -67,7 +67,7 @@
       <md-button class="md-raised" ng-click="vm.toggleFinalsSchedule()" ng-disabled="!vm.enableFinalsSchedule">
         Finals Schedule
       </md-button>
-      <md-tooltip>
+      <md-tooltip ng-if="!vm.enableFinalsSchedule">
         Coming soon!
       </md-tooltip>
     </div>
