@@ -120,6 +120,7 @@ def extract_class_info_from_json(sections_json):
     else:
         primary_section = {
             'id': None,
+            'printInScheduleOfClasses': True,
             'meetings': [{
                 'startTime': None,
                 'endTime': None,
@@ -142,6 +143,7 @@ def extract_class_info_from_json(sections_json):
         'displayName': extracted_class['course']['displayName'],
         'title': extracted_class['course']['title'],
         'id': primary_section['id'],
+        'printInScheduleOfClasses': primary_section['printInScheduleOfClasses'],
         'meetings': primary_section['meetings'],
         'units': -1,
         'sections': list(extracted_sections.values())
@@ -159,6 +161,7 @@ def extract_single_section_info_from_json(sections_json):
         'title': extracted_class['course']['title'],
         'instructor': None,
         'id': None,
+        'printInScheduleOfClasses': extracted_class.get('anyPrintInScheduleOfClasses', True),
         'units': [
             extracted_class['allowedUnits']['minumium'],
             extracted_class['allowedUnits']['maximum']

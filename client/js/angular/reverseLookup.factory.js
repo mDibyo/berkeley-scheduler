@@ -40,15 +40,14 @@ function reverseLookup($http, $q, courses) {
               return course;
             }
           }
+          return $q.reject();
         });
     });
   }
 
   function getCourseQBy2arySectionId(id) {
     if (id in _coursesCache) {
-      var deferred = $q.defer();
-      deferred.resolve(_coursesCache[id]);
-      return deferred.promise;
+      return $q.when(_coursesCache[id]);
     }
     return _2aryTo1arySectionIdIndexQ.then(function(index) {
       return index[id];
