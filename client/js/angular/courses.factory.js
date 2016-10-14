@@ -7,7 +7,7 @@ var departmentsUrl = 'data/departments.json';
 var subjectAreaAbbrvsUrl = 'data/abbreviations.json';
 var coursesUrlFormat = 'data/' + constants.TERM_ABBREV + '/classes/{}.json';
 
-function courses($http, $q) {
+function courses($http, $q, finals) {
   var _coursesQBySubjectArea = {};
 
   var _subjectAreasQ = $q.all([
@@ -42,16 +42,29 @@ function courses($http, $q) {
 
     var alphabetizedCode = _alphabetizeSubjectAreaCode(code);
     var coursesUrl = coursesUrlFormat.replace('{}', alphabetizedCode);
-    var q = $http.get(coursesUrl).then(function(response) {
-      var courses = response.data;
-      return Object.keys(courses).map(function(displayName) {
-        return Course.parse(courses[displayName]);
+    var coursesQ = $http.get(coursesUrl).then(function(response) {
+      var coursesData = response.data;
+      var finalQs = [];
+
+      var courses = Object.keys(coursesData).map(function(displayName) {
+        var course = Course.parse(coursesData[displayName]);
+        if (displayName === '108A') {
+          console.log(coursesData[displayName]);
+        }
+        finalQs.push(finals.getFinalMeetingForCourseQ(course).then(function(final) {
+          course.setFinalMeeting(final);
+        }));
+        return course;
+      });
+
+      return $q.all(finalQs).then(function() {
+        return courses;
       });
     }, function() {
       return [];
     });
-    _coursesQBySubjectArea[code] = q;
-    return q;
+    _coursesQBySubjectArea[code] = coursesQ;
+    return coursesQ;
   }
 
   function _alphabetizeSubjectAreaCode(code) {
@@ -66,5 +79,6 @@ function courses($http, $q) {
 angular.module('berkeleyScheduler').factory('courses', [
   '$http',
   '$q',
+  'finals',
   courses
 ]);

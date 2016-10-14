@@ -3,23 +3,24 @@
 var Meeting = require('./meeting');
 var Time = require('./time');
 
-function Final(course) {
+function Final(course, finalMeeting) {
   this.course = course;
-
-  this.meeting = Final.getSubjectCourseToFinalSection(course);
-  if (!this.meeting && course.meetings.length) {
-    var courseDays = course.meetings[0].days;
-    if (courseDays['Saturday'] || courseDays['Sunday']) {
-      this.meeting = Final.getSatSunCourseTimeToFinalSection(course);
-    } else if (courseDays['Monday'] ||
-               courseDays['Wednesday'] ||
-               courseDays['Friday']) {
-      this.meeting = Final.getMTWRFCourseTimeToFinalSection(course);
-    } else if (courseDays['Tuesday'] ||
-               courseDays['Thursday']) {
-      this.meeting = Final.getTRCourseTimeToFinalSection(course);
-    }
-  }
+  this.meeting = finalMeeting;
+  //
+  // this.meeting = Final.getSubjectCourseToFinalSection(course);
+  // if (!this.meeting && course.meetings.length) {
+  //   var courseDays = course.meetings[0].days;
+  //   if (courseDays['Saturday'] || courseDays['Sunday']) {
+  //     this.meeting = Final.getSatSunCourseTimeToFinalSection(course);
+  //   } else if (courseDays['Monday'] ||
+  //              courseDays['Wednesday'] ||
+  //              courseDays['Friday']) {
+  //     this.meeting = Final.getMTWRFCourseTimeToFinalSection(course);
+  //   } else if (courseDays['Tuesday'] ||
+  //              courseDays['Thursday']) {
+  //     this.meeting = Final.getTRCourseTimeToFinalSection(course);
+  //   }
+  // }
 }
 
 Final.meetings = {
