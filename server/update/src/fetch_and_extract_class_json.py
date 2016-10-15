@@ -199,8 +199,10 @@ def main(only_new=False):
             continue
         input_file = course_listing_by_subject_area(subject_area)
         output_file = class_listing_by_subject_area(subject_area)
+        json_output_file = fetched_classes_by_subject_area(subject_area)
 
         classes = {}
+        classes_json = {}
         with open(input_file, 'r') as f:
             courses = json.load(f)
         if only_new:
@@ -236,6 +238,7 @@ def main(only_new=False):
                             sections_json = response['apiResponse']['response']['classes']['class']
                             _class = extract_single_section_info_from_json(sections_json)
                         classes[course['courseNumber']] = _class
+                        classes_json[course['courseNumber']] = response
                 except KeyboardInterrupt:
                     raise
                 except Exception as e:
@@ -247,6 +250,8 @@ def main(only_new=False):
         finally:
             with open(output_file, 'w') as f:
                 json.dump(classes, f)
+            with open(json_output_file, 'w') as f:
+                json.dump(classes_json, f)
 
         completed.add(subject_area)
         print('{}/{} subject areas completed'.format(len(completed), num_total))

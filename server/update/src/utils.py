@@ -21,6 +21,7 @@ FETCHED_COURSES_DIR = 'fetched-course-json'
 EXTRACTED_COURSES_DIR = 'extracted-course-json'
 COURSE_LISTING_BY_SUBJECT_AREA_DIR = 'course-listing-by-subject-area'
 COURSE_LISTING_BY_DEPARTMENT_DIR = 'course-listing-by-department'
+FETCHED_CLASSES_BY_SUBJECT_AREA_FORMAT = 'fetched-class-json-{}-by-subject-area'
 CLASS_LISTING_DIR_FORMAT = 'class-listing-{}-by-subject-area'
 INDICES_DIR = 'indices'
 FINAL_DIR = 'data'
@@ -83,6 +84,14 @@ def class_listing_by_subject_area(subject_area):
                         INTERMEDIATE_DIR,
                         DEPARTMENTS_DIR,
                         CLASS_LISTING_DIR_FORMAT.format(TERM),
+                        JSON_FILE_FORMAT.format(cleaned_subject_area_code(subject_area)))
+
+
+def fetched_classes_by_subject_area(subject_area):
+    return os.path.join(DATA_DIR,
+                        INTERMEDIATE_DIR,
+                        DEPARTMENTS_DIR,
+                        FETCHED_CLASSES_BY_SUBJECT_AREA_FORMAT.format(TERM),
                         JSON_FILE_FORMAT.format(cleaned_subject_area_code(subject_area)))
 
 
