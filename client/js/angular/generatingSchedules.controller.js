@@ -1,9 +1,8 @@
 var BaseCtrl = require('./_base.controller');
 
 GeneratingSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
-function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $stateParams, $q, scheduleFactory, $analytics) {
-  $analytics.pageTrack(
-    '/schedule/generate?{}'.replace('{}', $httpParamSerializer($stateParams)));
+function GeneratingSchedulesCtrl($state, $window, $location, $stateParams, $q, scheduleFactory, $analytics) {
+  $analytics.pageTrack($location.url());
 
   BaseCtrl.call(this, $state, $window, scheduleFactory);
 
@@ -40,7 +39,7 @@ function GeneratingSchedulesCtrl($state, $window, $httpParamSerializer, $statePa
 angular.module('berkeleyScheduler').controller('GeneratingSchedulesCtrl', [
   '$state',
   '$window',
-  '$httpParamSerializer',
+  '$location',
   '$stateParams',
   '$q',
   'scheduleFactory',
