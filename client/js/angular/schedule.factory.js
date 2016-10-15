@@ -157,10 +157,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   };
   var _filterFns = {
     noTimeConflicts: function(footprint) {
-      if (!_schedulingOptions.noTimeConflicts) {
-        return true;
-      }
-
       var sectionsByDay = Schedule.timeFootprints[footprint];
       var section, horizon, i;
       for (var day in sectionsByDay) {
@@ -181,10 +177,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return true;
     },
     dayStartTime: function(footprint) {
-      if (_schedulingOptions.dayStartTime == null) {
-        return true;
-      }
-
       var sectionsByDay = Schedule.timeFootprints[footprint];
       for (var day in sectionsByDay) {
         var sections = sectionsByDay[day];
@@ -197,10 +189,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return true;
     },
     dayEndTime: function(footprint) {
-      if (_schedulingOptions.dayEndTime == null) {
-        return true;
-      }
-
       var sectionsByDay = Schedule.timeFootprints[footprint];
       for (var day in sectionsByDay) {
         var sections = sectionsByDay[day];
