@@ -3,7 +3,7 @@
 source $(dirname ${BASH_SOURCE[0]})/src/utils.sh
 daily=true
 
-source .set_credentials.sh
+source ${SERVER_DIR}/.set_credentials.sh
 
 if [[ "${daily}" = false ]]; then
   # Fetch course info
