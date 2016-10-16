@@ -23,8 +23,7 @@
       <div class="schedule-display finals-display-day"
            layout="column" flex="10">
         <div class="schedule-display finals-display-hour"
-             ng-repeat="meeting in vm.finalMeetings"
-             flex>
+             ng-repeat="meeting in vm.finalMeetings">
           {{meeting.toString()}}
         </div>
       </div>
@@ -32,10 +31,9 @@
       <div class="schedule-display finals-display-day final-display-section-parent"
            ng-repeat="day in vm.days"
            layout="column" flex>
-        <div class="schedule-display"
+        <div class="schedule-display finals-display-meeting"
              ng-repeat="meeting in vm.finalMeetings"
-             layout="column" flex>
-          <div class="schedule-display finals-display-meeting" flex></div>
+             layout="column">
         </div>
 
         <div class="final-display-section-parent"
@@ -167,8 +165,7 @@
     <div class="schedule-display schedule-display-day"
          layout="column" flex="10">
       <div class="schedule-display schedule-display-hour"
-           ng-repeat="hour in vm.hours"
-           flex>
+           ng-repeat="hour in vm.hours">
         {{hour.toString()}}
       </div>
     </div>
@@ -178,9 +175,9 @@
          layout="column" flex>
       <div class="schedule-display"
            ng-repeat="hour in vm.hours"
-           layout="column" flex>
-        <div class="schedule-display schedule-display-hour-first-half" flex></div>
-        <div class="schedule-display schedule-display-hour-second-half" flex></div>
+           layout="column">
+        <div class="schedule-display schedule-display-hour-first-half"></div>
+        <div class="schedule-display schedule-display-hour-second-half"></div>
       </div>
 
       <!--Sections-->

@@ -278,7 +278,6 @@ md-icon.md-48 {width: 48px;height: 48px;}
 }
 
 .finals-display-day {
-  height: 165px;
   border-bottom: 1px solid black;
   border-right: 1px solid black;
   position: relative;
@@ -288,6 +287,7 @@ md-icon.md-48 {width: 48px;height: 48px;}
   border-left: 1px solid black;
   border-top: 1px solid black;
   font-size: small;
+  height: 44px; /* 45 - 1 */
   overflow: hidden;
   padding: 0 5px 0 5px;
   text-align: center;
@@ -295,6 +295,7 @@ md-icon.md-48 {width: 48px;height: 48px;}
 
 .finals-display-meeting {
   border-top: 1px solid grey;
+  height: 45px;
 }
 
 .finals-display-section {
@@ -341,7 +342,6 @@ md-icon.md-48 {width: 48px;height: 48px;}
 }
 
 .schedule-display-day {
-  height: 600px;
   border-bottom: 1px solid black;
   border-right: 1px solid black;
   position: relative;
@@ -351,7 +351,12 @@ md-icon.md-48 {width: 48px;height: 48px;}
   border-left: 1px solid black;
   border-top: 1px solid black;
   font-size: small;
+  height: 39px; /* 40 - 1 */
   text-align: center;
+}
+
+.schedule-display-hour-first-half, .schedule-display-hour-second-half {
+  height: 19px; /* 20 - 1 */
 }
 
 .schedule-display-hour-first-half {
