@@ -23,32 +23,48 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     new Meeting(new Time(19, 0), new Time(22, 0), {})
   ];
 
+  var finalMeetingHeight = 40;
+  var hourHeight = 50;
+  var minuteHeight = hourHeight / 60;
+
   var finalColorOpacity = '0.6';
   var sectionColorOpacity = '0.6';
 
   sbScheduleDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function sbScheduleDisplayCtrl($state, $window, $mdDialog, scheduleFactory) {
+  function sbScheduleDisplayCtrl($scope, $state, $window, $mdDialog, scheduleFactory) {
     BaseCtrl.call(this, $state, $window, scheduleFactory);
 
     var vm = this;
 
     var hours = [];
     var halfHours = [];
-    var startHour = 8;
-    var endHour = 24;
-    var numHours = endHour - startHour;
+    var startHour = 24;
+    var endHour = 0;
+    days.forEach(function(day) {
+      var sections = $scope.schedule.sectionsByDay[day];
+      sections.forEach(function(section) {
+        startHour = Math.min(startHour, section.meetings[0].startTime.getTotalMinutes() / 60);
+        endHour = Math.max(endHour, section.meetings[0].endTime.getTotalMinutes() / 60);
+      });
+    });
+    startHour = Math.max(8, Math.floor(startHour) - 1);
+    endHour = Math.min(24, Math.ceil(endHour) + 1);
+
+    console.log(startHour, endHour);
+
+    if (startHour > endHour) {
+      // no classes in schedule
+    }
+
+    // var startHour = 8;
+    // var endHour = 24;
     for (var h = startHour; h < endHour; h++) {
       hours.push(new Time(h, 0));
       halfHours.push(new Time(h, 0));
       halfHours.push(new Time(h, 30));
     }
 
-    var finalMeetingHeight = 45;
-
-    var hourHeight = 40;
-    var minuteHeight = hourHeight / 60;
     var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
-    var dayTotalMinutes = (new Time(numHours, 0)).getTotalMinutes();
 
     var schedulingOptions = scheduleFactory.getSchedulingOptions();
     vm.enableFinalsSchedule = enableFinalsSchedule;
@@ -233,6 +249,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
       schedule: '='
     },
     controller: [
+      '$scope',
       '$state',
       '$window',
       '$mdDialog',
