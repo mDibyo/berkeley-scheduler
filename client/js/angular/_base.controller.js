@@ -26,7 +26,7 @@ function BaseCtrl($state, $window, scheduleFactory) {
   }
 
   function getHref(state, params, options) {
-    return 'http://berkeleyscheduler.com/' + $state.href(state, params, options);
+    return 'https://berkeleyscheduler.com/' + $state.href(state, params, options);
   }
 }
 

@@ -1,6 +1,6 @@
 # Berkeley Scheduler
 
-Code for [berkeleyscheduler.com](http://berkeleyscheduler.com), a class
+Code for [berkeleyscheduler.com](https://berkeleyscheduler.com), a class
 schedule planner for UC Berkeley students.
 
 
