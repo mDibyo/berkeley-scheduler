@@ -10,8 +10,14 @@ function ViewScheduleCtrl($state, $window, $location, $stateParams, scheduleFact
 
   var scheduleId = $stateParams.scheduleId;
 
-  var noTimeConflicts = $stateParams.noTimeConflicts !== 'false';
-  scheduleFactory.setSchedulingOption('noTimeConflicts', noTimeConflicts);
+  if ($stateParams.noTimeConflicts !== undefined) {
+    var noTimeConflicts = $stateParams.noTimeConflicts !== 'false';
+    var oldNoTimeConflicts = scheduleFactory.getSchedulingOptions().noTimeConflicts;
+    if (noTimeConflicts != oldNoTimeConflicts) {
+      scheduleFactory.setSchedulingOption('noTimeConflicts', noTimeConflicts);
+      scheduleFactory.filterAndReorderSchedules();
+    }
+  }
 
   vm.selectedSchedule = null;
 

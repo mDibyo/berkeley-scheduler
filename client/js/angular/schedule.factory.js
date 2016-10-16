@@ -51,6 +51,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _currScheduleIdx = 0;
   var _numSchedules = 0;
   var _schedulingOptions = _loadSchedulingOptionsFromCookie();
+  var _schedulingOptionsChangeListeners = {};
 
   var _orderByFns = {
     minimizeGaps: function(footprint) {
@@ -975,10 +976,18 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   function setSchedulingOption(option, choice, save) {
     if (_schedulingOptions.hasOwnProperty(option)) {
       _schedulingOptions[option] = choice;
+
+      Object.keys(_schedulingOptionsChangeListeners).forEach(function(tag) {
+        _schedulingOptionsChangeListeners[tag](getSchedulingOptions());
+      });
     }
     if (save === undefined || save) {
       _saveSchedulingOptionsToCookie();
     }
+  }
+
+  function registerSchedulingOptionsChangeListener(tag, listener) {
+    _schedulingOptionsChangeListeners[tag] = listener;
   }
 
   function getSavedSchedules() {
@@ -1065,6 +1074,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
     getSchedulingOptions: getSchedulingOptions,
     setSchedulingOption: setSchedulingOption,
+    registerSchedulingOptionsChangeListener: registerSchedulingOptionsChangeListener,
     filterAndReorderSchedules: filterAndReorderSchedules,
     getSavedSchedules: getSavedSchedules,
     addSavedSchedule: addSavedSchedule,

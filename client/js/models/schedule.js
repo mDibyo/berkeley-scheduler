@@ -12,7 +12,7 @@ function Schedule(userId, sections) {
     'Thursday': [],
     'Friday': []
   };
-  this.sectionGroupsByDay = {};
+  this._sectionGroupsByDay = {};
 
   var sectionIdList = [];
   sections.forEach(function (section) {
@@ -40,6 +40,8 @@ function Schedule(userId, sections) {
   this.id = Schedule.generateId([userId].concat(sectionIdList));
 
   this.selected = true;
+
+  this._hasNoTimeConflicts = null;
 }
 
 Schedule.timeFootprints = {};
@@ -59,11 +61,31 @@ Schedule.prototype.getTimeFootprint = function() {
   return footprint;
 };
 
-Schedule.prototype.getSectionGroupsForDay = function(day) {
-  if (!this.sectionGroupsByDay.hasOwnProperty(day)) {
-    this.sectionGroupsByDay[day] = this._generateSectionGroupsForDay(day);
+Schedule.prototype.hasNoTimeConflicts = function() {
+  if (this._hasNoTimeConflicts === null) {
+    this._hasNoTimeConflicts = this._calculateHasNoTimeConflicts();
   }
-  return this.sectionGroupsByDay[day];
+  return this._hasNoTimeConflicts;
+};
+
+Schedule.prototype._calculateHasNoTimeConflicts = function() {
+  var sectionGroups;
+  for (var day in this.sectionsByDay) {
+    sectionGroups = this.getSectionGroupsForDay(day);
+    for (var i = 0; i < sectionGroups.length; i++) {
+      if (sectionGroups[i].slots.length > 1) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+Schedule.prototype.getSectionGroupsForDay = function(day) {
+  if (!this._sectionGroupsByDay.hasOwnProperty(day)) {
+    this._sectionGroupsByDay[day] = this._generateSectionGroupsForDay(day);
+  }
+  return this._sectionGroupsByDay[day];
 };
 
 Schedule.prototype._generateSectionGroupsForDay = function(day) {
