@@ -1,0 +1,31 @@
+{
+  "dates": {
+    "Monday": {"year": 2016, "month": 11, "day": 12},
+    "Tuesday": {"year": 2016, "month": 11, "day": 13},
+    "Wednesday": {"year": 2016, "month": 11, "day": 14},
+    "Thursday": {"year": 2016, "month": 11, "day": 15},
+    "Friday": {"year": 2016, "month": 11, "day": 16}
+  },
+  "meetings": {
+    "Monday811AM": {"startTime": "8:00", "endTime": "11:00", "days": {"Monday": true}},
+    "Monday1130230PM": {"startTime": "11:30", "endTime": "14:30", "days": {"Monday": true}},
+    "Monday36PM": {"startTime": "15:00", "endTime": "18:00", "days": {"Monday": true}},
+    "Monday710PM": {"startTime": "19:00", "endTime": "22:00", "days": {"Monday": true}},
+    "Tuesday1130230PM": {"startTime": "11:30", "endTime": "14:30", "days": {"Tuesday": true}},
+    "Tuesday811AM": {"startTime": "8:00", "endTime": "11:00", "days": {"Tuesday": true}},
+    "Tuesday36PM": {"startTime": "15:00", "endTime": "18:00", "days": {"Tuesday": true}},
+    "Tuesday710PM": {"startTime": "19:00", "endTime": "22:00", "days": {"Tuesday": true}},
+    "Wednesday811AM": {"startTime": "8:00", "endTime": "11:00", "days": {"Wednesday": true}},
+    "Wednesday1130230PM": {"startTime": "11:30", "endTime": "14:30", "days": {"Wednesday": true}},
+    "Wednesday36PM": {"startTime": "15:00", "endTime": "18:00", "days": {"Wednesday": true}},
+    "Wednesday710PM": {"startTime": "19:00", "endTime": "22:00", "days": {"Wednesday": true}},
+    "Thursday811AM": {"startTime": "8:00", "endTime": "11:00", "days": {"Thursday": true}},
+    "Thursday1130230PM": {"startTime": "11:30", "endTime": "14:30", "days": {"Thursday": true}},
+    "Thursday36PM": {"startTime": "15:00", "endTime": "18:00", "days": {"Thursday": true}},
+    "Thursday710PM": {"startTime": "19:00", "endTime": "22:00", "days": {"Thursday": true}},
+    "Friday811AM": {"startTime": "8:00", "endTime": "11:00", "days": {"Friday": true}},
+    "Friday1130230PM": {"startTime": "11:30", "endTime": "14:30", "days": {"Friday": true}},
+    "Friday36PM": {"startTime": "15:00", "endTime": "18:00", "days": {"Friday": true}},
+    "Friday710PM": {"startTime": "19:00", "endTime": "22:00", "days": {"Friday": true}}
+  }
+}

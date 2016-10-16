@@ -5,21 +5,32 @@ var Final = require('../models/final');
 var Meeting = require('../models/meeting');
 
 var foreignLanguageListingUrl = 'data/foreignLanguageListing.json';
-var finalMeetingsUrl = 'data/' + constants.TERM_ABBREV + '/finals/meetings.json';
+var finalTimesUrl = 'data/' + constants.TERM_ABBREV + '/finals/times.json';
 var finalRulesUrl = 'data/' + constants.TERM_ABBREV + '/finals/rules.json';
 
 function finals($http, $q) {
   var finalsByCourseId = {};
 
-  var _finalMeetingsQ = $http.get(finalMeetingsUrl).then(function(response) {
-    var finalMeetings = response.data;
+  var _finalTimesQ = $http.get(finalTimesUrl).then(function(response) {
+    return response.data;
+  }, function() {
+    console.error('could not retrieve foreign language listing.');
+    return {};
+  });
+  var finalDatesQ = _finalTimesQ.then(function(times) {
+    var finalDates = times.dates || {};
+    Object.keys(finalDates).forEach(function(day) {
+      var date = finalDates[day];
+      finalDates[day] = new Date(date.year, date.month, date.day);
+    });
+    return finalDates;
+  });
+  var _finalMeetingsQ = _finalTimesQ.then(function(times) {
+    var finalMeetings = times.meetings || {};
     Object.keys(finalMeetings).forEach(function(meetingKey) {
       finalMeetings[meetingKey] = Meeting.parse(finalMeetings[meetingKey]);
     });
     return finalMeetings;
-  }, function() {
-    console.error('could not retrieve foreign language listing.');
-    return {};
   });
 
   var _finalRulesQ = $http.get(finalRulesUrl).then(function(response) {
@@ -106,6 +117,7 @@ function finals($http, $q) {
   }
 
   return {
+    finalDatesQ: finalDatesQ,
     getFinalMeetingForCourseQ: getFinalMeetingForCourseQ
   };
 }
