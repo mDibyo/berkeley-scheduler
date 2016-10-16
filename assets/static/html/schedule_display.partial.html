@@ -151,7 +151,7 @@
   </div>
 </div>
 
-<div id="schedule-entire" layout="column" class="right-pane-item">
+<div ng-if="vm.hours.length > 0" id="schedule-entire" layout="column" class="right-pane-item">
   <div class="schedule-display" layout="row">
     <div class="schedule-display schedule-display-header-blank" flex="10"></div>
     <div class="schedule-display schedule-display-header"
@@ -208,4 +208,7 @@
   </div>
 
 </div>
+  <div ng-if="vm.hours.length == 0" class="schedule-no-sections">
+    No sections in schedule.
+  </div>
 </div>
