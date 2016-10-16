@@ -408,3 +408,8 @@ md-icon.md-48 {width: 48px;height: 48px;}
 .highlighted-text {
   color: #003262;
 }
+
+.schedule-no-sections {
+  padding: 15px;
+  text-align: center;
+}

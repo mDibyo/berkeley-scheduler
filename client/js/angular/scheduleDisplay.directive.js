@@ -35,8 +35,8 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
 
     var vm = this;
 
-    var hours = [];
-    var halfHours = [];
+    vm.hours = [];
+    vm.halfHours = [];
     var startHour = 24;
     var endHour = 0;
     days.forEach(function(day) {
@@ -49,14 +49,10 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     startHour = Math.max(8, Math.floor(startHour) - 1);
     endHour = Math.min(24, Math.ceil(endHour) + 1);
 
-    if (startHour > endHour) {
-      // no classes in schedule
-    }
-
     for (var h = startHour; h < endHour; h++) {
-      hours.push(new Time(h, 0));
-      halfHours.push(new Time(h, 0));
-      halfHours.push(new Time(h, 30));
+      vm.hours.push(new Time(h, 0));
+      vm.halfHours.push(new Time(h, 0));
+      vm.halfHours.push(new Time(h, 30));
     }
 
     var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
@@ -66,8 +62,6 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     vm.showFinalsSchedule = schedulingOptions.showFinalsSchedule;
     vm.finalMeetings = finalMeetings;
 
-    vm.hours = hours;
-    vm.halfHours = halfHours;
     vm.days = days;
     vm.finalDates = finalDates;
     vm.finalColorOpacity = finalColorOpacity;
