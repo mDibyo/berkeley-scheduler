@@ -15,7 +15,7 @@
       <div class="schedule-display finals-display-header"
            ng-repeat="day in vm.days"
            flex>
-        {{day}} ({{vm.dayDates[day]}})
+        {{day}} ({{vm.finalDates[day].getMonth()+1}}/{{vm.finalDates[day].getDate()}})
       </div>
     </div>
 

@@ -4,15 +4,14 @@ var Time = require('../models/time');
 
 var BaseCtrl = require('./_base.controller');
 
-function bsScheduleDisplayDirective(scheduleFactory) {
+function bsScheduleDisplayDirective(finals, scheduleFactory) {
   var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  var dayDates = {
-    'Monday': '12/12',
-    'Tuesday': '12/13',
-    'Wednesday': '12/14',
-    'Thursday': '12/15',
-    'Friday': '12/16'
-  };
+  var finalDates = {};
+  finals.finalDatesQ.then(function(fd) {
+    days.forEach(function(day) {
+      finalDates[day] = fd[day];
+    });
+  });
 
   var enableFinalsSchedule = true;
 
@@ -50,14 +49,10 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     startHour = Math.max(8, Math.floor(startHour) - 1);
     endHour = Math.min(24, Math.ceil(endHour) + 1);
 
-    console.log(startHour, endHour);
-
     if (startHour > endHour) {
       // no classes in schedule
     }
 
-    // var startHour = 8;
-    // var endHour = 24;
     for (var h = startHour; h < endHour; h++) {
       hours.push(new Time(h, 0));
       halfHours.push(new Time(h, 0));
@@ -74,7 +69,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     vm.hours = hours;
     vm.halfHours = halfHours;
     vm.days = days;
-    vm.dayDates = dayDates;
+    vm.finalDates = finalDates;
     vm.finalColorOpacity = finalColorOpacity;
     vm.sectionColorOpacity = sectionColorOpacity;
     vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
@@ -261,6 +256,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
   }
 }
 angular.module('berkeleyScheduler').directive('bsScheduleDisplay', [
+  'finals',
   'scheduleFactory',
   bsScheduleDisplayDirective
 ]);
