@@ -54,7 +54,10 @@
           layout="column" layout-align="center center"
           ng-repeat="schedule in dvm.savedSchedules track by schedule.id"
           ui-sref-active="curr-saved-schedule"
-          ui-sref="schedule.viewSchedule({scheduleId: schedule.id})">
+          ui-sref="schedule.viewSchedule({
+            scheduleId: schedule.id,
+            noTimeConflicts: schedule.hasNoTimeConflicts()
+          })">
         <md-tooltip class="saved-schedule-description">
           <div>
           <span ng-repeat="(courseId, courseSections) in schedule.courses">

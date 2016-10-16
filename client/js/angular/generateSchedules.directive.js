@@ -87,6 +87,10 @@ function bsGenerateSchedulesDirective() {
       scheduleFactory.dropSavedSchedule(schedule);
     };
 
+    scheduleFactory.registerSchedulingOptionsChangeListener('generateSchedules', function(newOptions) {
+      vm.noTimeConflicts = schedulingOptions.noTimeConflicts = newOptions.noTimeConflicts;
+    });
+
     scheduleFactory.registerScheduleGenerationStatusListener('generateSchedules', function(status) {
       vm.scheduleGenerationStatus = status;
       if (status.status === 'stale' && $state.includes('schedule.viewSchedule')) {

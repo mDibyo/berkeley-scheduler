@@ -54,9 +54,6 @@ function courses($http, $q, finals) {
           return sectionData.printInScheduleOfClasses;
         });
         var course = Course.parse(courseData);
-        if (displayName === '108A') {
-          console.log(coursesData[displayName]);
-        }
         finalQs.push(finals.getFinalMeetingForCourseQ(course).then(function(final) {
           course.setFinalMeeting(final);
         }));
