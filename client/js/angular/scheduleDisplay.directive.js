@@ -5,8 +5,6 @@ var Time = require('../models/time');
 var BaseCtrl = require('./_base.controller');
 
 function bsScheduleDisplayDirective(scheduleFactory) {
-  var hours = [];
-  var halfHours = [];
   var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   var dayDates = {
     'Monday': '12/12',
@@ -25,21 +23,6 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     new Meeting(new Time(19, 0), new Time(22, 0), {})
   ];
 
-  var startHour = 8;
-  var endHour = 24;
-  var numHours = endHour - startHour;
-  for (var h = startHour; h < endHour; h++) {
-    hours.push(new Time(h, 0));
-    halfHours.push(new Time(h, 0));
-    halfHours.push(new Time(h, 30));
-  }
-
-  var finalsDayHeight = 165;
-
-  var dayHeight = 600;
-  var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
-  var dayTotalMinutes = (new Time(numHours, 0)).getTotalMinutes();
-
   var finalColorOpacity = '0.6';
   var sectionColorOpacity = '0.6';
 
@@ -48,6 +31,24 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     BaseCtrl.call(this, $state, $window, scheduleFactory);
 
     var vm = this;
+
+    var hours = [];
+    var halfHours = [];
+    var startHour = 8;
+    var endHour = 24;
+    var numHours = endHour - startHour;
+    for (var h = startHour; h < endHour; h++) {
+      hours.push(new Time(h, 0));
+      halfHours.push(new Time(h, 0));
+      halfHours.push(new Time(h, 30));
+    }
+
+    var finalMeetingHeight = 45;
+
+    var hourHeight = 40;
+    var minuteHeight = hourHeight / 60;
+    var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
+    var dayTotalMinutes = (new Time(numHours, 0)).getTotalMinutes();
 
     var schedulingOptions = scheduleFactory.getSchedulingOptions();
     vm.enableFinalsSchedule = enableFinalsSchedule;
@@ -150,11 +151,11 @@ function bsScheduleDisplayDirective(scheduleFactory) {
         case 8: // 8-11 AM
           return 0;
         case 11: // 11:30-2:30 PM
-          return 1 / 4 * finalsDayHeight;
+          return finalMeetingHeight;
         case 15: // 3-6 PM
-          return 1 / 2 * finalsDayHeight;
+          return 2 * finalMeetingHeight;
         case 19: // 7-10 PM
-          return 3 / 4 * finalsDayHeight;
+          return 3 * finalMeetingHeight;
       }
     }
 
@@ -163,7 +164,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
     }
 
     function getFinalHeight() {
-      return finalsDayHeight / 4;
+      return finalMeetingHeight;
     }
 
     function getFinalWidth(final) {
@@ -194,7 +195,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
 
     function getSectionViewTop(sectionView) {
       var offset = sectionView.startTime.getTotalMinutes() - startHourTotalMinutes;
-      return offset / dayTotalMinutes * dayHeight;
+      return offset * minuteHeight;
     }
 
     function getSectionViewLeft(sectionView) {
@@ -203,7 +204,7 @@ function bsScheduleDisplayDirective(scheduleFactory) {
 
     function getSectionViewHeight(sectionView) {
       var height = sectionView.totalMinutes + 1;
-      return height / dayTotalMinutes * dayHeight;
+      return height * minuteHeight;
     }
 
     function getSectionViewWidth(sectionView) {
