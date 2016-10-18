@@ -21,6 +21,7 @@
     <th>Waitlist</th>
   </tr>
   <tr ng-repeat="section in course.sections | orderBy:[
+        section.number, 
         vm.extractSectionTypeMapping,
         'id'
       ]">

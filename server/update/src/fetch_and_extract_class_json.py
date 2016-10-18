@@ -24,6 +24,11 @@ COURSES_TO_ADD = {
         'subjectAreaCode': 'EPS',
         'units': 4,
     }],
+    'MUSIC': [{
+        'courseNumber': '128V',
+        'subjectAreaCode': 'MUSIC',
+        'units': 1,
+    }]
 }
 
 
