@@ -9,6 +9,7 @@ function bsCourseDisplayDirective() {
 
     vm.sectionTypeMapping = {
       'LEC': 0,
+      'SEM': 1,
       'DIS': 3,
       'GRP': 5,
       'LAB': 7
