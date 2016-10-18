@@ -4,6 +4,7 @@ function SectionView(sectionGroup, section, day, slotIdx) {
   this.group = sectionGroup;
   this.course = section.course;
   this.type = section.type;
+  this.id = section.id;
   this.startTime = section.meetings[0].startTime;
   this.endTime = section.meetings[0].endTime;
   this.location = section.meetings[0].location;

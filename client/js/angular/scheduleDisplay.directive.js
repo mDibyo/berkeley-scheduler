@@ -23,7 +23,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
   ];
 
   var finalMeetingHeight = 40;
-  var hourHeight = 50;
+  var hourHeight = 70;
   var minuteHeight = hourHeight / 60;
 
   var finalColorOpacity = '0.6';
@@ -73,6 +73,8 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     vm.getFinalsForDay = getFinalsForDay;
     vm.getFinalStyle = getFinalStyle;
     vm.getFinalHoverStyle = getFinalHoverStyle;
+    vm.getSectionViewText = getSectionViewText;
+    vm.getSectionViewTextTitle = getSectionViewTextTitle;
     vm.getSectionViewStyle = getSectionViewStyle;
     vm.getSectionViewHoverStyle = getSectionViewHoverStyle;
 
@@ -178,6 +180,22 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
 
     function getFinalBackgroundColor(final) {
       return Course.colorCodes[final.course.color];
+    }
+
+    function getSectionViewText(sectionView) {
+      return sectionView.course.department + ' ' +
+          sectionView.course.courseNumber + ' ' +
+          sectionView.type + '<br>' +
+          sectionView.location + '<br>CCN ' +
+          sectionView.id;
+    }
+
+    function getSectionViewTextTitle(sectionView) {
+      return sectionView.course.department + ' ' +
+        sectionView.course.courseNumber + ' ' +
+        sectionView.type + '\n' +
+        sectionView.location + '\nCCN ' +
+        sectionView.id;
     }
 
     function getSectionViewStyle(sectionView) {

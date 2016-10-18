@@ -351,12 +351,12 @@ md-icon.md-48 {width: 48px;height: 48px;}
   border-left: 1px solid black;
   border-top: 1px solid black;
   font-size: small;
-  height: 49px; /* 50 - 1 */
+  height: 69px; /* 70 - 1 */
   text-align: center;
 }
 
 .schedule-display-hour-first-half, .schedule-display-hour-second-half {
-  height: 24px; /* 25 - 1 */
+  height: 34px; /* 70/2 - 1 */
 }
 
 .schedule-display-hour-first-half {
