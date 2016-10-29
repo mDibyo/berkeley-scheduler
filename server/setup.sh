@@ -11,3 +11,7 @@ docker create \
   --name berkeley-scheduler-credentials \
   berkeleyscheduler/base \
   /bin/true
+
+docker build \
+  -t berkeleyscheduler/update \
+  update
