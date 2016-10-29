@@ -65,9 +65,9 @@ us APP_ID, APP_KEY pairs for the APIs. Any resource requests made to the
 API for use on Berkeley Scheduler must use these specific pairs. To work
 on the data pipeline, send an email to berkeley-scheduler@berkeley.edu
 stating what you would be using the API for. On receiving the APP_ID and
-APP_KEY, set the environment variables in the
-`data/.set_credentials.sh.tmpl` template file and copy it to
-`data/.set_credentials.sh`.
+APP_KEY, copy the `server/.credentials.tmpl` folder to the
+`server/.credentials` folder and set the environment variables in the
+`server/.credentials/sis_api.sh` file.
 
 Note that access to the APIs is not required for working on the frontend
 since a set of enrollment data has already been fetched and stored in
