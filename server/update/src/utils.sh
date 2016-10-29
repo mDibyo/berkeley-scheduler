@@ -4,8 +4,10 @@ TERM='spring-2017'
 TERM_ABBRV='sp17'
 
 
-SERVER_DIR=$(cd $(dirname ${BASH_SOURCE[0]})/.. && pwd )
-PROJECT_DIR=$(cd ${SERVER_DIR}/../.. && pwd )
+PROJECT_DIR=$(cd $(dirname ${BASH_SOURCE[0]})/../../.. && pwd )
+CREDENTIALS_DIR=$(cd ${PROJECT_DIR}/server/.credentials && pwd )
+SERVER_DIR=$(cd ${PROJECT_DIR}/server/update && pwd )
+
 
 SRC_DIR=${SERVER_DIR}/src
 

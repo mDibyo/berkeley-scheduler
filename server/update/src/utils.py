@@ -11,9 +11,10 @@ SIS_CLASS_API_APP_ID_ENV = 'SIS_CLASS_API_APP_ID'
 SIS_CLASS_API_APP_KEY_ENV = 'SIS_CLASS_API_APP_KEY'
 SIS_CLASS_API_APP_ID = SIS_CLASS_API_APP_KEY = None
 
-SERVER_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+CREDENTIALS_DIR = os.path.abspath(os.path.join(PROJECT_DIR, 'server', '.credentials'))
+SERVER_DIR = os.path.abspath(os.path.join(PROJECT_DIR, 'server', 'update'))
 DATA_DIR = os.path.join(SERVER_DIR, 'data')
-PROJECT_DIR = os.path.abspath(os.path.join(SERVER_DIR, '..', '..'))
 
 INTERMEDIATE_DIR = 'intermediate'
 DEPARTMENTS_DIR = 'departments'

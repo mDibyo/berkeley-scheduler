@@ -2,8 +2,6 @@
 **/*.pyc
 **/__pycache__
 
-.set_credentials.sh
-
 /data/intermediate/*
 !/data/intermediate/.keep
 !/data/intermediate/fetched-course-json/.keep
