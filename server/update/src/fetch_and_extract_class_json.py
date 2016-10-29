@@ -49,7 +49,7 @@ def request_course(course):
 
     try:
         response = url_request.urlopen(request)
-        response_str = response.readall().decode('utf-8')
+        response_str = response.read().decode('utf-8')
         return json.loads(response_str)
     except urllib.error.HTTPError:
         return {}
