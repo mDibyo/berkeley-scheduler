@@ -14,8 +14,8 @@ cd ${APP_ROOT} \
   && git pull origin-ssh master
 
 ${APP_ROOT}/server/update/update.sh
-#cd ${APP_ROOT}/server/update \
-#  && python3 -m unittest
+cd ${APP_ROOT}/server/update \
+  && python3 -m unittest || exit 1
 
 cd ${APP_ROOT} \
   && git stash \
