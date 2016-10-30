@@ -1,4 +1,4 @@
-FROM berkeley-scheduler/base
+FROM berkeleyscheduler/base
 MAINTAINER Dibyo Majumdar <dibyo.majumdar@gmail.com>
 
 

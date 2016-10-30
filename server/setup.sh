@@ -3,7 +3,9 @@
 PROJECT_DIR=$(cd $(dirname ${BASH_SOURCE[0]})/.. && pwd )
 CONTAINER_APP_DIR=/berkeley-scheduler
 
-docker build -t berkeleyscheduler/base .
+docker build \
+  -t berkeleyscheduler/base \
+  .
 
 docker rm -f berkeley-scheduler-credentials
 docker create \
