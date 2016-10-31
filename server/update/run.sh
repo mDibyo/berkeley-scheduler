@@ -11,7 +11,7 @@ cd ${APP_ROOT} \
 
 cd ${APP_ROOT} \
   && git checkout master \
-  && git pull origin-ssh master
+  && git pull -X theirs origin-ssh master
 
 ${APP_ROOT}/server/update/update.sh
 cd ${APP_ROOT}/server/update \
