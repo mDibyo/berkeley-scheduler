@@ -284,10 +284,14 @@ md-icon.md-48 {width: 48px;height: 48px;}
 }
 
 .finals-display-hour {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
   border-left: 1px solid black;
   border-top: 1px solid black;
   font-size: small;
-  height: 39px; /* 40 - 1 */
+  height: 40px; /* 40 */
   overflow: hidden;
   padding: 0 5px 0 5px;
   text-align: center;
@@ -345,18 +349,27 @@ md-icon.md-48 {width: 48px;height: 48px;}
   border-bottom: 1px solid black;
   border-right: 1px solid black;
   position: relative;
+  max-height: unset !important;
 }
 
 .schedule-display-hour {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
   border-left: 1px solid black;
   border-top: 1px solid black;
   font-size: small;
-  height: 69px; /* 70 - 1 */
+  height: 70px; /* 70 */
   text-align: center;
 }
 
 .schedule-display-hour-first-half, .schedule-display-hour-second-half {
-  height: 34px; /* 70/2 - 1 */
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  height: 35px; /* 70/2 */
 }
 
 .schedule-display-hour-first-half {
