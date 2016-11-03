@@ -11,7 +11,8 @@ cd ${APP_ROOT} \
 
 cd ${APP_ROOT} \
   && git checkout master \
-  && git pull -X theirs origin-ssh master
+  && git fetch origin-ssh master \
+  && git reset --hard origin-ssh/master
 
 ${APP_ROOT}/server/update/update.sh
 cd ${APP_ROOT}/server/update \
@@ -19,7 +20,8 @@ cd ${APP_ROOT}/server/update \
 
 cd ${APP_ROOT} \
   && git stash \
-  && git pull -X theirs origin-ssh master \
+  && git fetch origin-ssh master \
+  && git reset --hard origin-ssh/master \
   && git stash pop \
   && git add data \
   && git commit -m "Update Class API data - $(date +'%m/%d')" \
