@@ -1,16 +1,22 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: berkeley-scheduler-cluster
+  name: berkeley-scheduler
 spec:
   restartPolicy: Never
   containers:
   - name: update
     image: "berkeleyscheduler/update"
-#    volumeMounts:
+    volumeMounts:
+    - name: enrollment-data
+      mountPath: /berkeley-scheduler
 #    - name: credentials
 #      mountPath: /berkeley-scheduler/server/.credentials
-#  volumes:
+  volumes:
+  - name: enrollment-data
+    gcePersistentDisk:
+      pdName: enrollment-data-pd
+      fsType: ext4
 #  - name: credentials
 #    persistentVolumeClaim:
 #      claimName: credentials-claim
