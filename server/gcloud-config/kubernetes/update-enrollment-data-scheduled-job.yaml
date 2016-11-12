@@ -1,0 +1,23 @@
+apiVersion: batch/v2alpha1
+kind: ScheduledJob
+metadata:
+  name: update-enrollment-data
+spec:
+  schedule: 0 2 * * ?
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: update
+            image: "berkeleyscheduler/update"
+            imagePullPolicy: Always
+            volumeMounts:
+            - name: enrollment-data
+              mountPath: /berkeley-scheduler
+          volumes:
+          - name: enrollment-data
+            gcePersistentDisk:
+              pdName: enrollment-data-pd
+              fsType: ext4
+          restartPolicy: Never

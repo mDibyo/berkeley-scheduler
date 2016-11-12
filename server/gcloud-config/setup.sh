@@ -42,4 +42,7 @@ CWD=$(pwd) cd ${PROJECT_DIR}/.. \
   " \
   || exit 1
 
+gcloud container clusters create bs-cluster
+gcloud container clusters get-credentials bs-cluster
+
 ./kubernetes_setup.sh

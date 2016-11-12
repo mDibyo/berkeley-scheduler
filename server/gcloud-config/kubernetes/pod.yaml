@@ -7,6 +7,7 @@ spec:
   containers:
   - name: update
     image: "berkeleyscheduler/update"
+    imagePullPolicy: Always
     volumeMounts:
     - name: enrollment-data
       mountPath: /berkeley-scheduler
