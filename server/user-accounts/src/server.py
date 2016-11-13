@@ -41,7 +41,8 @@ if __name__ == '__main__':
         (r'/user/add', UserAddHandler)
     ])
 
+    print('Starting server.')
     http_server = HTTPServer(app)
     http_server.listen(port)
-    print('Server listening on port {}'.format(port))
+    print('Server listening on port {}.'.format(port))
     IOLoop.current().start()

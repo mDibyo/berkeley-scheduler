@@ -5,12 +5,20 @@ PROJECT_DIR=$(cd $(dirname ${BASH_SOURCE[0]})/../.. && pwd )
 
 ZONE_NAME=us_west1-a
 ENROLLMENT_DATA_DISK_NAME=enrollment-data-pd
+MONGODB_DISK_NAME=mongodb-pd
 INSTANCE_NAME=berkeley-scheduler-instance
+
+gcloud compute addresses create berkeley-scheduler-api --global
 
 gcloud compute disks create ${ENROLLMENT_DATA_DISK_NAME} \
   --zone=${ZONE_NAME} \
   --size=10GB \
   --type=pd-standard || exit 1
+gcloud compute disks create ${MONGODB_DISK_NAME} \
+  --zone=${ZONE_NAME} \
+  --size=2GB \
+  --type=pd-ssd || exit 1
+
 
 gcloud compute instances create ${INSTANCE_NAME} \
   --zone=${ZONE_NAME} \
@@ -19,6 +27,9 @@ gcloud compute instances create ${INSTANCE_NAME} \
 gcloud compute instances attach-disk ${INSTANCE_NAME} \
   --zone=${ZONE_NAME} \
   --disk ${ENROLLMENT_DATA_DISK_NAME} || exit 1
+gcloud compute instances attach-disk ${INSTANCE_NAME} \
+  --zone=${ZONE_NAME} \
+  --disk ${MONGODB_DISK_NAME} || exit 1
 
 gcloud compute ssh ${INSTANCE_NAME} \
   --zone=${ZONE_NAME} \
@@ -29,6 +40,10 @@ gcloud compute ssh ${INSTANCE_NAME} \
       && sudo chmod a+w /mnt/disks/enrollment-data \
       && echo UUID=$(sudo blkid -s UUID -o value /dev/disk/by-id/google-persistent-disk-1) /mnt/disks/enrollment-data ext4 discard,defaults,[NOFAIL] 0 2 | sudo tee -a /etc/fstab \
     " \
+    || exit 1
+gcloud compute ssh ${INSTANCE_NAME} \
+  --zone=${ZONE_NAME} \
+  -- "sudo mkfs.ext4 -F -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/disk/by-id/google-persistent-disk-1" \
     || exit 1
 
 CWD=$(pwd) cd ${PROJECT_DIR}/.. \
