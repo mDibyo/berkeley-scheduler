@@ -8,6 +8,6 @@ RUN pip3 install --upgrade pip \
 
 COPY run.sh .
 
-EXPOSE 80
+EXPOSE 8085
 
-ENTRYPOINT ["./run.sh"]
+ENTRYPOINT ["./berkeley-scheduler/server/user-accounts/run.sh"]
