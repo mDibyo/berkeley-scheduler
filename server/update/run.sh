@@ -25,4 +25,9 @@ cd ${APP_ROOT} \
   && git stash pop \
   && git add data \
   && git commit -m "Update Class API data - $(date +'%m/%d')" \
-  && git push origin-ssh master
+  && git push origin-ssh master || exit 1
+
+cd ${APP_ROOT} \
+  && git checkout gh-pages \
+  && git merge master \
+  && git push origin-ssh gh-pages
