@@ -1,0 +1,19 @@
+{
+  "name": "berkeley-scheduler-user-accounts",
+  "version": "0.0.1",
+  "description": "A server for managing user accounts in Berkeley Scheduler",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js"
+  },
+  "author": {
+    "name": "Dibyo Majumdar",
+    "email": "dibyo.majumdar@gmail.com"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongodb": "^2.2.11"
+  }
+}
