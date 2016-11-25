@@ -12,7 +12,6 @@ export interface Commitment {
   getName(): string;
 
   optionTypes: string[];
-  options: Option[];
   getOptionsByType(type: string): Option[];
 }
 
@@ -24,7 +23,6 @@ export abstract class ColorRegisterableCommitment implements Commitment {
   id: number;
   color: string;
   optionTypes: string[] = [];
-  options: Option[] = [];
 
   private static colorCodes = {
     'red': '#f44336',
@@ -84,5 +82,5 @@ export abstract class ColorRegisterableCommitment implements Commitment {
 
   abstract getName(): string;
 
-  abstract getOptionsByType(): Option[];
+  abstract getOptionsByType(type: string): Option[];
 }

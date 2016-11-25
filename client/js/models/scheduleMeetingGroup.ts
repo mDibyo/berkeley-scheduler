@@ -3,6 +3,7 @@
 import Meeting = require('./meeting');
 import Section = require('./section');
 
+
 export class MeetingView {
   group: ScheduleMeetingGroup;
   day: string;

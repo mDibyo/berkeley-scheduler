@@ -46,6 +46,7 @@
   "excludeFiles": [
     "client/js/lib/polyfills.js",
     "client/js/models/commitment.js",
+    "client/js/models/customCommitment.js",
     "client/js/models/scheduleMeetingGroup.js",
     "public/assets/gen/**",
     "node_modules/**"

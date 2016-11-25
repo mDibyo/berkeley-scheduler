@@ -10,6 +10,7 @@
   "files": [
     "client/js/lib/polyfills.ts",
     "client/js/models/commitment.ts",
+    "client/js/models/customCommitment.ts",
     "client/js/models/scheduleMeetingGroup.ts"
   ]
 }
