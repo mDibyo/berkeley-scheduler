@@ -20,30 +20,32 @@
     <th>Enrollment</th>
     <th>Waitlist</th>
   </tr>
-  <tr ng-repeat="section in course.sections | orderBy:[
-        section.number, 
+  <tbody ng-if="false" ng-repeat-start="section in course.sections | orderBy:[
+        section.number,
         vm.extractSectionTypeMapping,
         'id'
-      ]">
-    <td class="section-select">
+      ]"></tbody>
+  <tr ng-repeat="meeting in section.meetings">
+    <td class="section-select" ng-if="$first" rowspan="{{ section.meetings.length }}">
       <md-checkbox
           ng-model="section.selected"
           ng-change="vm.setSchedulesStale()"
           aria-label="Select section">
       </md-checkbox>
     </td>
-    <td>{{ section.number }}</td>
-    <td>{{ section.type }}</td>
-    <td>{{ section.id }}</td>
-    <td>{{ section.meetings[0].location }}</td>
-    <td>{{ section.meetings[0].toString() }}</td>
+    <td ng-if="$first" rowspan="{{ section.meetings.length }}">{{ section.number }}</td>
+    <td ng-if="$first" rowspan="{{ section.meetings.length }}">{{ section.type }}</td>
+    <td ng-if="$first" rowspan="{{ section.meetings.length }}">{{ section.id }}</td>
+    <td>{{ meeting.location }}</td>
+    <td>{{ meeting.toString() }}</td>
     <td>
-      <span ng-repeat="instructor in section.meetings[0].instructors">
+      <span ng-repeat="instructor in meeting.instructors">
         {{ instructor.name }}<span ng-if="!$last"> / </span>
       </span>
     </td>
-    <td>{{ section.enrolled }}/{{ section.enrollCapacity }}</td>
-    <td>{{ section.waitlisted }}/{{ section.waitlistCapacity }}</td>
+    <td ng-if="$first" rowspan="{{ section.meetings.length }}">{{ section.enrolled }}/{{ section.enrollCapacity }}</td>
+    <td ng-if="$first" rowspan="{{ section.meetings.length }}">{{ section.waitlisted }}/{{ section.waitlistCapacity }}</td>
   </tr>
+  <tbody ng-if="false" ng-repeat-end></tbody>
 </table>
 </div>

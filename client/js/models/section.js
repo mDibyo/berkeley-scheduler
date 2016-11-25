@@ -8,9 +8,7 @@ function Section(sectionJson, course) {
   this.id = parseInt(this.id);
 
   var meetingsJson = this.meetings;
-  // TODO: Add support for multiple meetings
   this.meetings = meetingsJson.map(Meeting.parse);
-  delete this.time;
 
   this.course = course;
   this.selected = true;

@@ -1,6 +1,7 @@
 'use strict';
 
 import Meeting = require('./meeting');
+import Section = require('./section');
 
 export class MeetingView {
   group: ScheduleMeetingGroup;
@@ -9,11 +10,19 @@ export class MeetingView {
 
   private _meeting: Meeting;
 
-  constructor(meetingGroup: ScheduleMeetingGroup, meeting: Meeting, day: string, slotIdx: number = -1) {
+  constructor(
+      meetingGroup: ScheduleMeetingGroup,
+      meeting: Meeting,
+      slotIdx: number = -1
+  ) {
     this.group = meetingGroup;
     this._meeting = meeting;
-    this.day = day;
+    this.day = this.group.day;
     this.slotIdx = slotIdx;
+  }
+
+  get owner(): any {
+    return this._meeting.owner;
   }
 
   get startTime(): any {
@@ -44,7 +53,7 @@ export default class ScheduleMeetingGroup {
   }
 
   hasOverlap(meeting: Meeting) {
-    const meetingView = new MeetingView(this, meeting, this.day);
+    const meetingView = new MeetingView(this, meeting);
     for (let j = 0; j < this.slots.length; j++) {
       const slot = this.slots[j];
       if (slot[slot.length - 1].endTime.compareTo(meetingView.startTime) > 0) {
@@ -55,7 +64,7 @@ export default class ScheduleMeetingGroup {
   }
 
   add(meeting: Meeting) {
-    const meetingView = new MeetingView(this, meeting, this.day);
+    const meetingView = new MeetingView(this, meeting);
     for (let i = 0; i < this.slots.length; i++) {
       const slot = this.slots[i];
       if (slot[slot.length - 1].endTime.compareTo(meetingView.startTime) < 0) {
@@ -67,4 +76,11 @@ export default class ScheduleMeetingGroup {
     this.slots.push([meetingView]);
     meetingView.slotIdx = this.slots.length - 1;
   }
+
+  getMeetingViews() {
+    return this.slots.reduce(function(a, b) {
+      return a.concat(b);
+    }, []);
+  };
 }
+

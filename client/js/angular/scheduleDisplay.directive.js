@@ -40,10 +40,10 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     var startHour = 24;
     var endHour = 0;
     days.forEach(function(day) {
-      var sections = $scope.schedule.sectionsByDay[day];
-      sections.forEach(function(section) {
-        startHour = Math.min(startHour, section.meetings[0].startTime.getTotalMinutes() / 60);
-        endHour = Math.max(endHour, section.meetings[0].endTime.getTotalMinutes() / 60);
+      var meetings = $scope.schedule.meetingsByDay[day];
+      meetings.forEach(function(meeting) {
+        startHour = Math.min(startHour, meeting.startTime.getTotalMinutes() / 60);
+        endHour = Math.max(endHour, meeting.endTime.getTotalMinutes() / 60);
       });
     });
     startHour = Math.max(8, Math.floor(startHour) - 1);
@@ -73,10 +73,10 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     vm.getFinalsForDay = getFinalsForDay;
     vm.getFinalStyle = getFinalStyle;
     vm.getFinalHoverStyle = getFinalHoverStyle;
-    vm.getSectionViewText = getSectionViewText;
-    vm.getSectionViewTextTitle = getSectionViewTextTitle;
-    vm.getSectionViewStyle = getSectionViewStyle;
-    vm.getSectionViewHoverStyle = getSectionViewHoverStyle;
+    vm.getMeetingViewText = getMeetingViewText;
+    vm.getMeetingViewTextTitle = getMeetingViewTextTitle;
+    vm.getMeetingViewStyle = getMeetingViewStyle;
+    vm.getMeetingViewHoverStyle = getMeetingViewHoverStyle;
 
     scheduleFactory.registerCurrScheduleListInfoChangeListener(
       'scheduleDisplay', function(info) {
@@ -182,60 +182,60 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
       return Course.colorCodes[final.course.color];
     }
 
-    function getSectionViewText(sectionView) {
-      return sectionView.course.department + ' ' +
-          sectionView.course.courseNumber + ' ' +
-          sectionView.type + '<br>' +
-          sectionView.location + '<br>CCN ' +
-          sectionView.id;
+    function getMeetingViewText(meetingView) {
+      return meetingView.owner.course.department + ' ' +
+          meetingView.owner.course.courseNumber + ' ' +
+          meetingView.owner.type + '<br>' +
+          meetingView.location + '<br>CCN ' +
+          meetingView.owner.id;
     }
 
-    function getSectionViewTextTitle(sectionView) {
-      return sectionView.course.department + ' ' +
-        sectionView.course.courseNumber + ' ' +
-        sectionView.type + '\n' +
-        sectionView.location + '\nCCN ' +
-        sectionView.id;
+    function getMeetingViewTextTitle(meetingView) {
+      return meetingView.owner.course.department + ' ' +
+        meetingView.owner.course.courseNumber + ' ' +
+        meetingView.owner.type + '\n' +
+        meetingView.location + '\nCCN ' +
+        meetingView.owner.id;
     }
 
-    function getSectionViewStyle(sectionView) {
+    function getMeetingViewStyle(meetingView) {
       return {
-        'top': getSectionViewTop(sectionView),
-        'left': getSectionViewLeft(sectionView),
-        'height': getSectionViewHeight(sectionView),
-        'width': getSectionViewWidth(sectionView),
-        'background-color': getSectionViewBackgroundColor(sectionView)
+        'top': getMeetingViewTop(meetingView),
+        'left': getMeetingViewLeft(meetingView),
+        'height': getMeetingViewHeight(meetingView),
+        'width': getMeetingViewWidth(meetingView),
+        'background-color': getMeetingViewBackgroundColor(meetingView)
       };
     }
 
-    function getSectionViewHoverStyle(sectionView) {
+    function getMeetingViewHoverStyle(meetingView) {
       return {
-        'top': getSectionViewTop(sectionView),
-        'height': getSectionViewHeight(sectionView),
-        'background-color': getSectionViewBackgroundColor(sectionView)
+        'top': getMeetingViewTop(meetingView),
+        'height': getMeetingViewHeight(meetingView),
+        'background-color': getMeetingViewBackgroundColor(meetingView)
       };
     }
 
-    function getSectionViewTop(sectionView) {
-      var offset = sectionView.startTime.getTotalMinutes() - startHourTotalMinutes;
+    function getMeetingViewTop(meetingView) {
+      var offset = meetingView.startTime.getTotalMinutes() - startHourTotalMinutes;
       return offset * minuteHeight;
     }
 
-    function getSectionViewLeft(sectionView) {
-      return (sectionView.slotIdx / sectionView.group.slots.length) * 100 + '%';
+    function getMeetingViewLeft(meetingView) {
+      return (meetingView.slotIdx / meetingView.group.slots.length) * 100 + '%';
     }
 
-    function getSectionViewHeight(sectionView) {
-      var height = sectionView.totalMinutes + 1;
+    function getMeetingViewHeight(meetingView) {
+      var height = meetingView.totalMinutes + 1;
       return height * minuteHeight;
     }
 
-    function getSectionViewWidth(sectionView) {
-      return (1/sectionView.group.slots.length) * 100 + '%';
+    function getMeetingViewWidth(meetingView) {
+      return (1/meetingView.group.slots.length) * 100 + '%';
     }
 
-    function getSectionViewBackgroundColor(sectionView) {
-      return Course.colorCodes[sectionView.course.color];
+    function getMeetingViewBackgroundColor(meetingView) {
+      return Course.colorCodes[meetingView.owner.course.color];
     }
 
     function exportScheduleToCalendar(schedule) {

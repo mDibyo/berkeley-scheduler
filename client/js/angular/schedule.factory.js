@@ -58,19 +58,19 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return - _orderByFns.maximizeGaps(footprint);
     },
     maximizeGaps: function(footprint) {
-      var sectionsByDay = Schedule.timeFootprints[footprint];
-      var total = 0, section, horizon, i, gap;
-      for (var day in sectionsByDay) {
-        var sections = sectionsByDay[day];
-        if (sections.length >= 2) {
-          horizon = sections[0].meetings[0].endTime.getTotalMinutes();
-          for (i = 1; i < sections.length; i++) {
-            section = sections[i];
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var total = 0, meeting, horizon, i, gap;
+      for (var day in meetingsByDay) {
+        var meetings = meetingsByDay[day];
+        if (meetings.length >= 2) {
+          horizon = meetings[0].endTime.getTotalMinutes();
+          for (i = 1; i < meetings.length; i++) {
+            meeting = meetings[i];
             if (horizon > 0) {
-              gap = section.meetings[0].startTime.getTotalMinutes() - horizon;
+              gap = meeting.startTime.getTotalMinutes() - horizon;
               total += Math.max(0, gap) / 60;
             }
-            horizon = Math.max(horizon, section.meetings[0].endTime.getTotalMinutes());
+            horizon = Math.max(horizon, meeting.endTime.getTotalMinutes());
           }
         }
       }
@@ -80,23 +80,23 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return - _orderByFns.maximizeNumberOfDays(footprint);
     },
     maximizeNumberOfDays: function(footprint) {
-      var sectionsByDay = Schedule.timeFootprints[footprint];
+      var meetingsByDay = Schedule.timeFootprints[footprint];
       var total = 0;
-      for (var day in sectionsByDay) {
-        if (sectionsByDay[day].length > 0) {
+      for (var day in meetingsByDay) {
+        if (meetingsByDay[day].length > 0) {
           total += 1;
         }
       }
       return total;
     },
     preferMornings: function(footprint) {
-      var sectionsByDay = Schedule.timeFootprints[footprint];
+      var meetingsByDay = Schedule.timeFootprints[footprint];
       var totalFor = 0, total = 0;
-      for (var day in sectionsByDay) {
-        var sections = sectionsByDay[day];
-        for (var i = 0; i < sections.length; i++) {
+      for (var day in meetingsByDay) {
+        var meetings = meetingsByDay[day];
+        for (var i = 0; i < meetings.length; i++) {
           total ++;
-          if (sections[i].meetings[0].endTime.compareTo(Time.noon) <= 0) {
+          if (meetings[i].endTime.compareTo(Time.noon) <= 0) {
             totalFor ++;
           }
         }
@@ -104,29 +104,28 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return totalFor / total;
     },
     preferAfternoons: function(footprint) {
-      var sectionsByDay = Schedule.timeFootprints[footprint];
+      var meetingsByDay = Schedule.timeFootprints[footprint];
       var totalFor = 0, total = 0;
-      for (var day in sectionsByDay) {
-        var sections = sectionsByDay[day];
-        for (var i = 0; i < sections.length; i++) {
+      for (var day in meetingsByDay) {
+        var meetings = meetingsByDay[day];
+        for (var i = 0; i < meetings.length; i++) {
           total ++;
-          if (sections[i].meetings[0].startTime.compareTo(Time.noon) >= 0) {
-            if (sections[i].meetings[0].endTime.compareTo(Time.fivePM) <= 0) {
-              totalFor ++;
-            }
+          if (meetings[i].startTime.compareTo(Time.noon) >= 0
+            && meetings[i].endTime.compareTo(Time.fivePM) <= 0) {
+            totalFor ++;
           }
         }
       }
       return totalFor / total;
     },
     preferEvenings: function(footprint) {
-      var sectionsByDay = Schedule.timeFootprints[footprint];
+      var meetingsByDay = Schedule.timeFootprints[footprint];
       var totalFor = 0, total = 0;
-      for (var day in sectionsByDay) {
-        var sections = sectionsByDay[day];
-        for (var i = 0; i < sections.length; i++) {
+      for (var day in meetingsByDay) {
+        var meetings = meetingsByDay[day];
+        for (var i = 0; i < meetings.length; i++) {
           total ++;
-          if (sections[i].meetings[0].startTime.compareTo(Time.fivePM) >= 0) {
+          if (meetings[i].startTime.compareTo(Time.fivePM) >= 0) {
             totalFor ++;
           }
         }
@@ -134,22 +133,22 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return totalFor / total;
     },
     preferNoTimeConflicts: function(footprint) {
-      var sectionsByDay = Schedule.timeFootprints[footprint];
+      var meetingsByDay = Schedule.timeFootprints[footprint];
       var numConflicts = 0, total = 0;
-      var section, horizon, i;
-      for (var day in sectionsByDay) {
-        var sections = sectionsByDay[day];
-        total += sections.length;
-        if (sections.length >= 2) {
-          horizon = sections[0].meetings[0].endTime.getTotalMinutes();
-          for (i = 1; i < sections.length; i++) {
-            section = sections[i];
+      var meeting, horizon, i;
+      for (var day in meetingsByDay) {
+        var meetings = meetingsByDay[day];
+        total += meetings.length;
+        if (meetings.length >= 2) {
+          horizon = meetings[0].endTime.getTotalMinutes();
+          for (i = 1; i < meetings.length; i++) {
+            meeting = meetings[i];
             if (horizon > 0) {
-              if (section.meetings[0].startTime.getTotalMinutes() < horizon) {
+              if (meeting.startTime.getTotalMinutes() < horizon) {
                 numConflicts ++;
               }
             }
-            horizon = Math.max(horizon, section.meetings[0].endTime.getTotalMinutes());
+            horizon = Math.max(horizon, meeting.endTime.getTotalMinutes());
           }
         }
       }
@@ -158,31 +157,31 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   };
   var _filterFns = {
     noTimeConflicts: function(footprint) {
-      var sectionsByDay = Schedule.timeFootprints[footprint];
-      var section, horizon, i;
-      for (var day in sectionsByDay) {
-        var sections = sectionsByDay[day];
-        if (sections.length >= 2) {
-          horizon = sections[0].meetings[0].endTime.getTotalMinutes();
-          for (i = 1; i < sections.length; i++) {
-            section = sections[i];
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      var meeting, horizon, i;
+      for (var day in meetingsByDay) {
+        var meetings = meetingsByDay[day];
+        if (meetings.length >= 2) {
+          horizon = meetings[0].endTime.getTotalMinutes();
+          for (i = 1; i < meetings.length; i++) {
+            meeting = meetings[i];
             if (horizon > 0) {
-              if (section.meetings[0].startTime.getTotalMinutes() < horizon) {
+              if (meeting.startTime.getTotalMinutes() < horizon) {
                 return false;
               }
             }
-            horizon = Math.max(horizon, section.meetings[0].endTime.getTotalMinutes());
+            horizon = Math.max(horizon, meeting.endTime.getTotalMinutes());
           }
         }
       }
       return true;
     },
     dayStartTime: function(footprint) {
-      var sectionsByDay = Schedule.timeFootprints[footprint];
-      for (var day in sectionsByDay) {
-        var sections = sectionsByDay[day];
-        if (sections.length > 0) {
-          if (sections[0].meetings[0].startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      for (var day in meetingsByDay) {
+        var meetings = meetingsByDay[day];
+        if (meetings.length > 0) {
+          if (meetings[0].startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
             return false;
           }
         }
@@ -190,11 +189,11 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return true;
     },
     dayEndTime: function(footprint) {
-      var sectionsByDay = Schedule.timeFootprints[footprint];
-      for (var day in sectionsByDay) {
-        var sections = sectionsByDay[day];
-        for (var i = 0; i < sections.length; i++) {
-          if (sections[i].meetings[0].endTime.compareTo(_schedulingOptions.dayEndTime) > 0) {
+      var meetingsByDay = Schedule.timeFootprints[footprint];
+      for (var day in meetingsByDay) {
+        var meetings = meetingsByDay[day];
+        for (var i = 0; i < meetings.length; i++) {
+          if (meetings[i].endTime.compareTo(_schedulingOptions.dayEndTime) > 0) {
             return false;
           }
         }

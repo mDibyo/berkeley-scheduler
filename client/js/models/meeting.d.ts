@@ -10,8 +10,16 @@ declare class Meeting {
   days: Days;
   location: string;
   instructors: string[];
+  owner: Object;
 
-  constructor(startTime: Time, endTime: Time, days: Days, location: string, instructors: string[]);
+  constructor(
+      startTime: Time,
+      endTime: Time,
+      days: Days,
+      location: string,
+      instructors: string[],
+      owner: Object
+  );
 }
 
 export = Meeting;

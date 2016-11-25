@@ -26,3 +26,11 @@ Array.prototype.findIndex || (Array.prototype.findIndex = function(predicate) {
   }
   return -1;
 });
+
+Object.values || (Object.values = function(object) {
+  return Object.keys(object).filter(function(key) {
+    return object.hasOwnProperty(key);
+  }).map(function(key) {
+    return object[key];
+  });
+});

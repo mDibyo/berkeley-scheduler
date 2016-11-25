@@ -1,18 +1,25 @@
 'use strict';
 
 var Meeting = require('./meeting');
-var ScheduleSectionGroup = require('./scheduleSectionGroup');
+var ScheduleMeetingGroup = require('./scheduleMeetingGroup').default;
 
 function Schedule(userId, sections) {
   this.courses = {};
-  this.sectionsByDay = {
+  // this.sectionsByDay = {
+  //   'Monday': [],
+  //   'Tuesday': [],
+  //   'Wednesday': [],
+  //   'Thursday': [],
+  //   'Friday': []
+  // };
+  this.meetingsByDay = {
     'Monday': [],
     'Tuesday': [],
     'Wednesday': [],
     'Thursday': [],
     'Friday': []
   };
-  this._sectionGroupsByDay = {};
+  this._meetingGroupsByDay = {};
 
   var sectionIdList = [];
   sections.forEach(function (section) {
@@ -23,17 +30,16 @@ function Schedule(userId, sections) {
     }
     this.courses[courseId].push(section);
 
-    if (section.meetings.length > 0) {
-      for (var day in section.meetings[0].days) {
-        if (section.meetings[0].days[day]) {
-          this.sectionsByDay[day].push(section);
-        }
-      }
-    }
+    section.meetings.forEach(function(meeting) {
+      meeting.owner = section;
+      meeting.getDayList().forEach(function(day) {
+        this.meetingsByDay[day].push(meeting);
+      }, this);
+    }, this);
   }, this);
-  for (var day in this.sectionsByDay) {
-    this.sectionsByDay[day].sort(function(a, b) {
-      return a.meetings[0].startTime.compareTo(b.meetings[0].startTime);
+  for (var day in this.meetingsByDay) {
+    this.meetingsByDay[day].sort(function(a, b) {
+      return a.startTime.compareTo(b.startTime);
     });
   }
 
@@ -49,15 +55,15 @@ Schedule.timeFootprints = {};
 Schedule.prototype.getTimeFootprint = function() {
   var footprint = Meeting.dayAbrvs.map(function(dayAbrv) {
     return dayAbrv[1] +
-      this.sectionsByDay[dayAbrv[0]].map(function(section) {
-        return section.meetings[0].startTime.getTotalMinutes() + '-' + section.meetings[0].endTime.getTotalMinutes();
+      this.meetingsByDay[dayAbrv[0]].map(function(meeting) {
+        return meeting.startTime.getTotalMinutes() + '-' + meeting.endTime.getTotalMinutes();
       }).reduce(function(a, b) {
         return a + '.' + b;
       }, '');
   }, this).reduce(function(a, b) {
     return a + '|' + b;
   }, '');
-  Schedule.timeFootprints[footprint] = this.sectionsByDay;
+  Schedule.timeFootprints[footprint] = this.meetingsByDay;
   return footprint;
 };
 
@@ -69,11 +75,11 @@ Schedule.prototype.hasNoTimeConflicts = function() {
 };
 
 Schedule.prototype._calculateHasNoTimeConflicts = function() {
-  var sectionGroups;
-  for (var day in this.sectionsByDay) {
-    sectionGroups = this.getSectionGroupsForDay(day);
-    for (var i = 0; i < sectionGroups.length; i++) {
-      if (sectionGroups[i].slots.length > 1) {
+  var meetingGroups;
+  for (var day in this.meetingsByDay) {
+    meetingGroups = this.getMeetingGroupsForDay(day);
+    for (var i = 0; i < meetingGroups.length; i++) {
+      if (meetingGroups[i].slots.length > 1) {
         return false;
       }
     }
@@ -81,32 +87,32 @@ Schedule.prototype._calculateHasNoTimeConflicts = function() {
   return true;
 };
 
-Schedule.prototype.getSectionGroupsForDay = function(day) {
-  if (!this._sectionGroupsByDay.hasOwnProperty(day)) {
-    this._sectionGroupsByDay[day] = this._generateSectionGroupsForDay(day);
+Schedule.prototype.getMeetingGroupsForDay = function(day) {
+  if (!this._meetingGroupsByDay.hasOwnProperty(day)) {
+    this._meetingGroupsByDay[day] = this._generateMeetingGroupsForDay(day);
   }
-  return this._sectionGroupsByDay[day];
+  return this._meetingGroupsByDay[day];
 };
 
-Schedule.prototype._generateSectionGroupsForDay = function(day) {
-  if (!this.sectionsByDay[day].length) {
+Schedule.prototype._generateMeetingGroupsForDay = function(day) {
+  if (!this.meetingsByDay[day].length) {
     return [];
   }
 
-  var sections = this.sectionsByDay[day];
-  var sectionGroups = [];
-  var currSectionGroup = new ScheduleSectionGroup(sections[0], day);
-  for (var i = 1; i < sections.length; i++) {
-    var section = sections[i];
-    if (currSectionGroup.hasOverlap(section)) {
-      currSectionGroup.add(section);
+  var meetings = this.meetingsByDay[day];
+  var meetingGroups = [];
+  var currMeetingGroup = new ScheduleMeetingGroup(meetings[0], day);
+  for (var i = 1; i < meetings.length; i++) {
+    var meeting = meetings[i];
+    if (currMeetingGroup.hasOverlap(meeting)) {
+      currMeetingGroup.add(meeting);
     } else {
-      sectionGroups.push(currSectionGroup);
-      currSectionGroup = new ScheduleSectionGroup(section, day);
+      meetingGroups.push(currMeetingGroup);
+      currMeetingGroup = new ScheduleMeetingGroup(meeting, day);
     }
   }
-  sectionGroups.push(currSectionGroup);
-  return sectionGroups;
+  meetingGroups.push(currMeetingGroup);
+  return meetingGroups;
 };
 
 Schedule.generateId = function(idComponentList) {

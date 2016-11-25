@@ -50,38 +50,39 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
   Object.keys(vm.schedule.courses).forEach(function(courseId) {
     vm.schedule.courses[courseId].forEach(function(section) {
       var course = section.course;
-      var meeting = section.meetings[0];
-      var repeatingByDay = [];
-      for (var day in repeatingByDayAbbrvs) {
-        if (meeting.days[day]) {
-          repeatingByDay.push(repeatingByDayAbbrvs[day]);
+      section.meetings.forEach(function(meeting) {
+        var repeatingByDay = [];
+        for (var day in repeatingByDayAbbrvs) {
+          if (meeting.days[day]) {
+            repeatingByDay.push(repeatingByDayAbbrvs[day]);
+          }
         }
-      }
 
-      if (repeatingByDay.length > 0) {
-        var startDate = getStartDate();
-        startDate.setHours(meeting.startTime.hours, meeting.startTime.minutes);
-        var endDate = new Date(startDate.getTime() + meeting.getTotalMinutes() * MILLISECONDSPERMINUTE);
-        calendar.createEvent({
-          uid: 'fa16/' + course.id + '/' + section.id,
-          start: startDate,
-          end: endDate,
-          repeating: {
-            freq: 'WEEKLY',
-            until: repeatingUntil,
-            byDay: repeatingByDay
-          },
-          summary: course.department + ' ' + course.courseNumber + ' ' + section.type + ' ' + section.number,
-          description: course.description,
-          location: meeting.location,
-          organizer: {
-            name: 'Berkeley Scheduler',
-            email: 'berkeley-scheduler@berkeley.edu'
-          },
-          url: vm.getHref('schedule.viewCourse', {id: course.id})
-        });
-      }
-    })
+        if (repeatingByDay.length > 0) {
+          var startDate = getStartDate();
+          startDate.setHours(meeting.startTime.hours, meeting.startTime.minutes);
+          var endDate = new Date(startDate.getTime() + meeting.getTotalMinutes() * MILLISECONDSPERMINUTE);
+          calendar.createEvent({
+            uid: 'fa16/' + course.id + '/' + section.id,
+            start: startDate,
+            end: endDate,
+            repeating: {
+              freq: 'WEEKLY',
+              until: repeatingUntil,
+              byDay: repeatingByDay
+            },
+            summary: course.department + ' ' + course.courseNumber + ' ' + section.type + ' ' + section.number,
+            description: course.description,
+            location: meeting.location,
+            organizer: {
+              name: 'Berkeley Scheduler',
+              email: 'berkeley-scheduler@berkeley.edu'
+            },
+            url: vm.getHref('schedule.viewCourse', {id: course.id})
+          });
+        }
+      });
+    });
   });
 
   function download() {

@@ -98,15 +98,17 @@ function finals($http, $q) {
         return null;
       }
 
-      var courseDays = course.meetings[0].days;
+      // TODO(dibyo): Handle multiple primary sections for courses
+      var courseMeeting = course.meetings[0];
+      var courseDays = courseMeeting.days;
       if (courseDays['Saturday'] || courseDays['Sunday']) {
         return finalRulesAll.SatSunCourses;
       } else if (courseDays['Monday'] ||
                  courseDays['Wednesday'] ||
                  courseDays['Friday']) {
-        return finalRulesAll.MTWRFCourses[course.meetings[0].startTime.hours];
+        return finalRulesAll.MTWRFCourses[courseMeeting.startTime.hours];
       } else if (courseDays['Tuesday'] || courseDays['Thursday']) {
-        return finalRulesAll.TRCourses[course.meetings[0].startTime.hours];
+        return finalRulesAll.TRCourses[courseMeeting.startTime.hours];
       }
     }).then(function(meetingKey) {
       return getFinalQ(course, meetingKey);

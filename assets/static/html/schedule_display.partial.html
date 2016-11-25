@@ -181,23 +181,23 @@
       </div>
 
       <!--Sections-->
-      <span ng-repeat="sectionGroup in schedule.getSectionGroupsForDay(day)">
-        <div ng-repeat="sectionView in sectionGroup.getSectionViews()" class="schedule-display-section-parent">
+      <span ng-repeat="meetingGroup in schedule.getMeetingGroupsForDay(day)">
+        <div ng-repeat="meetingView in meetingGroup.getMeetingViews()" class="schedule-display-section-parent">
           <div class="schedule-display schedule-display-section"
                layout="row" layout-align="center center"
-               ng-style="vm.getSectionViewStyle(sectionView)">
+               ng-style="vm.getMeetingViewStyle(meetingView)">
             <div class="schedule-display schedule-display-section-inner"
-                 title="{{ vm.getSectionViewTextTitle(sectionView) }}"
-                 ng-bind-html="vm.getSectionViewText(sectionView)">
+                 title="{{ vm.getMeetingViewTextTitle(meetingView) }}"
+                 ng-bind-html="vm.getMeetingViewText(meetingView)">
             </div>
           </div>
 
           <div class="schedule-display schedule-display-section-hover"
                layout="row" layout-align="center center"
-               ng-style="vm.getSectionViewHoverStyle(sectionView)">
+               ng-style="vm.getMeetingViewHoverStyle(meetingView)">
             <div class="schedule-display schedule-display-section-inner"
-                 title="{{ vm.getSectionViewTextTitle(sectionView) }}"
-                 ng-bind-html="vm.getSectionViewText(sectionView)">
+                 title="{{ vm.getMeetingViewTextTitle(meetingView) }}"
+                 ng-bind-html="vm.getMeetingViewText(meetingView)">
             </div>
           </div>
         </div>

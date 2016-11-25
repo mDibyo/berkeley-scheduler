@@ -2,20 +2,21 @@
 
 var Time = require('./time.js');
 
-function Meeting(startTime, endTime, days, location, instructors) {
+function Meeting(startTime, endTime, days, location, instructors, owner) {
   this.startTime = startTime;
   this.endTime = endTime;
   this.days = days;
   this.location = location;
   this.instructors = instructors;
+  this.owner = owner;
 }
 
-Meeting.parse = function(meetingJson) {
+Meeting.parse = function(meetingJson, owner) {
   if (meetingJson.location) {
     var location = meetingJson.location.description || null;
   }
   if (meetingJson.startTime === null || meetingJson.endTime === null) {
-    return new Meeting(null, null, meetingJson.days, location, meetingJson.instructors);
+    return new Meeting(null, null, meetingJson.days, location, meetingJson.instructors, owner);
   }
 
   var startTimeSplit = meetingJson.startTime.split(':');
@@ -57,6 +58,12 @@ Meeting.daysFromAbrvs = function(abrvs) {
 
 Meeting.prototype.getTotalMinutes = function() {
   return this.endTime.getTotalMinutes() - this.startTime.getTotalMinutes();
+};
+
+Meeting.prototype.getDayList = function() {
+  return Object.keys(this.days).filter(function(day) {
+    return this.days[day];
+  }, this);
 };
 
 Meeting.prototype.toString = function() {
