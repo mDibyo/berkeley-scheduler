@@ -7,5 +7,7 @@
     "strictNullChecks": true,
     "target": "ES5"
   },
-  "files": []
+  "files": [
+    "client/js/models/scheduleMeetingGroup.ts"
+  ]
 }
