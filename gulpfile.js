@@ -26,20 +26,22 @@
 
   gulp.task('default', ['watch']);
 
-  gulp.task('watch', function() {
-    var watcher = gulp.watch(paths.src.js.root + '/**/*.js', ['q']);
-    watcher.on('change', function(event) {
+  gulp.task('watch', ['ts', 'js'], function() {
+    console.log('watching');
+
+    gulp.watch(paths.src.js.root + '/**/*.js', ['js']).on('change', function(event) {
+      console.log(event.path);
+    });
+    gulp.watch(paths.src.js.root + '/**/*.ts', ['ts']).on('change', function(event) {
       console.log(event.path);
     });
   });
-
-  gulp.task('q', ['browserify-app']);
 
   gulp.task('test', ['js-lint']);
 
   gulp.task('build', ['js', 'svg']);
 
-  gulp.task('js', ['ts', 'js-lint', 'browserify']);
+  gulp.task('js', ['js-lint', 'browserify-app']);
 
   gulp.task('js-lint', ['jscs', 'jshint']);
 
