@@ -8,12 +8,14 @@
   var source = require('vinyl-source-stream');
   var streamify = require('gulp-streamify');
   var svgSprite = require('gulp-svg-sprite');
+  var ts = require('gulp-typescript');
   var uglify = require('gulp-uglify');
 
   var paths = {
     self: 'gulpfile.js',
     src: {
       js: {
+        root: 'client/js',
         app: 'client/js/angular/app.js',
         lib: 'client/js/lib/index.js'
       },
@@ -28,7 +30,7 @@
 
   gulp.task('build', ['js', 'svg']);
 
-  gulp.task('js', ['js-lint', 'browserify']);
+  gulp.task('js', ['ts', 'js-lint', 'browserify']);
 
   gulp.task('js-lint', ['jscs', 'jshint']);
 
@@ -66,7 +68,7 @@
 
   gulp.task('release', ['js-release', 'svg']);
 
-  gulp.task('js-release', ['js-lint', 'browserify-release']);
+  gulp.task('js-release', ['ts', 'js-lint', 'browserify-release']);
 
   gulp.task('browserify-release', [
     'browserify-release-app',
@@ -102,5 +104,13 @@
         }
       }))
       .pipe(gulp.dest(paths.dest));
+  });
+
+  gulp.task('ts', function() {
+    var tsProject = ts.createProject('tsconfig.json', {
+      rootDir: paths.src.js.root
+    });
+    var tsResult = tsProject.src().pipe(tsProject());
+    return tsResult.js.pipe(gulp.dest(paths.src.js.root));
   });
 })();
