@@ -24,7 +24,16 @@
     dest: 'assets/gen'
   };
 
-  gulp.task('default', ['browserify-app']);
+  gulp.task('default', ['watch']);
+
+  gulp.task('watch', function() {
+    var watcher = gulp.watch(paths.src.js.root + '/**/*.js', ['q']);
+    watcher.on('change', function(event) {
+      console.log(event.path);
+    });
+  });
+
+  gulp.task('q', ['browserify-app']);
 
   gulp.task('test', ['js-lint']);
 
