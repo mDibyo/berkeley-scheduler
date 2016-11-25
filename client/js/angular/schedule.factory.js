@@ -55,11 +55,15 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
   var _orderByFns = {
     minimizeGaps: function(footprint) {
-      return - _orderByFns.maximizeGaps(footprint);
+      return -_orderByFns.maximizeGaps(footprint);
     },
     maximizeGaps: function(footprint) {
       var meetingsByDay = Schedule.timeFootprints[footprint];
-      var total = 0, meeting, horizon, i, gap;
+      var total = 0;
+      var meeting;
+      var horizon;
+      var i;
+      var gap;
       for (var day in meetingsByDay) {
         var meetings = meetingsByDay[day];
         if (meetings.length >= 2) {
@@ -77,7 +81,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       return total;
     },
     minimizeNumberOfDays: function(footprint) {
-      return - _orderByFns.maximizeNumberOfDays(footprint);
+      return -_orderByFns.maximizeNumberOfDays(footprint);
     },
     maximizeNumberOfDays: function(footprint) {
       var meetingsByDay = Schedule.timeFootprints[footprint];
@@ -91,13 +95,14 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     },
     preferMornings: function(footprint) {
       var meetingsByDay = Schedule.timeFootprints[footprint];
-      var totalFor = 0, total = 0;
+      var totalFor = 0;
+      var total = 0;
       for (var day in meetingsByDay) {
         var meetings = meetingsByDay[day];
         for (var i = 0; i < meetings.length; i++) {
-          total ++;
+          total++;
           if (meetings[i].endTime.compareTo(Time.noon) <= 0) {
-            totalFor ++;
+            totalFor++;
           }
         }
       }
@@ -105,14 +110,15 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     },
     preferAfternoons: function(footprint) {
       var meetingsByDay = Schedule.timeFootprints[footprint];
-      var totalFor = 0, total = 0;
+      var totalFor = 0;
+      var total = 0;
       for (var day in meetingsByDay) {
         var meetings = meetingsByDay[day];
         for (var i = 0; i < meetings.length; i++) {
-          total ++;
+          total++;
           if (meetings[i].startTime.compareTo(Time.noon) >= 0
             && meetings[i].endTime.compareTo(Time.fivePM) <= 0) {
-            totalFor ++;
+            totalFor++;
           }
         }
       }
@@ -120,13 +126,14 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     },
     preferEvenings: function(footprint) {
       var meetingsByDay = Schedule.timeFootprints[footprint];
-      var totalFor = 0, total = 0;
+      var totalFor = 0;
+      var total = 0;
       for (var day in meetingsByDay) {
         var meetings = meetingsByDay[day];
         for (var i = 0; i < meetings.length; i++) {
-          total ++;
+          total++;
           if (meetings[i].startTime.compareTo(Time.fivePM) >= 0) {
-            totalFor ++;
+            totalFor++;
           }
         }
       }
@@ -134,8 +141,11 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     },
     preferNoTimeConflicts: function(footprint) {
       var meetingsByDay = Schedule.timeFootprints[footprint];
-      var numConflicts = 0, total = 0;
-      var meeting, horizon, i;
+      var numConflicts = 0;
+      var total = 0;
+      var meeting;
+      var horizon;
+      var i;
       for (var day in meetingsByDay) {
         var meetings = meetingsByDay[day];
         total += meetings.length;
@@ -145,20 +155,22 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
             meeting = meetings[i];
             if (horizon > 0) {
               if (meeting.startTime.getTotalMinutes() < horizon) {
-                numConflicts ++;
+                numConflicts++;
               }
             }
             horizon = Math.max(horizon, meeting.endTime.getTotalMinutes());
           }
         }
       }
-      return - (numConflicts / total);
+      return -(numConflicts / total);
     }
   };
   var _filterFns = {
     noTimeConflicts: function(footprint) {
       var meetingsByDay = Schedule.timeFootprints[footprint];
-      var meeting, horizon, i;
+      var meeting;
+      var horizon;
+      var i;
       for (var day in meetingsByDay) {
         var meetings = meetingsByDay[day];
         if (meetings.length >= 2) {
@@ -330,7 +342,8 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   function _saveCoursesToCookie() {
     var courseInfosToSave = [];
     for (var id in _courses) {
-      var selectedSections = [], unselectedSections = [];
+      var selectedSections = [];
+      var unselectedSections = [];
       _courses[id].sections.forEach(function(section) {
         if (section.selected) {
           selectedSections.push(section.id);
@@ -500,7 +513,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
   function generateSchedulesQ() {
     if (_generatingSchedulesQ === null) {
-      _generatingSchedulesQ = $timeout(function () {
+      _generatingSchedulesQ = $timeout(function() {
         var instanceId = _generateId(generatingSchedulesInstanceIdCharSet, 4);
         _generatingSchedulesStops[instanceId] = false;
 
@@ -553,7 +566,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         setStale(false);
         updateTotalAndSetAndBroadcastStatus(0);
         generateSchedulesHelperAsync();
-        return deferred.promise.then(function () {
+        return deferred.promise.then(function() {
           _currFpList = Object.keys(_scheduleIdsByFp);
           _updateNumSchedules();
           _sendCurrScheduleListInfoChange(true);
@@ -646,11 +659,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
             });
           if (selectedSections.length <= 0) {
             _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
-              'No sections of type '
-              + course.sectionTypes[j]
-              + ' were selected for '
-              + course.getName()
-              + '.'
+              'No sections of type ' +
+              course.sectionTypes[j] +
+              ' were selected for ' +
+              course.getName() + '.'
             ));
             return;
           }
@@ -678,10 +690,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     });
     if (fpList.length <= 0) {
       _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
-        'No schedules were found with all classes within the selected start '
-        + 'and end time of day. Change your Scheduling Options, add more '
-        + 'sections to your existing classes, or check for a different set of '
-        + 'classes. '
+        'No schedules were found with all classes within the selected start ' +
+        'and end time of day. Change your Scheduling Options, add more ' +
+        'sections to your existing classes, or check for a different set of ' +
+        'classes. '
       ));
     }
   }
@@ -798,7 +810,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
             if (_addCourseNoSave(course)) {
               // This was the first time the course was added.
               // Only select this section.
-              course.sections.forEach(function (section) {
+              course.sections.forEach(function(section) {
                 if (section.id === sectionId) {
                   section.selected = true;
                   sectionList.push(section);

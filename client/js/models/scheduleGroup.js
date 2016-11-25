@@ -117,12 +117,12 @@ ScheduleGroup.prototype._updateIterator = function() {
 
   var incrementPos = 0;
   while (incrementPos < this.sectionChoiceIterator.length) {
-    this.sectionChoiceIterator[incrementPos] ++;
+    this.sectionChoiceIterator[incrementPos]++;
     if (this.sectionChoiceIterator[incrementPos] < this.sectionChoices[incrementPos].length) {
       return true;
     }
     this.sectionChoiceIterator[incrementPos] = 0;
-    incrementPos ++;
+    incrementPos++;
   }
   return false;
 };

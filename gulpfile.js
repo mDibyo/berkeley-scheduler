@@ -44,14 +44,14 @@
   gulp.task('js-lint', ['jscs', 'jshint']);
 
   gulp.task('jshint', function() {
-    return gulp.src([paths.self, paths.src.js.app, paths.src.js.lib])
+    return gulp.src([paths.self, paths.src.root + '/**/*.js'])
       .pipe(jshint())
       .pipe(jshint.reporter('jshint-stylish'))
       .pipe(jshint.reporter('fail'));
   });
 
   gulp.task('jscs', function() {
-    return gulp.src([paths.self, paths.src.js.app, paths.src.js.lib])
+    return gulp.src([paths.self, paths.src.js.root + '/**/*.js'])
       .pipe(jscs())
       .pipe(jscs.reporter('jscs-stylish'))
       .pipe(jscs.reporter('fail'));

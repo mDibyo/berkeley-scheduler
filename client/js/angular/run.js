@@ -38,7 +38,7 @@ angular.module('berkeleyScheduler').run([
     $window.addEventListener('resize', setRightPaneHeight);
 
     var showMobUnoptDialog =
-      scheduleFactory.getPreferences()['showMobUnoptDialog'];
+      scheduleFactory.getPreferences().showMobUnoptDialog;
     if (showMobUnoptDialog && $mdMedia('xs')) {
       $mdDialog.show({
         templateUrl: 'assets/static/html/mobile_unoptimized.dialog.html',

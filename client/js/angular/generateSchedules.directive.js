@@ -2,7 +2,6 @@ var Time = require('../models/time');
 var BaseCtrl = require('./_base.controller');
 
 function bsGenerateSchedulesDirective() {
-
   bsGenerateSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
   function bsGenerateSchedulesCtrl($state, $window, scheduleFactory) {
     BaseCtrl.call(this, $state, $window, scheduleFactory);
@@ -15,7 +14,6 @@ function bsGenerateSchedulesDirective() {
 
     var startHour = 8;
     var endHour = 24;
-    //var numHours = endHour - startHour;
     for (var h = startHour; h < endHour; h++) {
       hours.push(new Time(h, 0));
       halfHours.push(new Time(h, 0));
@@ -70,7 +68,7 @@ function bsGenerateSchedulesDirective() {
     vm.selectedDayStartTimeJson =
       schedulingOptions.dayStartTime || halfHours[0];
     vm.selectedDayEndTimeJson =
-      schedulingOptions.dayEndTime || halfHours[halfHours.length-1];
+      schedulingOptions.dayEndTime || halfHours[halfHours.length - 1];
     vm.dayStartTimes = halfHours;
     vm.dayEndTimes = halfHours;
     vm.onSelectDayStartTime = onSelectDayStartTime;
@@ -166,7 +164,7 @@ function bsGenerateSchedulesDirective() {
     function onSelectDayEndTime() {
       var times = halfHours.slice();
       var selectedDayEndTime = Time.parse(vm.selectedDayEndTimeJson);
-      while (times.length > 0 && times[times.length-1].compareTo(selectedDayEndTime) > 0) {
+      while (times.length > 0 && times[times.length - 1].compareTo(selectedDayEndTime) > 0) {
         times.pop()
       }
       vm.dayStartTimes = times;

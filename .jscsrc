@@ -1,10 +1,8 @@
 {
-  "disallowDanglingUnderscores": true,
   "disallowEmptyBlocks": true,
   "disallowKeywords": ["with"],
   "disallowKeywordsOnNewLine": ["else"],
   "disallowMixedSpacesAndTabs": true,
-  "disallowMultipleLineBreaks": true,
   "disallowMultipleLineStrings": true,
   "disallowMultipleVarDecl": true,
   "disallowMultipleSpaces": true,
@@ -46,16 +44,21 @@
   "disallowTrailingComma": true,
   "disallowTrailingWhitespace": true,
   "excludeFiles": [
-    "src/assets/javascripts/angularlib/**",
-    "src/assets/javascripts/lib/**",
-    "public/assets/**",
-    "coverage/**",
-    "node_modules/**",
-    "vendor/**"
+    "client/js/models/scheduleMeetingGroup.js",
+    "public/assets/gen/**",
+    "node_modules/**"
   ],
   "requireBlocksOnNewline": true,
   "requireCommaBeforeLineBreak": true,
-  "requireCurlyBraces": true,
+  "requireCurlyBraces": [
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "try",
+    "catch"
+  ],
   "requireDotNotation": true,
   "requireLineFeedAtFileEnd": true,
   "requireMatchingFunctionName": true,

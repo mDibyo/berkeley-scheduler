@@ -22,7 +22,7 @@ function Schedule(userId, sections) {
   this._meetingGroupsByDay = {};
 
   var sectionIdList = [];
-  sections.forEach(function (section) {
+  sections.forEach(function(section) {
     sectionIdList.push(section.id);
     var courseId = section.course.id;
     if (!this.courses.hasOwnProperty(courseId)) {
@@ -117,7 +117,7 @@ Schedule.prototype._generateMeetingGroupsForDay = function(day) {
 
 Schedule.generateId = function(idComponentList) {
   var userId = idComponentList.shift();
-  idComponentList = idComponentList.map(function (id) {
+  idComponentList = idComponentList.map(function(id) {
     return parseInt(id);
   });
   idComponentList.sort(function(a, b) {

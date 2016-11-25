@@ -34,7 +34,6 @@ function GeneratingSchedulesCtrl($state, $window, $location, $stateParams, $q, s
       scheduleFactory.filterAndReorderSchedules();
     })
   });
-
 }
 angular.module('berkeleyScheduler').controller('GeneratingSchedulesCtrl', [
   '$state',

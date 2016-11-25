@@ -175,7 +175,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     }
 
     function getFinalWidth(final) {
-      return (1/final.slotLength) * 100 + '%';
+      return (1 / final.slotLength) * 100 + '%';
     }
 
     function getFinalBackgroundColor(final) {
@@ -231,7 +231,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     }
 
     function getMeetingViewWidth(meetingView) {
-      return (1/meetingView.group.slots.length) * 100 + '%';
+      return (1 / meetingView.group.slots.length) * 100 + '%';
     }
 
     function getMeetingViewBackgroundColor(meetingView) {

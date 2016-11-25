@@ -101,13 +101,13 @@ function finals($http, $q) {
       // TODO(dibyo): Handle multiple primary sections for courses
       var courseMeeting = course.meetings[0];
       var courseDays = courseMeeting.days;
-      if (courseDays['Saturday'] || courseDays['Sunday']) {
+      if (courseDays.Saturday || courseDays.Sunday) {
         return finalRulesAll.SatSunCourses;
-      } else if (courseDays['Monday'] ||
-                 courseDays['Wednesday'] ||
-                 courseDays['Friday']) {
+      } else if (courseDays.Monday ||
+                 courseDays.Wednesday ||
+                 courseDays.Friday) {
         return finalRulesAll.MTWRFCourses[courseMeeting.startTime.hours];
-      } else if (courseDays['Tuesday'] || courseDays['Thursday']) {
+      } else if (courseDays.Tuesday || courseDays.Thursday) {
         return finalRulesAll.TRCourses[courseMeeting.startTime.hours];
       }
     }).then(function(meetingKey) {

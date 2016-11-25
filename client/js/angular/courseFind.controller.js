@@ -50,7 +50,7 @@ function CourseFindCtrl($state, $window, $location, courses, scheduleFactory, $a
     vm.addedCoursesList.remove(course);
     if (vm.addedCoursesList.length != 0) {
       vm.goToState('schedule.viewCourse', {
-        id: vm.addedCoursesList[vm.addedCoursesList.length-1].id
+        id: vm.addedCoursesList[vm.addedCoursesList.length - 1].id
       });
     } else {
       vm.goToState('schedule');
@@ -58,9 +58,9 @@ function CourseFindCtrl($state, $window, $location, courses, scheduleFactory, $a
   });
 
   function searchSubjectArea(query) {
-    return query
-      ? vm.subjectAreasList.filter(createSubjectAreaFilterFor(query))
-      : vm.subjectAreasList;
+    return query ?
+      vm.subjectAreasList.filter(createSubjectAreaFilterFor(query)) :
+      vm.subjectAreasList;
   }
 
   function createSubjectAreaFilterFor(query) {
@@ -92,9 +92,7 @@ function CourseFindCtrl($state, $window, $location, courses, scheduleFactory, $a
   }
 
   function searchCourse(query) {
-    return query
-      ? vm.coursesList.filter(createCourseFilterFor(query))
-      : vm.coursesList;
+    return query ? vm.coursesList.filter(createCourseFilterFor(query)) : vm.coursesList;
   }
 
   function createCourseFilterFor(query) {
