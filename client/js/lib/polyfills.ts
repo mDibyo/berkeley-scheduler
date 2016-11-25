@@ -13,7 +13,7 @@ Array.prototype.remove || (Array.prototype.remove = function (item) {
   return item;
 });
 
-Array.prototype.findIndex || (Array.prototype.findIndex = function(predicate: (item: any) => boolean): number {
+Array.prototype.findIndex || (Array.prototype.findIndex = function(predicate: Predicate<any>): number {
   if (this === null) {
     throw new TypeError('Array.prototype.findIndex called on null or undefined');
   }

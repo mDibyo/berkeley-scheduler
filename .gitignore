@@ -12,6 +12,7 @@ node_modules/
 
 # Typescript generated JS
 client/js/lib/polyfills.js
+client/js/models/commitment.js
 client/js/models/scheduleMeetingGroup.js
 
 ### Misc
