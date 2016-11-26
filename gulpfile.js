@@ -19,7 +19,10 @@
         app: 'client/js/angular/app.js',
         lib: 'client/js/lib/index.js'
       },
-      svg: 'client/svg/*.svg'
+      svg: 'client/svg/*.svg',
+      ts: {
+        root: 'client/ts'
+      }
     },
     dest: 'assets/gen'
   };
@@ -32,7 +35,7 @@
     gulp.watch(paths.src.js.root + '/**/*.js', ['js']).on('change', function(event) {
       console.log(event.path);
     });
-    gulp.watch(paths.src.js.root + '/**/*.ts', ['ts']).on('change', function(event) {
+    gulp.watch(paths.src.ts.root + '/**/*.ts', ['ts']).on('change', function(event) {
       console.log(event.path);
     });
   });
@@ -119,7 +122,7 @@
 
   gulp.task('ts', function() {
     var tsProject = ts.createProject('tsconfig.json', {
-      rootDir: paths.src.js.root
+      outDir: paths.src.js.root
     });
     var tsResult = tsProject.src().pipe(tsProject());
     return tsResult.js.pipe(gulp.dest(paths.src.js.root));
