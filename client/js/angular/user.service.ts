@@ -120,7 +120,7 @@ class UserService {
       this._preferences = preferences;
     }
 
-    return this._preferences;
+    return angular.copy(this._preferences);
   }
   set preferences(newPreferences: Preferences) {
     this._preferences = newPreferences;
@@ -128,6 +128,11 @@ class UserService {
       `${this.primaryUserId}.${UserService._preferencesCookieKeySuffix}`;
     this._$cookies.putObject(preferencesCookieKey, newPreferences, {
       expires: this._cookieExpiryDate
+    });
+  }
+  setPreference(preference: string, choice: any) {
+    this.preferences = angular.extend(this._preferences, {
+      [preference]: choice
     });
   }
 
@@ -162,7 +167,7 @@ class UserService {
       this._schedulingOptions = schedulingOptions;
     }
 
-    return this._schedulingOptions;
+    return angular.copy(this._schedulingOptions);
   }
   set schedulingOptions(newSchedulingOptions: SchedulingOptions) {
     this._schedulingOptions = newSchedulingOptions;
@@ -196,9 +201,9 @@ class UserService {
               });
               this._courses.push(course);
             });
-        })).then(() => this._courses);
+        })).then(() => angular.copy(this._courses));
       } else {
-        this._coursesQ = this._$q.resolve(this._courses);
+        this._coursesQ = this._$q.resolve(angular.copy(this._courses));
       }
     }
 
@@ -248,9 +253,9 @@ class UserService {
           return this._scheduleService.getScheduleQById(scheduleId).then(
             (schedule: Schedule) =>  this._savedSchedules.push(schedule)
           );
-        })).then(() => this._savedSchedules);
+        })).then(() => angular.copy(this._savedSchedules));
       } else {
-        this._savedSchedulesQ = this._$q.resolve(this._savedSchedules);
+        this._savedSchedulesQ = this._$q.resolve(angular.copy(this._savedSchedules));
       }
     }
 
