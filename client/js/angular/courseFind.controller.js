@@ -130,7 +130,7 @@ function CourseFindCtrl($state, $window, $location, courses, scheduleFactory, $a
   }
 
   function setSchedulesStale() {
-    scheduleFactory.setStale(true);
+    scheduleFactory.setSchedulesStale(true);
   }
 
   function addCourse(course) {

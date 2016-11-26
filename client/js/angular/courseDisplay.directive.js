@@ -33,7 +33,7 @@ function bsCourseDisplayDirective() {
     }
 
     function setSchedulesStale() {
-      scheduleFactory.setStale(true);
+      scheduleFactory.setSchedulesStale(true);
     }
 
     function extractSectionTypeMapping(section) {

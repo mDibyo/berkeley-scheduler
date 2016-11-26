@@ -1,4 +1,4 @@
-import Section = require('./section');
+import Section from '../models/section';
 
 
 declare class Course {
@@ -8,6 +8,8 @@ declare class Course {
 
   constructor(courseJson: Object);
   static parse(courseJson: Object): Course;
+  add(): void;
+  drop(): void;
 }
 
-export = Course;
+export default Course;

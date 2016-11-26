@@ -415,7 +415,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     return _lastScheduleGenerationStatus.status === 'stale';
   }
 
-  function setStale(stale) {
+  function setSchedulesStale(stale) {
     if (stale === undefined) {
       stale = true
     }
@@ -455,7 +455,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     course.sections.forEach(function(section) {
       _sections[section.id] = section;
     });
-    setStale(true);
+    setSchedulesStale(true);
     _addCourseListeners.forEach(function(listener) {
       listener(course);
     });
@@ -480,7 +480,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     course.sections.forEach(function(section) {
       delete _sections[section.id];
     });
-    setStale(true);
+    setSchedulesStale(true);
     _dropCourseListeners.forEach(function(listener) {
       listener(course);
     });
@@ -563,7 +563,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
           });
         }
 
-        setStale(false);
+        setSchedulesStale(false);
         updateTotalAndSetAndBroadcastStatus(0);
         generateSchedulesHelperAsync();
         return deferred.promise.then(function() {
@@ -805,7 +805,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
         sectionLookupQList.push(reverseLookup
           .getCourseQBy2arySectionId(sectionId)
           .then(function(course) {
-            setStale(true);
+            setSchedulesStale(true);
             courseIdList.push(course.id);
             if (_addCourseNoSave(course)) {
               // This was the first time the course was added.
@@ -1061,7 +1061,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
     isReady: isReady,
     registerSetReadyListener: registerSetReadyListener,
-    setStale: setStale,
+    setSchedulesStale: setSchedulesStale,
 
     getAllCourses: getAllCourses,
     getCourseQById: getCourseQById,
@@ -1100,5 +1100,6 @@ angular.module('berkeleyScheduler').factory('scheduleFactory', [
   '$timeout',
   '$cookies',
   'reverseLookup',
+  'userService',
   scheduleFactory
 ]);

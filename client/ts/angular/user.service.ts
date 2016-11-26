@@ -1,13 +1,13 @@
 import angular = require('angular');
 
 import IReverseLookupService = require('./reverseLookup.service');
-import IScheduleService = require('./schedule.service');
+import IScheduleService from './schedule.service';
 
 import constants = require('../constants');
 
-import Course = require('../models/course');
+import Course from '../models/course';
 import Time = require('../models/time');
-import Section = require('../models/section');
+import Section from '../models/section';
 import Schedule = require('../models/schedule');
 
 const userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -44,8 +44,8 @@ export interface CourseInfo {
 }
 
 
-function _generateId(charSet: string, numChars: number) {
-  var id = '';
+function _generateId(charSet: string, numChars: number): string {
+  let id: string = '';
   for (var i = 0; i < numChars; i++) {
     id += charSet[Math.floor(Math.random() * charSet.length)]
   }
@@ -53,7 +53,7 @@ function _generateId(charSet: string, numChars: number) {
 }
 
 
-class UserService {
+export default class UserService {
   private _$cookies: angular.cookies.ICookiesService;
   private _$q: angular.IQService;
   private _reverseLookupService: IReverseLookupService;
@@ -279,3 +279,4 @@ angular.module('berkeleyScheduler').service('userService', [
   'scheduleFactory',
   UserService
 ]);
+

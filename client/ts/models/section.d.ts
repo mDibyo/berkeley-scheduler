@@ -11,4 +11,4 @@ declare class Section {
   constructor(sectionJson: Object, course: Course);
 }
 
-export = Section;
+export default Section;

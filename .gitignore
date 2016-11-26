@@ -11,6 +11,7 @@
 node_modules/
 
 # Typescript generated JS
+client/js/angular/course.service.js
 client/js/angular/user.service.js
 client/js/constants.js
 client/js/lib/polyfills.js

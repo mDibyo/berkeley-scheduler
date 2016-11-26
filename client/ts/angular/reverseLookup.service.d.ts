@@ -1,6 +1,7 @@
 import angular = require('angular');
 
-import Course = require('../models/course');
+import Course from '../models/course';
+
 
 interface IReverseLookupService {
   getCourseQBy1arySectionId(id: string): angular.IPromise<Course>;
