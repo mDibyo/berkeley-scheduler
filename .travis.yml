@@ -5,6 +5,7 @@ python:
 
 
 install:
+  - npm install npm -g
   - npm install
 
 script:
