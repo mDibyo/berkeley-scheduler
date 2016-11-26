@@ -1,4 +1,4 @@
-declare class Time {}
+import Time = require('./time');
 
 declare interface Days {
   [day: string]: boolean;

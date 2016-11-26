@@ -2,6 +2,7 @@
 
 import Meeting = require('./meeting');
 import Section = require('./section');
+import Time = require('./time');
 
 
 export class MeetingView {
@@ -26,11 +27,11 @@ export class MeetingView {
     return this._meeting.owner;
   }
 
-  get startTime(): any {
+  get startTime(): Time {
     return this._meeting.startTime;
   }
 
-  get endTime(): any {
+  get endTime(): Time {
     return this._meeting.endTime;
   }
 
@@ -67,7 +68,7 @@ export default class ScheduleMeetingGroup {
   add(meeting: Meeting) {
     const meetingView = new MeetingView(this, meeting);
     for (let i = 0; i < this.slots.length; i++) {
-      const slot = this.slots[i];
+      const slot: MeetingView[] = this.slots[i];
       if (slot[slot.length - 1].endTime.compareTo(meetingView.startTime) < 0) {
         slot.push(meetingView);
         meetingView.slotIdx = i;

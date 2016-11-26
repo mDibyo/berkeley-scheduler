@@ -25,6 +25,8 @@
     "url": "https://github.com/mDibyo/berkeley-scheduler/issues"
   },
   "devDependencies": {
+    "@types/angular": "^1.5.20",
+    "@types/angular-cookies": "^1.4.2",
     "browserify": "~13.0.0",
     "ghooks": "^1.3.2",
     "gulp": "^3.9.1",
