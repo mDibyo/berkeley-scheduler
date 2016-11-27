@@ -140,7 +140,7 @@ Schedule.getUserIdFromId = function(id) {
 
 Schedule.getSectionIdsFromId = function(id) {
   return id.split('.').slice(1).map(function(id) {
-    return parseInt(id);
+    return id;
   });
 };
 

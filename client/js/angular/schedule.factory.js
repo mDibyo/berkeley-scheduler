@@ -12,15 +12,10 @@ var generatingSchedulesInstanceIdCharSet = userIdCharSet;
 var primaryUserIdCookieKey = 'primaryUserId';
 var userIdListCookieKey = 'allUserIds';
 var preferencesCookieKeyFormat = '{}.preferences';
-var savedCoursesCookieKeyFormat = '{}.addedCourses';
 var savedScheduleIdsCookieKeyFormat = '{}.savedScheduleIds';
 var schedulingOptionsCookieKeyFormat = '{}.schedulingOptions';
 
-function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
-  var _ready = false;
-  var _forReadyQs = [];
-  var _setReadyListeners = [];
-
+function scheduleFactory($q, $timeout, $cookies, courseService) {
   var _cookieExpiryDate = (function() {
     var date = new Date();
     date.setFullYear(date.getFullYear() + 1);
@@ -29,11 +24,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
   var _primaryUserId = _loadPrimaryUserIdFromCookie();
   var _userIdList = _loadUserIdListFromCookie();
   var _preferences = _loadPreferencesFromCookie();
-
-  var _courses = {};
-  var _sections = {};
-  var _addCourseListeners = [];
-  var _dropCourseListeners = [];
 
   var _savedSchedules = [];
   var _addSavedScheduleListeners = [];
@@ -214,11 +204,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     }
   };
 
-  _loadCoursesFromCookieInto_courses();
   _loadScheduleIdsFromCookieInto_savedSchedules();
-  $q.all(_forReadyQs).then(function() {
-    _setReady();
-  });
 
   function _generateId(charSet, numChars) {
     var id = '';
@@ -293,14 +279,14 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     schedulingOptions.preferNoTimeConflicts =
       schedulingOptions.preferNoTimeConflicts || false;
     if (schedulingOptions.dayStartTime) {
-      var time = schedulingOptions.dayStartTime;
-      schedulingOptions.dayStartTime = new Time(time.hours, time.minutes);
+      var startTime = schedulingOptions.dayStartTime;
+      schedulingOptions.dayStartTime = new Time(startTime.hours, startTime.minutes);
     } else {
       schedulingOptions.dayStartTime = null;
     }
     if (schedulingOptions.dayEndTime) {
-      var time = schedulingOptions.dayEndTime;
-      schedulingOptions.dayEndTime = new Time(time.hours, time.minutes);
+      var endTime = schedulingOptions.dayEndTime;
+      schedulingOptions.dayEndTime = new Time(endTime.hours, endTime.minutes);
     } else {
       schedulingOptions.dayEndTime = null;
     }
@@ -316,52 +302,6 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     var schedulingOptionsCookieKey =
       schedulingOptionsCookieKeyFormat.replace('{}', _primaryUserId);
     $cookies.putObject(schedulingOptionsCookieKey, _schedulingOptions);
-  }
-
-  function _loadCoursesFromCookieInto_courses() {
-    var savedCoursesCookieKey = savedCoursesCookieKeyFormat
-      .replace('{}', _getPrimaryUserIdTermIdentifier());
-    var savedCourses = $cookies.getObject(savedCoursesCookieKey);
-    if (!savedCourses) {
-      return;
-    }
-    savedCourses.forEach(function(courseInfo) {
-      _forReadyQs.push(
-        reverseLookup.getCourseQBy1arySectionId(courseInfo.id).then(function(course) {
-          course.selected = courseInfo.selected === undefined || courseInfo.selected;
-          course.sections.forEach(function(section) {
-            if (courseInfo.unselectedSections.indexOf(section.id) >= 0) {
-              section.selected = false;
-            }
-          });
-          _addCourseNoSave(course);
-        }));
-    });
-  }
-
-  function _saveCoursesToCookie() {
-    var courseInfosToSave = [];
-    for (var id in _courses) {
-      var selectedSections = [];
-      var unselectedSections = [];
-      _courses[id].sections.forEach(function(section) {
-        if (section.selected) {
-          selectedSections.push(section.id);
-        } else {
-          unselectedSections.push(section.id);
-        }
-      });
-      courseInfosToSave.push({
-        id: id,
-        selected: _courses[id].selected,
-        selectedSections: selectedSections,
-        unselectedSections: unselectedSections
-      });
-    }
-    var savedCoursesCookieKey = savedCoursesCookieKeyFormat
-      .replace('{}', _getPrimaryUserIdTermIdentifier());
-    $cookies.putObject(savedCoursesCookieKey, courseInfosToSave,
-      {expires: _cookieExpiryDate});
   }
 
   function _loadScheduleIdsFromCookieInto_savedSchedules() {
@@ -395,27 +335,12 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     _savePreferencesToCookie();
   }
 
-  function isReady() {
-    return _ready;
-  }
-
-  function _setReady() {
-    _ready = true;
-    _setReadyListeners.forEach(function(listener) {
-      listener(_ready);
-    });
-  }
-
-  function registerSetReadyListener(listener) {
-    _setReadyListeners.push(listener);
-  }
-
   function _isStale() {
     _lastScheduleGenerationStatus = _lastScheduleGenerationStatus || new scheduleGenerationStatus.Stale();
     return _lastScheduleGenerationStatus.status === 'stale';
   }
 
-  function setSchedulesStale(stale) {
+  function setStale(stale) {
     if (stale === undefined) {
       stale = true
     }
@@ -426,81 +351,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
       _setAndBroadcastScheduleGenerationStatus(
         new scheduleGenerationStatus.Stale());
     }
-    _saveCoursesToCookie();
-  }
-
-  function getAllCourses() {
-    var courses = [];
-    for (var id in _courses) {
-      courses.push(_courses[id]);
-    }
-    return courses;
-  }
-
-  function getCourseQById(id) {
-    if (_courses.hasOwnProperty(id)) {
-      return $q.when(_courses[id]);
-    }
-    var courseQ = reverseLookup.getCourseQBy2arySectionId(id);
-    courseQ.then(addCourse);
-    return courseQ;
-  }
-
-  function _addCourseNoSave(course) {
-    if (_courses.hasOwnProperty(course.id)) {
-      return false;
-    }
-    _courses[course.id] = course;
-    course.add();
-    course.sections.forEach(function(section) {
-      _sections[section.id] = section;
-    });
-    setSchedulesStale(true);
-    _addCourseListeners.forEach(function(listener) {
-      listener(course);
-    });
-    return true;
-  }
-
-  function addCourse(course) {
-    var success = _addCourseNoSave(course);
-    if (success) {
-      course.selected = true;
-      _saveCoursesToCookie();
-    }
-    return success;
-  }
-
-  function _dropCourseNoSave(course) {
-    if (!_courses.hasOwnProperty(course.id)) {
-      return false;
-    }
-    delete _courses[course.id];
-    course.drop();
-    course.sections.forEach(function(section) {
-      delete _sections[section.id];
-    });
-    setSchedulesStale(true);
-    _dropCourseListeners.forEach(function(listener) {
-      listener(course);
-    });
-    return true;
-  }
-
-  function dropCourse(course) {
-    var success = _dropCourseNoSave(course);
-    if (success) {
-      _saveCoursesToCookie();
-    }
-    return success;
-  }
-
-  function registerAddCourseListener(listener) {
-    _addCourseListeners.push(listener);
-  }
-
-  function registerDropCourseListener(listener) {
-    _dropCourseListeners.push(listener);
+    courseService.save();
   }
 
   function _updateNumSchedules() {
@@ -563,7 +414,7 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
           });
         }
 
-        setSchedulesStale(false);
+        setStale(false);
         updateTotalAndSetAndBroadcastStatus(0);
         generateSchedulesHelperAsync();
         return deferred.promise.then(function() {
@@ -706,17 +557,19 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     }
   }
 
-  function getCurrentScheduleGroupId() {
-    if (_currScheduleGroup === null || _isStale()) {
-      var courseList = Object.keys(_courses).map(function(courseId) {
-        return _courses[courseId];
-      }).filter(function(course) {
-        return course.selected;
-      });
-      _setCurrentScheduleGroup(new ScheduleGroup(_primaryUserId, courseList), true);
+  function getCurrentScheduleGroupIdQ() {
+    if (_currScheduleGroup && !_isStale()) {
+      return $q.when(_currScheduleGroup.id);
     }
 
-    return _currScheduleGroup.id;
+    return courseService.getAllCoursesQ().then(function(courseList) {
+      return courseList.filter(function(course) {
+        return course.selected;
+      });
+    }).then(function(filteredCourseList) {
+      _setCurrentScheduleGroup(new ScheduleGroup(_primaryUserId, filteredCourseList), true);
+      return _currScheduleGroup.id;
+    })
   }
 
   function setCurrentScheduleGroupById(scheduleGroupId) {
@@ -728,28 +581,12 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
     var userId = ScheduleGroup.getUserIdFromId(scheduleGroupId);
     var courseIdList = ScheduleGroup.getCourseIdsFromId(scheduleGroupId);
-    var courseList = [];
-    var courseLookupQList = [];
-    courseIdList.forEach(function(courseId) {
-      var course = _courses[courseId];
-      if (course) {
-        courseList.push(course);
-      } else {
-        courseLookupQList.push(reverseLookup
-          .getCourseQBy1arySectionId(courseId)
-          .then(function(course) {
-            courseList.push(course);
-            addCourse(course);
-          }));
-      }
-    });
+    return $q.all(courseIdList.map(function(courseId) {
+      return courseService.addCourseByIdQ(courseId);
+    })).then(function(courses) {
+      courseService.setSelectedCoursesByIdQ(courseIdList);
 
-    return $q.all(courseLookupQList).then(function() {
-      Object.keys(_courses).forEach(function(courseId) {
-        _courses[courseId].selected = courseIdList.indexOf(parseInt(courseId)) >= 0;
-      });
-
-      _setCurrentScheduleGroup(new ScheduleGroup(userId, courseList), false);
+      _setCurrentScheduleGroup(new ScheduleGroup(userId, courses), false);
     });
   }
 
@@ -760,29 +597,11 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     }
 
     var userId = Schedule.getUserIdFromId(scheduleId);
-    var sectionIdList = Schedule.getSectionIdsFromId(scheduleId);
-    var sectionList = [];
-    var sectionLookupQList = [];
-    sectionIdList.forEach(function(sectionId) {
-      if (_sections.hasOwnProperty(sectionId)) {
-        var section = _sections[sectionId];
-        sectionList.push(section);
-      } else {
-        sectionLookupQList.push(reverseLookup
-          .getCourseQBy2arySectionId(sectionId)
-          .then(function(course) {
-            for (var i = 0; i < course.sections.length; i++) {
-              var section = course.sections[i];
-              if (section.id === sectionId) {
-                sectionList.push(section);
-                break;
-              }
-            }
-          }));
-      }
-    });
-    return $q.all(sectionLookupQList).then(function() {
-      return new Schedule(userId, sectionList);
+    const sectionIds = Schedule.getSectionIdsFromId(scheduleId);
+    return $q.all(sectionIds.map(function(sectionId) {
+      return courseService.getSectionQ(sectionId);
+    })).then(function(sections) {
+      return new Schedule(userId, sections);
     });
   }
 
@@ -793,60 +612,52 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
 
     var userId = Schedule.getUserIdFromId(scheduleId);
     var sectionIdList = Schedule.getSectionIdsFromId(scheduleId);
-    var courseIdList = [];
-    var sectionList = [];
-    var sectionLookupQList = [];
-    sectionIdList.forEach(function(sectionId) {
-      if (_sections.hasOwnProperty(sectionId)) {
-        var section = _sections[sectionId];
-        sectionList.push(section);
-        courseIdList.push(section.course.id);
-      } else {
-        sectionLookupQList.push(reverseLookup
-          .getCourseQBy2arySectionId(sectionId)
-          .then(function(course) {
-            setSchedulesStale(true);
-            courseIdList.push(course.id);
-            if (_addCourseNoSave(course)) {
-              // This was the first time the course was added.
-              // Only select this section.
-              course.sections.forEach(function(section) {
-                if (section.id === sectionId) {
-                  section.selected = true;
-                  sectionList.push(section);
-                } else {
-                  section.selected = false;
-                }
-              });
-            } else {
-              // The course has already been added previously.
-              // Ensure this section is selected.
-              course = _courses[course.id];
-              for (var i = 0; i < course.sections.length; i++) {
-                var section = course.sections[i];
-                if (section.id === sectionId) {
-                  sectionList.push(section);
-                  section.selected = true;
-                  break;
-                }
+    return courseService.getAllCoursesQ().then(function(prevAllCourses) {
+      const courses = [];
+      sectionIdList.forEach(function(sectionId) {
+        courseService.getSectionQ(sectionId).then(function(section) {
+          section.selected = true;
+          const course = section.course;
+          if (courses.findIndex(function(c) {
+                return c.id === course.id;
+              }) < 0) {
+            courses.push(course);
+          }
+
+          if (prevAllCourses.findIndex(function(c) {
+                return c.id === course.id;
+              }) < 0) {
+            setStale();
+            // This was the first time the course was added.
+            // Only select this section.
+            course.sections.forEach(function(s) {
+              s.selected = s.id === section.id;
+            });
+          } else {
+            // The course has already been added previously.
+            // Ensure this section is selected.
+            for (var i = 0; i < course.sections.length; i++) {
+              if (course.sections[i].id === section.id) {
+                section.selected = true;
+                break;
               }
             }
-          }));
-      }
-    });
-    return $q.all(sectionLookupQList).then(function() {
-      var courseList = [];
-      Object.keys(_courses).forEach(function(courseId) {
-        if (courseIdList.indexOf(parseInt(courseId)) >= 0) {
-          var course = _courses[courseId];
-          course.selected = true;
-          courseList.push(course);
-        } else {
-          _courses[courseId].selected = false;
-        }
+          }
+        });
+      });
+      return courses;
+    }).then(function(courses) {
+      // Ensure that only these courses are selected.
+      courseService.getAllCoursesQ().then(function(allCourses) {
+        const courseIds = courses.map(function(c) {
+          return c.id;
+        });
+        allCourses.forEach(function(c) {
+          c.selected = courseIds.indexOf(c.id) >= 0;
+        });
       });
 
-      _setCurrentScheduleGroup(new ScheduleGroup(userId, courseList), false);
+      _setCurrentScheduleGroup(new ScheduleGroup(userId, courses), false);
     });
   }
 
@@ -1059,19 +870,10 @@ function scheduleFactory($q, $timeout, $cookies, reverseLookup) {
     getPreferences: getPreferences,
     setPreference: setPreference,
 
-    isReady: isReady,
-    registerSetReadyListener: registerSetReadyListener,
-    setSchedulesStale: setSchedulesStale,
-
-    getAllCourses: getAllCourses,
-    getCourseQById: getCourseQById,
-    addCourse: addCourse,
-    registerAddCourseListener: registerAddCourseListener,
-    dropCourse: dropCourse,
-    registerDropCourseListener: registerDropCourseListener,
+    setStale: setStale,
 
     generateSchedulesQ: generateSchedulesQ,
-    getCurrentScheduleGroupId: getCurrentScheduleGroupId,
+    getCurrentScheduleGroupIdQ: getCurrentScheduleGroupIdQ,
     setCurrentScheduleGroupById: setCurrentScheduleGroupById,
     setCurrentScheduleGroupByScheduleIdQ: setCurrentScheduleGroupByScheduleIdQ,
     getScheduleQById: getScheduleQById,
@@ -1099,7 +901,6 @@ angular.module('berkeleyScheduler').factory('scheduleFactory', [
   '$q',
   '$timeout',
   '$cookies',
-  'reverseLookup',
-  'userService',
+  'courseService',
   scheduleFactory
 ]);

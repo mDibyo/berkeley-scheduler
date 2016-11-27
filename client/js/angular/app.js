@@ -19,6 +19,10 @@
   require('./reverseLookup.factory');
   require('./schedule.factory');
 
+  // Services
+  require('./user.service');
+  require('./course.service');
+
   // Controllers
   require('./_base.controller');
   require('./courseFind.controller');

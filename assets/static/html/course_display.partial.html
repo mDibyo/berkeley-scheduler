@@ -29,7 +29,7 @@
     <td class="section-select" ng-if="$first" rowspan="{{ section.meetings.length }}">
       <md-checkbox
           ng-model="section.selected"
-          ng-change="vm.setSchedulesStale()"
+          ng-change="vm.setStale()"
           aria-label="Select section">
       </md-checkbox>
     </td>

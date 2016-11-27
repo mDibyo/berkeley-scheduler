@@ -41,7 +41,9 @@ ScheduleGroup.normalizeId = function(id) {
 };
 
 ScheduleGroup.getCourseIdsFromId = function(id) {
-  return Schedule.getSectionIdsFromId(id);
+  return Schedule.getSectionIdsFromId(id).map(function(id) {
+    id.toString();
+  });
 };
 
 ScheduleGroup.getUserIdFromId = function(id) {

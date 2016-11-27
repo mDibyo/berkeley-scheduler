@@ -2,14 +2,14 @@ var BaseCtrl = require('./_base.controller');
 
 
 CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
-function CourseFindCtrl($state, $window, $location, courses, scheduleFactory, $analytics) {
+function CourseFindCtrl($state, $window, $location, courses, courseService, scheduleFactory, $analytics) {
   $analytics.pageTrack($location.url());
 
   BaseCtrl.call(this, $state, $window, scheduleFactory);
 
   var vm = this;
 
-  vm.scheduleIsReady = scheduleFactory.isReady();
+  vm.scheduleIsReady = courseService.ready;
   vm.subjectAreaIsDisabled = false;
   vm.courseIsDisabled = true;
   vm.selectedCourse = null;
@@ -23,31 +23,38 @@ function CourseFindCtrl($state, $window, $location, courses, scheduleFactory, $a
   vm.extractCourseNumberSuffix = extractCourseNumberSuffix;
   vm.extractCourseNumberPrefix = extractCourseNumberPrefix;
 
-  vm.addedCoursesList = scheduleFactory.getAllCourses();
-  vm.setSchedulesStale = setSchedulesStale;
+  vm.addedCoursesList = [];
+  vm.setStale = setSchedulesStale;
   vm.addCourse = addCourse;
   vm.dropCourse = dropCourse;
 
   vm.generateSchedulesQ = scheduleFactory.generateSchedulesQ;
 
+  courseService.getAllCoursesQ().then(function(courses) {
+    vm.addedCoursesList = courses;
+  });
+
   courses.getSubjectAreasQ().then(function(subjectAreas) {
     vm.subjectAreasList = subjectAreas;
   });
 
-  scheduleFactory.registerSetReadyListener(function(isReady) {
+  courseService.addSetReadyListener('courseFind', function(isReady) {
     vm.scheduleIsReady = isReady;
+    scheduleFactory.setStale();
   });
 
-  scheduleFactory.registerAddCourseListener(function(course) {
+  courseService.addAddCourseListener('courseFind', function(course) {
     vm.addedCoursesList.push(course);
+    scheduleFactory.setStale();
     if (!vm.scheduleIsReady) {
       return;
     }
     vm.goToState('schedule.viewCourse', {id: course.id});
   });
 
-  scheduleFactory.registerDropCourseListener(function(course) {
+  courseService.addDropCourseListener('courseFind', function(course) {
     vm.addedCoursesList.remove(course);
+    scheduleFactory.setStale();
     if (vm.addedCoursesList.length != 0) {
       vm.goToState('schedule.viewCourse', {
         id: vm.addedCoursesList[vm.addedCoursesList.length - 1].id
@@ -130,15 +137,15 @@ function CourseFindCtrl($state, $window, $location, courses, scheduleFactory, $a
   }
 
   function setSchedulesStale() {
-    scheduleFactory.setSchedulesStale(true);
+    scheduleFactory.setStale(true);
   }
 
   function addCourse(course) {
-    scheduleFactory.addCourse(course);
+    courseService.addCourse(course);
   }
 
   function dropCourse(course) {
-    scheduleFactory.dropCourse(course);
+    courseService.dropCourseQ(course);
   }
 }
 angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
@@ -146,6 +153,7 @@ angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
   '$window',
   '$location',
   'courses',
+  'courseService',
   'scheduleFactory',
   '$analytics',
   CourseFindCtrl

@@ -20,6 +20,7 @@ function GeneratingSchedulesCtrl($state, $window, $location, $stateParams, $q, s
     }
   });
 
+
   var deferred = $q.defer();
   var scheduleGroupId = $stateParams.scheduleGroupId;
   var startScheduleId = $stateParams.startScheduleId;

@@ -16,7 +16,7 @@ function bsCourseDisplayDirective() {
     };
     vm.selectAllSections = false;
     vm.onChangeSelectAllSections = onChangeSelectAllSections;
-    vm.setSchedulesStale = setSchedulesStale;
+    vm.setStale = setSchedulesStale;
     vm.extractSectionTypeMapping = extractSectionTypeMapping;
 
     function onChangeSelectAllSections() {
@@ -33,7 +33,7 @@ function bsCourseDisplayDirective() {
     }
 
     function setSchedulesStale() {
-      scheduleFactory.setSchedulesStale(true);
+      scheduleFactory.setStale(true);
     }
 
     function extractSectionTypeMapping(section) {

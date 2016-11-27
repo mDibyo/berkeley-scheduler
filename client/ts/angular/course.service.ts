@@ -78,8 +78,29 @@ class CourseService {
     return this._sections;
   }
 
+  getSectionQ(sectionId: string): angular.IPromise<Section> {
+    if (this._sections.hasOwnProperty(sectionId)) {
+      return this._$q.when(this._sections[sectionId]);
+    }
+
+    return this._reverseLookupService.getCourseQBy2arySectionId(sectionId).then(
+      (course: Course) => {
+        this.addCourse(course);
+        return this._sections[sectionId];
+      }
+    );
+  }
+
   getAllCoursesQ(): angular.IPromise<Course[]> {
     return this._readyQ.then(() => angular.copy(this._courses));
+  }
+
+  setSelectedCoursesByIdQ(courseIds: string[]): angular.IPromise<void> {
+    return this.getAllCoursesQ().then((allCourses) => {
+      allCourses.forEach((course) => {
+        course.selected = courseIds.indexOf(course.id) >= 0;
+      });
+    });
   }
 
   addCourseByIdQ(id: string): angular.IPromise<Course> {
@@ -88,64 +109,50 @@ class CourseService {
       return this._$q.when(this._courses[courseIdx]);
     }
 
-    var courseQ = this._reverseLookupService.getCourseQBy2arySectionId(id);
-    return courseQ.then((course: Course): angular.IPromise<Course> => {
-      return this.addCourseQ(course);
-    });
+    return this._reverseLookupService.getCourseQBy2arySectionId(id).then(
+      (course: Course) => {
+        this.addCourse(course);
+        return course;
+      }
+    );
   }
 
-  private _addCourseNoSave(course: Course) {
-    if (this._courses.findIndex((c: Course) => course.id === c.id)) {
-      return false;
+  addCourse(course: Course): void {
+    // Check if course has already been added.
+    const courseIdx = this._courses.findIndex((c: Course) => course.id === c.id);
+    if (courseIdx >= 0) {
+      return;
     }
 
+    // Add otherwise.
     this._courses.push(course);
+    course.sections.forEach((section) => this._sections[section.id] = section);
+
     course.add();
-    course.sections.forEach(function(section) {
-      this._sections[section.id] = section;
-    });
+    course.selected = true;
+    this.save();
 
     for (const tag in this._addCourseListeners) {
       this._addCourseListeners[tag](course);
     }
-    return true;
   }
 
-  addCourseQ(course: Course): angular.IPromise<Course> {
+  dropCourseQ(course: Course): angular.IPromise<void> {
     return this._readyQ.then(() => {
-      const success: boolean = this._addCourseNoSave(course);
-      if (success) {
-        course.selected = true;
-        this.save();
+      const courseIdx = this._courses.findIndex((c: Course) => course.id === c.id);
+      if (courseIdx < 0) {
+        return;
       }
-      return course;
-    });
-  }
 
-  private _dropCourseNoSave(course: Course): boolean {
-    const courseIdx = this._courses.findIndex((c: Course) => course.id === c.id);
-    if (courseIdx < 0) {
-      return false;
-    }
+      this._courses.splice(courseIdx, 1);
+      course.sections.forEach((section) => delete this._sections[section.id]);
 
-    this._courses.splice(courseIdx, 1);
-    course.drop();
-    course.sections.forEach(function(section) {
-      delete this._sections[section.id];
-    });
-    for (const tag in this._dropCourseListeners) {
-      this._dropCourseListeners[tag](course);
-    }
-    return true;
-  }
+      course.drop();
+      this.save();
 
-  dropCourseQ(course: Course): angular.IPromise<Course> {
-    return this._readyQ.then(() => {
-      const success: boolean = this._dropCourseNoSave(course);
-      if (success) {
-        this.save();
+      for (const tag in this._dropCourseListeners) {
+        this._dropCourseListeners[tag](course);
       }
-      return course;
     });
   }
 

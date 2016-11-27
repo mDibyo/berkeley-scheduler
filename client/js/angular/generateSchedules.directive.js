@@ -122,9 +122,13 @@ function bsGenerateSchedulesDirective() {
     }
 
     function generateAndViewSchedules() {
-      vm.goToState('schedule.generatingSchedules', {
-        scheduleGroupId: scheduleFactory.getCurrentScheduleGroupId()
-      });
+      scheduleFactory.getCurrentScheduleGroupIdQ().then(
+        function(scheduleGroupId) {
+          vm.goToState('schedule.generatingSchedules', {
+            scheduleGroupId: scheduleGroupId
+          });
+        }
+      );
     }
 
     function toggleSavedSchedules(showSavedSchedules) {
