@@ -2,7 +2,10 @@
 
 var Meeting = require('./meeting');
 var Section = require('./section');
+var ColorRegisterableCommitment = require('./commitment').ColorRegisterableCommitment;
 
+
+Course.prototype = Object.create(ColorRegisterableCommitment.prototype);
 function Course(courseJson) {
   if (courseJson.displayName === undefined) {
     console.log(courseJson);
@@ -95,19 +98,6 @@ Course.prototype.getSectionsByType = function(type) {
   return this.sections.filter(function(section) {
     return section.type === type;
   });
-};
-
-Course.prototype.add = function() {
-  if (!Course.courseColors.hasOwnProperty(this.id)) {
-    Course.courseColors[this.id] = Course.getRegisteredColor();
-  }
-  this.color = Course.courseColors[this.id];
-};
-
-Course.prototype.drop = function() {
-  this.selected = false;
-  delete Course.courseColors[this.id];
-  Course.unRegisterColor(this.color);
 };
 
 module.exports = Course;

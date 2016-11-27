@@ -61,19 +61,19 @@ export abstract class ColorRegisterableCommitment implements Commitment {
     var color = ColorRegisterableCommitment.unregisteredColors.splice(idx, 1)[0];
     ColorRegisterableCommitment.registeredColors.push(color);
     return color;
-  };
+  }
 
   private static unregisterColor(color: string) {
     ColorRegisterableCommitment.registeredColors.remove(color);
     ColorRegisterableCommitment.unregisteredColors.push(color);
-  };
+  }
 
   add() {
     if (!ColorRegisterableCommitment.commitmentColors.hasOwnProperty(String(this.id))) {
       ColorRegisterableCommitment.commitmentColors[this.id] = ColorRegisterableCommitment.getRegisteredColor();
     }
     this.color = ColorRegisterableCommitment.commitmentColors[this.id];
-  };
+  }
 
   drop() {
     delete ColorRegisterableCommitment.commitmentColors[this.id];
