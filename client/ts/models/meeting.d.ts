@@ -19,7 +19,8 @@ declare class Meeting {
       location: string,
       instructors: string[],
       owner: Object
-  );
+  )
+  getTotalMinutes(): number
 }
 
 export = Meeting;

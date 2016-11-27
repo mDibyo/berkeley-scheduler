@@ -35,6 +35,10 @@ export class MeetingView {
     return this._meeting.endTime;
   }
 
+  get totalMinutes(): number {
+    return this._meeting.getTotalMinutes();
+  }
+
   get location(): string {
     return this._meeting.location;
   }
