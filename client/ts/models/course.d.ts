@@ -2,7 +2,7 @@ import Section from '../models/section';
 
 
 declare class Course {
-  id: number;
+  id: string;
   selected: boolean;
   sections: Section[];
 

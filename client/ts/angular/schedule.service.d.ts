@@ -4,7 +4,7 @@ import Schedule = require('../models/schedule');
 
 
 interface IScheduleService {
-  setSchedulesStale(stale?: boolean): void;
+  setStale(stale?: boolean): void;
   getScheduleQById(scheduleId: string): angular.IPromise<Schedule>;
 }
 

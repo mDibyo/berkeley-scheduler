@@ -1,13 +1,8 @@
 import angular = require('angular');
 
-import IReverseLookupService = require('./reverseLookup.service');
-import IScheduleService from './schedule.service';
-
 import constants = require('../constants');
 
-import Course from '../models/course';
 import Time = require('../models/time');
-import Section from '../models/section';
 import Schedule = require('../models/schedule');
 
 const userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -34,8 +29,6 @@ export interface SchedulingOptions {
   showFinalsSchedule: boolean;
 }
 
-// export interface CourseMap {[courseId: string]: Course}
-
 export interface CourseInfo {
   id: string;
   selected: boolean;
@@ -56,8 +49,6 @@ function _generateId(charSet: string, numChars: number): string {
 export default class UserService {
   private _$cookies: angular.cookies.ICookiesService;
   private _$q: angular.IQService;
-  private _reverseLookupService: IReverseLookupService;
-  private _scheduleService: IScheduleService;
 
   private _cookieExpiryDate = (() => {
     var date = new Date();
@@ -73,21 +64,13 @@ export default class UserService {
   private _primaryUserId: string;
   private _preferences: Preferences;
   private _schedulingOptions: SchedulingOptions;
-  private _courses: Course[] = [];
-  private _coursesQ: angular.IPromise<Course[]>;
-  private _savedSchedules: Schedule[] = [];
-  private _savedSchedulesQ: angular.IPromise<Schedule[]>;
 
   constructor(
       $cookies: angular.cookies.ICookiesService,
       $q: angular.IQService,
-      reverseLookupService: IReverseLookupService,
-      scheduleService: IScheduleService
   ) {
     this._$cookies = $cookies;
     this._$q = $q;
-    this._reverseLookupService = reverseLookupService;
-    this._scheduleService = scheduleService;
   }
 
   private get primaryUserId(): string {
@@ -177,96 +160,48 @@ export default class UserService {
       expires: this._cookieExpiryDate
     });
   }
-
-  get coursesQ(): angular.IPromise<Course[]> {
-    if (!this._coursesQ) {
-      let courseInfosCookieKey: string =
-        `${this.primaryUserIdTermIdentifier}.${UserService._courseInfosCookieKeySuffix}`;
-      let courseInfos: CourseInfo[] = this._$cookies.getObject(courseInfosCookieKey);
-      if (!courseInfos) {
-        courseInfosCookieKey =
-          `${this.primaryUserId}.${UserService._courseInfosCookieKeySuffix}`;
-        courseInfos = this._$cookies.getObject(courseInfosCookieKey);
-      }
-
-      if (courseInfos) {
-        this._coursesQ = this._$q.all(courseInfos.map((courseInfo: CourseInfo) => {
-          return this._reverseLookupService.getCourseQBy1arySectionId(courseInfo.id).then(
-            (course: Course) => {
-              course.selected = courseInfo.selected === undefined || courseInfo.selected;
-              course.sections.forEach((section: Section) => {
-                if (courseInfo.unselectedSections.indexOf(section.id) >= 0) {
-                  section.selected = false;
-                }
-              });
-              this._courses.push(course);
-            });
-        })).then(() => angular.copy(this._courses));
-      } else {
-        this._coursesQ = this._$q.resolve(angular.copy(this._courses));
-      }
-    }
-
-    return this._coursesQ;
+  setSchedulingOption(option: string, choice: any) {
+    this.schedulingOptions = angular.extend(this._schedulingOptions, {
+      [option]: choice
+    });
   }
-  set courses(newCourses: Course[]) {
-    this._coursesQ.then(() => this._courses = newCourses);
 
-    const courseInfos: CourseInfo[] = [];
-    for (const id in newCourses) {
-      const selectedSections: string[] = [];
-      const unselectedSections: string[] = [];
-      newCourses[id].sections.forEach((section: Section) => {
-        if (section.selected) {
-          selectedSections.push(section.id);
-        } else {
-          unselectedSections.push(section.id);
-        }
-      });
-      courseInfos.push({
-        id: id,
-        selected: newCourses[id].selected,
-        selectedSections: selectedSections,
-        unselectedSections: unselectedSections
-      });
-    }
-    const courseInfosCookieKey: string =
+  get courseInfos(): CourseInfo[] {
+    let courseInfosCookieKey: string =
       `${this.primaryUserIdTermIdentifier}.${UserService._courseInfosCookieKeySuffix}`;
-    this._$cookies.putObject(courseInfosCookieKey, courseInfos, {
+    let courseInfos: CourseInfo[] = this._$cookies.getObject(courseInfosCookieKey);
+    if (!courseInfos) {
+      courseInfosCookieKey =
+        `${this.primaryUserId}.${UserService._courseInfosCookieKeySuffix}`;
+      courseInfos = this._$cookies.getObject(courseInfosCookieKey);
+    }
+
+    return courseInfos || [];
+  }
+  set courseInfos(newCourseInfos: CourseInfo[]) {
+    let courseInfosCookieKey: string =
+      `${this.primaryUserIdTermIdentifier}.${UserService._courseInfosCookieKeySuffix}`;
+    this._$cookies.putObject(courseInfosCookieKey, newCourseInfos, {
       expires: this._cookieExpiryDate
     });
   }
 
-  get savedSchedulesQ(): angular.IPromise<Schedule[]> {
-    if (!this._savedSchedulesQ) {
-      let savedScheduleIdsCookieKey: string =
-        `${this.primaryUserIdTermIdentifier}.${UserService._savedScheduleIdsCookieKeySuffix}`;
-      let savedScheduleIds: string[] = this._$cookies.getObject(savedScheduleIdsCookieKey);
-      if (!savedScheduleIds) {
-        savedScheduleIdsCookieKey =
-          `${this.primaryUserId}.${UserService._savedScheduleIdsCookieKeySuffix}`;
-        savedScheduleIds = this._$cookies.getObject(savedScheduleIdsCookieKey);
-      }
-
-      if (savedScheduleIds) {
-        this._savedSchedulesQ = this._$q.all(savedScheduleIds.map((scheduleId: string) => {
-          return this._scheduleService.getScheduleQById(scheduleId).then(
-            (schedule: Schedule) =>  this._savedSchedules.push(schedule)
-          );
-        })).then(() => angular.copy(this._savedSchedules));
-      } else {
-        this._savedSchedulesQ = this._$q.resolve(angular.copy(this._savedSchedules));
-      }
+  get savedScheduleIds(): string[] {
+    let savedScheduleIdsCookieKey: string =
+      `${this.primaryUserIdTermIdentifier}.${UserService._savedScheduleIdsCookieKeySuffix}`;
+    let savedScheduleIds: string[] = this._$cookies.getObject(savedScheduleIdsCookieKey);
+    if (!savedScheduleIds) {
+      savedScheduleIdsCookieKey =
+        `${this.primaryUserId}.${UserService._savedScheduleIdsCookieKeySuffix}`;
+      savedScheduleIds = this._$cookies.getObject(savedScheduleIdsCookieKey);
     }
 
-    return this._savedSchedulesQ;
+    return savedScheduleIds || [];
   }
-  set savedSchedules(newSavedSchedules: Schedule[]) {
-    this._savedSchedulesQ.then(() => this._savedSchedules = newSavedSchedules);
-    const scheduleIds: string[] = newSavedSchedules.map((s) => s.id);
+  set savedScheduleIds(newSavedScheduleIds: string[]) {
     const savedScheduleIdsCookieKey: string =
       `${this.primaryUserIdTermIdentifier}.${UserService._savedScheduleIdsCookieKeySuffix}`;
-    this._$cookies.putObject(savedScheduleIdsCookieKey, scheduleIds, {
+    this._$cookies.putObject(savedScheduleIdsCookieKey, newSavedScheduleIds, {
       expires: this._cookieExpiryDate
     });
   }
@@ -275,8 +210,6 @@ export default class UserService {
 angular.module('berkeleyScheduler').service('userService', [
   '$cookies',
   '$q',
-  'reverseLookup',
-  'scheduleFactory',
   UserService
 ]);
 
