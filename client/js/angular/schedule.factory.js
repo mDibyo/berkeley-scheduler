@@ -7,20 +7,10 @@ var Schedule = require('../models/schedule');
 var ScheduleGroup = require('../models/scheduleGroup');
 var scheduleGenerationStatus = require('../models/scheduleGenerationStatus');
 
-var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
-var generatingSchedulesInstanceIdCharSet = userIdCharSet;
-var primaryUserIdCookieKey = 'primaryUserId';
-var userIdListCookieKey = 'allUserIds';
-var savedScheduleIdsCookieKeyFormat = '{}.savedScheduleIds';
+var generatingSchedulesInstanceIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
-function scheduleFactory($q, $timeout, $cookies, userService, courseService) {
-  var _cookieExpiryDate = (function() {
-    var date = new Date();
-    date.setFullYear(date.getFullYear() + 1);
-    return date;
-  })();
-  var _primaryUserId = _loadPrimaryUserIdFromCookie();
-  var _userIdList = _loadUserIdListFromCookie();
+function scheduleFactory($q, $timeout, userService, courseService) {
+  var _primaryUserId = userService.primaryUserId;
 
   var _savedSchedules = [];
   var _addSavedScheduleListeners = [];
@@ -201,7 +191,7 @@ function scheduleFactory($q, $timeout, $cookies, userService, courseService) {
     }
   };
 
-  _loadScheduleIdsFromCookieInto_savedSchedules();
+  _loadScheduleIdsInto_savedSchedules();
 
   function _generateId(charSet, numChars) {
     var id = '';
@@ -211,38 +201,8 @@ function scheduleFactory($q, $timeout, $cookies, userService, courseService) {
     return id;
   }
 
-  function _loadPrimaryUserIdFromCookie() {
-    var primaryUserId = $cookies.get(primaryUserIdCookieKey);
-    if (primaryUserId === undefined) {
-      primaryUserId = _generateId(userIdCharSet, 10);
-      $cookies.put(primaryUserIdCookieKey, primaryUserId,
-        {expires: _cookieExpiryDate});
-    }
-    return primaryUserId;
-  }
-
-  function _getPrimaryUserIdTermIdentifier() {
-    return _primaryUserId + '.' + constants.TERM_ABBREV;
-  }
-
-  function _loadUserIdListFromCookie() {
-    var userIdList = $cookies.getObject(userIdListCookieKey);
-    if (userIdList === undefined && _primaryUserId) {
-      userIdList = [_primaryUserId];
-      $cookies.putObject(userIdListCookieKey, _userIdList,
-        {expires: _cookieExpiryDate});
-    }
-    return userIdList;
-  }
-
-  function _loadScheduleIdsFromCookieInto_savedSchedules() {
-    var savedScheduleIdsCookieKey = savedScheduleIdsCookieKeyFormat
-      .replace('{}', _getPrimaryUserIdTermIdentifier());
-    var savedScheduleIds = $cookies.getObject(savedScheduleIdsCookieKey);
-    if (!savedScheduleIds) {
-      return;
-    }
-    savedScheduleIds.forEach(function(scheduleId) {
+  function _loadScheduleIdsInto_savedSchedules() {
+    userService.savedScheduleIds.forEach(function(scheduleId) {
       getScheduleQById(scheduleId).then(function(schedule) {
         _addSavedScheduleNoSave(schedule);
       });
@@ -250,11 +210,9 @@ function scheduleFactory($q, $timeout, $cookies, userService, courseService) {
   }
 
   function _saveScheduleIdsToCookie() {
-    var savedScheduleIdsCookieKey = savedScheduleIdsCookieKeyFormat
-      .replace('{}', _getPrimaryUserIdTermIdentifier());
-    $cookies.putObject(savedScheduleIdsCookieKey, _savedSchedules.map(function(schedule) {
+    userService.savedScheduleIds = _savedSchedules.map(function(schedule) {
       return schedule.id;
-    }), {expires: _cookieExpiryDate});
+    });
   }
 
   function _isStale() {
@@ -817,7 +775,6 @@ function scheduleFactory($q, $timeout, $cookies, userService, courseService) {
 angular.module('berkeleyScheduler').factory('scheduleFactory', [
   '$q',
   '$timeout',
-  '$cookies',
   'userService',
   'courseService',
   scheduleFactory
