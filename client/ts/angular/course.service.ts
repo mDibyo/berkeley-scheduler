@@ -92,7 +92,7 @@ class CourseService {
   }
 
   getAllCoursesQ(): angular.IPromise<Course[]> {
-    return this._readyQ.then(() => angular.copy(this._courses));
+    return this._readyQ.then(() => this._courses.slice());
   }
 
   setSelectedCoursesByIdQ(courseIds: string[]): angular.IPromise<void> {
