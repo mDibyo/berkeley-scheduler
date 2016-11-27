@@ -5,8 +5,8 @@ angular.module('berkeleyScheduler').run([
   '$mdDialog',
   '$mdMedia',
   '$templateRequest',
-  'scheduleFactory',
-  function($window, $state, $rootScope, $mdDialog, $mdMedia, $templateRequest, scheduleFactory) {
+  'userService',
+  function($window, $state, $rootScope, $mdDialog, $mdMedia, $templateRequest, userService) {
     $rootScope.$state = $state;
 
     var bodyHeight = null;
@@ -37,8 +37,7 @@ angular.module('berkeleyScheduler').run([
     });
     $window.addEventListener('resize', setRightPaneHeight);
 
-    var showMobUnoptDialog =
-      scheduleFactory.getPreferences().showMobUnoptDialog;
+    var showMobUnoptDialog = userService.preferences.showMobUnoptDialog;
     if (showMobUnoptDialog && $mdMedia('xs')) {
       $mdDialog.show({
         templateUrl: 'assets/static/html/mobile_unoptimized.dialog.html',

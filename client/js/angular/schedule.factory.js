@@ -11,7 +11,6 @@ var userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 var generatingSchedulesInstanceIdCharSet = userIdCharSet;
 var primaryUserIdCookieKey = 'primaryUserId';
 var userIdListCookieKey = 'allUserIds';
-var preferencesCookieKeyFormat = '{}.preferences';
 var savedScheduleIdsCookieKeyFormat = '{}.savedScheduleIds';
 var schedulingOptionsCookieKeyFormat = '{}.schedulingOptions';
 
@@ -23,7 +22,6 @@ function scheduleFactory($q, $timeout, $cookies, courseService) {
   })();
   var _primaryUserId = _loadPrimaryUserIdFromCookie();
   var _userIdList = _loadUserIdListFromCookie();
-  var _preferences = _loadPreferencesFromCookie();
 
   var _savedSchedules = [];
   var _addSavedScheduleListeners = [];
@@ -238,22 +236,6 @@ function scheduleFactory($q, $timeout, $cookies, courseService) {
     return userIdList;
   }
 
-  function _loadPreferencesFromCookie() {
-    var preferencesCookieKey =
-      preferencesCookieKeyFormat.replace('{}', _primaryUserId);
-    var preferences = $cookies.getObject(preferencesCookieKey) || {};
-    if (preferences.showMobUnoptDialog === undefined) {
-      preferences.showMobUnoptDialog = true;
-    }
-    return preferences;
-  }
-
-  function _savePreferencesToCookie() {
-    var preferencesCookieKey =
-      preferencesCookieKeyFormat.replace('{}', _primaryUserId);
-    $cookies.putObject(preferencesCookieKey, _preferences);
-  }
-
   function _loadSchedulingOptionsFromCookie() {
     var schedulingOptionsCookieKey =
       schedulingOptionsCookieKeyFormat.replace('{}', _primaryUserId);
@@ -324,15 +306,6 @@ function scheduleFactory($q, $timeout, $cookies, courseService) {
     $cookies.putObject(savedScheduleIdsCookieKey, _savedSchedules.map(function(schedule) {
       return schedule.id;
     }), {expires: _cookieExpiryDate});
-  }
-
-  function getPreferences() {
-    return angular.copy(_preferences);
-  }
-
-  function setPreference(preference, choice) {
-    _preferences[preference] = choice;
-    _savePreferencesToCookie();
   }
 
   function _isStale() {
@@ -867,9 +840,6 @@ function scheduleFactory($q, $timeout, $cookies, courseService) {
   }
 
   return {
-    getPreferences: getPreferences,
-    setPreference: setPreference,
-
     setStale: setStale,
 
     generateSchedulesQ: generateSchedulesQ,

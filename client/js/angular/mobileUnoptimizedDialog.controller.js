@@ -1,7 +1,7 @@
 var BaseCtrl = require('./_base.controller');
 
 MobileUnoptimizedDialogCtrl.prototype = Object.create(BaseCtrl.prototype);
-function MobileUnoptimizedDialogCtrl($state, $window, $mdDialog, scheduleFactory) {
+function MobileUnoptimizedDialogCtrl($state, $window, $mdDialog, userService, scheduleFactory) {
   BaseCtrl.call(this, $state, $window, scheduleFactory);
 
   var vm = this;
@@ -10,7 +10,7 @@ function MobileUnoptimizedDialogCtrl($state, $window, $mdDialog, scheduleFactory
   vm.close = close;
 
   function close() {
-    scheduleFactory.setPreference('showMobUnoptDialog', !vm.doNotShowMobUnoptDialog);
+    userService.setPreference('showMobUnoptDialog', !vm.doNotShowMobUnoptDialog);
     $mdDialog.hide();
   }
 }
@@ -18,6 +18,7 @@ angular.module('berkeleyScheduler').controller('MobileUnoptimizedDialogCtrl', [
   '$state',
   '$window',
   '$mdDialog',
+  'userService',
   'scheduleFactory',
   MobileUnoptimizedDialogCtrl
 ]);
