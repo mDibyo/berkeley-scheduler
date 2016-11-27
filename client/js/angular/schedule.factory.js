@@ -12,9 +12,8 @@ var generatingSchedulesInstanceIdCharSet = userIdCharSet;
 var primaryUserIdCookieKey = 'primaryUserId';
 var userIdListCookieKey = 'allUserIds';
 var savedScheduleIdsCookieKeyFormat = '{}.savedScheduleIds';
-var schedulingOptionsCookieKeyFormat = '{}.schedulingOptions';
 
-function scheduleFactory($q, $timeout, $cookies, courseService) {
+function scheduleFactory($q, $timeout, $cookies, userService, courseService) {
   var _cookieExpiryDate = (function() {
     var date = new Date();
     date.setFullYear(date.getFullYear() + 1);
@@ -38,7 +37,7 @@ function scheduleFactory($q, $timeout, $cookies, courseService) {
   var _currFpScheduleIdx = 0;
   var _currScheduleIdx = 0;
   var _numSchedules = 0;
-  var _schedulingOptions = _loadSchedulingOptionsFromCookie();
+  var _schedulingOptions = userService.schedulingOptions;
   var _schedulingOptionsChangeListeners = {};
 
   var _orderByFns = {
@@ -234,56 +233,6 @@ function scheduleFactory($q, $timeout, $cookies, courseService) {
         {expires: _cookieExpiryDate});
     }
     return userIdList;
-  }
-
-  function _loadSchedulingOptionsFromCookie() {
-    var schedulingOptionsCookieKey =
-      schedulingOptionsCookieKeyFormat.replace('{}', _primaryUserId);
-    var schedulingOptions = $cookies.getObject(schedulingOptionsCookieKey) || {};
-    schedulingOptions.showSavedSchedules =
-      schedulingOptions.showSavedSchedules || false;
-    schedulingOptions.showOptions =
-      schedulingOptions.showOptions || false;
-    schedulingOptions.minimizeGaps =
-      schedulingOptions.minimizeGaps || false;
-    schedulingOptions.maximizeGaps =
-      schedulingOptions.maximizeGaps || false;
-    schedulingOptions.minimizeNumberOfDays =
-      schedulingOptions.minimizeNumberOfDays || false;
-    schedulingOptions.maximizeNumberOfDays =
-      schedulingOptions.maximizeNumberOfDays || false;
-    schedulingOptions.preferMornings =
-      schedulingOptions.preferMornings || false;
-    schedulingOptions.preferAfternoons =
-      schedulingOptions.preferAfternoons || false;
-    schedulingOptions.preferEvenings =
-      schedulingOptions.preferEvenings || false;
-    schedulingOptions.preferNoTimeConflicts =
-      schedulingOptions.preferNoTimeConflicts || false;
-    if (schedulingOptions.dayStartTime) {
-      var startTime = schedulingOptions.dayStartTime;
-      schedulingOptions.dayStartTime = new Time(startTime.hours, startTime.minutes);
-    } else {
-      schedulingOptions.dayStartTime = null;
-    }
-    if (schedulingOptions.dayEndTime) {
-      var endTime = schedulingOptions.dayEndTime;
-      schedulingOptions.dayEndTime = new Time(endTime.hours, endTime.minutes);
-    } else {
-      schedulingOptions.dayEndTime = null;
-    }
-    if (schedulingOptions.noTimeConflicts === undefined) {
-      schedulingOptions.noTimeConflicts = true;
-    }
-    schedulingOptions.showFinalsSchedule =
-      schedulingOptions.showFinalsSchedule || false;
-    return schedulingOptions;
-  }
-
-  function _saveSchedulingOptionsToCookie() {
-    var schedulingOptionsCookieKey =
-      schedulingOptionsCookieKeyFormat.replace('{}', _primaryUserId);
-    $cookies.putObject(schedulingOptionsCookieKey, _schedulingOptions);
   }
 
   function _loadScheduleIdsFromCookieInto_savedSchedules() {
@@ -769,16 +718,14 @@ function scheduleFactory($q, $timeout, $cookies, courseService) {
   }
 
   function setSchedulingOption(option, choice, save) {
-    if (_schedulingOptions.hasOwnProperty(option)) {
-      _schedulingOptions[option] = choice;
-
-      Object.keys(_schedulingOptionsChangeListeners).forEach(function(tag) {
-        _schedulingOptionsChangeListeners[tag](getSchedulingOptions());
-      });
-    }
+    _schedulingOptions[option] = choice;
     if (save === undefined || save) {
-      _saveSchedulingOptionsToCookie();
+      userService.schedulingOptions = _schedulingOptions;
     }
+
+    Object.keys(_schedulingOptionsChangeListeners).forEach(function(tag) {
+      _schedulingOptionsChangeListeners[tag](getSchedulingOptions());
+    });
   }
 
   function registerSchedulingOptionsChangeListener(tag, listener) {
@@ -871,6 +818,7 @@ angular.module('berkeleyScheduler').factory('scheduleFactory', [
   '$q',
   '$timeout',
   '$cookies',
+  'userService',
   'courseService',
   scheduleFactory
 ]);

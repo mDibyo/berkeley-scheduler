@@ -59,6 +59,8 @@ function bsGenerateSchedulesDirective() {
       scheduleFactory.setSchedulingOption('preferEvenings', false, false);
       scheduleFactory.setSchedulingOption('minimizeGaps', false, false);
       scheduleFactory.setSchedulingOption('maximizeGaps', false, false);
+      scheduleFactory.setSchedulingOption('minimizeNumberOfDays', false, false);
+      scheduleFactory.setSchedulingOption('maximizeNumberOfDays', false, false);
       scheduleFactory.setSchedulingOption('preferNoTimeConflicts', false, false);
 
       scheduleFactory.setSchedulingOption(vm.selectedSortingOption, true, true);
