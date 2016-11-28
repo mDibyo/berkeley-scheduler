@@ -3,7 +3,7 @@
 export interface Option {}
 
 export interface Commitment {
-  id: number;
+  id: string;
   color: string;
 
   add(): void;
@@ -16,13 +16,12 @@ export interface Commitment {
 }
 
 export interface CommitmentColorMap {
-  [id: number]: string
+  [id: string]: string
 }
 
-export abstract class ColorRegisterableCommitment implements Commitment {
-  id: number;
+export abstract class ColorRegisterableCommitment {
+  id: string;
   color: string;
-  optionTypes: string[] = [];
 
   private static colorCodes = {
     'red': '#f44336',

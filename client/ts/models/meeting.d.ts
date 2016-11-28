@@ -4,12 +4,16 @@ declare interface Days {
   [day: string]: boolean;
 }
 
-declare class Meeting {
+export declare interface Instructor {
+  name: string
+}
+
+export declare class Meeting {
   startTime: Time;
   endTime: Time;
   days: Days;
   location: string;
-  instructors: string[];
+  instructors: Instructor[];
   owner: Object;
 
   constructor(
@@ -17,11 +21,11 @@ declare class Meeting {
       endTime: Time,
       days: Days,
       location: string,
-      instructors: string[],
+      instructors: Instructor[],
       owner: Object
   )
   getTotalMinutes(): number
 }
 
-export = Meeting;
+export default Meeting;
 

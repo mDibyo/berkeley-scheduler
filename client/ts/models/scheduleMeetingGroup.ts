@@ -1,6 +1,6 @@
 'use strict';
 
-import Meeting = require('./meeting');
+import Meeting, {Instructor} from './meeting';
 import Section = require('./section');
 import Time = require('./time');
 
@@ -43,7 +43,7 @@ export class MeetingView {
     return this._meeting.location;
   }
 
-  get instructors(): string[] {
+  get instructors(): Instructor[] {
     return this._meeting.instructors;
   }
 }

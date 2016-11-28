@@ -2,13 +2,11 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "module": "commonjs",
+    "moduleResolution": "node",
     "strictNullChecks": true,
     "target": "ES5"
   },
   "include": [
     "client/ts/**/*.ts"
-  ],
-  "typeRoots": {
-
-  }
+  ]
 }
