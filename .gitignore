@@ -20,6 +20,7 @@ client/js/models/courseInstance.js
 client/js/models/courseNew.js
 client/js/models/customCommitment.js
 client/js/models/scheduleMeetingGroup.js
+client/js/utils.js
 
 ### Misc
 # image files
