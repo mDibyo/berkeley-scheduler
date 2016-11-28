@@ -2,7 +2,7 @@ import Section from '../models/section';
 import Meeting from './meeting';
 import ScheduleMeetingGroup from './scheduleMeetingGroup';
 
-declare interface DayMeetings {[id: string]: Meeting[]}
+declare interface DayMeetings {[id: string]: Meeting<Section>[]}
 declare interface DayMeetingGroups {[id: string]: ScheduleMeetingGroup[]}
 
 declare class Schedule {
@@ -10,12 +10,13 @@ declare class Schedule {
 
   id: string;
   selected: boolean;
-  courses: {[id: string]: Section[]};
+  courseInstances: {[id: string]: Section[]};
   meetingsByDay: DayMeetings;
 
   private _meetingGroupsByDay: DayMeetingGroups;
 
   constructor(userId: string, sections: Section[]);
+  static getUserIdFromId(id: string): string;
 }
 
-export = Schedule;
+export default Schedule;

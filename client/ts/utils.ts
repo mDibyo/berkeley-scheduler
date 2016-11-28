@@ -3,17 +3,32 @@ export interface Identifiable {
 }
 
 export function generateId(userId: string, items: Identifiable[]): string {
-  const idComponents = items.map((item) => item.id).sort((a, b) => a - b);
+  return generateIdFromIds(userId, items.map((item) => item.id));
+}
+
+export function generateIdFromIds(userId: string, ids: string[]): string {
+  const idComponents = ids.sort((a, b) => {
+    return parseInt(a) - parseInt(b);
+  });
   idComponents.unshift(userId);
   return idComponents.join('.');
 }
 
 
-export class OptionEnumerator<Option> {
+export interface Enumerator<Enumeration> {
+  reset(): void;
+  current(): Enumeration|null;
+  next(): Enumeration|null;
+  size: number;
+  done: boolean;
+}
+
+export class OptionsEnumerator<Option> implements Enumerator<Option[]> {
   private _optionChoicesMatrix: Option[][] = [];
   private _optionChoicesIndices: number[] = [];
   private _optionChoicesLengths: number[] = [];
-  private _length: number = 0;
+  private _size: number = 0;
+  private _done: boolean = true;
 
   constructor(optionChoicesMatrix: Option[][]) {
     optionChoicesMatrix.forEach((optionChoices) => {
@@ -24,28 +39,32 @@ export class OptionEnumerator<Option> {
     this.reset();
 
     if (this._optionChoicesLengths.length > 0) {
-      this._length = this._optionChoicesLengths.reduce(function (a, b) {
-        return a * b;
-      }, 1);
+      this._size = this._optionChoicesLengths.reduce((a, b) => a * b, 1);
+      this._done = false;
     }
   }
 
-  get length(): number {
-    return this._length;
+  get size(): number {
+    return this._size;
+  }
+
+  get done(): boolean {
+    return this._done;
+  }
+
+  get expectedOptionsLength(): number {
+    return this._optionChoicesLengths.length;
   }
 
   reset() {
-    for (var i = 0; i < this._optionChoicesLengths.length; i++) {
+    for (let i = 0; i < this._optionChoicesLengths.length; i++) {
       this._optionChoicesIndices[i] = 0;
     }
     this._optionChoicesIndices[0] = -1;
+    this._done = false;
   }
 
-  _advance() {
-    if (!this.length) {
-      return false;
-    }
-
+  _advance(): boolean {
     for (
         let incrementPos: number = 0;
         incrementPos < this._optionChoicesLengths.length;
@@ -57,16 +76,25 @@ export class OptionEnumerator<Option> {
       }
       this._optionChoicesIndices[incrementPos] = 0;
     }
+    this._done = true;
     return false;
   }
 
-  next(): Option[]|null {
-    if (!this._advance()) {
-      return null;
+  current(): Option[] {
+    if (this.done) {
+      return [];
     }
 
     return this._optionChoicesMatrix.map(
         (options: Option[], pos: number) => options[this._optionChoicesIndices[pos]]
     );
+  }
+
+  next(): Option[] {
+    if (!this._advance()) {
+      return [];
+    }
+
+    return this.current();
   }
 }

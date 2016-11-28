@@ -11,7 +11,7 @@ export default class CourseInstance extends ColorRegisterableCommitment {
 
   primarySection: Section;
   sections: Section[];
-  finalMeeting: Meeting;
+  finalMeeting: Meeting<CourseInstance>;
 
   optionTypes: string[] = [];
 
@@ -24,7 +24,7 @@ export default class CourseInstance extends ColorRegisterableCommitment {
 
     this.sections = [this.primarySection].concat(otherSections);
     this.sections.forEach((section) => {
-      section.course = this;
+      section.courseInstance = this;
 
       if (this.optionTypes.indexOf(section.type) < 0) {
         this.optionTypes.push(section.type);
@@ -36,7 +36,7 @@ export default class CourseInstance extends ColorRegisterableCommitment {
     return this.course.getName();
   }
 
-  setFinalMeeting(finalMeeting: Meeting) {
+  setFinalMeeting(finalMeeting: Meeting<CourseInstance>) {
     this.finalMeeting = finalMeeting;
   }
 

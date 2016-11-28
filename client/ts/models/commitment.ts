@@ -1,8 +1,9 @@
 ///<reference path="../lib/polyfills.ts" />
-
+import {Identifiable} from '../utils';
 export interface Option {}
 
-export interface Commitment {
+
+export interface Commitment extends Identifiable {
   id: string;
   color: string;
 

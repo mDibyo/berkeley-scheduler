@@ -1,5 +1,7 @@
-import Section from './section';
+import Section, {SectionJson} from './sectionNew';
 import CourseInstance from './courseInstance';
+import {Identifiable} from '../utils';
+
 
 interface CourseJson {
   id: string;
@@ -8,10 +10,10 @@ interface CourseJson {
   description: string;
   units: number;
   meetings: Object[];
-  sections: Object[];
+  sections: SectionJson[];
 }
 
-export default class Course {
+export default class Course implements Identifiable {
   id: string;
   department: string;
   courseNumber: string;
@@ -35,11 +37,8 @@ export default class Course {
     this.id = courseJson.id;
     this.units = courseJson.units;
 
-    /**
-     * Divide into sections
-     */
     const allSections =
-        courseJson.sections.map((sectionJson) => new Section(sectionJson, this));
+        courseJson.sections.map((sectionJson) => new Section(sectionJson));
     // Find number of primary sections from section number
     const primarySections = allSections.filter(
         (section: Section) => section.number[0] === '0'

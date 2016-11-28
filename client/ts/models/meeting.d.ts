@@ -8,13 +8,13 @@ export declare interface Instructor {
   name: string
 }
 
-export declare class Meeting {
+export declare class Meeting<Owner> {
   startTime: Time;
   endTime: Time;
   days: Days;
   location: string;
   instructors: Instructor[];
-  owner: Object;
+  owner: Owner;
 
   constructor(
       startTime: Time,
@@ -24,6 +24,7 @@ export declare class Meeting {
       instructors: Instructor[],
       owner: Object
   )
+  static parse<Owner>(meetingJson: Object, owner: Owner): Meeting<Owner>;
   getTotalMinutes(): number
 }
 

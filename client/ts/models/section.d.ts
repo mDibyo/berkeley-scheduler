@@ -1,12 +1,12 @@
-declare class Course {}
-
+import CourseInstance from './courseInstance';
 import Meeting from './meeting';
+import {Identifiable} from '../utils';
 
 
-declare class Section {
+declare class Section implements Identifiable {
   id: string;
   type: string;
-  course: Course;
+  courseInstance: CourseInstance;
   number: string;
 
   enrolled: number;
@@ -16,9 +16,9 @@ declare class Section {
 
   selected: boolean;
 
-  meetings: Meeting[];
+  meetings: Meeting<Section>[];
 
-  constructor(sectionJson: Object, course: Course);
+  constructor(sectionJson: Object, courseInstance: CourseInstance);
 }
 
 export default Section;

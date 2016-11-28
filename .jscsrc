@@ -52,7 +52,10 @@
     "client/js/models/courseInstance.js",
     "client/js/models/courseNew.js",
     "client/js/models/customCommitment.js",
+    "client/js/models/scheduleGroupNew.js",
     "client/js/models/scheduleMeetingGroup.js",
+    "client/js/models/sectionNew.js",
+    "client/js/utils.js",
     "public/assets/gen/**",
     "node_modules/**"
   ],
