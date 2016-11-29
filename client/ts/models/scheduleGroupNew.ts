@@ -25,15 +25,25 @@ class ScheduleGroup implements Enumerator<Schedule> {
     this.userId = userId;
     this.courses = courses;
 
+    this._size = 1;
     this._courseInstanceEnumerator = new OptionsEnumerator<SectionsEnumerator>(
-        this.courses.map((course: Course) => course.instances.map(
-            (courseInstance: CourseInstance) => new OptionsEnumerator<Section>(
-                courseInstance.optionTypes.map((optionType: string) => courseInstance
-                    .getOptionsByType(optionType)
-                    .filter(option => option.selected)
-                )
-            ))
-        )
+        this.courses.map((course: Course) => {
+          let courseEnumerationSize = 0;
+          const optionsEnumerators = course.instances.map(
+              (courseInstance: CourseInstance) => {
+                const optionEnumerator = new OptionsEnumerator<Section>(
+                    courseInstance.optionTypes.map((optionType: string) => courseInstance
+                        .getOptionsByType(optionType)
+                        .filter(option => option.selected)
+                    )
+                );
+                courseEnumerationSize += optionEnumerator.size;
+                return optionEnumerator;
+              }
+          );
+          this._size *= courseEnumerationSize;
+          return optionsEnumerators;
+        })
     );
     this.reset();
     this._currentSectionsEnumerators = this._courseInstanceEnumerator.current();
@@ -84,9 +94,10 @@ class ScheduleGroup implements Enumerator<Schedule> {
   }
 
   current(): Schedule|null {
-    const sections: Section[]|null =
-        this._currentSectionsEnumerators.map(e => e.current()).reduce((a, b) => a.concat(b));
-    if (!sections || sections.length != this.expectedOptionsLength) {
+    const sections: Section[] = this._currentSectionsEnumerators
+        .map(e => e.current())
+        .reduce((a, b) => a.concat(b));
+    if (sections.length != this.expectedOptionsLength) {
       return null;
     }
 
