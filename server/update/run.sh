@@ -31,3 +31,5 @@ cd ${APP_ROOT} \
   && git checkout gh-pages \
   && git merge master \
   && git push origin-ssh gh-pages
+
+exit 0
