@@ -1,5 +1,5 @@
 import Course from './courseNew';
-import Schedule from './schedule';
+import Schedule = require('./schedule');
 import Section from './sectionNew';
 import CourseInstance from './courseInstance';
 
@@ -10,7 +10,7 @@ type SectionsEnumerator = OptionsEnumerator<Section>;
 type CourseInstanceEnumerator = OptionsEnumerator<SectionsEnumerator>;
 
 
-class ScheduleGroup implements Enumerator<Schedule> {
+export default class ScheduleGroup implements Enumerator<Schedule> {
   id: string;
   userId: string;
 
@@ -18,7 +18,9 @@ class ScheduleGroup implements Enumerator<Schedule> {
 
   private _courseInstanceEnumerator: CourseInstanceEnumerator;
   private _size: number = 0;
-  private _currentSectionsEnumerators: SectionsEnumerator[];
+  private _expectedOptionsLength: number;
+  private _currentSectionsEnumerators: SectionsEnumerator[] = [];
+  private _sections: {[id: string]: Section} = {};
 
   constructor(userId: string, courses: Course[]) {
     this.id = generateId(userId, courses);
@@ -31,6 +33,7 @@ class ScheduleGroup implements Enumerator<Schedule> {
           let courseEnumerationSize = 0;
           const optionsEnumerators = course.instances.map(
               (courseInstance: CourseInstance) => {
+                courseInstance.sections.forEach(s => this._sections[s.id] = s);
                 const optionEnumerator = new OptionsEnumerator<Section>(
                     courseInstance.optionTypes.map((optionType: string) => courseInstance
                         .getOptionsByType(optionType)
@@ -46,7 +49,6 @@ class ScheduleGroup implements Enumerator<Schedule> {
         })
     );
     this.reset();
-    this._currentSectionsEnumerators = this._courseInstanceEnumerator.current();
 
     if (this._courseInstanceEnumerator.size > 0) {
       this._size = this._currentSectionsEnumerators
@@ -64,31 +66,42 @@ class ScheduleGroup implements Enumerator<Schedule> {
   }
 
   get expectedOptionsLength(): number {
-    return this._currentSectionsEnumerators
-        .map(e => e.expectedOptionsLength)
-        .reduce((a, b) => a + b, 0);
+    return this._expectedOptionsLength;
   }
 
   reset() {
-    this._currentSectionsEnumerators.forEach(e => e.reset());
+    this._currentSectionsEnumerators.forEach(e => e && e.reset());
     this._courseInstanceEnumerator.reset();
+    this._currentSectionsEnumerators = this._courseInstanceEnumerator.next();
+    this._expectedOptionsLength = this._currentSectionsEnumerators
+        .map(e => e.expectedOptionsLength)
+        .reduce((a, b) => a + b, 0);
+    this._currentSectionsEnumerators.slice(1).forEach(e => e.next());
   }
 
   _advance(): boolean {
-    do {
+    while (true) {
       for (
           let incrementPos: number = 0;
           incrementPos < this._currentSectionsEnumerators.length;
           incrementPos++
       ) {
-        if (this._currentSectionsEnumerators[incrementPos].next()) {
+        if (this._currentSectionsEnumerators[incrementPos].next().length) {
+          this._expectedOptionsLength = this._currentSectionsEnumerators
+              .map(e => e.expectedOptionsLength)
+              .reduce((a, b) => a + b, 0);
           return true;
         }
         this._currentSectionsEnumerators[incrementPos].reset();
+        this._currentSectionsEnumerators[incrementPos].next();
+      }
+
+      if (this.done) {
+        break;
       }
 
       this._currentSectionsEnumerators = this._courseInstanceEnumerator.next();
-    } while (!this.done);
+    }
 
     return false;
   }
@@ -112,8 +125,33 @@ class ScheduleGroup implements Enumerator<Schedule> {
     return this.current();
   }
 
+  getScheduleById(scheduleId: string): Schedule|null {
+    const sectionIds: string[] = Schedule.getSectionIdsFromId(scheduleId);
+    if (sectionIds.length != this.expectedOptionsLength) {
+      return null;
+    }
+
+    let found = true;
+    const sections = sectionIds.map(sectionId => {
+      const section = this._sections[sectionId];
+      if (!section) {
+        found = false;
+      }
+      return section;
+    }, this);
+    if (!found) {
+      return null;
+    }
+
+    return new Schedule(this.userId, sections);
+  }
+
   static getUserIdFromId(id: string): string {
     return Schedule.getUserIdFromId(id);
+  }
+
+  static getCourseInstanceIdsFromId(id: string): string[] {
+    return Schedule.getSectionIdsFromId(id).map(id => id.toString());
   }
 
   static normalizeId(id: string|null): string|null {

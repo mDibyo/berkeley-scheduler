@@ -3,8 +3,9 @@ import angular = require('angular');
 import UserService, {CourseInfo} from './user.service';
 import IReverseLookupService = require('./reverseLookup.service');
 
-import Course from '../models/course';
+import Course from '../models/courseNew';
 import Section from '../models/section';
+import CourseInstance from '../models/courseInstance';
 
 
 interface SectionsMap {[id: string]: Section}
@@ -40,8 +41,10 @@ class CourseService {
       (courseInfo: CourseInfo) => {
         return this.addCourseByIdQ(courseInfo.id).then((course: Course) => {
           course.selected = courseInfo.selected === undefined || courseInfo.selected;
-          course.sections.forEach((section: Section) => {
-            section.selected = courseInfo.unselectedSections.indexOf(section.id) < 0;
+          course.instances.forEach((courseInstance: CourseInstance) => {
+            courseInstance.sections.forEach((section: Section) => {
+              section.selected = courseInfo.unselectedSections.indexOf(section.id) < 0;
+            });
           });
           return course;
         });
@@ -126,7 +129,9 @@ class CourseService {
 
     // Add otherwise.
     this._courses.push(course);
-    course.sections.forEach((section) => this._sections[section.id] = section);
+    course.instances.forEach((courseInstance: CourseInstance) => {
+      courseInstance.sections.forEach(section => this._sections[section.id] = section);
+    });
 
     course.add();
     course.selected = true;
@@ -145,7 +150,9 @@ class CourseService {
       }
 
       this._courses.splice(courseIdx, 1);
-      course.sections.forEach((section) => delete this._sections[section.id]);
+      course.instances.forEach((courseInstance: CourseInstance) => {
+        courseInstance.sections.forEach(section => delete this._sections[section.id]);
+      });
 
       course.drop();
       this.save();
@@ -160,12 +167,14 @@ class CourseService {
     this._userService.courseInfos = this._courses.map((course: Course) => {
       const selectedSections: string[] = [];
       const unselectedSections: string[] = [];
-      course.sections.forEach((section: Section) => {
-        if (section.selected) {
-          selectedSections.push(section.id);
-        } else {
-          unselectedSections.push(section.id);
-        }
+      course.instances.forEach((courseInstance: CourseInstance) => {
+        courseInstance.sections.forEach((section: Section) => {
+          if (section.selected) {
+            selectedSections.push(section.id);
+          } else {
+            unselectedSections.push(section.id);
+          }
+        });
       });
       return {
         id: course.id,

@@ -94,11 +94,11 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
       scheduleFactory.setSchedulingOption('showFinalsSchedule', vm.showFinalsSchedule);
     }
 
-    function getFinalsForDay(courses, day) {
+    function getFinalsForDay(courseInstanceSections, day) {
       var finals = [];
       var finalSlots = [[], [], [], []];
-      for (var courseId in courses) {
-        var final = courses[courseId][0].course.finalMeeting;
+      for (var id in courseInstanceSections) {
+        var final = courseInstanceSections[id][0].courseInstance.finalMeeting;
         // TODO: The attempt to clone with `angular.extend` was part of a hack for displaying
         // conflicting finals in order to get a release out of the door. It was abandoned
         // because it was recursively triggering angular digests. We should not be
@@ -183,16 +183,16 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     }
 
     function getMeetingViewText(meetingView) {
-      return meetingView.owner.course.department + ' ' +
-          meetingView.owner.course.courseNumber + ' ' +
+      return meetingView.owner.courseInstance.course.department + ' ' +
+          meetingView.owner.courseInstance.course.courseNumber + ' ' +
           meetingView.owner.type + '<br>' +
           meetingView.location + '<br>CCN ' +
           meetingView.owner.id;
     }
 
     function getMeetingViewTextTitle(meetingView) {
-      return meetingView.owner.course.department + ' ' +
-        meetingView.owner.course.courseNumber + ' ' +
+      return meetingView.owner.courseInstance.course.department + ' ' +
+        meetingView.owner.courseInstance.course.courseNumber + ' ' +
         meetingView.owner.type + '\n' +
         meetingView.location + '\nCCN ' +
         meetingView.owner.id;
@@ -235,7 +235,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     }
 
     function getMeetingViewBackgroundColor(meetingView) {
-      return Course.colorCodes[meetingView.owner.course.color];
+      return Course.colorCodes[meetingView.owner.courseInstance.color];
     }
 
     function exportScheduleToCalendar(schedule) {

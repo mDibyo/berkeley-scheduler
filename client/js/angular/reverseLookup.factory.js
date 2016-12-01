@@ -9,14 +9,13 @@ var _1arySectionIdToSubjectAreaIndexUrl =
   indicesUrlFormat.replace('{}', '1ary-section-id-to-subject-area');
 
 function reverseLookup($http, $q, courses) {
-  var _coursesCache = {};
+  const _coursesCache = {};
 
-  var _2aryTo1arySectionIdIndexQ =
+  const _2aryTo1arySectionIdIndexQ =
     $http.get(_2aryTo1arySectionIdIndexUrl).then(function(response) {
       return response.data;
     });
-
-  var _1arySectionIdToSubjectAreaIndexQ =
+  const _1arySectionIdToSubjectAreaIndexQ =
     $http.get(_1arySectionIdToSubjectAreaIndexUrl).then(function(response) {
       return response.data;
     });
@@ -32,10 +31,10 @@ function reverseLookup($http, $q, courses) {
     }).then(function(subjectAreaInfo) {
       return courses.getCoursesQBySubjectAreaCode(subjectAreaInfo[0])
         .then(function(courseList) {
-          var courseNumber = subjectAreaInfo[1];
+          const courseNumber = subjectAreaInfo[1];
           for (var i = 0; i < courseList.length; i++) {
             if (courseList[i].courseNumber === courseNumber) {
-              var course = courseList[i];
+              const course = courseList[i];
               _coursesCache[id] = course;
               return course;
             }

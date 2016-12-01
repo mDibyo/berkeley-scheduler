@@ -1,5 +1,5 @@
 import Section from '../models/section';
-import Meeting from './meeting';
+import Meeting = require('./meeting');
 import ScheduleMeetingGroup from './scheduleMeetingGroup';
 
 declare interface DayMeetings {[id: string]: Meeting<Section>[]}
@@ -17,6 +17,7 @@ declare class Schedule {
 
   constructor(userId: string, sections: Section[]);
   static getUserIdFromId(id: string): string;
+  static getSectionIdsFromId(id: string): string[];
 }
 
-export default Schedule;
+export = Schedule;

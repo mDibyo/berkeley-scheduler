@@ -1,7 +1,7 @@
 import angular = require('angular');
 
 import CourseInstance from './courseInstance';
-import {Meeting} from './meeting';
+import Meeting = require('./meeting');
 
 
 export interface SectionJson {
@@ -14,7 +14,7 @@ export interface SectionJson {
   waitlisted: number;
   waitlistCapacity: number;
 
-  meetingJsons: Object[];
+  meetings: Object[];
 }
 
 
@@ -39,7 +39,7 @@ export default class Section {
     if (courseInstance) {
       this.courseInstance = courseInstance;
     }
-    this.meetings = sectionJson.meetingJsons.map(
+    this.meetings = sectionJson.meetings.map(
         (meetingJson) => Meeting.parse(meetingJson, this)
     );
     this.selected = true;

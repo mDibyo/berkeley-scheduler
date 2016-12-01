@@ -3,6 +3,7 @@
 
 <h6 class="md-caption">{{ course.description }}</h6>
 
+<div ng-repeat="courseInstance in course.instances">
 <table class="right-pane-item md-body-1">
   <tr>
     <th class="section-select">
@@ -20,7 +21,7 @@
     <th>Enrollment</th>
     <th>Waitlist</th>
   </tr>
-  <tbody ng-if="false" ng-repeat-start="section in course.sections | orderBy:[
+  <tbody ng-if="false" ng-repeat-start="section in courseInstance.sections | orderBy:[
         section.number,
         vm.extractSectionTypeMapping,
         'id'
@@ -48,4 +49,6 @@
   </tr>
   <tbody ng-if="false" ng-repeat-end></tbody>
 </table>
+<br>
+</div>
 </div>

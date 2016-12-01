@@ -37,12 +37,12 @@
         </div>
 
         <div class="final-display-section-parent"
-             ng-repeat="final in vm.getFinalsForDay(schedule.courses, day)">
+             ng-repeat="final in vm.getFinalsForDay(schedule.courseInstances, day)">
           <div class="schedule-display finals-display-section"
                layout="row" layout-align="center center"
                ng-style="vm.getFinalStyle(final)">
             <div class="schedule-display finals-display-section-inner">
-              {{final.course.department}} {{final.course.courseNumber}}
+              {{final.courseInstance.course.department}} {{final.courseInstance.course.courseNumber}}
             </div>
           </div>
 
@@ -50,7 +50,7 @@
                layout="row" layout-align="center center"
                ng-style="vm.getFinalHoverStyle(final)">
             <div class="schedule-display finals-display-section-inner">
-              {{final.course.department}} {{final.course.courseNumber}}
+              {{final.courseInstance.course.department}} {{final.courseInstance.course.courseNumber}}
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import Section from './section';
 import Course from './courseNew';
 import {Commitment, ColorRegisterableCommitment} from './commitment';
-import Meeting from './meeting';
+import Meeting = require('./meeting');
 
 
 export default class CourseInstance extends ColorRegisterableCommitment {

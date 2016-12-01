@@ -7,7 +7,7 @@ function bsCourseDisplayDirective() {
 
     var vm = this;
 
-    vm.sectionTypeMapping = {
+    vm.sectionTypePriority = {
       'LEC': 0,
       'SEM': 1,
       'DIS': 3,
@@ -21,12 +21,16 @@ function bsCourseDisplayDirective() {
 
     function onChangeSelectAllSections() {
       if (vm.selectAllSections) {
-        $scope.course.sections.forEach(function(section) {
-          section.selected = true;
+        $scope.course.instances.forEach(function(courseInstance) {
+          courseInstance.sections.forEach(function(section) {
+            section.selected = true;
+          });
         });
       } else {
-        $scope.course.sections.forEach(function(section) {
-          section.selected = false;
+        $scope.course.instances.forEach(function(courseInstance) {
+          courseInstance.sections.forEach(function(section) {
+            section.selected = true;
+          });
         });
       }
       setSchedulesStale();
@@ -37,7 +41,7 @@ function bsCourseDisplayDirective() {
     }
 
     function extractSectionTypeMapping(section) {
-      return vm.sectionTypeMapping[section.type];
+      return vm.sectionTypePriority[section.type];
     }
   }
 

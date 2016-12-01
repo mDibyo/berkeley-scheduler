@@ -1,5 +1,5 @@
 import CourseInstance from './courseInstance';
-import Meeting from './meeting';
+import Meeting = require('./meeting');
 import {Identifiable} from '../utils';
 
 

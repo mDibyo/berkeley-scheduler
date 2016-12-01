@@ -1,7 +1,7 @@
 'use strict';
 
 var constants = require('../constants');
-var Course = require('../models/course');
+var Course = require('../models/courseNew').default;
 
 var departmentsUrl = 'data/departments.json';
 var subjectAreaAbbrvsUrl = 'data/abbreviations.json';
@@ -54,9 +54,13 @@ function courses($http, $q, finals) {
           return sectionData.printInScheduleOfClasses;
         });
         var course = Course.parse(courseData);
-        finalQs.push(finals.getFinalMeetingForCourseQ(course).then(function(final) {
-          course.setFinalMeeting(final);
-        }));
+        course.instances.forEach(function(courseInstance) {
+          finalQs.push(finals.getFinalMeetingForCourseInstanceQ(courseInstance).then(
+              function(finalMeeting) {
+                courseInstance.setFinalMeeting(finalMeeting);
+              }
+          ));
+        });
         return course;
       });
 

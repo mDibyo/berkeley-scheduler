@@ -4,7 +4,7 @@ var constants = require('../constants');
 
 var Time = require('../models/time');
 var Schedule = require('../models/schedule');
-var ScheduleGroup = require('../models/scheduleGroup');
+var ScheduleGroup = require('../models/scheduleGroupNew').default;
 var scheduleGenerationStatus = require('../models/scheduleGenerationStatus');
 
 var generatingSchedulesInstanceIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -15,6 +15,7 @@ function scheduleFactory($q, $timeout, userService, courseService) {
   var _savedSchedules = [];
   var _addSavedScheduleListeners = [];
   var _dropSavedScheduleListeners = [];
+  /** @type ScheduleGroup **/
   var _currScheduleGroup = null;
   var _scheduleIdsByFp = {};
   var _currFpList = [];
@@ -249,12 +250,13 @@ function scheduleFactory($q, $timeout, userService, courseService) {
         _generatingSchedulesStops[instanceId] = false;
 
         // Map schedules to footprints
+        _currScheduleGroup.reset();
         _scheduleIdsByFp = {};
         var deferred = $q.defer();
-        var totalNumSchedules = _currScheduleGroup.getTotalNumSchedules();
+        var totalNumSchedules = _currScheduleGroup.size;
         var totalGenerated = 0;
         var generatorChunkSize = 128;
-        var schedule = _currScheduleGroup.nextSchedule();
+        var schedule = _currScheduleGroup.next();
         var footprint = null;
 
         function updateTotalAndSetAndBroadcastStatus(numGenerated) {
@@ -287,7 +289,7 @@ function scheduleFactory($q, $timeout, userService, courseService) {
               }
               _scheduleIdsByFp[footprint].push(schedule.id);
               numGenerated++;
-              schedule = _currScheduleGroup.nextSchedule();
+              schedule = _currScheduleGroup.next();
             }
             updateTotalAndSetAndBroadcastStatus(numGenerated);
             return generateSchedulesHelperAsync();
@@ -372,7 +374,7 @@ function scheduleFactory($q, $timeout, userService, courseService) {
   }
 
   function _findAndSetReasonForScheduleGenerationFailure() {
-    if (_currScheduleGroup && _currScheduleGroup.getTotalNumSchedules() <= 0) {
+    if (_currScheduleGroup && _currScheduleGroup.size <= 0) {
       // Not enough courses/sections were selected
       var courses = _currScheduleGroup.courses;
       if (courses.length <= 0) {
@@ -381,22 +383,44 @@ function scheduleFactory($q, $timeout, userService, courseService) {
         ));
         return;
       }
+
       for (var i = 0; i < courses.length; i++) {
         var course = courses[i];
-        for (var j = 0; j < course.sectionTypes.length; j++) {
-          var selectedSections =
-            course.getSectionsByType(course.sectionTypes[j]).filter(function(section) {
-              return section.selected;
-            });
-          if (selectedSections.length <= 0) {
-            _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
+        var someSelected = false;
+        for (var j = 0; j < course.instances.length; j++) {
+          var courseInstance = course.instances[j];
+          someSelected = true;
+          for (var k = 0; k < courseInstance.optionTypes.length; k++) {
+            var selectedOptions =
+                course.getOptionsByType(course.optionTypes[k]).filter(function(option) {
+                  return option.selected;
+                });
+            if (selectedOptions.length <= 0) {
+              // This courseInstance has at least one optionType for which no options
+              // are selected. Therefore, this courseInstance can not be used in
+              // scheduling. Break and check other course instances.
+              someSelected = false;
+              break;
+            }
+          }
+          if (someSelected) {
+            // At least one course instance (this one) has some options selected for all
+            // its option types. Break immediately and check other courses because this
+            // is not the reason for the error.
+            break;
+          }
+        }
+        if (!someSelected) {
+          // None of the course instances for this course had some options selected for
+          // all its option types. Therefore, this is one reason (out of potentially
+          // multiple reasons) for the error.
+          _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
               'No sections of type ' +
-              course.sectionTypes[j] +
+              course.sectionTypes[k] +
               ' were selected for ' +
               course.getName() + '.'
-            ));
-            return;
-          }
+          ));
+          return;
         }
       }
     }
@@ -404,14 +428,16 @@ function scheduleFactory($q, $timeout, userService, courseService) {
     // Check if any filtering option is discarding all schedules
     var fpList = Object.keys(_scheduleIdsByFp);
 
-    fpList = fpList.filter(function(footprint) {
-      return _filterFns.noTimeConflicts(footprint);
-    });
-    if (fpList.length <= 0) {
-      _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
-        'Schedules without time conflicts could not be found.'
-      ));
-      return;
+    if (_schedulingOptions.noTimeConflicts) {
+      fpList = fpList.filter(function(footprint) {
+        return _filterFns.noTimeConflicts(footprint);
+      });
+      if (fpList.length <= 0) {
+        _setAndBroadcastScheduleGenerationStatus(new scheduleGenerationStatus.Failed(
+            'Schedules without time conflicts could not be found.'
+        ));
+        return;
+      }
     }
 
     fpList = fpList.filter(function(footprint) {
@@ -460,7 +486,7 @@ function scheduleFactory($q, $timeout, userService, courseService) {
     }
 
     var userId = ScheduleGroup.getUserIdFromId(scheduleGroupId);
-    var courseIdList = ScheduleGroup.getCourseIdsFromId(scheduleGroupId);
+    var courseIdList = ScheduleGroup.getCourseInstanceIdsFromId(scheduleGroupId);
     return $q.all(courseIdList.map(function(courseId) {
       return courseService.addCourseByIdQ(courseId);
     })).then(function(courses) {
@@ -497,7 +523,7 @@ function scheduleFactory($q, $timeout, userService, courseService) {
       sectionIdList.forEach(function(sectionId) {
         courseService.getSectionQ(sectionId).then(function(section) {
           section.selected = true;
-          const course = section.course;
+          const course = section.courseInstance.course;
           if (courses.findIndex(function(c) {
                 return c.id === course.id;
               }) < 0) {
@@ -510,15 +536,25 @@ function scheduleFactory($q, $timeout, userService, courseService) {
             setStale();
             // This was the first time the course was added.
             // Only select this section.
-            course.sections.forEach(function(s) {
-              s.selected = s.id === section.id;
+            course.instances.forEach(function(courseInstance) {
+              courseInstance.sections.forEach(function(s) {
+                s.selected = s.id === section.id;
+              });
             });
           } else {
             // The course has already been added previously.
             // Ensure this section is selected.
-            for (var i = 0; i < course.sections.length; i++) {
-              if (course.sections[i].id === section.id) {
-                section.selected = true;
+            var done = false;
+            for (var i = 0; i < course.instances.length; i++) {
+              const courseInstance = course.instances[i];
+              for (var j = 0; j < courseInstance.sections.length; j++) {
+                if (courseInstance.sections[j].id === section.id) {
+                  section.selected = true;
+                  done = true;
+                  break;
+                }
+              }
+              if (done) {
                 break;
               }
             }

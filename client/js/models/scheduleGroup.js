@@ -5,6 +5,7 @@ var Schedule = require('./schedule');
 function ScheduleGroup(userId, courses) {
   this.id = ScheduleGroup.generateId(userId, courses);
   this.userId = userId;
+  /** @type Course[] */
   this.courses = courses;
 
   this.sections = {};
@@ -12,14 +13,14 @@ function ScheduleGroup(userId, courses) {
   this.courses.forEach(function(course) {
     course.sectionTypes.forEach(function(sectionType) {
       this.sectionChoices.push(course
-        .getSectionsByType(sectionType)
-        .map(function(section) {
-          this.sections[section.id] = section;
-          return section;
-        }, this)
-        .filter(function(section) {
-          return section.selected;
-        }, this));
+          .getSectionsByType(sectionType)
+          .map(function(section) {
+            this.sections[section.id] = section;
+            return section;
+          }, this)
+          .filter(function(section) {
+            return section.selected;
+          }, this));
     }, this);
   }, this);
   this.resetIterator();
@@ -40,7 +41,7 @@ ScheduleGroup.normalizeId = function(id) {
   return Schedule.generateId(id.split('.'));
 };
 
-ScheduleGroup.getCourseIdsFromId = function(id) {
+ScheduleGroup.getCourseInstanceIdsFromId = function(id) {
   return Schedule.getSectionIdsFromId(id).map(function(id) {
     id.toString();
   });

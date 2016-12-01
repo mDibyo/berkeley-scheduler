@@ -4,7 +4,7 @@ var Meeting = require('./meeting');
 var ScheduleMeetingGroup = require('./scheduleMeetingGroup').default;
 
 function Schedule(userId, sections) {
-  this.courses = {};
+  this.courseInstances = {};
   // this.sectionsByDay = {
   //   'Monday': [],
   //   'Tuesday': [],
@@ -24,11 +24,11 @@ function Schedule(userId, sections) {
   var sectionIdList = [];
   sections.forEach(function(section) {
     sectionIdList.push(section.id);
-    var courseId = section.course.id;
-    if (!this.courses.hasOwnProperty(courseId)) {
-      this.courses[courseId] = [];
+    var courseInstanceId = section.courseInstance.id;
+    if (!this.courseInstances.hasOwnProperty(courseInstanceId)) {
+      this.courseInstances[courseInstanceId] = [];
     }
-    this.courses[courseId].push(section);
+    this.courseInstances[courseInstanceId].push(section);
 
     section.meetings.forEach(function(meeting) {
       meeting.owner = section;

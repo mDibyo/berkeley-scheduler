@@ -9,7 +9,7 @@ var finalTimesUrl = 'data/' + constants.TERM_ABBREV + '/finals/times.json';
 var finalRulesUrl = 'data/' + constants.TERM_ABBREV + '/finals/rules.json';
 
 function finals($http, $q) {
-  var finalsByCourseId = {};
+  var finalsByCourseInstanceId = {};
 
   var _finalTimesQ = $http.get(finalTimesUrl).then(function(response) {
     return response.data;
@@ -63,20 +63,20 @@ function finals($http, $q) {
     });
   }
 
-  function getFinalQ(course, meetingKey) {
+  function getFinalQ(courseInstance, meetingKey) {
     return getFinalMeetingQ(meetingKey).then(function(finalMeeting) {
-      return new Final(course, finalMeeting);
+      return new Final(courseInstance, finalMeeting);
     })
   }
 
-  function getFinalMeetingForCourseQ(course) {
-    if (finalsByCourseId.hasOwnProperty(course.id)) {
-      return $q.when(finalsByCourseId[course.id]);
+  function getFinalMeetingForCourseInstanceQ(courseInstance) {
+    if (finalsByCourseInstanceId.hasOwnProperty(courseInstance.id)) {
+      return $q.when(finalsByCourseInstanceId[courseInstance.id]);
     }
 
     return _finalRulesAllQ.then(function(finalRulesAll) {
-      var department = course.department;
-      var courseNumber = course.courseNumber;
+      var department = courseInstance.course.department;
+      var courseNumber = courseInstance.course.courseNumber;
 
       // exceptions.
       var exceptions = finalRulesAll.exceptions;
@@ -94,12 +94,12 @@ function finals($http, $q) {
         }
       }
 
-      if (!course.meetings.length) {
+      if (!courseInstance.primarySection.meetings.length) {
         return null;
       }
 
       // TODO(dibyo): Handle multiple primary sections for courses
-      var courseMeeting = course.meetings[0];
+      var courseMeeting = courseInstance.primarySection.meetings[0];
       var courseDays = courseMeeting.days;
       if (courseDays.Saturday || courseDays.Sunday) {
         return finalRulesAll.SatSunCourses;
@@ -111,16 +111,16 @@ function finals($http, $q) {
         return finalRulesAll.TRCourses[courseMeeting.startTime.hours];
       }
     }).then(function(meetingKey) {
-      return getFinalQ(course, meetingKey);
+      return getFinalQ(courseInstance, meetingKey);
     }).then(function(final) {
-      finalsByCourseId[course.id] = final;
+      finalsByCourseInstanceId[courseInstance.id] = final;
       return final;
     })
   }
 
   return {
     finalDatesQ: finalDatesQ,
-    getFinalMeetingForCourseQ: getFinalMeetingForCourseQ
+    getFinalMeetingForCourseInstanceQ: getFinalMeetingForCourseInstanceQ
   };
 }
 angular.module('berkeleyScheduler').factory('finals', [

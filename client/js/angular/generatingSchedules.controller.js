@@ -33,7 +33,7 @@ function GeneratingSchedulesCtrl($state, $window, $location, $stateParams, $q, s
   deferred.promise.then(function() {
     scheduleFactory.generateSchedulesQ().then(function() {
       scheduleFactory.filterAndReorderSchedules();
-    })
+    });
   });
 }
 angular.module('berkeleyScheduler').controller('GeneratingSchedulesCtrl', [

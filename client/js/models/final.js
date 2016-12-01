@@ -1,7 +1,7 @@
 'use strict';
 
-function Final(course, finalMeeting) {
-  this.course = course;
+function Final(courseInstance, finalMeeting) {
+  this.courseInstance = courseInstance;
   this.meeting = finalMeeting;
 }
 

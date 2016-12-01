@@ -4,11 +4,11 @@ declare interface Days {
   [day: string]: boolean;
 }
 
-export declare interface Instructor {
+declare interface Instructor {
   name: string
 }
 
-export declare class Meeting<Owner> {
+declare class Meeting<Owner> {
   startTime: Time;
   endTime: Time;
   days: Days;
@@ -28,5 +28,5 @@ export declare class Meeting<Owner> {
   getTotalMinutes(): number
 }
 
-export default Meeting;
+export = Meeting;
 
