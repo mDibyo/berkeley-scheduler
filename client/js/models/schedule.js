@@ -39,7 +39,7 @@ function Schedule(userId, sections) {
   }, this);
   for (var day in this.meetingsByDay) {
     this.meetingsByDay[day].sort(function(a, b) {
-      return a.startTime.compareTo(b.startTime);
+      return a.startTime.compareTo(b.startTime) * 1440 + a.endTime.compareTo(b.endTime);
     });
   }
 
