@@ -59,8 +59,8 @@
     </td>
   </tr>
   <tbody ng-if="false" ng-repeat-start="section in courseInstance.secondarySections | orderBy:[
-        section.number,
         vm.extractSectionTypePriority,
+        'number',
         'id'
       ]"></tbody>
   <tr ng-repeat="meeting in section.meetings">
