@@ -3,7 +3,7 @@ kind: ScheduledJob
 metadata:
   name: update-enrollment-data
 spec:
-  schedule: 0 2 * * ?
+  schedule: 30 10 * * ?
   jobTemplate:
     spec:
       template:
