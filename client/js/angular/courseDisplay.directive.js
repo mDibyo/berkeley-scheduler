@@ -16,8 +16,9 @@ function bsCourseDisplayDirective() {
     };
     vm.selectAllSections = false;
     vm.onChangeSelectAllSections = onChangeSelectAllSections;
+    vm.onChangeSelectPrimarySection = onChangeSelectPrimarySection;
     vm.setStale = setSchedulesStale;
-    vm.extractSectionTypeMapping = extractSectionTypeMapping;
+    vm.extractSectionTypePriority = extractSectionTypePriority;
 
     function onChangeSelectAllSections() {
       if (vm.selectAllSections) {
@@ -29,8 +30,21 @@ function bsCourseDisplayDirective() {
       } else {
         $scope.course.instances.forEach(function(courseInstance) {
           courseInstance.sections.forEach(function(section) {
-            section.selected = true;
+            section.selected = false;
           });
+        });
+      }
+      setSchedulesStale();
+    }
+
+    function onChangeSelectPrimarySection(courseInstance) {
+      if (courseInstance.primarySection.selected) {
+        courseInstance.secondarySections.forEach(function(section) {
+          section.selected = true;
+        });
+      } else {
+        courseInstance.secondarySections.forEach(function(section) {
+          section.selected = false;
         });
       }
       setSchedulesStale();
@@ -40,7 +54,7 @@ function bsCourseDisplayDirective() {
       scheduleFactory.setStale(true);
     }
 
-    function extractSectionTypeMapping(section) {
+    function extractSectionTypePriority(section) {
       return vm.sectionTypePriority[section.type];
     }
   }

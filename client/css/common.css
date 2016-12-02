@@ -87,6 +87,10 @@ md-autocomplete {
   border-color: #003262;
 }
 
+td.course-instance-divider {
+  padding: 2px;
+}
+
 .right-pane {
   background-color: #ffffff;
   height: 100%;

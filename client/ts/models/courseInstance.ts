@@ -10,19 +10,21 @@ export default class CourseInstance extends ColorRegisterableCommitment {
   course: Course;
 
   primarySection: Section;
+  secondarySections: Section[];
   sections: Section[];
   finalMeeting: Meeting<CourseInstance>;
 
   optionTypes: string[] = [];
 
-  constructor(course: Course, primarySection: Section, otherSections: Section[]) {
+  constructor(course: Course, primarySection: Section, secondarySections: Section[] = []) {
     super();
 
     this.primarySection = primarySection;
+    this.secondarySections = secondarySections;
     this.id = this.primarySection.id;
     this.course = course;
 
-    this.sections = [this.primarySection].concat(otherSections);
+    this.sections = [this.primarySection].concat(secondarySections);
     this.sections.forEach((section) => {
       section.courseInstance = this;
 
