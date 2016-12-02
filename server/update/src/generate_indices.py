@@ -32,7 +32,7 @@ def generate_subject_area_to_courses_titles_mapping(classes):
     for subject_area, subject_area_classes in classes.items():
         subject_area_mapping = []
         for course_number, _class in subject_area_classes.items():
-            subject_area_mapping.append([course_number, _class['title']])
+            subject_area_mapping.append([_class['id'], course_number, _class['title']])
         mapping[subject_area] = subject_area_mapping
     return mapping
 
