@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: exploration
+spec:
+  restartPolicy: Never
+  containers:
+  - name: explore
+    image: "berkeleyscheduler/base"
+    command: ["sleep", "3600"]
+    volumeMounts:
+    - name: enrollment-data
+      mountPath: /berkeley-scheduler
+  volumes:
+  - name: enrollment-data
+    gcePersistentDisk:
+      pdName: enrollment-data-pd
+      fsType: ext4
