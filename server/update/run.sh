@@ -20,10 +20,12 @@ cd ${APP_ROOT}/server/update \
   && python3 -m unittest || exit 1
 
 cd ${APP_ROOT} \
-  && git stash \
+  && rm -rf /berkeley-scheduler-data && mkdir /berkeley-scheduler-data \
+  && cp -r data /berkeley-scheduler-data \
+  && git reset --hard origin-ssh/master \
   && git fetch origin-ssh master \
   && git reset --hard origin-ssh/master \
-  && git stash pop \
+  && rm -rf data && cp -r berkeley-scheduler-data/data . \
   && git add data \
   && git commit -m "Update Class API data - $(date +'%m/%d')" \
   && git push origin-ssh master || exit 1
