@@ -134,3 +134,19 @@ def final_index_1ary_section_id_to_subject_area():
                         TERM_ABBRV,
                         'indices',
                         JSON_FILE_FORMAT.format('1ary-section-id-to-subject-area'))
+
+
+def index_subject_area_to_course_titles():
+    return os.path.join(DATA_DIR,
+                        INTERMEDIATE_DIR,
+                        DEPARTMENTS_DIR,
+                        INDICES_DIR,
+                        JSON_FILE_FORMAT.format('subject-area-to-course-titles'))
+
+
+def final_index_subject_area_to_course_titles():
+    return os.path.join(PROJECT_DIR,
+                        FINAL_DIR,
+                        TERM_ABBRV,
+                        'indices',
+                        JSON_FILE_FORMAT.format('subject-area-to-course-titles'))

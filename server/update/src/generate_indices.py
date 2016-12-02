@@ -20,9 +20,20 @@ def generate_2ary_to_1ary_section_id_mapping(classes):
 def generate_1ary_section_id_to_subject_area_mapping(classes):
     mapping = {}
 
-    for subject_area in classes:
-        for course_number, _class in classes[subject_area].items():
+    for subject_area, subject_area_classes in classes.items():
+        for course_number, _class in subject_area_classes.items():
             mapping[_class['id']] = [subject_area, course_number]
+    return mapping
+
+
+def generate_subject_area_to_courses_titles_mapping(classes):
+    mapping = {}
+
+    for subject_area, subject_area_classes in classes.items():
+        subject_area_mapping = []
+        for course_number, _class in subject_area_classes.items():
+            subject_area_mapping.append([course_number, _class['title']])
+        mapping[subject_area] = subject_area_mapping
     return mapping
 
 
@@ -48,6 +59,12 @@ def main():
         generate_1ary_section_id_to_subject_area_mapping(classes)
     with open(index_1ary_section_id_to_subject_area(), 'w') as f:
         json.dump(_1ary_section_id_to_subject_area, f)
+
+    print('generating subject-area-to-course-titles index')
+    subject_area_to_course_titles = \
+        generate_subject_area_to_courses_titles_mapping(classes)
+    with open(index_subject_area_to_course_titles(), 'w') as f:
+        json.dump(subject_area_to_course_titles, f)
 
     return 0
 
