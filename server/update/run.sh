@@ -10,6 +10,7 @@ cd ${APP_ROOT} \
   && git remote add origin-ssh git@github.com:mDibyo/berkeley-scheduler.git
 
 cd ${APP_ROOT} \
+  && git reset --hard HEAD \
   && git checkout master \
   && git fetch origin-ssh master \
   && git reset --hard origin-ssh/master
@@ -30,6 +31,6 @@ cd ${APP_ROOT} \
 cd ${APP_ROOT} \
   && git checkout gh-pages \
   && git merge master \
-  && git push origin-ssh gh-pages
+  && git push origin-ssh gh-pages || git reset --hard HEAD
 
 exit 0
