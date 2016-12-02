@@ -40,6 +40,7 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
                         .filter(option => option.selected)
                     )
                 );
+                optionEnumerator.next();
                 courseEnumerationSize += optionEnumerator.size;
                 return optionEnumerator;
               }
@@ -49,12 +50,6 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
         })
     );
     this.reset();
-
-    if (this._courseInstanceEnumerator.size > 0) {
-      this._size = this._currentSectionsEnumerators
-          .map(e => e.size)
-          .reduce((a, b) => a * b, 1);
-    }
   }
 
   get size(): number {
@@ -69,18 +64,27 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
     return this._expectedOptionsLength;
   }
 
-  reset() {
-    this._currentSectionsEnumerators.forEach(e => e && e.reset());
+  reset(): this {
+    this._currentSectionsEnumerators.forEach(e => e && e.reset().next());
     this._courseInstanceEnumerator.reset();
-    this._currentSectionsEnumerators = this._courseInstanceEnumerator.next();
-    this._expectedOptionsLength = this._currentSectionsEnumerators
-        .map(e => e.expectedOptionsLength)
-        .reduce((a, b) => a + b, 0);
-    this._currentSectionsEnumerators.slice(1).forEach(e => e.next());
+    this._advanceCourseInstanceEnumerator();
+
+    return this;
+  }
+
+  _advanceCourseInstanceEnumerator() {
+    const sectionEnumerators = this._courseInstanceEnumerator.next();
+    if (!this._courseInstanceEnumerator.done) {
+      sectionEnumerators[0].reset();
+      this._currentSectionsEnumerators = sectionEnumerators;
+      this._expectedOptionsLength = sectionEnumerators
+          .map(e => e.expectedOptionsLength)
+          .reduce((a, b) => a + b, 0);
+    }
   }
 
   _advance(): boolean {
-    while (true) {
+    while (!this.done) {
       for (
           let incrementPos: number = 0;
           incrementPos < this._currentSectionsEnumerators.length;
@@ -92,15 +96,14 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
               .reduce((a, b) => a + b, 0);
           return true;
         }
-        this._currentSectionsEnumerators[incrementPos].reset();
-        this._currentSectionsEnumerators[incrementPos].next();
+        this._currentSectionsEnumerators[incrementPos].reset().next();
       }
 
       if (this.done) {
         break;
       }
 
-      this._currentSectionsEnumerators = this._courseInstanceEnumerator.next();
+      this._advanceCourseInstanceEnumerator();
     }
 
     return false;

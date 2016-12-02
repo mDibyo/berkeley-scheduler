@@ -16,7 +16,7 @@ export function generateIdFromIds(userId: string, ids: string[]): string {
 
 
 export interface Enumerator<Enumeration> {
-  reset(): void;
+  reset(): this;
   current(): Enumeration|null;
   next(): Enumeration|null;
   size: number;
@@ -56,12 +56,14 @@ export class OptionsEnumerator<Option> implements Enumerator<Option[]> {
     return this._optionChoicesLengths.length;
   }
 
-  reset() {
+  reset(): this {
     for (let i = 0; i < this._optionChoicesLengths.length; i++) {
       this._optionChoicesIndices[i] = 0;
     }
     this._optionChoicesIndices[0] = -1;
     this._done = false;
+
+    return this;
   }
 
   _advance(): boolean {

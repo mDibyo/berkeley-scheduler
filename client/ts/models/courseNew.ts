@@ -39,25 +39,25 @@ export default class Course implements Identifiable {
 
     const allSections =
         courseJson.sections.map((sectionJson) => new Section(sectionJson));
-    // // Find number of primary sections from section number
-    // const primarySections = allSections.filter(
-    //     (section: Section) => section.number[0] === '0'
-    // );
-    // this.instances = primarySections.map((pSection) => {
-    //   const instanceIdentifier: string = parseInt(pSection.number).toString();
-    //   const sections: Section[] = allSections.filter((section: Section) => {
-    //     return section.number.indexOf(instanceIdentifier) === 0;
-    //   });
-    //   return new CourseInstance(this, pSection, sections);
-    // });
+    // Find number of primary sections from section number
+    const primarySections = allSections.filter(
+        (section: Section) => section.number[0] === '0'
+    );
+    this.instances = primarySections.map((pSection) => {
+      const instanceIdentifier: string = parseInt(pSection.number).toString();
+      const sections: Section[] = allSections.filter((section: Section) => {
+        return section.number.indexOf(instanceIdentifier) === 0;
+      });
+      return new CourseInstance(this, pSection, sections);
+    });
 
-    for (let i = 0; i < allSections.length; i++) {
-      if (allSections[i].id === this.id) {
-        const primarySection: Section = allSections.splice(i, 1)[0];
-        this.instances = [new CourseInstance(this, primarySection, allSections)];
-        break;
-      }
-    }
+    // for (let i = 0; i < allSections.length; i++) {
+    //   if (allSections[i].id === this.id) {
+    //     const primarySection: Section = allSections.splice(i, 1)[0];
+    //     this.instances = [new CourseInstance(this, primarySection, allSections)];
+    //     break;
+    //   }
+    // }
   }
 
   static parse(courseJson: CourseJson): Course {
