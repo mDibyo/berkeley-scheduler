@@ -4,7 +4,7 @@ var constants = require('../constants');
 
 var Time = require('../models/time');
 var Schedule = require('../models/schedule');
-var ScheduleGroup = require('../models/scheduleGroupNew').default;
+var ScheduleGroup = require('../models/scheduleGroup').default;
 var scheduleGenerationStatus = require('../models/scheduleGenerationStatus');
 
 var generatingSchedulesInstanceIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';

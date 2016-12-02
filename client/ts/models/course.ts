@@ -1,4 +1,4 @@
-import Section, {SectionJson} from './sectionNew';
+import Section, {SectionJson} from './section';
 import CourseInstance from './courseInstance';
 import {Identifiable, ColorRegisterableIdentifiable} from '../utils';
 

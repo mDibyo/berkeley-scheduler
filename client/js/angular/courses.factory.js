@@ -1,7 +1,7 @@
 'use strict';
 
 var constants = require('../constants');
-var Course = require('../models/courseNew').default;
+var Course = require('../models/course').default;
 
 var departmentsUrl = 'data/departments.json';
 var subjectAreaAbbrvsUrl = 'data/abbreviations.json';

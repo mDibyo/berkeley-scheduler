@@ -17,11 +17,11 @@ client/js/constants.js
 client/js/lib/polyfills.js
 client/js/models/commitment.js
 client/js/models/courseInstance.js
-client/js/models/courseNew.js
+client/js/models/course.js
 client/js/models/customCommitment.js
-client/js/models/scheduleGroupNew.js
+client/js/models/scheduleGroup.js
 client/js/models/scheduleMeetingGroup.js
-client/js/models/sectionNew.js
+client/js/models/section.js
 client/js/utils.js
 
 ### Misc

@@ -3,8 +3,8 @@ import angular = require('angular');
 import UserService, {CourseInfo} from './user.service';
 import IReverseLookupService = require('./reverseLookup.service');
 
-import Course from '../models/courseNew';
-import Section from '../models/sectionNew';
+import Course from '../models/course';
+import Section from '../models/section';
 import CourseInstance from '../models/courseInstance';
 
 

@@ -1,5 +1,5 @@
-import Section from './sectionNew';
-import Course from './courseNew';
+import Section from './section';
+import Course from './course';
 import Meeting = require('./meeting');
 
 

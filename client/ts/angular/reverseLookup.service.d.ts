@@ -1,6 +1,6 @@
 import angular = require('angular');
 
-import Course from '../models/courseNew';
+import Course from '../models/course';
 
 
 interface IReverseLookupService {

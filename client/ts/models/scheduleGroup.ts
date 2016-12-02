@@ -1,6 +1,6 @@
-import Course from './courseNew';
+import Course from './course';
 import Schedule = require('./schedule');
-import Section from './sectionNew';
+import Section from './section';
 import CourseInstance from './courseInstance';
 
 import {Enumerator, OptionsEnumerator, generateId, generateIdFromIds} from '../utils';
