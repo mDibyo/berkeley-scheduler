@@ -33,8 +33,6 @@ COURSES_TO_ADD = {
 
 
 def request_course(course):
-    print('{} {}'.format(course['subjectAreaCode'], course['courseNumber']))
-
     params = url_parse.urlencode({
         'subject-area-code': cleaned_subject_area_code(course['subjectAreaCode']),
         'catalog-number': course['courseNumber'],
@@ -93,7 +91,7 @@ def extract_section_info_from_json(section_json):
     return {
         'number': section_json.get('number', ''),
         'isPrimary': section_json['association']['primary'],
-        'associatedPrimarySectionId': section_json['association']['primaryAssociatedSectionId']
+        'associatedPrimarySectionId': section_json['association']['primaryAssociatedSectionId'],
         'type': section_json['component']['code'],
         'id': section_json['id'],
         'meetings': extracted_meetings,
@@ -193,7 +191,7 @@ def extract_single_section_info_from_json(sections_json):
     }
 
 
-def main(only_new=False, from_cached=False):
+def main(only_new=False, from_cached=False, only_known=True):
     with open(departments(), 'r') as f:
         subject_areas = json.load(f)['subjectAreas']
 
@@ -221,7 +219,7 @@ def main(only_new=False, from_cached=False):
         else:
             visited = set()
 
-        if from_cached:
+        if from_cached or only_known:
             with open(cache_file, 'r') as f:
                 try:
                     classes_json_cached = json.load(f)
@@ -239,26 +237,30 @@ def main(only_new=False, from_cached=False):
                     continue
                 try:
                     visited.add(course['courseNumber'])
-                    if from_cached:
+                    if from_cached or only_known:
                         if course['courseNumber'] not in classes_json_cached:
                             continue
+                    if from_cached:
                         response = classes_json_cached[course['courseNumber']]
                     else:
                         response = request_course(course)
-                    if response and response['apiResponse']['httpStatus']['code'] == '200':
-                        if 'classSections' in response['apiResponse']['response']:
-                            sections_json = \
-                                response['apiResponse']['response']['classSections']
-                            _class = extract_class_info_from_json(sections_json)
-                            _class.update({
-                                'description': course.get('description', ''),
-                                'units': course['units'],
-                            })
-                        else:
-                            sections_json = response['apiResponse']['response']['classes']['class']
-                            _class = extract_single_section_info_from_json(sections_json)
-                        classes[course['courseNumber']] = _class
-                        classes_json_cached[course['courseNumber']] = response
+                    if response:
+                        status = response['apiResponse']['httpStatus']['code']
+                        print('{}: {} {}'.format(status, course['subjectAreaCode'], course['courseNumber']))
+                        if status == '200':
+                            if 'classSections' in response['apiResponse']['response']:
+                                sections_json = \
+                                    response['apiResponse']['response']['classSections']
+                                _class = extract_class_info_from_json(sections_json)
+                                _class.update({
+                                    'description': course.get('description', ''),
+                                    'units': course['units'],
+                                })
+                            else:
+                                sections_json = response['apiResponse']['response']['classes']['class']
+                                _class = extract_single_section_info_from_json(sections_json)
+                            classes[course['courseNumber']] = _class
+                            classes_json_cached[course['courseNumber']] = response
                 except KeyboardInterrupt:
                     raise
                 except Exception as e:
@@ -290,4 +292,4 @@ if __name__ == '__main__':
         exit()
     SIS_CLASS_API_APP_KEY = os.environ[SIS_CLASS_API_APP_KEY_ENV]
 
-    sys.exit(main(only_new=False, from_cached=False))
+    sys.exit(main(only_new=False, from_cached=False, only_known=True))
