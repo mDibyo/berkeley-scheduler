@@ -70,6 +70,7 @@
         ng-if="vm.addedCoursesList.length > 0"
         ng-repeat="course in vm.addedCoursesList"
         layout="row" layout-align="center center"
+        ui-sref="schedule.viewCourse({id: course.id})"
         ui-sref-active="curr-course"
         class="header-text md-subhead course-list-li">
       <div layout="row" layout-align="start center" class="course-select">
@@ -79,8 +80,7 @@
             class="course-select"
             aria-label="Select course"></md-checkbox>
       </div>
-      <div ui-sref="schedule.viewCourse({id: course.id})"
-           flex layout="row" layout-align="start center">
+      <div flex layout="row" layout-align="start center">
         {{ course.getName() }}
       </div>
       <md-icon class="course-unselect"
