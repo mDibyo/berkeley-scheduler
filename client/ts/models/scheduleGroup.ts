@@ -44,7 +44,7 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
                 courseEnumerationSize += optionEnumerator.size;
                 return optionEnumerator;
               }
-          );
+          ).filter(e => e.size > 0);
           this._size *= courseEnumerationSize;
           return optionsEnumerators;
         })
