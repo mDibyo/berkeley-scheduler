@@ -43,20 +43,20 @@
         md-no-cache
         md-min-length="0"
         md-search-text="courseQuery"
-        md-items="course in vm.searchCourse(courseQuery) |
+        md-items="courseTitle in vm.searchCourseTitle(courseQuery) |
           orderBy: [
             vm.extractCourseNumberNumber,
             vm.extractCourseNumberSuffix,
             vm.extractCourseNumberPrefix
           ]"
-        md-item-text="course.courseNumber"
-        md-selected-item="vm.selectedCourse"
-        md-selected-item-change="vm.selectCourse(vm.selectedCourse)"
+        md-item-text="courseTitle.courseNumber"
+        md-selected-item="vm.selectedCourseTitle"
+        md-selected-item-change="vm.selectCourseWithTitle(vm.selectedCourseTitle)"
         placeholder="Course Number/Title"
         md-menu-class="subject-area">
       <md-item-template>
-        <div class="subject-area-code">{{course.courseNumber}}</div>
-        <div class="subject-area-description">{{course.title || ' '}}</div>
+        <div class="subject-area-code">{{courseTitle.courseNumber}}</div>
+        <div class="subject-area-description">{{courseTitle.title || ' '}}</div>
       </md-item-template>
       <md-not-found>
         No courses found.

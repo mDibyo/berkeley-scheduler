@@ -2,7 +2,7 @@ var BaseCtrl = require('./_base.controller');
 
 
 CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
-function CourseFindCtrl($state, $window, $location, courses, courseService, scheduleFactory, $analytics) {
+function CourseFindCtrl($state, $window, $location, reverseLookup, courses, courseService, scheduleFactory, $analytics) {
   $analytics.pageTrack($location.url());
 
   BaseCtrl.call(this, $state, $window, scheduleFactory);
@@ -13,12 +13,12 @@ function CourseFindCtrl($state, $window, $location, courses, courseService, sche
   vm.subjectAreaIsDisabled = false;
   vm.courseIsDisabled = true;
   vm.selectedCourse = null;
-  vm.coursesList = [];
+  vm.courseTitlesList = [];
   vm.subjectAreasList = [];
   vm.searchSubjectArea = searchSubjectArea;
   vm.selectSubjectArea = selectSubjectArea;
-  vm.searchCourse = searchCourse;
-  vm.selectCourse = selectCourse;
+  vm.searchCourseTitle = searchCourseTitle;
+  vm.selectCourseWithTitle = selectCourseWithTitle;
   vm.extractCourseNumberNumber = extractCourseNumberNumber;
   vm.extractCourseNumberSuffix = extractCourseNumberSuffix;
   vm.extractCourseNumberPrefix = extractCourseNumberPrefix;
@@ -88,52 +88,51 @@ function CourseFindCtrl($state, $window, $location, courses, courseService, sche
   function selectSubjectArea(subjectArea) {
     if (!subjectArea) {
       vm.courseIsDisabled = true;
-      vm.coursesList = [];
+      vm.courseTitlesList = [];
       return;
     }
 
-    courses.getCoursesQBySubjectAreaCode(subjectArea.code).then(function(courses) {
-      vm.coursesList = courses;
+    reverseLookup.getCourseTitlesQBySubjectAreaCode(subjectArea.code).then(function(courseTitles) {
+      vm.courseTitlesList = courseTitles;
       vm.courseIsDisabled = false;
     });
   }
 
-  function searchCourse(query) {
-    return query ? vm.coursesList.filter(createCourseFilterFor(query)) : vm.coursesList;
+  function searchCourseTitle(query) {
+    return query ? vm.courseTitlesList.filter(createCourseFilterFor(query)) : vm.courseTitlesList;
   }
 
   function createCourseFilterFor(query) {
     query = angular.lowercase(query);
-    return function filterFn(course) {
+    return function filterFn(courseTitle) {
       return (
-        angular.lowercase(course.courseNumber).indexOf(query) === 0 ||
-        angular.lowercase(course.title).indexOf(query) === 0
+        angular.lowercase(courseTitle.courseNumber).indexOf(query) === 0 ||
+        angular.lowercase(courseTitle.title).indexOf(query) === 0
       )
     };
   }
 
-  function selectCourse(course) {
-    if (!course) {
+  function selectCourseWithTitle(courseTitle) {
+    if (!courseTitle) {
       return;
     }
-    addCourse(course);
+    reverseLookup.getCourseQBy1arySectionId(courseTitle.id).then(function(course) {
+      addCourse(course);
+    });
   }
 
   var courseNumberRegex = /^([a-zA-Z]*)(\d+)([a-zA-Z]*)/;
 
   function extractCourseNumberNumber(course) {
-    var courseNumber = course.courseNumber;
-    return parseInt(courseNumberRegex.exec(courseNumber)[2]);
+    return parseInt(courseNumberRegex.exec(course.courseNumber)[2]);
   }
 
   function extractCourseNumberSuffix(course) {
-    var courseNumber = course.courseNumber;
-    return courseNumberRegex.exec(courseNumber)[3];
+    return courseNumberRegex.exec(course.courseNumber)[3];
   }
 
   function extractCourseNumberPrefix(course) {
-    var courseNumber = course.courseNumber;
-    return courseNumberRegex.exec(courseNumber)[1];
+    return courseNumberRegex.exec(course.courseNumber)[1];
   }
 
   function setSchedulesStale() {
@@ -149,12 +148,13 @@ function CourseFindCtrl($state, $window, $location, courses, courseService, sche
   }
 }
 angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
-  '$state',
-  '$window',
-  '$location',
-  'courses',
-  'courseService',
-  'scheduleFactory',
-  '$analytics',
-  CourseFindCtrl
+    '$state',
+    '$window',
+    '$location',
+    'reverseLookup',
+    'courses',
+    'courseService',
+    'scheduleFactory',
+    '$analytics',
+    CourseFindCtrl
 ]);

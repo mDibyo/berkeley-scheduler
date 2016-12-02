@@ -4,21 +4,27 @@ var constants = require('../constants');
 
 var indicesUrlFormat = 'data/' + constants.TERM_ABBREV + '/indices/{}.json';
 var _2aryTo1arySectionIdIndexUrl =
-  indicesUrlFormat.replace('{}', '2ary-to-1ary-section-id');
+    indicesUrlFormat.replace('{}', '2ary-to-1ary-section-id');
 var _1arySectionIdToSubjectAreaIndexUrl =
-  indicesUrlFormat.replace('{}', '1ary-section-id-to-subject-area');
+    indicesUrlFormat.replace('{}', '1ary-section-id-to-subject-area');
+var subjectAreaToCourseTitlesIndexUrl =
+    indicesUrlFormat.replace('{}', 'subject-area-to-course-titles');
 
 function reverseLookup($http, $q, courses) {
   const _coursesCache = {};
 
   const _2aryTo1arySectionIdIndexQ =
-    $http.get(_2aryTo1arySectionIdIndexUrl).then(function(response) {
-      return response.data;
-    });
+      $http.get(_2aryTo1arySectionIdIndexUrl).then(function(response) {
+        return response.data;
+      });
   const _1arySectionIdToSubjectAreaIndexQ =
-    $http.get(_1arySectionIdToSubjectAreaIndexUrl).then(function(response) {
-      return response.data;
-    });
+      $http.get(_1arySectionIdToSubjectAreaIndexUrl).then(function(response) {
+        return response.data;
+      });
+  const subjectAreaToCourseTitlesIndexQ =
+      $http.get(subjectAreaToCourseTitlesIndexUrl).then(function(response) {
+        return response.data;
+      });
 
   function getCourseQBy1arySectionId(id) {
     if (id in _coursesCache) {
@@ -53,9 +59,22 @@ function reverseLookup($http, $q, courses) {
     }).then(getCourseQBy1arySectionId);
   }
 
+  function getCourseTitlesQBySubjectAreaCode(subjectAreaCode) {
+    return subjectAreaToCourseTitlesIndexQ.then(function(index) {
+      return index[subjectAreaCode].map(function(courseInfo) {
+        return {
+          id: courseInfo[0],
+          courseNumber: courseInfo[1],
+          title: courseInfo[2]
+        };
+      });
+    });
+  }
+
   return {
     getCourseQBy1arySectionId: getCourseQBy1arySectionId,
-    getCourseQBy2arySectionId: getCourseQBy2arySectionId
+    getCourseQBy2arySectionId: getCourseQBy2arySectionId,
+    getCourseTitlesQBySubjectAreaCode: getCourseTitlesQBySubjectAreaCode
   }
 }
 angular.module('berkeleyScheduler').factory('reverseLookup', [
