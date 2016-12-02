@@ -37,27 +37,28 @@ export default class Course implements Identifiable {
     this.id = courseJson.id;
     this.units = courseJson.units;
 
-    const allSections =
-        courseJson.sections.map((sectionJson) => new Section(sectionJson));
-    // Find number of primary sections from section number
-    const primarySections = allSections.filter(
-        (section: Section) => section.number[0] === '0'
-    );
-    this.instances = primarySections.map((pSection) => {
-      const instanceIdentifier: string = parseInt(pSection.number).toString();
-      const sections: Section[] = allSections.filter((section: Section) => {
-        return section.number.indexOf(instanceIdentifier) === 0;
-      });
-      return new CourseInstance(this, pSection, sections);
-    });
+    const primarySections: Section[] = [];
+    const sectionsByPrimarySectionId: {[id: string]: Section[]} = {};
+    courseJson.sections.forEach(sectionJson => {
+      const section = new Section(sectionJson);
 
-    // for (let i = 0; i < allSections.length; i++) {
-    //   if (allSections[i].id === this.id) {
-    //     const primarySection: Section = allSections.splice(i, 1)[0];
-    //     this.instances = [new CourseInstance(this, primarySection, allSections)];
-    //     break;
-    //   }
-    // }
+      if (section.isPrimary) {
+        primarySections.push(section);
+      } else {
+        const primarySectionId = section.associatedPrimarySectionId;
+        if (!sectionsByPrimarySectionId[primarySectionId]) {
+          sectionsByPrimarySectionId[primarySectionId] = [];
+        }
+        sectionsByPrimarySectionId[primarySectionId].push(section);
+      }
+    });
+    this.instances = primarySections.map(
+        primarySection => new CourseInstance(
+            this,
+            primarySection,
+            sectionsByPrimarySectionId[primarySection.id] || []
+        )
+    );
   }
 
   static parse(courseJson: CourseJson): Course {

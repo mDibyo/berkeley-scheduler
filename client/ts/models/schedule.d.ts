@@ -1,4 +1,4 @@
-import Section from '../models/section';
+import Section from '../models/sectionNew';
 import Meeting = require('./meeting');
 import ScheduleMeetingGroup from './scheduleMeetingGroup';
 

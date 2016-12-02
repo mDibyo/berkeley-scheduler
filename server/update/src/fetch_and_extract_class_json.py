@@ -92,7 +92,8 @@ def extract_section_info_from_json(section_json):
                           for meeting_json in section_json.get('meetings', [])]
     return {
         'number': section_json.get('number', ''),
-        'primary': section_json['association']['primary'],
+        'isPrimary': section_json['association']['primary'],
+        'associatedPrimarySectionId': section_json['association']['primaryAssociatedSectionId']
         'type': section_json['component']['code'],
         'id': section_json['id'],
         'meetings': extracted_meetings,

@@ -4,7 +4,7 @@ import UserService, {CourseInfo} from './user.service';
 import IReverseLookupService = require('./reverseLookup.service');
 
 import Course from '../models/courseNew';
-import Section from '../models/section';
+import Section from '../models/sectionNew';
 import CourseInstance from '../models/courseInstance';
 
 

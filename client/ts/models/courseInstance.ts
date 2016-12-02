@@ -1,4 +1,4 @@
-import Section from './section';
+import Section from './sectionNew';
 import Course from './courseNew';
 import {Commitment, ColorRegisterableCommitment} from './commitment';
 import Meeting = require('./meeting');

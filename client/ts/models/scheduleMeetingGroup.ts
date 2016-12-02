@@ -1,7 +1,7 @@
 'use strict';
 
 import Meeting = require('./meeting');
-import Section from './section';
+import Section from './sectionNew';
 import Time = require('./time');
 
 

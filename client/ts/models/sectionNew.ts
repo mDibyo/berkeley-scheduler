@@ -9,6 +9,9 @@ export interface SectionJson {
   type: string;
   number: string;
 
+  isPrimary: boolean;
+  associatedPrimarySectionId: number;
+
   enrolled: number;
   enrollCapacity: number;
   waitlisted: number;
@@ -23,6 +26,9 @@ export default class Section {
   type: string;
   courseInstance: CourseInstance;
   number: string;
+
+  isPrimary: boolean;
+  associatedPrimarySectionId: number;
 
   enrolled: number;
   enrollCapacity: number;

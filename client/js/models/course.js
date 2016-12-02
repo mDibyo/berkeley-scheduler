@@ -1,7 +1,7 @@
 'use strict';
 
 var Meeting = require('./meeting');
-var Section = require('./section');
+var Section = require('./sectionNew');
 var ColorRegisterableCommitment = require('./commitment').ColorRegisterableCommitment;
 
 

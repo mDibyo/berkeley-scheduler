@@ -1,4 +1,4 @@
-import Section from '../models/section';
+import Section from '../models/sectionNew';
 
 
 declare class Course {
