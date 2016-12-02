@@ -1,12 +1,10 @@
 import Section from './sectionNew';
 import Course from './courseNew';
-import {Commitment, ColorRegisterableCommitment} from './commitment';
 import Meeting = require('./meeting');
 
 
-export default class CourseInstance extends ColorRegisterableCommitment {
+export default class CourseInstance {
   id: string;
-  color: string;
   course: Course;
 
   primarySection: Section;
@@ -17,8 +15,6 @@ export default class CourseInstance extends ColorRegisterableCommitment {
   optionTypes: string[] = [];
 
   constructor(course: Course, primarySection: Section, secondarySections: Section[] = []) {
-    super();
-
     this.primarySection = primarySection;
     this.secondarySections = secondarySections;
     this.id = this.primarySection.id;
@@ -32,6 +28,10 @@ export default class CourseInstance extends ColorRegisterableCommitment {
         this.optionTypes.push(section.type);
       }
     });
+  }
+
+  get color(): string {
+    return this.course.color;
   }
 
   getName(): string {

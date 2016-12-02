@@ -1,6 +1,6 @@
 import Section, {SectionJson} from './sectionNew';
 import CourseInstance from './courseInstance';
-import {Identifiable} from '../utils';
+import {Identifiable, ColorRegisterableIdentifiable} from '../utils';
 
 
 interface CourseJson {
@@ -13,7 +13,7 @@ interface CourseJson {
   sections: SectionJson[];
 }
 
-export default class Course implements Identifiable {
+export default class Course extends ColorRegisterableIdentifiable implements Identifiable {
   id: string;
   department: string;
   courseNumber: string;
@@ -27,6 +27,8 @@ export default class Course implements Identifiable {
   instances: CourseInstance[];
 
   constructor(courseJson: CourseJson) {
+    super();
+
     if (courseJson.displayName === undefined) {
       console.log(courseJson);
     }
@@ -67,13 +69,5 @@ export default class Course implements Identifiable {
 
   getName(): string {
     return `${this.department} ${this.courseNumber}`;
-  }
-
-  add() {
-    this.instances.forEach(instance => instance.add());
-  }
-
-  drop() {
-    this.instances.forEach(instance => instance.drop());
   }
 }

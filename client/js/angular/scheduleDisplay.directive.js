@@ -1,4 +1,4 @@
-var Course = require('../models/course');
+var ColorRegisterableIdentifiable = require('../utils').ColorRegisterableIdentifiable;
 var Meeting = require('../models/meeting');
 var Time = require('../models/time');
 
@@ -179,7 +179,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     }
 
     function getFinalBackgroundColor(final) {
-      return Course.colorCodes[final.course.color];
+      return ColorRegisterableIdentifiable.colorCodes[final.course.color];
     }
 
     function getMeetingViewText(meetingView) {
@@ -235,7 +235,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     }
 
     function getMeetingViewBackgroundColor(meetingView) {
-      return Course.colorCodes[meetingView.owner.courseInstance.color];
+      return ColorRegisterableIdentifiable.colorCodes[meetingView.owner.courseInstance.color];
     }
 
     function exportScheduleToCalendar(schedule) {

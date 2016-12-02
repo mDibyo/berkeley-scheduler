@@ -1,7 +1,8 @@
-import {Option, Commitment, ColorRegisterableCommitment} from './commitment';
+import {Option, Commitment} from './commitment';
+import {ColorRegisterableIdentifiable} from '../utils';
 
 
-export class CustomCommitment extends ColorRegisterableCommitment implements Commitment {
+export class CustomCommitment extends ColorRegisterableIdentifiable implements Commitment {
   static customType: string = 'custom';
 
   name: string;
