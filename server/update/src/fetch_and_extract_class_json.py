@@ -192,7 +192,7 @@ def extract_single_section_info_from_json(sections_json):
     }
 
 
-def main(only_new=False):
+def main(only_new=False, from_cached=False):
     with open(departments(), 'r') as f:
         subject_areas = json.load(f)['subjectAreas']
 
@@ -202,12 +202,12 @@ def main(only_new=False):
     for subject_area in subject_areas:
         if subject_area in completed:
             continue
+
         input_file = course_listing_by_subject_area(subject_area)
         output_file = class_listing_by_subject_area(subject_area)
-        json_output_file = fetched_classes_by_subject_area(subject_area)
+        cache_file = fetched_classes_by_subject_area(subject_area)
 
         classes = {}
-        classes_json = {}
         with open(input_file, 'r') as f:
             courses = json.load(f)
         if only_new:
@@ -220,6 +220,15 @@ def main(only_new=False):
         else:
             visited = set()
 
+        if from_cached:
+            with open(cache_file, 'r') as f:
+                try:
+                    classes_json_cached = json.load(f)
+                except ValueError:
+                    continue
+        else:
+            classes_json_cached = {}
+
         if subject_area in COURSES_TO_ADD:
             courses.extend(COURSES_TO_ADD[subject_area])
 
@@ -229,7 +238,12 @@ def main(only_new=False):
                     continue
                 try:
                     visited.add(course['courseNumber'])
-                    response = request_course(course)
+                    if from_cached:
+                        if course['courseNumber'] not in classes_json_cached:
+                            continue
+                        response = classes_json_cached[course['courseNumber']]
+                    else:
+                        response = request_course(course)
                     if response and response['apiResponse']['httpStatus']['code'] == '200':
                         if 'classSections' in response['apiResponse']['response']:
                             sections_json = \
@@ -243,7 +257,7 @@ def main(only_new=False):
                             sections_json = response['apiResponse']['response']['classes']['class']
                             _class = extract_single_section_info_from_json(sections_json)
                         classes[course['courseNumber']] = _class
-                        classes_json[course['courseNumber']] = response
+                        classes_json_cached[course['courseNumber']] = response
                 except KeyboardInterrupt:
                     raise
                 except Exception as e:
@@ -255,8 +269,8 @@ def main(only_new=False):
         finally:
             with open(output_file, 'w') as f:
                 json.dump(classes, f)
-            with open(json_output_file, 'w') as f:
-                json.dump(classes_json, f)
+            with open(cache_file, 'w') as f:
+                json.dump(classes_json_cached, f)
 
         completed.add(subject_area)
         print('{}/{} subject areas completed'.format(len(completed), num_total))
@@ -275,4 +289,4 @@ if __name__ == '__main__':
         exit()
     SIS_CLASS_API_APP_KEY = os.environ[SIS_CLASS_API_APP_KEY_ENV]
 
-    sys.exit(main(only_new=False))
+    sys.exit(main(only_new=False, from_cached=False))
