@@ -42,8 +42,8 @@
         md-autoselect
         md-no-cache
         md-min-length="0"
-        md-search-text="courseQuery"
-        md-items="courseTitle in vm.searchCourseTitle(courseQuery) |
+        md-search-text="vm.courseQuery"
+        md-items="courseTitle in vm.searchCourseTitle(vm.courseQuery) |
           orderBy: [
             vm.extractCourseNumberNumber,
             vm.extractCourseNumberSuffix,

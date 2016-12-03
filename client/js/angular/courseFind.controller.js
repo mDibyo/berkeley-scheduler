@@ -12,7 +12,8 @@ function CourseFindCtrl($state, $window, $location, reverseLookup, courses, cour
   vm.scheduleIsReady = courseService.ready;
   vm.subjectAreaIsDisabled = false;
   vm.courseIsDisabled = true;
-  vm.selectedCourse = null;
+  vm.courseQuery = null;
+  vm.selectedCourseTitle = null;
   vm.courseTitlesList = [];
   vm.subjectAreasList = [];
   vm.searchSubjectArea = searchSubjectArea;
@@ -86,6 +87,9 @@ function CourseFindCtrl($state, $window, $location, reverseLookup, courses, cour
   }
 
   function selectSubjectArea(subjectArea) {
+    vm.courseQuery = null;
+    vm.selectedCourseTitle = null;
+
     if (!subjectArea) {
       vm.courseIsDisabled = true;
       vm.courseTitlesList = [];
@@ -112,10 +116,17 @@ function CourseFindCtrl($state, $window, $location, reverseLookup, courses, cour
     };
   }
 
-  function selectCourseWithTitle(courseTitle) {
-    if (!courseTitle) {
+  function selectCourseWithTitle() {
+    const courseQuery = vm.courseQuery;
+    const courseTitle = vm.selectedCourseTitle;
+
+    vm.courseQuery = null;
+    vm.selectedCourseTitle = null;
+
+    if (!courseQuery || !courseQuery.length || !courseTitle) {
       return;
     }
+
     reverseLookup.getCourseQBy1arySectionId(courseTitle.id).then(function(course) {
       addCourse(course);
     });
