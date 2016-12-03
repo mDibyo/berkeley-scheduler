@@ -238,7 +238,7 @@ md-tooltip.saved-schedule-description .md-content {
 }
 
 .material-icons.md-light { color: #ffffff; }
-md-icon.course-unselect { color: #ed4e33; }
+md-icon.course-unselect { color: #ed4e33; z-index: 20; }
 md-icon.schedule-nav { color: #003262; cursor: pointer; }
 md-icon.schedule-nav:hover {
   background-color: #3b7ea1;
