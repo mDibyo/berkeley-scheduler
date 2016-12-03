@@ -1,8 +1,22 @@
+const alphaNumericCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+export function generateRandomId(charSet: string, numChars: number): string {
+  let id: string = '';
+  for (var i = 0; i < numChars; i++) {
+    id += charSet[Math.floor(Math.random() * charSet.length)]
+  }
+  return id;
+}
+
+export function generateRandomAlphaNumericId(numChars: number): string {
+  return generateRandomId(alphaNumericCharSet, numChars);
+}
+
 export interface Identifiable {
   id: string;
 }
 
-export function generateId(userId: string, items: Identifiable[]): string {
+export function generateIdFromIdentifiables(userId: string, items: Identifiable[]): string {
   return generateIdFromIds(userId, items.map((item) => item.id));
 }
 

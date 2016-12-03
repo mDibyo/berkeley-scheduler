@@ -3,7 +3,7 @@ import Schedule = require('./schedule');
 import Section from './section';
 import CourseInstance from './courseInstance';
 
-import {Enumerator, OptionsEnumerator, generateId, generateIdFromIds} from '../utils';
+import {Enumerator, OptionsEnumerator, generateIdFromIdentifiables, generateIdFromIds} from '../utils';
 
 
 type SectionsEnumerator = OptionsEnumerator<Section>;
@@ -23,7 +23,7 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
   private _sections: {[id: string]: Section} = {};
 
   constructor(userId: string, courses: Course[]) {
-    this.id = generateId(userId, courses);
+    this.id = generateIdFromIdentifiables(userId, courses);
     this.userId = userId;
     this.courses = courses;
 

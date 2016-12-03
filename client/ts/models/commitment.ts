@@ -1,7 +1,6 @@
 ///<reference path="../lib/polyfills.ts" />
 import {Identifiable} from '../utils';
 import Meeting = require('./meeting');
-export interface Option {}
 
 
 export interface Commitment extends Identifiable {

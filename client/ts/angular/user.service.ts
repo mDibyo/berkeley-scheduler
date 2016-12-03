@@ -4,8 +4,7 @@ import constants = require('../constants');
 
 import Time = require('../models/time');
 import Schedule = require('../models/schedule');
-
-const userIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+import {generateRandomAlphaNumericId} from '../utils';
 
 
 export interface Preferences {
@@ -34,15 +33,6 @@ export interface CourseInfo {
   selected: boolean;
   selectedSections: string[];
   unselectedSections: string[];
-}
-
-
-function _generateId(charSet: string, numChars: number): string {
-  let id: string = '';
-  for (var i = 0; i < numChars; i++) {
-    id += charSet[Math.floor(Math.random() * charSet.length)]
-  }
-  return id;
 }
 
 
@@ -77,7 +67,7 @@ export default class UserService {
     if (!this._primaryUserId) {
       let primaryUserId = this._$cookies.get(UserService._primaryUserIdCookieKey);
       if (primaryUserId === undefined) {
-        primaryUserId = _generateId(userIdCharSet, 10);
+        primaryUserId = generateRandomAlphaNumericId(10);
         this._$cookies.put(UserService._primaryUserIdCookieKey, primaryUserId, {
           expires: this._cookieExpiryDate
         });
