@@ -2,6 +2,7 @@ import angular = require('angular');
 
 import CourseInstance from './courseInstance';
 import Meeting = require('./meeting');
+import {Option, Commitment} from './commitment';
 
 
 export interface SectionJson {
@@ -21,10 +22,10 @@ export interface SectionJson {
 }
 
 
-export default class Section {
+export default class Section implements Option {
   id: string;
   type: string;
-  courseInstance: CourseInstance;
+  owner: CourseInstance;
   number: string;
 
   isPrimary: boolean;
@@ -43,7 +44,7 @@ export default class Section {
     angular.extend(this, sectionJson);
 
     if (courseInstance) {
-      this.courseInstance = courseInstance;
+      this.owner = courseInstance;
     }
     this.meetings = sectionJson.meetings.map(
         (meetingJson) => Meeting.parse(meetingJson, this)

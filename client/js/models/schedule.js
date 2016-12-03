@@ -24,7 +24,7 @@ function Schedule(userId, sections) {
   var sectionIdList = [];
   sections.forEach(function(section) {
     sectionIdList.push(section.id);
-    var courseInstanceId = section.courseInstance.id;
+    var courseInstanceId = section.owner.id;
     if (!this.courseInstances.hasOwnProperty(courseInstanceId)) {
       this.courseInstances[courseInstanceId] = [];
     }

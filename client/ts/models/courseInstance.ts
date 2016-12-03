@@ -1,9 +1,10 @@
 import Section from './section';
 import Course from './course';
 import Meeting = require('./meeting');
+import {Commitment} from './commitment';
 
 
-export default class CourseInstance {
+export default class CourseInstance implements Commitment {
   id: string;
   course: Course;
 
@@ -22,7 +23,7 @@ export default class CourseInstance {
 
     this.sections = [this.primarySection].concat(secondarySections);
     this.sections.forEach((section) => {
-      section.courseInstance = this;
+      section.owner = this;
 
       if (this.optionTypes.indexOf(section.type) < 0) {
         this.optionTypes.push(section.type);

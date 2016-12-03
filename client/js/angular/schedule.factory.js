@@ -523,7 +523,7 @@ function scheduleFactory($q, $timeout, userService, courseService) {
       sectionIdList.forEach(function(sectionId) {
         courseService.getSectionQ(sectionId).then(function(section) {
           section.selected = true;
-          const course = section.courseInstance.course;
+          const course = section.owner.course;
           if (courses.findIndex(function(c) {
                 return c.id === course.id;
               }) < 0) {
