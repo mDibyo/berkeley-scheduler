@@ -47,7 +47,7 @@ function courses($http, $q, finals) {
       var finalQs = [];
 
       var courses = Object.keys(coursesData).filter(function(displayName) {
-        return coursesData[displayName].printInScheduleOfClasses;
+        return coursesData[displayName].printInScheduleOfClasses && coursesData[displayName].id;
       }).map(function(displayName) {
         var courseData = coursesData[displayName];
         courseData.sections = courseData.sections.filter(function(sectionData) {

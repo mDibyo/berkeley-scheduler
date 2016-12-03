@@ -124,7 +124,7 @@ def extract_class_info_from_json(sections_json):
     else:
         primary_section = {
             'id': None,
-            'printInScheduleOfClasses': True,
+            'printInScheduleOfClasses': None,
             'meetings': [{
                 'startTime': None,
                 'endTime': None,

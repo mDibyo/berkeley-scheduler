@@ -67,6 +67,8 @@ function reverseLookup($http, $q, courses) {
           courseNumber: courseInfo[1],
           title: courseInfo[2]
         };
+      }).filter(function(courseTitle) {
+        return courseTitle.id;
       });
     });
   }
