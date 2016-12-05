@@ -237,10 +237,13 @@ def main(only_new=False, from_cached=False, only_known=True):
                     continue
                 try:
                     visited.add(course['courseNumber'])
+
                     if from_cached or only_known:
-                        if course['courseNumber'] not in classes_json_cached:
+                        if classes_json_cached and course['courseNumber'] not in classes_json_cached:
+                            # Only check cache for subject areas that have some courses cached.
                             continue
-                    if from_cached:
+
+                    if from_cached and classes_json_cached:
                         response = classes_json_cached[course['courseNumber']]
                     else:
                         response = request_course(course)
