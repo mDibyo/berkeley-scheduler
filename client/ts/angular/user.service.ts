@@ -142,10 +142,14 @@ export default class UserService {
         noTimeConflicts: true,
         showFinalsSchedule: false,
       }, schedulingOptions);
-      const startTime: Time = schedulingOptions.dayStartTime;
-      schedulingOptions.dayStartTime = new Time(startTime.hours, startTime.minutes);
-      const endTime: Time = schedulingOptions.dayEndTime;
-      schedulingOptions.dayEndTime = new Time(endTime.hours, endTime.minutes);
+      if (schedulingOptions.dayStartTime) {
+        const startTime: Time = schedulingOptions.dayStartTime;
+        schedulingOptions.dayStartTime = new Time(startTime.hours, startTime.minutes);
+      }
+      if (schedulingOptions.dayEndTime) {
+        const endTime: Time = schedulingOptions.dayEndTime;
+        schedulingOptions.dayEndTime = new Time(endTime.hours, endTime.minutes);
+      }
 
       this._schedulingOptions = schedulingOptions;
     }
