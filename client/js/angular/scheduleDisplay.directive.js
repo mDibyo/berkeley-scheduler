@@ -179,7 +179,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     }
 
     function getFinalBackgroundColor(final) {
-      return ColorRegisterableIdentifiable.colorCodes[final.course.color];
+      return ColorRegisterableIdentifiable.colorCodes[final.courseInstance.color];
     }
 
     function getMeetingViewText(meetingView) {
