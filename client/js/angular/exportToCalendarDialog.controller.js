@@ -1,16 +1,17 @@
 var BaseCtrl = require('./_base.controller');
+var constants = require('../constants');
 
 var ical = require('ical-generator');
 var fileSaver = require('file-saver');
 
 
-var MILLISECONDSPERMINUTE = 60 * 1000;
+var MILLISECONDS_PER_MINUTE = 60 * 1000;
 
 function getStartDate() {
   return new Date(2016, 7, 24);
 }
 
-var repeatingUntil = new Date(2016, 11, 3);
+var repeatingUntil = constants.TERM_LAST_DAY;
 var repeatingByDayAbbrvs = {
   Sunday: 'su',
   Monday: 'mo',
@@ -27,7 +28,7 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
 
   var vm = this;
   vm.schedule = schedule;
-  vm.calendarFilename = 'fa16 academic calendar.ics';
+  vm.calendarFilename = constants.TERM_ABBREV + ' academic calendar.ics';
   vm.download = download;
   vm.cancel = cancel;
 
@@ -38,7 +39,7 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
       product: 'berkeleyscheduler.com',
       language: 'EN'
     },
-    name: 'Fall 2016 Academic Calendar',
+    name: constants.TERM + ' Academic Calendar',
     url: vm.getHref('schedule.viewSchedule', {
       scheduleId: schedule.id,
       noTimeConflicts: scheduleFactory.getSchedulingOptions().noTimeConflicts
@@ -61,9 +62,9 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
         if (repeatingByDay.length > 0) {
           var startDate = getStartDate();
           startDate.setHours(meeting.startTime.hours, meeting.startTime.minutes);
-          var endDate = new Date(startDate.getTime() + meeting.getTotalMinutes() * MILLISECONDSPERMINUTE);
+          var endDate = new Date(startDate.getTime() + meeting.getTotalMinutes() * MILLISECONDS_PER_MINUTE);
           calendar.createEvent({
-            uid: 'fa16/' + course.id + '/' + section.id,
+            uid: constants.TERM_ABBREV + '/' + course.id + '/' + section.id,
             start: startDate,
             end: endDate,
             repeating: {
