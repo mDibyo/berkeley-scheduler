@@ -48,9 +48,9 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
     method: 'add'
   });
 
-  Object.keys(vm.schedule.courses).forEach(function(courseId) {
-    vm.schedule.courses[courseId].forEach(function(section) {
-      var course = section.course;
+  Object.keys(vm.schedule.courseInstances).forEach(function(courseInstanceId) {
+    vm.schedule.courseInstances[courseInstanceId].forEach(function(section) {
+      var course = section.owner.course;
       section.meetings.forEach(function(meeting) {
         var repeatingByDay = [];
         for (var day in repeatingByDayAbbrvs) {
