@@ -3,10 +3,11 @@
     "noImplicitAny": true,
     "module": "commonjs",
     "moduleResolution": "node",
+    "outDir": "../js",
     "strictNullChecks": true,
     "target": "ES5"
   },
   "include": [
-    "client/ts/**/*.ts"
+    "**/*.ts"
   ]
 }

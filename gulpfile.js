@@ -121,7 +121,7 @@
   });
 
   gulp.task('ts', function() {
-    var tsProject = ts.createProject('tsconfig.json', {
+    var tsProject = ts.createProject(paths.src.ts.root + '/tsconfig.json', {
       outDir: paths.src.js.root
     });
     var tsResult = tsProject.src().pipe(tsProject());
