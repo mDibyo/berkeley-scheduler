@@ -38,11 +38,7 @@ function bsCourseDisplayDirective() {
     }
 
     function onChangeSelectPrimarySection(courseInstance) {
-      if (courseInstance.primarySection.selected) {
-        courseInstance.secondarySections.forEach(function(section) {
-          section.selected = true;
-        });
-      } else {
+      if (!courseInstance.primarySection.selected) {
         courseInstance.secondarySections.forEach(function(section) {
           section.selected = false;
         });
