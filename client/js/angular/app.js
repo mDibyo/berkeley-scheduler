@@ -30,10 +30,12 @@
   require('./generatingSchedules.controller');
   require('./mobileUnoptimizedDialog.controller');
   require('./viewCourse.controller');
+  require('./viewEvent.controller');
   require('./viewSchedule.controller');
 
   // Directives
   require('./courseDisplay.directive');
+  require('./eventDisplay.directive');
   require('./generateSchedules.directive');
   require('./scheduleDisplay.directive');
 

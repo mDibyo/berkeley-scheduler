@@ -14,30 +14,36 @@ angular.module('berkeleyScheduler').config([
     var scheduleUrl = '/' + constants.TERM_ABBREV;
 
     $stateProvider
-      .state('schedule', {
-        url: scheduleUrl,
-        templateUrl: 'assets/static/html/schedule.html',
-        controller: 'CourseFindCtrl',
-        controllerAs: 'vm'
-      })
-      .state('schedule.viewCourse', {
-        url: '/course/{id}',
-        templateUrl: 'assets/static/html/view_course.partial.html',
-        controller: 'ViewCourseCtrl',
-        controllerAs: 'vm'
-      })
-      .state('schedule.generatingSchedules', {
-        url: '/generate?scheduleGroupId&startScheduleId',
-        templateUrl: 'assets/static/html/generating_schedules.partial.html',
-        controller: 'GeneratingSchedulesCtrl',
-        controllerAs: 'vm'
-      })
-      .state('schedule.viewSchedule', {
-        url: '/{scheduleId}?noTimeConflicts',
-        templateUrl: 'assets/static/html/view_schedule.partial.html',
-        controller: 'ViewScheduleCtrl',
-        controllerAs: 'vm'
-      });
+        .state('schedule', {
+          url: scheduleUrl,
+          templateUrl: 'assets/static/html/schedule.html',
+          controller: 'CourseFindCtrl',
+          controllerAs: 'vm'
+        })
+        .state('schedule.viewCourse', {
+          url: '/course/{id}',
+          templateUrl: 'assets/static/html/view_course.partial.html',
+          controller: 'ViewCourseCtrl',
+          controllerAs: 'vm'
+        })
+        .state('schedule.viewEvent', {
+          url: '/custom/{id}',
+          templateUrl: 'assets/static/html/view_event.partial.html',
+          controller: 'ViewEventCtrl',
+          controllerAs: 'vm'
+        })
+        .state('schedule.generatingSchedules', {
+          url: '/generate?scheduleGroupId&startScheduleId',
+          templateUrl: 'assets/static/html/generating_schedules.partial.html',
+          controller: 'GeneratingSchedulesCtrl',
+          controllerAs: 'vm'
+        })
+        .state('schedule.viewSchedule', {
+          url: '/{scheduleId}?noTimeConflicts',
+          templateUrl: 'assets/static/html/view_schedule.partial.html',
+          controller: 'ViewScheduleCtrl',
+          controllerAs: 'vm'
+        });
 
     $urlRouterProvider.otherwise(scheduleUrl);
 

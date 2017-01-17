@@ -44,8 +44,11 @@
   "disallowTrailingComma": true,
   "disallowTrailingWhitespace": true,
   "excludeFiles": [
+    "client/js/angular/_base.controller.js",
     "client/js/angular/course.service.js",
+    "client/js/angular/eventDisplay.directive.js",
     "client/js/angular/user.service.js",
+    "client/js/angular/viewEvent.controller.js",
     "client/js/constants.js",
     "client/js/lib/polyfills.js",
     "client/js/models/commitment.js",

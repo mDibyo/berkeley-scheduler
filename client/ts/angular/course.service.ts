@@ -13,7 +13,7 @@ interface SectionsMap {[id: string]: Section}
 export type Listener<T> = (item: T) => void;
 export interface ListenerMap<T> {[tag: string]: Listener<T>}
 
-class CourseService {
+export default class CourseService {
   private _$q: angular.IQService;
   private _reverseLookupService: IReverseLookupService;
   private _userService: UserService;
