@@ -18,6 +18,8 @@ Time.parse = function(timeJson) {
   return new Time(timeJson.hours, timeJson.minutes);
 };
 
+Time.midnight = new Time(0, 0);
+
 Time.noon = new Time(12, 0);
 
 Time.fivePM = new Time(17, 0);

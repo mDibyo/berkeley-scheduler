@@ -1,6 +1,6 @@
 'use strict';
 
-var Meeting = require('./meeting');
+var Meeting = require('./meeting').default;
 var ScheduleMeetingGroup = require('./scheduleMeetingGroup').default;
 
 function Schedule(userId, sections) {
@@ -53,7 +53,7 @@ function Schedule(userId, sections) {
 Schedule.timeFootprints = {};
 
 Schedule.prototype.getTimeFootprint = function() {
-  var footprint = Meeting.dayAbrvs.map(function(dayAbrv) {
+  var footprint = Meeting.dayAbbrevs.map(function(dayAbrv) {
     return dayAbrv[1] +
       this.meetingsByDay[dayAbrv[0]].map(function(meeting) {
         return meeting.startTime.getTotalMinutes() + '-' + meeting.endTime.getTotalMinutes();

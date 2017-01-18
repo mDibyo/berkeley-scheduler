@@ -2,7 +2,7 @@
 
 var constants = require('../constants');
 var Final = require('../models/final');
-var Meeting = require('../models/meeting');
+var Meeting = require('../models/meeting').default;
 
 var foreignLanguageListingUrl = 'data/foreignLanguageListing.json';
 var finalTimesUrl = 'data/' + constants.TERM_ABBREV + '/finals/times.json';

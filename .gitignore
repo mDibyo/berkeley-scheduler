@@ -24,6 +24,7 @@ client/js/models/courseInstance.js
 client/js/models/course.js
 client/js/models/customCommitment.js
 client/js/models/customCommitmentOption.js
+client/js/models/meeting.js
 client/js/models/scheduleGroup.js
 client/js/models/scheduleMeetingGroup.js
 client/js/models/section.js

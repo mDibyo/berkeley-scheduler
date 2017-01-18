@@ -1,5 +1,5 @@
 var ColorRegisterableIdentifiable = require('../utils').ColorRegisterableIdentifiable;
-var Meeting = require('../models/meeting');
+var Meeting = require('../models/meeting').default;
 var Time = require('../models/time');
 
 var BaseCtrl = require('./_base.controller');

@@ -1,6 +1,6 @@
 import Section from './section';
 import Course from './course';
-import Meeting = require('./meeting');
+import Meeting from './meeting';
 import {Commitment} from './commitment';
 
 

@@ -1,6 +1,6 @@
 import {Option} from './commitment';
 import {CustomCommitment} from './customCommitment';
-import Meeting = require('./meeting');
+import Meeting from './meeting';
 import {generateRandomAlphaNumericId} from '../utils';
 
 

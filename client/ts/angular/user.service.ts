@@ -6,7 +6,7 @@ import {Days} from '../utils';
 import Time = require('../models/time');
 import Schedule = require('../models/schedule');
 import {CustomCommitment} from '../models/customCommitment';
-import Meeting = require('../models/meeting');
+import Meeting from '../models/meeting';
 import {CustomCommitmentOption} from '../models/customCommitmentOption';
 import {generateRandomAlphaNumericId} from '../utils';
 

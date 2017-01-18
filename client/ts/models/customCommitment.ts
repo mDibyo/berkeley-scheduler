@@ -1,6 +1,6 @@
 import {Option, Commitment} from './commitment';
 import {ColorRegisterableIdentifiable, generateRandomAlphaNumericId} from '../utils';
-import Meeting = require('./meeting');
+import Meeting from './meeting';
 import {CustomCommitmentOption} from './customCommitmentOption';
 
 
@@ -31,5 +31,11 @@ export class CustomCommitment extends ColorRegisterableIdentifiable implements C
 
   getOptionsByType(type: string): Option[] {
     return type === CustomCommitment.customType ? [this.option] : [];
+  }
+
+  addMeeting(): Meeting<CustomCommitmentOption> {
+    const meeting = new Meeting(undefined, undefined, undefined, undefined, undefined, this.option);
+    this.option.meetings.push(meeting);
+    return meeting;
   }
 }

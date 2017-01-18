@@ -1,7 +1,7 @@
 import angular = require('angular');
 
 import CourseInstance from './courseInstance';
-import Meeting = require('./meeting');
+import Meeting from './meeting';
 import {Option, Commitment} from './commitment';
 
 

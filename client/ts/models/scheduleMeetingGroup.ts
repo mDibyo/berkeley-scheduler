@@ -1,6 +1,6 @@
 'use strict';
 
-import Meeting = require('./meeting');
+import Meeting from './meeting';
 import Section from './section';
 import Time = require('./time');
 
@@ -89,4 +89,3 @@ export default class ScheduleMeetingGroup {
     }, []);
   };
 }
-

@@ -1,5 +1,5 @@
 import Section from '../models/section';
-import Meeting = require('./meeting');
+import Meeting from './meeting';
 import ScheduleMeetingGroup from './scheduleMeetingGroup';
 
 declare interface DayMeetings {[id: string]: Meeting<Section>[]}
