@@ -1,8 +1,12 @@
 const alphaNumericCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
+export interface Days {
+  [day: string]: boolean;
+}
+
 export function generateRandomId(charSet: string, numChars: number): string {
   let id: string = '';
-  for (var i = 0; i < numChars; i++) {
+  for (let i = 0; i < numChars; i++) {
     id += charSet[Math.floor(Math.random() * charSet.length)]
   }
   return id;
@@ -66,13 +70,13 @@ export abstract class ColorRegisterableIdentifiable implements Identifiable {
   private static commitmentColors: ColorMap = {};
 
   private static getRegisteredColor() {
-    var l = ColorRegisterableIdentifiable.unregisteredColors.length;
+    const l = ColorRegisterableIdentifiable.unregisteredColors.length;
     if (l == 0) {
       return ColorRegisterableIdentifiable.registeredColors[
           Math.floor(Math.random() * ColorRegisterableIdentifiable.registeredColors.length)]
     }
-    var idx = Math.floor(Math.random() * l);
-    var color = ColorRegisterableIdentifiable.unregisteredColors.splice(idx, 1)[0];
+    const idx = Math.floor(Math.random() * l);
+    const color = ColorRegisterableIdentifiable.unregisteredColors.splice(idx, 1)[0];
     ColorRegisterableIdentifiable.registeredColors.push(color);
     return color;
   }

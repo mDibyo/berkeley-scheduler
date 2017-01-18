@@ -22,6 +22,7 @@
   // Services
   require('./user.service');
   require('./course.service');
+  require('./event.service');
 
   // Controllers
   require('./_base.controller');

@@ -1,8 +1,5 @@
 import Time = require('./time');
-
-declare interface Days {
-  [day: string]: boolean;
-}
+import {Days} from '../utils';
 
 declare interface Instructor {
   name: string
@@ -22,11 +19,10 @@ declare class Meeting<Owner> {
       days: Days,
       location: string,
       instructors: Instructor[],
-      owner: Object
+      owner?: Owner
   )
   static parse<Owner>(meetingJson: Object, owner: Owner): Meeting<Owner>;
   getTotalMinutes(): number
 }
 
 export = Meeting;
-

@@ -1,9 +1,13 @@
 import angular = require('angular');
 
 import constants = require('../constants');
+import {Days} from '../utils';
 
 import Time = require('../models/time');
 import Schedule = require('../models/schedule');
+import {CustomCommitment} from '../models/customCommitment';
+import Meeting = require('../models/meeting');
+import {CustomCommitmentOption} from '../models/customCommitmentOption';
 import {generateRandomAlphaNumericId} from '../utils';
 
 
@@ -35,13 +39,29 @@ export interface CourseInfo {
   unselectedSections: string[];
 }
 
+export interface EventMeetingTimeInfo {
+  hours: number,
+  minutes: number
+}
+
+export interface EventMeetingInfo {
+  startTime: EventMeetingTimeInfo;
+  endTime: EventMeetingTimeInfo;
+  days: Days;
+  location: string;
+}
+
+export interface EventInfo {
+  id: string;
+  selected: boolean;
+  name: string;
+  optionId: string;
+  meetings: EventMeetingInfo[];
+}
 
 export default class UserService {
-  private _$cookies: angular.cookies.ICookiesService;
-  private _$q: angular.IQService;
-
   private _cookieExpiryDate = (() => {
-    var date = new Date();
+    const date = new Date();
     date.setFullYear(date.getFullYear() + 1);
     return date;
   })();
@@ -49,6 +69,7 @@ export default class UserService {
   private static _preferencesCookieKeySuffix = 'preferences';
   private static _schedulingOptionsCookieKeySuffix = 'schedulingOptions';
   private static _courseInfosCookieKeySuffix = 'addedCourses';
+  private static _eventInfosCookieKeySuffix = 'addedEvents';
   private static _savedScheduleIdsCookieKeySuffix = 'savedScheduleIds';
 
   private _primaryUserId: string;
@@ -56,19 +77,16 @@ export default class UserService {
   private _schedulingOptions: SchedulingOptions;
 
   constructor(
-      $cookies: angular.cookies.ICookiesService,
-      $q: angular.IQService,
-  ) {
-    this._$cookies = $cookies;
-    this._$q = $q;
-  }
+      private $cookies: angular.cookies.ICookiesService,
+      private $q: angular.IQService,
+  ) {}
 
   private get primaryUserId(): string {
     if (!this._primaryUserId) {
-      let primaryUserId = this._$cookies.get(UserService._primaryUserIdCookieKey);
+      let primaryUserId = this.$cookies.get(UserService._primaryUserIdCookieKey);
       if (primaryUserId === undefined) {
         primaryUserId = generateRandomAlphaNumericId(10);
-        this._$cookies.put(UserService._primaryUserIdCookieKey, primaryUserId, {
+        this.$cookies.put(UserService._primaryUserIdCookieKey, primaryUserId, {
           expires: this._cookieExpiryDate
         });
       }
@@ -82,11 +100,23 @@ export default class UserService {
     return `${this.primaryUserId}.${constants.TERM_ABBREV}`;
   }
 
+  private getTermIdentifiedCookieValue<V>(keySuffix: string): V[] {
+    let cookieKey: string = `${this.primaryUserIdTermIdentifier}.${keySuffix}`;
+    let value: V[] = this.$cookies.getObject(cookieKey);
+
+    if (!value) {
+      cookieKey = `${this.primaryUserId}.${keySuffix}`;
+      value = this.$cookies.getObject(cookieKey);
+    }
+
+    return value || [];
+  }
+
   get preferences(): Preferences {
     if (!this._preferences) {
       const preferencesCookieKey: string =
           `${this.primaryUserId}.${UserService._preferencesCookieKeySuffix}`;
-      let preferences: Preferences = this._$cookies.getObject(preferencesCookieKey);
+      let preferences: Preferences = this.$cookies.getObject(preferencesCookieKey);
       preferences = angular.extend({
         showMobUnoptDialog: true
       }, preferences);
@@ -99,7 +129,7 @@ export default class UserService {
     this._preferences = newPreferences;
     const preferencesCookieKey: string =
       `${this.primaryUserId}.${UserService._preferencesCookieKeySuffix}`;
-    this._$cookies.putObject(preferencesCookieKey, newPreferences, {
+    this.$cookies.putObject(preferencesCookieKey, newPreferences, {
       expires: this._cookieExpiryDate
     });
   }
@@ -114,7 +144,7 @@ export default class UserService {
       const schedulingOptionsCookieKey: string =
         `${this.primaryUserId}.${UserService._schedulingOptionsCookieKeySuffix}`;
       let schedulingOptions: SchedulingOptions =
-        this._$cookies.getObject(schedulingOptionsCookieKey) || {};
+        this.$cookies.getObject(schedulingOptionsCookieKey) || {};
 
       schedulingOptions = angular.extend({
         showSavedSchedules: false,
@@ -150,7 +180,7 @@ export default class UserService {
     this._schedulingOptions = newSchedulingOptions;
     const schedulingOptionsCookieKey: string =
       `${this.primaryUserId}.${UserService._schedulingOptionsCookieKeySuffix}`;
-    this._$cookies.putObject(schedulingOptionsCookieKey, newSchedulingOptions, {
+    this.$cookies.putObject(schedulingOptionsCookieKey, newSchedulingOptions, {
       expires: this._cookieExpiryDate
     });
   }
@@ -161,41 +191,66 @@ export default class UserService {
   }
 
   get courseInfos(): CourseInfo[] {
-    let courseInfosCookieKey: string =
-      `${this.primaryUserIdTermIdentifier}.${UserService._courseInfosCookieKeySuffix}`;
-    let courseInfos: CourseInfo[] = this._$cookies.getObject(courseInfosCookieKey);
-    if (!courseInfos) {
-      courseInfosCookieKey =
-        `${this.primaryUserId}.${UserService._courseInfosCookieKeySuffix}`;
-      courseInfos = this._$cookies.getObject(courseInfosCookieKey);
-    }
-
-    return courseInfos || [];
+    return this.getTermIdentifiedCookieValue<CourseInfo>(UserService._courseInfosCookieKeySuffix);
   }
   set courseInfos(newCourseInfos: CourseInfo[]) {
     let courseInfosCookieKey: string =
       `${this.primaryUserIdTermIdentifier}.${UserService._courseInfosCookieKeySuffix}`;
-    this._$cookies.putObject(courseInfosCookieKey, newCourseInfos, {
+    this.$cookies.putObject(courseInfosCookieKey, newCourseInfos, {
+      expires: this._cookieExpiryDate
+    });
+  }
+
+  get events(): CustomCommitment[] {
+    const eventInfos =
+        this.getTermIdentifiedCookieValue<EventInfo>(UserService._eventInfosCookieKeySuffix);
+
+    return eventInfos.map((eventInfo: EventInfo) => {
+      const event = new CustomCommitment(eventInfo.name);
+      event.id = eventInfo.id;
+      event.selected = eventInfo.selected;
+      event.option.id = eventInfo.optionId;
+      event.option.meetings = eventInfo.meetings.map((meetingInfo: EventMeetingInfo) => {
+        return new Meeting<CustomCommitmentOption>(
+            new Time(meetingInfo.startTime.hours, meetingInfo.startTime.minutes),
+            new Time(meetingInfo.endTime.hours, meetingInfo.endTime.minutes),
+            meetingInfo.days,
+            meetingInfo.location,
+            [],
+        );
+      });
+
+      return event;
+    })
+  }
+  set events(newEvents: CustomCommitment[]) {
+    let eventInfosCookieKey: string =
+        `${this.primaryUserIdTermIdentifier}.${UserService._eventInfosCookieKeySuffix}`;
+    this.$cookies.putObject(eventInfosCookieKey, newEvents.map((event: CustomCommitment) => {
+      return {
+        id: event.id,
+        selected: event.selected,
+        name: event.getName(),
+        optionId: event.option.id,
+        meetings: event.option.meetings.map(meeting => ({
+          startTime: {hours: meeting.startTime.hours, minutes: meeting.startTime.minutes},
+          endTime: {hours: meeting.endTime.hours, minutes: meeting.endTime.minutes},
+          days: meeting.days,
+          location: meeting.location
+        }))
+      }
+    }), {
       expires: this._cookieExpiryDate
     });
   }
 
   get savedScheduleIds(): string[] {
-    let savedScheduleIdsCookieKey: string =
-      `${this.primaryUserIdTermIdentifier}.${UserService._savedScheduleIdsCookieKeySuffix}`;
-    let savedScheduleIds: string[] = this._$cookies.getObject(savedScheduleIdsCookieKey);
-    if (!savedScheduleIds) {
-      savedScheduleIdsCookieKey =
-        `${this.primaryUserId}.${UserService._savedScheduleIdsCookieKeySuffix}`;
-      savedScheduleIds = this._$cookies.getObject(savedScheduleIdsCookieKey);
-    }
-
-    return savedScheduleIds || [];
+    return this.getTermIdentifiedCookieValue<string>(UserService._savedScheduleIdsCookieKeySuffix);
   }
   set savedScheduleIds(newSavedScheduleIds: string[]) {
     const savedScheduleIdsCookieKey: string =
       `${this.primaryUserIdTermIdentifier}.${UserService._savedScheduleIdsCookieKeySuffix}`;
-    this._$cookies.putObject(savedScheduleIdsCookieKey, newSavedScheduleIds, {
+    this.$cookies.putObject(savedScheduleIdsCookieKey, newSavedScheduleIds, {
       expires: this._cookieExpiryDate
     });
   }

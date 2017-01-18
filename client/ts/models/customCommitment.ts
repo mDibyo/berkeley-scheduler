@@ -1,14 +1,24 @@
 import {Option, Commitment} from './commitment';
 import {ColorRegisterableIdentifiable} from '../utils';
+import Meeting = require('./meeting');
+import {CustomCommitmentOption} from './customCommitmentOption';
 
 
 export class CustomCommitment extends ColorRegisterableIdentifiable implements Commitment {
   static customType: string = 'custom';
 
-  name: string;
   optionTypes: string[] = [CustomCommitment.customType];
+  option: CustomCommitmentOption;
+  selected: boolean = false;
 
-  private _option: Option;
+  constructor(
+      private name: string,
+      meetings?: Meeting<CustomCommitmentOption>[]
+  ) {
+    super();
+
+    this.option = new CustomCommitmentOption(this, meetings);
+  }
 
   getName(): string {
     return this.name;
@@ -19,9 +29,6 @@ export class CustomCommitment extends ColorRegisterableIdentifiable implements C
   }
 
   getOptionsByType(type: string): Option[] {
-    if (type !== CustomCommitment.customType) {
-      return [];
-    }
-    return [this._option];
+    return type === CustomCommitment.customType ? [this.option] : [];
   }
 }
