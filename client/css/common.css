@@ -48,15 +48,19 @@ md-autocomplete {
   color: #fdb515;
 }
 
-.course-list-li {
+.course-list-li, .event-list-li, .event-add {
   cursor: pointer;
   height: 40px;
   color: #ffffff;
 }
-.course-list-li:hover {
+.event-list-li {
+  background-color: #46535E;
+  text-overflow: ellipsis;
+}
+.course-list-li:hover, .event-list-li:hover, .event-add:hover {
   background: #3b7ea1;
 }
-.course-list-li.curr-course {
+.curr-commitment {
   background: #3b7ea1;
 }
 
@@ -76,15 +80,20 @@ md-autocomplete {
   font-size: small;
 }
 
-.course-select md-checkbox {
+.commitment-select md-checkbox {
   width: 20px;
   margin: 2px 10px 2px 2px;
 }
-.course-select md-checkbox div.md-icon {
+.commitment-select md-checkbox div.md-icon {
   border-color: rgba(256, 256, 256, 0.75);
 }
-.course-select md-checkbox div.md-icon::after {
+.commitment-select md-checkbox div.md-icon::after {
   border-color: #003262;
+}
+
+.event-add {
+  background-color: #584F29;
+  font-weight: 500;
 }
 
 td.course-instance-divider {
@@ -102,7 +111,7 @@ td.course-instance-divider {
   width: 100%;
 }
 
-.generate-schedules, .view-course, .generating-schedules, .view-schedule {
+.generate-schedules, .view-course, .view-event, .generating-schedules, .view-schedule {
   padding: 15px;
 }
 
@@ -238,7 +247,7 @@ md-tooltip.saved-schedule-description .md-content {
 }
 
 .material-icons.md-light { color: #ffffff; }
-md-icon.course-unselect { color: #ed4e33; z-index: 20; }
+md-icon.commitment-unselect { color: #ed4e33; z-index: 20; }
 md-icon.schedule-nav { color: #003262; cursor: pointer; }
 md-icon.schedule-nav:hover {
   background-color: #3b7ea1;

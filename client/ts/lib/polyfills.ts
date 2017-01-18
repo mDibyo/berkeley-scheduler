@@ -6,7 +6,7 @@ interface Array<T> {
 }
 
 Array.prototype.remove || (Array.prototype.remove = function (item) {
-  var index = this.indexOf(item);
+  const index = this.indexOf(item);
   if (index >= 0) {
     this.splice(index, 1);
   }
@@ -23,7 +23,7 @@ Array.prototype.findIndex || (Array.prototype.findIndex = function(predicate: Pr
   const thisArg = arguments[1];
   let value: any;
 
-  for (var i = 0; i < this.length; i++) {
+  for (let i = 0, l = this.length; i < l; i++) {
     value = this[i];
     if (predicate.call(thisArg, value, i, this)) {
       return i;

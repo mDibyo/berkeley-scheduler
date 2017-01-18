@@ -1,5 +1,5 @@
 import {Option, Commitment} from './commitment';
-import {ColorRegisterableIdentifiable} from '../utils';
+import {ColorRegisterableIdentifiable, generateRandomAlphaNumericId} from '../utils';
 import Meeting = require('./meeting');
 import {CustomCommitmentOption} from './customCommitmentOption';
 
@@ -17,6 +17,7 @@ export class CustomCommitment extends ColorRegisterableIdentifiable implements C
   ) {
     super();
 
+    this.id = generateRandomAlphaNumericId(7);
     this.option = new CustomCommitmentOption(this, meetings);
   }
 

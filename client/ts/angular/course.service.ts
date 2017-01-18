@@ -2,22 +2,14 @@ import angular = require('angular');
 
 import UserService, {CourseInfo} from './user.service';
 import IReverseLookupService = require('./reverseLookup.service');
-
 import Course from '../models/course';
 import Section from '../models/section';
 import CourseInstance from '../models/courseInstance';
-
+import {ListenerMap, Listener, addListener} from '../utils';
 
 interface SectionsMap {[id: string]: Section}
 
-export type Listener<T> = (item: T) => void;
-export interface ListenerMap<T> {[tag: string]: Listener<T>}
-
 export default class CourseService {
-  private _$q: angular.IQService;
-  private _reverseLookupService: IReverseLookupService;
-  private _userService: UserService;
-
   private _ready: boolean = false;
   private _readyQ: angular.IPromise<void>;
 
@@ -29,15 +21,11 @@ export default class CourseService {
   private _dropCourseListeners: ListenerMap<Course> = {};
 
   constructor(
-      $q: angular.IQService,
-      reverseLookupService: IReverseLookupService,
-      userService: UserService,
+      private $q: angular.IQService,
+      private reverseLookupService: IReverseLookupService,
+      private userService: UserService,
   ) {
-    this._$q = $q;
-    this._reverseLookupService = reverseLookupService;
-    this._userService = userService;
-
-    this._readyQ = this._$q.all(this._userService.courseInfos.map(
+    this._readyQ = this.$q.all(this.userService.courseInfos.map(
       (courseInfo: CourseInfo) => {
         return this.addCourseByIdQ(courseInfo.id).then((course: Course) => {
           course.selected = courseInfo.selected === undefined || courseInfo.selected;
@@ -57,20 +45,16 @@ export default class CourseService {
     });
   }
 
-  private static _addListener<T>(listenerMap: ListenerMap<T>, tag: string, listener: Listener<T>) {
-    listenerMap[tag] = listener;
-  }
-
   addSetReadyListener(tag: string, listener: Listener<boolean>) {
-    CourseService._addListener<boolean>(this._setReadyListeners, tag, listener);
+    addListener<boolean>(this._setReadyListeners, tag, listener);
   }
 
   addAddCourseListener(tag: string, listener: Listener<Course>) {
-    CourseService._addListener<Course>(this._addCourseListeners, tag, listener);
+    addListener<Course>(this._addCourseListeners, tag, listener);
   }
 
   addDropCourseListener(tag: string, listener: Listener<Course>) {
-    CourseService._addListener<Course>(this._dropCourseListeners, tag, listener);
+    addListener<Course>(this._dropCourseListeners, tag, listener);
   }
 
   get ready(): boolean {
@@ -83,10 +67,10 @@ export default class CourseService {
 
   getSectionQ(sectionId: string): angular.IPromise<Section> {
     if (this._sections.hasOwnProperty(sectionId)) {
-      return this._$q.when(this._sections[sectionId]);
+      return this.$q.when(this._sections[sectionId]);
     }
 
-    return this._reverseLookupService.getCourseQBy2arySectionId(sectionId).then(
+    return this.reverseLookupService.getCourseQBy2arySectionId(sectionId).then(
       (course: Course) => {
         this.addCourse(course);
         return this._sections[sectionId];
@@ -109,10 +93,10 @@ export default class CourseService {
   addCourseByIdQ(id: string): angular.IPromise<Course> {
     const courseIdx = this._courses.findIndex((c: Course) => id === c.id);
     if (courseIdx >= 0) {
-      return this._$q.when(this._courses[courseIdx]);
+      return this.$q.when(this._courses[courseIdx]);
     }
 
-    return this._reverseLookupService.getCourseQBy2arySectionId(id).then(
+    return this.reverseLookupService.getCourseQBy2arySectionId(id).then(
       (course: Course) => {
         this.addCourse(course);
         return course;
@@ -164,7 +148,7 @@ export default class CourseService {
   }
 
   save() {
-    this._userService.courseInfos = this._courses.map((course: Course) => {
+    this.userService.courseInfos = this._courses.map((course: Course) => {
       const selectedSections: string[] = [];
       const unselectedSections: string[] = [];
       course.instances.forEach((courseInstance: CourseInstance) => {

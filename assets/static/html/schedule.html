@@ -8,10 +8,6 @@
     </div>
   </div>
   <br>
-  <div class="banner" layout="row" layout-align="center" layout-padding>
-    Now with Spring 2017 classes and finals!
-  </div>
-  <br>
   <form ng-submit="$event.preventDefault()">
     <md-autocomplete
         tabindex=1
@@ -71,26 +67,63 @@
         ng-repeat="course in vm.addedCoursesList"
         layout="row" layout-align="center center"
         ui-sref="schedule.viewCourse({id: course.id})"
-        ui-sref-active="curr-course"
+        ui-sref-active="curr-commitment"
         class="header-text md-subhead course-list-li">
-      <div layout="row" layout-align="start center" class="course-select">
+      <div layout="row" layout-align="start center" class="commitment-select">
         <md-checkbox
             ng-model="course.selected"
             ng-change="vm.setStale()"
-            class="course-select"
+            class="commitment-select"
             aria-label="Select course"></md-checkbox>
       </div>
       <div flex layout="row" layout-align="start center">
         {{ course.getName() }}
       </div>
-      <md-icon class="course-unselect"
+      <md-icon class="commitment-unselect"
                md-svg-icon="minus-circle"
-               title="Drop"
+               title="Drop Course"
                ng-click="vm.dropCourse(course)">
       </md-icon>
     </div>
     <div class="header-text md-subhead start-add" ng-if="vm.addedCoursesList.length === 0">
       Start by adding courses above
+    </div>
+  </div>
+  <div>
+    <div
+        ng-if="vm.addedEventsList.length > 0"
+        ng-repeat="event in vm.addedEventsList"
+        layout="row" layout-align="center center"
+        ui-sref="schedule.viewEvent({id: event.id})"
+        ui-sref-active="curr-commitment"
+        class="header-text md-subhead event-list-li">
+      <div layout="row" layout-align="start center" class="commitment-select">
+        <md-checkbox
+            ng-model="event.selected"
+            ng-change="vm.setStale()"
+            class="commitment-select"
+            aria-label="Select event"></md-checkbox>
+      </div>
+      <div flex layout="row" layout-align="start center">
+        {{ event.getName() }}
+      </div>
+      <md-icon class="commitment-unselect"
+               md-svg-icon="minus-circle"
+               title="Drop Course"
+               ng-click="vm.deleteEvent(event)">
+      </md-icon>
+    </div>
+    <div
+        class="header-text md-subhead event-add"
+        layout="row" layout-align="center center"
+        ng-click="vm.createEvent()">
+      <div style="width: 32px; height: 24px">
+      </div>
+      <div flex layout="row" layout-align="start center">
+        New Custom Event
+      </div>
+      <md-icon md-svg-icon="plus-circle" title="Add Event">
+      </md-icon>
     </div>
   </div>
   <div flex></div>

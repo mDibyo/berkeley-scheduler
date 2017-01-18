@@ -1,13 +1,23 @@
-const alphaNumericCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+const alphaNumericCharSet: string[] = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
 
 export interface Days {
   [day: string]: boolean;
 }
 
-export function generateRandomId(charSet: string, numChars: number): string {
+export type Listener<T> = (item: T) => void;
+export interface ListenerMap<T> {[tag: string]: Listener<T>}
+export function addListener<T>(listenerMap: ListenerMap<T>, tag: string, listener: Listener<T>) {
+  listenerMap[tag] = listener;
+}
+
+export function sample(set: string[]): string {
+  return set[Math.floor(Math.random() * set.length)]
+}
+
+export function generateRandomId(elementSet: string[], numChars: number): string {
   let id: string = '';
   for (let i = 0; i < numChars; i++) {
-    id += charSet[Math.floor(Math.random() * charSet.length)]
+    id += sample(elementSet);
   }
   return id;
 }

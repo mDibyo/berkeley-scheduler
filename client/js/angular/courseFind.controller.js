@@ -1,8 +1,20 @@
+'use strict';
+
 var BaseCtrl = require('./_base.controller');
 
 
 CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
-function CourseFindCtrl($state, $window, $location, reverseLookup, courses, courseService, scheduleFactory, $analytics) {
+function CourseFindCtrl(
+    $state,
+    $window,
+    $location,
+    reverseLookup,
+    courses,
+    courseService,
+    eventService,
+    scheduleFactory,
+    $analytics
+) {
   $analytics.pageTrack($location.url());
 
   BaseCtrl.call(this, $state, $window, scheduleFactory);
@@ -29,11 +41,16 @@ function CourseFindCtrl($state, $window, $location, reverseLookup, courses, cour
   vm.addCourse = addCourse;
   vm.dropCourse = dropCourse;
 
+  vm.addedEventsList = [];
+  vm.createEvent = createEvent;
+  vm.deleteEvent = deleteEvent;
+
   vm.generateSchedulesQ = scheduleFactory.generateSchedulesQ;
 
   courseService.getAllCoursesQ().then(function(courses) {
     vm.addedCoursesList = courses;
   });
+  vm.addedEventsList = eventService.getAllEvents();
 
   courses.getSubjectAreasQ().then(function(subjectAreas) {
     vm.subjectAreasList = subjectAreas;
@@ -54,9 +71,38 @@ function CourseFindCtrl($state, $window, $location, reverseLookup, courses, cour
   });
 
   courseService.addDropCourseListener('courseFind', function(course) {
+    var courseIdx = vm.addedCoursesList.indexOf(course);
     vm.addedCoursesList.remove(course);
     scheduleFactory.setStale();
-    if (vm.addedCoursesList.length != 0) {
+
+    if (vm.addedCoursesList.length !== 0) {
+      vm.goToState('schedule.viewCourse', {
+        id: vm.addedCoursesList[max(0, courseIdx - 1)].id
+      });
+    } else if (vm.addedEventsList.length !== 0) {
+      vm.goToState('schedule.viewEvent', {
+        id: vm.addedEventsList[0].id
+      });
+    } else {
+      vm.goToState('schedule');
+    }
+  });
+
+  eventService.addCreateEventListener('courseFind', function(event) {
+    vm.addedEventsList.push(event);
+    scheduleFactory.setStale();
+    vm.goToState('schedule.viewEvent', {id: event.id});
+  });
+
+  eventService.addDeleteEventListener('courseFind', function(event) {
+    vm.addedEventsList.remove(event);
+    scheduleFactory.setStale();
+
+    if (vm.addedEventsList.length !== 0) {
+      vm.goToState('schedule.viewEvent', {
+        id: vm.addedEventsList[vm.addedEventsList.length - 1].id
+      });
+    } else if (vm.addedCoursesList.length !== 0) {
       vm.goToState('schedule.viewCourse', {
         id: vm.addedCoursesList[vm.addedCoursesList.length - 1].id
       });
@@ -81,8 +127,8 @@ function CourseFindCtrl($state, $window, $location, reverseLookup, courses, cour
         return true;
       }
       return subjectArea.abbreviations.some(function(abbrv) {
-        return angular.lowercase(abbrv).indexOf(query) === 0
-      })
+        return angular.lowercase(abbrv).indexOf(query) === 0;
+      });
     };
   }
 
@@ -112,13 +158,13 @@ function CourseFindCtrl($state, $window, $location, reverseLookup, courses, cour
       return (
         angular.lowercase(courseTitle.courseNumber).indexOf(query) === 0 ||
         angular.lowercase(courseTitle.title).indexOf(query) === 0
-      )
+      );
     };
   }
 
   function selectCourseWithTitle() {
-    const courseQuery = vm.courseQuery;
-    const courseTitle = vm.selectedCourseTitle;
+    var courseQuery = vm.courseQuery;
+    var courseTitle = vm.selectedCourseTitle;
 
     vm.courseQuery = null;
     vm.selectedCourseTitle = null;
@@ -157,6 +203,14 @@ function CourseFindCtrl($state, $window, $location, reverseLookup, courses, cour
   function dropCourse(course) {
     courseService.dropCourseQ(course);
   }
+
+  function createEvent() {
+    eventService.createEvent();
+  }
+
+  function deleteEvent(event) {
+    eventService.deleteEvent(event);
+  }
 }
 angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
     '$state',
@@ -165,6 +219,7 @@ angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
     'reverseLookup',
     'courses',
     'courseService',
+    'eventService',
     'scheduleFactory',
     '$analytics',
     CourseFindCtrl
