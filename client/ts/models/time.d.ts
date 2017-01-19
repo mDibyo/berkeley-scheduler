@@ -3,6 +3,8 @@ declare class Time {
   minutes: number;
 
   constructor(hours: number, minutes: number);
+  static parse(timeJson: {hours: number, minutes: number}|string): Time;
+
   compareTo(other: Time): number;
   getTotalMinutes(): number;
 

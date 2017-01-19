@@ -1,0 +1,8 @@
+<md-input-container class="{{ applyClass }}">
+  <label ng-if="label !== undefined">{{ label }}</label>
+  <md-select ng-model="vm.selectedTime" ng-change="vm.save()">
+    <md-option ng-repeat="time in timeOptions" ng-selected="vm.timeIsSelected(time)" value="{{time}}">
+      {{time.toString()}}
+    </md-option>
+  </md-select>
+</md-input-container>

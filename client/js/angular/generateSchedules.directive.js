@@ -67,16 +67,14 @@ function bsGenerateSchedulesDirective() {
       maybeFilterAndReorderSchedules();
     }
 
-    vm.selectedDayStartTimeJson =
+    vm.selectedDayStartTime =
       schedulingOptions.dayStartTime || halfHours[0];
-    vm.selectedDayEndTimeJson =
+    vm.selectedDayEndTime =
       schedulingOptions.dayEndTime || halfHours[halfHours.length - 1];
     vm.dayStartTimes = halfHours;
     vm.dayEndTimes = halfHours;
     vm.onSelectDayStartTime = onSelectDayStartTime;
     vm.onSelectDayEndTime = onSelectDayEndTime;
-    vm.isSelectedDayStartTime = isSelectedDayStartTime;
-    vm.isSelectedDayEndTime = isSelectedDayEndTime;
 
     vm.noTimeConflicts = schedulingOptions.noTimeConflicts;
     vm.onChangeNoTimeConflicts = onChangeNoTimeConflicts;
@@ -157,38 +155,24 @@ function bsGenerateSchedulesDirective() {
 
     function onSelectDayStartTime() {
       var times = halfHours.slice();
-      var selectedDayStartTime = Time.parse(vm.selectedDayStartTimeJson);
-      while (times.length > 0 && times[0].compareTo(selectedDayStartTime) < 0) {
+      while (times.length > 0 && times[0].compareTo(vm.selectedDayStartTime) < 0) {
         times.shift()
       }
       vm.dayEndTimes = times;
 
-      scheduleFactory.setSchedulingOption('dayStartTime', selectedDayStartTime);
+      scheduleFactory.setSchedulingOption('dayStartTime', vm.selectedDayStartTime);
       maybeFilterAndReorderSchedules();
     }
 
     function onSelectDayEndTime() {
       var times = halfHours.slice();
-      var selectedDayEndTime = Time.parse(vm.selectedDayEndTimeJson);
-      while (times.length > 0 && times[times.length - 1].compareTo(selectedDayEndTime) > 0) {
+      while (times.length > 0 && times[times.length - 1].compareTo(vm.selectedDayEndTime) > 0) {
         times.pop()
       }
       vm.dayStartTimes = times;
 
-      scheduleFactory.setSchedulingOption('dayEndTime', selectedDayEndTime);
+      scheduleFactory.setSchedulingOption('dayEndTime', vm.selectedDayEndTime);
       maybeFilterAndReorderSchedules();
-    }
-
-    function isSelectedDayStartTime(time) {
-      var selectedDayStartTimeJson = Time.parse(vm.selectedDayStartTimeJson);
-      return time.hours === selectedDayStartTimeJson.hours
-        && time.minutes === selectedDayStartTimeJson.minutes;
-    }
-
-    function isSelectedDayEndTime(time) {
-      var selectedDayEndTimeJson = Time.parse(vm.selectedDayEndTimeJson);
-      return time.hours === selectedDayEndTimeJson.hours
-        && time.minutes === selectedDayEndTimeJson.minutes;
     }
   }
 

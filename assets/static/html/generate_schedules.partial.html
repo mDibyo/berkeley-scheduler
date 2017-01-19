@@ -191,32 +191,20 @@
           Time of day restrictions
         </div>
         <div flex layout="row" layout-margin>
-          <md-input-container class="schedule-option">
-            <label>First class starting at/after</label>
-            <md-select
-              ng-model="dvm.selectedDayStartTimeJson"
-              ng-change="dvm.onSelectDayStartTime();">
-              <md-option
-                ng-repeat="time in dvm.dayStartTimes"
-                ng-selected="dvm.isSelectedDayStartTime(time)"
-                value="{{time}}">
-                {{time.toString()}}
-              </md-option>
-            </md-select>
-          </md-input-container>
-          <md-input-container class="schedule-option">
-            <label>Last class ending at/before</label>
-            <md-select
-              ng-model="dvm.selectedDayEndTimeJson"
-              ng-change="dvm.onSelectDayEndTime();">
-              <md-option
-                ng-repeat="time in dvm.dayEndTimes"
-                ng-selected="dvm.isSelectedDayEndTime(time)"
-                value="{{time}}">
-                {{time.toString()}}
-              </md-option>
-            </md-select>
-          </md-input-container>
+          <bs-time-picker
+              apply-class="schedule-option"
+              model="dvm.selectedDayStartTime"
+              label="'First class starting at/after'"
+              time-options="dvm.dayStartTimes"
+              on-change="dvm.onSelectDayStartTime()">
+          </bs-time-picker>
+          <bs-time-picker
+              apply-class="schedule-option"
+              model="dvm.selectedDayEndTime"
+              label="'Last class ending at/before'"
+              time-options="dvm.dayEndTimes"
+              on-change="dvm.onSelectDayEndTime()">
+          </bs-time-picker>
         </div>
       </md-list-item>
     </md-list>

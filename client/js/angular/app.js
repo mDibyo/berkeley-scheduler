@@ -37,6 +37,7 @@
   // Directives
   require('./courseDisplay.directive');
   require('./eventDisplay.directive');
+  require('./timePicker.directive');
   require('./generateSchedules.directive');
   require('./scheduleDisplay.directive');
 
