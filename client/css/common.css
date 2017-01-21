@@ -85,10 +85,10 @@ md-autocomplete {
   margin: 2px 10px 2px 2px;
 }
 .commitment-select md-checkbox div.md-icon {
-  border-color: rgba(256, 256, 256, 0.75);
+  border-color: rgba(256, 256, 256, 0.87);
 }
-.commitment-select md-checkbox div.md-icon::after {
-  border-color: #003262;
+.commitment-select md-checkbox.md-checked div.md-icon {
+  border-color: rgba(253,181,21,0.87);
 }
 
 .event-add {
