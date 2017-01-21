@@ -1,3 +1,22 @@
-<div class="event-display">
-  <h3 class="md-headline">{{ event.getName() }}</h3>
+<div class="event-display right-pane-item" layout="column">
+  <div layout="row">
+    <div flex>
+    <md-input-container class="event-name" title="Event Name">
+      <input class="md-headline" type="text" placeholder="Event Name" ng-model="event.name">
+    </md-input-container>
+    </div>
+    <!--<div flex></div>-->
+    <div layout="column" layout-align="end center" flex-offset="100">
+      <md-button class="md-raised" ng-click="vm.addMeeting()">
+        Add Meeting
+      </md-button>
+    </div>
+  </div>
+  <div>
+    <bs-meeting-editor
+        ng-repeat="meeting in event.option.meetings track by meeting.id"
+        meeting="meeting"
+        on-change="vm.saveMeeting(meeting)">
+    </bs-meeting-editor>
+  </div>
 </div>

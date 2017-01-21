@@ -46,8 +46,10 @@
   "excludeFiles": [
     "client/js/angular/_base.controller.js",
     "client/js/angular/course.service.js",
-    "client/js/angular/eventDisplay.directive.js",
     "client/js/angular/event.service.js",
+    "client/js/angular/eventDisplay.directive.js",
+    "client/js/angular/meetingEditor.directive.js",
+    "client/js/angular/reverse.filter.js",
     "client/js/angular/user.service.js",
     "client/js/angular/timePicker.directive.js",
     "client/js/angular/viewEvent.controller.js",

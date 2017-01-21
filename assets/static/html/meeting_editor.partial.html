@@ -1,0 +1,52 @@
+<div
+    class="event-meeting event-meeting-container"
+    layout="row" layout-align="start start" layout-margin
+    layout-wrap
+    flex>
+  <div>
+  <bs-time-picker
+        apply-class="event-meeting-time"
+        model="meeting.startTime"
+        label="'Start Time'"
+        on-change="change(meeting)">
+    </bs-time-picker>
+  </div>
+  <div>
+    <bs-time-picker
+        apply-class="event-meeting-time"
+        model="meeting.endTime"
+        label="'End Time'"
+        on-change="change(meeting)">
+    </bs-time-picker>
+  </div>
+  <div class="event-meeting-location">
+    <md-input-container>
+      <label>Location</label>
+      <input
+          type="text"
+          title="location"
+          ng-model="meeting.location"
+          ng-change="change(meeting)">
+    </md-input-container>
+  </div>
+  <div class="event-meeting-days">
+    <md-input-container>
+      <label>Days</label>
+      <md-select
+          ng-model="vm.selectedDays"
+          md-on-close="vm.updateDays()"
+          md-container-class="event-meeting-days-select"
+          multiple>
+        <md-option ng-repeat="day in vm.days" ng-value="day">
+          {{ day }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+  </div>
+  <div class="meeting-delete" ng-click="vm.deleteMeeting()">
+    <md-icon class="material-icons md-light"
+             md-svg-icon="close"
+             title="Delete">
+    </md-icon>
+  </div>
+</div>

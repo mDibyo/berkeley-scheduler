@@ -45,6 +45,7 @@ export interface EventMeetingTimeInfo {
 }
 
 export interface EventMeetingInfo {
+  id: string;
   startTime: EventMeetingTimeInfo;
   endTime: EventMeetingTimeInfo;
   days: Days;
@@ -211,13 +212,16 @@ export default class UserService {
       event.selected = eventInfo.selected;
       event.option.id = eventInfo.optionId;
       event.option.meetings = eventInfo.meetings.map((meetingInfo: EventMeetingInfo) => {
-        return new Meeting<CustomCommitmentOption>(
+        const meeting = new Meeting<CustomCommitmentOption>(
             new Time(meetingInfo.startTime.hours, meetingInfo.startTime.minutes),
             new Time(meetingInfo.endTime.hours, meetingInfo.endTime.minutes),
             meetingInfo.days,
             meetingInfo.location,
             [],
+            event.option
         );
+        meeting.id = meetingInfo.id;
+        return meeting;
       });
 
       return event;
@@ -232,7 +236,8 @@ export default class UserService {
         selected: event.selected,
         name: event.getName(),
         optionId: event.option.id,
-        meetings: event.option.meetings.map(meeting => ({
+        meetings: event.option.meetings.map((meeting): EventMeetingInfo => ({
+          id: meeting.id,
           startTime: {hours: meeting.startTime.hours, minutes: meeting.startTime.minutes},
           endTime: {hours: meeting.endTime.hours, minutes: meeting.endTime.minutes},
           days: meeting.days,

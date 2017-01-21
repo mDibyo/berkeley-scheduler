@@ -2,12 +2,14 @@
   'use strict';
 
   angular.module('berkeleyScheduler', [
-    'ui.router',
-    'ngSanitize',
-    'ngCookies',
-    'ngMaterial',
-    'angulartics',
-    'angulartics.google.analytics'
+      'ui.router',
+      // 'ngAnimate',
+      'ngSanitize',
+      'ngCookies',
+      'ngMaterial',
+      'angulartics',
+      'angulartics.google.analytics',
+      'contenteditable'
   ]);
 
   // Configuration
@@ -24,6 +26,9 @@
   require('./course.service');
   require('./event.service');
 
+  // Filters
+  require('./reverse.filter');
+
   // Controllers
   require('./_base.controller');
   require('./courseFind.controller');
@@ -37,6 +42,7 @@
   // Directives
   require('./courseDisplay.directive');
   require('./eventDisplay.directive');
+  require('./meetingEditor.directive');
   require('./timePicker.directive');
   require('./generateSchedules.directive');
   require('./scheduleDisplay.directive');

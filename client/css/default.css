@@ -1,0 +1,13 @@
+body {
+  background: #FFF7E4;
+  font-family: 'Raleway', sans-serif;
+  overflow: auto;
+}
+
+.md-checkbox-enabled[selected] .md-icon {
+  background-color: rgba(253, 181, 21, 0.87);
+}
+
+md-checkbox.md-checked div.md-icon {
+  border-color: rgba(253, 181, 21, 0.87);
+}

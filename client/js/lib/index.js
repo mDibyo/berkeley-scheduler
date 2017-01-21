@@ -5,6 +5,7 @@ require('angulartics');
 require('angulartics-google-analytics');
 require('angular-aria');
 require('angular-animate');
+require('angular-contenteditable');
 require('angular-cookies');
 require('angular-material');
 require('angular-sanitize');
