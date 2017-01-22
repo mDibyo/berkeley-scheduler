@@ -3,6 +3,7 @@ import BaseCtrl = require('./_base.controller');
 import IScheduleService = require('./schedule.service');
 import Meeting from '../models/meeting';
 import {CustomCommitmentOption} from '../models/customCommitmentOption';
+import {Days, getDefaultDays} from '../utils';
 
 interface meetingEditorDirectiveScope extends angular.IScope {
   meeting: Meeting<CustomCommitmentOption>;
@@ -35,7 +36,7 @@ function bsMeetingEditorDirective() {
     }
 
     updateDays() {
-      const newDays: {[day: string]: boolean} = {};
+      const newDays: Days<boolean> = getDefaultDays<boolean>(() => false);
       this.days.forEach(day => {
         newDays[day] = this.selectedDays.indexOf(day) >= 0;
       });

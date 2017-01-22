@@ -1,7 +1,26 @@
 const alphaNumericCharSet: string[] = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
 
-export interface Days {
-  [day: string]: boolean;
+export interface StringMap<V> {[day: string]: V}
+
+export interface Days<V> extends StringMap<V> {
+  'Monday': V;
+  'Tuesday': V;
+  'Wednesday': V;
+  'Thursday': V;
+  'Friday': V;
+  'Saturday': V;
+  'Sunday': V;
+}
+export function getDefaultDays<V>(defaultValueFunc: () => V): Days<V> {
+  return {
+    'Monday': defaultValueFunc(),
+    'Tuesday': defaultValueFunc(),
+    'Wednesday': defaultValueFunc(),
+    'Thursday': defaultValueFunc(),
+    'Friday': defaultValueFunc(),
+    'Saturday': defaultValueFunc(),
+    'Sunday': defaultValueFunc()
+  };
 }
 
 export type Listener<T> = (item: T) => void;

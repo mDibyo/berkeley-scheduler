@@ -1,20 +1,10 @@
 'use strict';
 import Time = require('./time');
-import {Days, Identifiable, generateRandomAlphaNumericId} from '../utils';
+import {Days, Identifiable, generateRandomAlphaNumericId, getDefaultDays} from '../utils';
 
 declare interface Instructor {
   name: string
 }
-
-const DEFAULT_DAYS: Days = {
-  'Monday': false,
-  'Tuesday': false,
-  'Wednesday': false,
-  'Thursday': false,
-  'Friday': false,
-  'Saturday': false,
-  'Sunday': false
-};
 
 export default class Meeting<Owner> implements Identifiable {
   public id: string;
@@ -22,7 +12,7 @@ export default class Meeting<Owner> implements Identifiable {
   constructor(
       public startTime: Time = Time.midnight,
       public endTime: Time = Time.midnight,
-      public days: Days = DEFAULT_DAYS,
+      public days: Days<boolean> = getDefaultDays<boolean>(() => false),
       public location: string = '',
       public instructors: Instructor[] = [],
       public owner: Owner

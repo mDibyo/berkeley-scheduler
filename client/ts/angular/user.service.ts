@@ -4,7 +4,6 @@ import constants = require('../constants');
 import {Days} from '../utils';
 
 import Time = require('../models/time');
-import Schedule = require('../models/schedule');
 import {CustomCommitment} from '../models/customCommitment';
 import Meeting from '../models/meeting';
 import {CustomCommitmentOption} from '../models/customCommitmentOption';
@@ -48,7 +47,7 @@ export interface EventMeetingInfo {
   id: string;
   startTime: EventMeetingTimeInfo;
   endTime: EventMeetingTimeInfo;
-  days: Days;
+  days: Days<boolean>;
   location: string;
 }
 
