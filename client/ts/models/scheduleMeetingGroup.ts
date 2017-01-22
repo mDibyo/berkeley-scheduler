@@ -1,8 +1,8 @@
 'use strict';
 
 import Meeting from './meeting';
-import Section from './section';
 import Time = require('./time');
+import {Option} from './commitment';
 
 
 export class MeetingView {
@@ -10,11 +10,11 @@ export class MeetingView {
   day: string;
   slotIdx: number;
 
-  private _meeting: Meeting<Section>;
+  private _meeting: Meeting<Option>;
 
   constructor(
       meetingGroup: ScheduleMeetingGroup,
-      meeting: Meeting<Section>,
+      meeting: Meeting<Option>,
       slotIdx: number = -1
   ) {
     this.group = meetingGroup;
@@ -52,13 +52,13 @@ export default class ScheduleMeetingGroup {
   day: string;
   slots: MeetingView[][];
 
-  constructor(meeting: Meeting<Section>, day: string) {
+  constructor(meeting: Meeting<Option>, day: string) {
     this.day = day;
     this.slots = [];
     this.add(meeting);
   }
 
-  hasOverlap(meeting: Meeting<Section>) {
+  hasOverlap(meeting: Meeting<Option>) {
     const meetingView = new MeetingView(this, meeting);
     for (let j = 0; j < this.slots.length; j++) {
       const slot = this.slots[j];
@@ -69,7 +69,7 @@ export default class ScheduleMeetingGroup {
     return false;
   }
 
-  add(meeting: Meeting<Section>) {
+  add(meeting: Meeting<Option>) {
     const meetingView = new MeetingView(this, meeting);
     for (let i = 0; i < this.slots.length; i++) {
       const slot: MeetingView[] = this.slots[i];

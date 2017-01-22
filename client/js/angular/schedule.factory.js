@@ -3,7 +3,7 @@
 var constants = require('../constants');
 
 var Time = require('../models/time');
-var Schedule = require('../models/schedule');
+var Schedule = require('../models/schedule').default;
 var ScheduleGroup = require('../models/scheduleGroup').default;
 var scheduleGenerationStatus = require('../models/scheduleGenerationStatus');
 

@@ -63,6 +63,7 @@
     "client/js/models/meeting.js",
     "client/js/models/scheduleGroup.js",
     "client/js/models/scheduleMeetingGroup.js",
+    "client/js/models/schedule.js",
     "client/js/models/section.js",
     "client/js/utils.js",
     "public/assets/gen/**",

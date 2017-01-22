@@ -1,6 +1,6 @@
 import angular = require('angular');
 
-import Schedule = require('../models/schedule');
+import Schedule from '../models/schedule';
 import {SchedulingOptions} from './user.service';
 
 

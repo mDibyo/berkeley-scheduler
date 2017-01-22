@@ -1,5 +1,5 @@
 import Course from './course';
-import Schedule = require('./schedule');
+import Schedule from './schedule';
 import Section from './section';
 import CourseInstance from './courseInstance';
 
@@ -154,7 +154,7 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
   }
 
   static getCourseInstanceIdsFromId(id: string): string[] {
-    return Schedule.getSectionIdsFromId(id).map(id => id.toString());
+    return Schedule.getSectionIdsFromId(id);
   }
 
   static normalizeId(id: string|null): string|null {
