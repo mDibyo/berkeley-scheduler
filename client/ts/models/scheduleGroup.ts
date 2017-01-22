@@ -1,41 +1,46 @@
 import Course from './course';
 import Schedule from './schedule';
-import Section from './section';
-import CourseInstance from './courseInstance';
+import {
+  Enumerator,
+  OptionsEnumerator as _OptionsEnumerator,
+  generateIdFromIdentifiables,
+  generateIdFromIds
+} from '../utils';
+import {CustomCommitment} from './customCommitment';
+import {Option, Commitment} from './commitment';
 
-import {Enumerator, OptionsEnumerator, generateIdFromIdentifiables, generateIdFromIds} from '../utils';
 
-
-type SectionsEnumerator = OptionsEnumerator<Section>;
-type CourseInstanceEnumerator = OptionsEnumerator<SectionsEnumerator>;
+type OptionsEnumerator = _OptionsEnumerator<Option>;
+type CommitmentEnumerator = _OptionsEnumerator<OptionsEnumerator>;
 
 
 export default class ScheduleGroup implements Enumerator<Schedule> {
   id: string;
-  userId: string;
 
-  courses: Course[];
-
-  private _courseInstanceEnumerator: CourseInstanceEnumerator;
+  private commitmentEnumerator: CommitmentEnumerator;
   private _size: number = 0;
   private _expectedOptionsLength: number;
-  private _currentSectionsEnumerators: SectionsEnumerator[] = [];
-  private _sections: {[id: string]: Section} = {};
+  private currentOptionsEnumerators: OptionsEnumerator[] = [];
+  private options: {[id: string]: Option} = {};
 
-  constructor(userId: string, courses: Course[]) {
+  constructor(
+      public userId: string,
+      public courses: Course[],
+      public customCommitments: CustomCommitment[] = []) {
     this.id = generateIdFromIdentifiables(userId, courses);
-    this.userId = userId;
-    this.courses = courses;
 
     this._size = 1;
-    this._courseInstanceEnumerator = new OptionsEnumerator<SectionsEnumerator>(
-        this.courses.map((course: Course) => {
+    const commitmentOptionsList: Commitment[][] = this.courses
+        .map(course => <Commitment[]>course.instances)
+        .concat(this.customCommitments.map(customCommitment => [customCommitment]));
+    this.commitmentEnumerator = new _OptionsEnumerator<OptionsEnumerator>(
+        commitmentOptionsList.map(commitmentOptions => {
           let courseEnumerationSize = 0;
-          const optionsEnumerators = course.instances.map(
-              (courseInstance: CourseInstance) => {
-                courseInstance.sections.forEach(s => this._sections[s.id] = s);
-                const optionEnumerator = new OptionsEnumerator<Section>(
-                    courseInstance.optionTypes.map((optionType: string) => courseInstance
+          const optionsEnumerators = commitmentOptions.map(
+              (commitment: Commitment) => {
+                commitment.getOptions().forEach(o => this.options[o.id] = o);
+                const optionEnumerator = new _OptionsEnumerator<Option>(
+                    commitment.optionTypes.map((optionType: string) => commitment
                         .getOptionsByType(optionType)
                         .filter(option => option.selected)
                     )
@@ -57,7 +62,7 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
   }
 
   get done(): boolean {
-    return this._courseInstanceEnumerator.done;
+    return this.commitmentEnumerator.done;
   }
 
   get expectedOptionsLength(): number {
@@ -65,19 +70,19 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
   }
 
   reset(): this {
-    this._currentSectionsEnumerators.forEach(e => e && e.reset().next());
-    this._courseInstanceEnumerator.reset();
-    this._advanceCourseInstanceEnumerator();
+    this.currentOptionsEnumerators.forEach(e => e && e.reset().next());
+    this.commitmentEnumerator.reset();
+    this._advanceCommitmentEnumerator();
 
     return this;
   }
 
-  _advanceCourseInstanceEnumerator() {
-    const sectionEnumerators = this._courseInstanceEnumerator.next();
-    if (!this._courseInstanceEnumerator.done) {
-      sectionEnumerators[0].reset();
-      this._currentSectionsEnumerators = sectionEnumerators;
-      this._expectedOptionsLength = sectionEnumerators
+  _advanceCommitmentEnumerator() {
+    const optionEnumerators = this.commitmentEnumerator.next();
+    if (!this.commitmentEnumerator.done) {
+      optionEnumerators[0].reset();
+      this.currentOptionsEnumerators = optionEnumerators;
+      this._expectedOptionsLength = optionEnumerators
           .map(e => e.expectedOptionsLength)
           .reduce((a, b) => a + b, 0);
     }
@@ -87,37 +92,37 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
     while (!this.done) {
       for (
           let incrementPos: number = 0;
-          incrementPos < this._currentSectionsEnumerators.length;
+          incrementPos < this.currentOptionsEnumerators.length;
           incrementPos++
       ) {
-        if (this._currentSectionsEnumerators[incrementPos].next().length) {
-          this._expectedOptionsLength = this._currentSectionsEnumerators
+        if (this.currentOptionsEnumerators[incrementPos].next().length) {
+          this._expectedOptionsLength = this.currentOptionsEnumerators
               .map(e => e.expectedOptionsLength)
               .reduce((a, b) => a + b, 0);
           return true;
         }
-        this._currentSectionsEnumerators[incrementPos].reset().next();
+        this.currentOptionsEnumerators[incrementPos].reset().next();
       }
 
       if (this.done) {
         break;
       }
 
-      this._advanceCourseInstanceEnumerator();
+      this._advanceCommitmentEnumerator();
     }
 
     return false;
   }
 
   current(): Schedule|null {
-    const sections: Section[] = this._currentSectionsEnumerators
+    const options: Option[] = this.currentOptionsEnumerators
         .map(e => e.current())
         .reduce((a, b) => a.concat(b));
-    if (sections.length != this.expectedOptionsLength) {
+    if (options.length != this.expectedOptionsLength) {
       return null;
     }
 
-    return new Schedule(this.userId, sections);
+    return new Schedule(this.userId, options);
   }
 
   next(): Schedule|null {
@@ -129,32 +134,32 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
   }
 
   getScheduleById(scheduleId: string): Schedule|null {
-    const sectionIds: string[] = Schedule.getSectionIdsFromId(scheduleId);
-    if (sectionIds.length != this.expectedOptionsLength) {
+    const optionIds: string[] = Schedule.getOptionIdsFromId(scheduleId);
+    if (optionIds.length != this.expectedOptionsLength) {
       return null;
     }
 
     let found = true;
-    const sections = sectionIds.map(sectionId => {
-      const section = this._sections[sectionId];
-      if (!section) {
+    const options = optionIds.map(optionId => {
+      const options = this.options[optionId];
+      if (!options) {
         found = false;
       }
-      return section;
+      return options;
     }, this);
     if (!found) {
       return null;
     }
 
-    return new Schedule(this.userId, sections);
+    return new Schedule(this.userId, options);
   }
 
   static getUserIdFromId(id: string): string {
     return Schedule.getUserIdFromId(id);
   }
 
-  static getCourseInstanceIdsFromId(id: string): string[] {
-    return Schedule.getSectionIdsFromId(id);
+  static getCommitmentIdsFromId(id: string): string[] {
+    return Schedule.getOptionIdsFromId(id);
   }
 
   static normalizeId(id: string|null): string|null {

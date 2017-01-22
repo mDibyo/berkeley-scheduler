@@ -13,6 +13,7 @@ export interface Commitment extends Identifiable {
   getName(): string;
 
   optionTypes: string[];
+  getOptions(): Option[];
   getOptionsByType(type: string): Option[];
 }
 

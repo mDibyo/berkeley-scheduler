@@ -121,9 +121,7 @@ export default class Schedule implements Identifiable {
     return id.split('.')[0];
   };
 
-  static getSectionIdsFromId(id: string): string[] {
-    return id.split('.').slice(1).map(function (id) {
-      return id;
-    });
+  static getOptionIdsFromId(id: string): string[] {
+    return id.split('.').slice(1);
   };
 }

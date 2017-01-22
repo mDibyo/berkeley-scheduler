@@ -29,6 +29,10 @@ export class CustomCommitment extends ColorRegisterableIdentifiable implements C
     this.name = newName;
   }
 
+  getOptions(): Option[] {
+    return [this.option]
+  }
+
   getOptionsByType(type: string): Option[] {
     return type === CustomCommitment.customType ? [this.option] : [];
   }

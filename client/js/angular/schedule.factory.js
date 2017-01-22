@@ -473,12 +473,14 @@ function scheduleFactory($q, $timeout, userService, courseService) {
         return course.selected;
       });
     }).then(function(filteredCourseList) {
+      // TODO(dibyo): Incorporate events.
       _setCurrentScheduleGroup(new ScheduleGroup(_primaryUserId, filteredCourseList), true);
       return _currScheduleGroup.id;
     })
   }
 
   function setCurrentScheduleGroupById(scheduleGroupId) {
+    // TODO(dibyo): Incorporate events.
     if (_currScheduleGroup !== null) {
       if (_currScheduleGroup.id === ScheduleGroup.normalizeId(scheduleGroupId)) {
         return;
@@ -486,7 +488,7 @@ function scheduleFactory($q, $timeout, userService, courseService) {
     }
 
     var userId = ScheduleGroup.getUserIdFromId(scheduleGroupId);
-    var courseIdList = ScheduleGroup.getCourseInstanceIdsFromId(scheduleGroupId);
+    var courseIdList = ScheduleGroup.getCommitmentIdsFromId(scheduleGroupId);
     return $q.all(courseIdList.map(function(courseId) {
       return courseService.addCourseByIdQ(courseId);
     })).then(function(courses) {
@@ -503,7 +505,7 @@ function scheduleFactory($q, $timeout, userService, courseService) {
     }
 
     var userId = Schedule.getUserIdFromId(scheduleId);
-    const sectionIds = Schedule.getSectionIdsFromId(scheduleId);
+    const sectionIds = Schedule.getOptionIdsFromId(scheduleId);
     return $q.all(sectionIds.map(function(sectionId) {
       return courseService.getSectionQ(sectionId);
     })).then(function(sections) {
@@ -517,7 +519,8 @@ function scheduleFactory($q, $timeout, userService, courseService) {
     }
 
     var userId = Schedule.getUserIdFromId(scheduleId);
-    var sectionIdList = Schedule.getSectionIdsFromId(scheduleId);
+    // TODO(dibyo): Incorporate events.
+    var sectionIdList = Schedule.getOptionIdsFromId(scheduleId);
     return courseService.getAllCoursesQ().then(function(prevAllCourses) {
       const courses = [];
       sectionIdList.forEach(function(sectionId) {

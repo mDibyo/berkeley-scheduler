@@ -1,7 +1,7 @@
 import Section from './section';
 import Course from './course';
 import Meeting from './meeting';
-import {Commitment} from './commitment';
+import {Commitment, Option} from './commitment';
 
 
 export default class CourseInstance implements Commitment {
@@ -37,6 +37,10 @@ export default class CourseInstance implements Commitment {
 
   getName(): string {
     return this.course.getName();
+  }
+
+  getOptions(): Option[] {
+    return this.sections;
   }
 
   setFinalMeeting(finalMeeting: Meeting<CourseInstance>) {
