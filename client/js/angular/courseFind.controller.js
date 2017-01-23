@@ -74,7 +74,9 @@ function CourseFindCtrl(
   courseService.addDropCourseListener('courseFind', function(course) {
     var courseIdx = vm.addedCoursesList.indexOf(course);
     vm.addedCoursesList.remove(course);
-    scheduleFactory.setStale();
+    if (course.selected) {
+      scheduleFactory.setStale();
+    }
 
     if (vm.addedCoursesList.length !== 0) {
       vm.goToState('schedule.viewCourse', {
@@ -97,7 +99,9 @@ function CourseFindCtrl(
 
   eventService.addDeleteEventListener('courseFind', function(event) {
     vm.addedEventsList.remove(event);
-    scheduleFactory.setStale();
+    if (event.selected) {
+      scheduleFactory.setStale();
+    }
 
     if (vm.addedEventsList.length !== 0) {
       vm.goToState('schedule.viewEvent', {
