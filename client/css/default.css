@@ -1,7 +1,11 @@
 body {
-  background: #FFF7E4;
+  background-color: #FFF7E4;
   font-family: 'Raleway', sans-serif;
   overflow: auto;
+}
+
+md-content {
+  background-color: white;
 }
 
 .md-checkbox-enabled[selected] .md-icon {

@@ -107,8 +107,12 @@ td.course-instance-divider {
   width: 100%;
 }
 
-.generate-schedules, .view-course, .view-event, .generating-schedules, .view-schedule {
+.generate-schedules, .view-default, .view-course, .view-event, .generating-schedules, .view-schedule {
   padding: 15px;
+}
+
+.view-default {
+  text-align: center;
 }
 
 .generate-schedules {
