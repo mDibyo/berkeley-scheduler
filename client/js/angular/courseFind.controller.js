@@ -9,6 +9,7 @@ function CourseFindCtrl(
     $window,
     $location,
     $mdDialog,
+    userService,
     reverseLookup,
     courses,
     courseService,
@@ -214,20 +215,24 @@ function CourseFindCtrl(
   }
 
   function deleteEvent(event) {
-    $mdDialog.show({
-      templateUrl: 'assets/static/html/confirm_event_delete.dialog.html',
-      controller: 'ConfirmEventDeleteDialogCtrl',
-      controllerAs: 'vm',
-      parent: angular.element(document.body),
-      clickOutsideToClose: true,
-      escapeToClose: true,
-      locals: {
-        eventName: event.getName(),
-        onConfirm: function() {
-          eventService.deleteEvent(event);
+    if (userService.preferences.showConfirmEventDeleteDialog) {
+      $mdDialog.show({
+        templateUrl: 'assets/static/html/confirm_event_delete.dialog.html',
+        controller: 'ConfirmEventDeleteDialogCtrl',
+        controllerAs: 'vm',
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        escapeToClose: true,
+        locals: {
+          eventName: event.getName(),
+          onConfirm: function() {
+            eventService.deleteEvent(event);
+          }
         }
-      }
-    })
+      });
+    } else {
+      eventService.deleteEvent(event);
+    }
   }
 }
 angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
@@ -235,6 +240,7 @@ angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
     '$window',
     '$location',
     '$mdDialog',
+    'userService',
     'reverseLookup',
     'courses',
     'courseService',

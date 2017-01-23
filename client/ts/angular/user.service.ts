@@ -12,6 +12,7 @@ import {generateRandomAlphaNumericId} from '../utils';
 
 export interface Preferences {
   showMobUnoptDialog: boolean;
+  showConfirmEventDeleteDialog: boolean;
 }
 
 export interface SchedulingOptions {
@@ -118,7 +119,8 @@ export default class UserService {
           `${this.primaryUserId}.${UserService._preferencesCookieKeySuffix}`;
       let preferences: Preferences = this.$cookies.getObject(preferencesCookieKey);
       preferences = angular.extend({
-        showMobUnoptDialog: true
+        showMobUnoptDialog: true,
+        showConfirmEventDeleteDialog: true
       }, preferences);
       this._preferences = preferences;
     }

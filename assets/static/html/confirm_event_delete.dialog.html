@@ -1,15 +1,22 @@
 <md-dialog aria-label="Confirm Event Delete dialog">
   <md-dialog-content>
     <div class="md-dialog-content md-body-1">
+      <h3 class="md-headline">
+        Confirm Event Delete
+      </h3>
       <p>
         Are you sure you want to delete the event
-        <span class="md-body-2 highlighted-text">{{ vm.eventName }}</span>.
+        <span class="md-body-2 highlighted-text">{{ vm.eventName }}</span>?
         Once deleted, the event can not be recovered.
       </p>
       <p>
         If you wanted to explore schedules without this event, unselect this event
         in the left pane instead.
       </p>
+      <br>
+      <md-checkbox ng-model="vm.doNotShowConfirmEventDeleteDialog">
+        Do not ask again
+      </md-checkbox>
     </div>
   </md-dialog-content>
 
