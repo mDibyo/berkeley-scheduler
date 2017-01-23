@@ -1,10 +1,8 @@
 <div class="event-display right-pane-item" layout="column">
   <div layout="row">
-    <div flex>
-    <md-input-container class="event-name" title="Event Name">
+    <md-input-container class="event-name" title="Event Name" flex>
       <input class="md-headline" type="text" placeholder="Event Name" ng-model="event.name">
     </md-input-container>
-    </div>
     <!--<div flex></div>-->
     <div layout="column" layout-align="end center" flex-offset="100">
       <md-button class="md-raised" ng-click="vm.addMeeting()">

@@ -98,6 +98,8 @@ export default class EventService {
     this.options[option.id] = option;
 
     newEvent.add();
+    newEvent.addMeeting();
+
     newEvent.selected = true;
     this.save();
 
