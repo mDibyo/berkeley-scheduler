@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/angular": "^1.6.1",
     "@types/angular-cookies": "^1.4.2",
+    "@types/angular-material": "^1.1.44",
     "@types/angular-ui-router": "^1.1.36",
     "@types/angulartics": "^1.3.1",
     "browserify": "~13.0.0",

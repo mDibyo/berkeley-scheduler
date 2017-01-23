@@ -31,6 +31,7 @@
 
   // Controllers
   require('./_base.controller');
+  require('./confirmEventDeleteDialog.controller');
   require('./courseFind.controller');
   require('./exportToCalendarDialog.controller');
   require('./generatingSchedules.controller');

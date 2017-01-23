@@ -8,6 +8,7 @@ function CourseFindCtrl(
     $state,
     $window,
     $location,
+    $mdDialog,
     reverseLookup,
     courses,
     courseService,
@@ -77,7 +78,7 @@ function CourseFindCtrl(
 
     if (vm.addedCoursesList.length !== 0) {
       vm.goToState('schedule.viewCourse', {
-        id: vm.addedCoursesList[max(0, courseIdx - 1)].id
+        id: vm.addedCoursesList[Math.max(0, courseIdx - 1)].id
       });
     } else if (vm.addedEventsList.length !== 0) {
       vm.goToState('schedule.viewEvent', {
@@ -209,13 +210,27 @@ function CourseFindCtrl(
   }
 
   function deleteEvent(event) {
-    eventService.deleteEvent(event);
+    $mdDialog.show({
+      templateUrl: 'assets/static/html/confirm_event_delete.dialog.html',
+      controller: 'ConfirmEventDeleteDialogCtrl',
+      controllerAs: 'vm',
+      parent: angular.element(document.body),
+      clickOutsideToClose: true,
+      escapeToClose: true,
+      locals: {
+        eventName: event.getName(),
+        onConfirm: function() {
+          eventService.deleteEvent(event);
+        }
+      }
+    })
   }
 }
 angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
     '$state',
     '$window',
     '$location',
+    '$mdDialog',
     'reverseLookup',
     'courses',
     'courseService',

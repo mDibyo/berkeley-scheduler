@@ -13,6 +13,7 @@ node_modules/
 # Typescript generated JS
 client/js/angular/_base.controller.js
 client/js/angular/course.service.js
+client/js/angular/confirmEventDeleteDialog.controller.js
 client/js/angular/event.service.js
 client/js/angular/eventDisplay.directive.js
 client/js/angular/meetingEditor.directive.js

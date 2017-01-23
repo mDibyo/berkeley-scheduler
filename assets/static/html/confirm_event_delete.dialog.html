@@ -1,0 +1,20 @@
+<md-dialog aria-label="Confirm Event Delete dialog">
+  <md-dialog-content>
+    <div class="md-dialog-content md-body-1">
+      <p>
+        Are you sure you want to delete the event
+        <span class="md-body-2 highlighted-text">{{ vm.eventName }}</span>.
+        Once deleted, the event can not be recovered.
+      </p>
+      <p>
+        If you wanted to explore schedules without this event, unselect this event
+        in the left pane instead.
+      </p>
+    </div>
+  </md-dialog-content>
+
+  <md-dialog-actions>
+    <md-button class="md-raised md-primary schedule-button" ng-click="vm.complete(true)">Delete</md-button>
+    <md-button class="md-raised" ng-click="vm.complete(false)">Cancel</md-button>
+  </md-dialog-actions>
+</md-dialog>
