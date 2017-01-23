@@ -4,7 +4,7 @@ import angulartics = require('angulartics')
 import BaseCtrl = require('./_base.controller');
 import IScheduleService = require('./schedule.service');
 import EventService from './event.service';
-import {CustomCommitment} from '../models/customCommitment';
+import CustomCommitment from '../models/customCommitment';
 
 export class ViewEventCtrl extends BaseCtrl {
   selectedEvent?: CustomCommitment;

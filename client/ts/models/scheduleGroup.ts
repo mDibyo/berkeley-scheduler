@@ -4,9 +4,10 @@ import {
   Enumerator,
   OptionsEnumerator as _OptionsEnumerator,
   generateIdFromIdentifiables,
-  generateIdFromIds
+  generateIdFromIds,
+  Identifiable
 } from '../utils';
-import {CustomCommitment} from './customCommitment';
+import CustomCommitment from './customCommitment';
 import {Option, Commitment} from './commitment';
 
 
@@ -27,7 +28,7 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
       public userId: string,
       public courses: Course[],
       public customCommitments: CustomCommitment[] = []) {
-    this.id = generateIdFromIdentifiables(userId, courses);
+    this.id = generateIdFromIdentifiables(userId, (<Identifiable[]>courses).concat(customCommitments));
 
     this._size = 1;
     const commitmentOptionsList: Commitment[][] = this.courses
@@ -38,6 +39,7 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
           let courseEnumerationSize = 0;
           const optionsEnumerators = commitmentOptions.map(
               (commitment: Commitment) => {
+                console.log(commitment);
                 commitment.getOptions().forEach(o => this.options[o.id] = o);
                 const optionEnumerator = new _OptionsEnumerator<Option>(
                     commitment.optionTypes.map((optionType: string) => commitment

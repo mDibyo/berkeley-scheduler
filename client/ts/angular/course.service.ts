@@ -65,7 +65,7 @@ export default class CourseService {
     return this._sections;
   }
 
-  getSectionQ(sectionId: string): angular.IPromise<Section> {
+  getSectionByIdQ(sectionId: string): angular.IPromise<Section> {
     if (this._sections.hasOwnProperty(sectionId)) {
       return this.$q.when(this._sections[sectionId]);
     }
@@ -87,6 +87,7 @@ export default class CourseService {
       allCourses.forEach((course) => {
         course.selected = courseIds.indexOf(course.id) >= 0;
       });
+      this.save();
     });
   }
 

@@ -3,6 +3,7 @@ var Meeting = require('../models/meeting').default;
 var Time = require('../models/time');
 
 var BaseCtrl = require('./_base.controller');
+var CustomCommitmentOption = require('../models/customCommitmentOption').default;
 
 function bsScheduleDisplayDirective(finals, scheduleFactory) {
   var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -99,6 +100,9 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
       var finalSlots = [[], [], [], []];
       for (var id in courseInstanceSections) {
         var final = courseInstanceSections[id][0].owner.finalMeeting;
+        if (!final) {
+          continue;
+        }
         // TODO: The attempt to clone with `angular.extend` was part of a hack for displaying
         // conflicting finals in order to get a release out of the door. It was abandoned
         // because it was recursively triggering angular digests. We should not be
@@ -182,20 +186,28 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
       return ColorRegisterableIdentifiable.colorCodes[final.courseInstance.color];
     }
 
+    function getMeetingViewOptionType(meetingView) {
+      var meetingOwner = meetingView.owner;
+      return CustomCommitmentOption.isCustomCommitmentOptionId(meetingOwner.id) ? '' : meetingOwner.type;
+    }
+
+    function getMeetingViewOptionCCN(meetingView) {
+      var id = meetingView.owner.id;
+      return CustomCommitmentOption.isCustomCommitmentOptionId(id) ? '' : 'CCN ' + id;
+    }
+
     function getMeetingViewText(meetingView) {
-      return meetingView.owner.owner.course.department + ' ' +
-          meetingView.owner.owner.course.courseNumber + ' ' +
-          meetingView.owner.type + '<br>' +
-          meetingView.location + '<br>CCN ' +
-          meetingView.owner.id;
+      return meetingView.owner.owner.getName() + ' ' +
+          getMeetingViewOptionType(meetingView) + '<br>' +
+          meetingView.location + '<br>' +
+          getMeetingViewOptionCCN(meetingView);
     }
 
     function getMeetingViewTextTitle(meetingView) {
-      return meetingView.owner.owner.course.department + ' ' +
-        meetingView.owner.owner.course.courseNumber + ' ' +
-        meetingView.owner.type + '\n' +
-        meetingView.location + '\nCCN ' +
-        meetingView.owner.id;
+      return meetingView.owner.owner.getName() + ' ' +
+          getMeetingViewOptionType(meetingView) + '\n' +
+          meetingView.location + '\n' +
+          getMeetingViewOptionCCN(meetingView);
     }
 
     function getMeetingViewStyle(meetingView) {

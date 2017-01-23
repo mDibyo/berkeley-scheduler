@@ -1,8 +1,9 @@
 import angular = require('angular');
 
 import UserService from './user.service';
-import {CustomCommitment} from '../models/customCommitment';
+import CustomCommitment from '../models/customCommitment';
 import {ListenerMap, Listener, addListener, sample} from '../utils';
+import CustomCommitmentOption from '../models/customCommitmentOption';
 
 const nouns = [
     'Piano',
@@ -42,8 +43,11 @@ function generateRandomName() {
   return `${sample(nouns)} ${sample(gerunds)}`;
 }
 
+interface OptionsMap {[id: string]: CustomCommitmentOption}
+
 export default class EventService {
-  private events: CustomCommitment[];
+  private events: CustomCommitment[] = [];
+  private options: OptionsMap = {};
 
   private createEventListeners: ListenerMap<CustomCommitment> = {};
   private deleteEventListeners: ListenerMap<CustomCommitment> = {};
@@ -52,6 +56,12 @@ export default class EventService {
       private userService: UserService
   ) {
     this.events = this.userService.events;
+    this.events.forEach(event => {
+      event.add();
+
+      const option = event.option;
+      this.options[option.id] = option;
+    })
   }
 
   addCreateEventListener(tag: string, listener: Listener<CustomCommitment>) {
@@ -70,9 +80,22 @@ export default class EventService {
     return this.events[this.events.findIndex(e => e.id === eventId)];
   }
 
+  setSelectedEventsById(eventIds: string[]): void {
+    this.events.forEach((event) => {
+      event.selected = eventIds.indexOf(event.id) >= 0;
+    });
+    this.save();
+  }
+
+  getOptionById(optionId: string): CustomCommitmentOption {
+    return this.options[optionId];
+  }
+
   createEvent(): CustomCommitment {
     const newEvent = new CustomCommitment(generateRandomName(), []);
     this.events.push(newEvent);
+    const option = newEvent.option;
+    this.options[option.id] = option;
 
     newEvent.add();
     newEvent.selected = true;
@@ -92,6 +115,8 @@ export default class EventService {
     }
 
     this.events.splice(eventIdx, 1);
+    delete this.options[event.option.id];
+
     event.drop();
     this.save();
 

@@ -2,7 +2,7 @@ import angular = require('angular');
 import BaseCtrl = require('./_base.controller');
 import IScheduleService = require('./schedule.service');
 import Meeting from '../models/meeting';
-import {CustomCommitmentOption} from '../models/customCommitmentOption';
+import CustomCommitmentOption from '../models/customCommitmentOption';
 import {Days, getDefaultDays} from '../utils';
 
 interface meetingEditorDirectiveScope extends angular.IScope {

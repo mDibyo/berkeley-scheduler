@@ -1,4 +1,6 @@
-const alphaNumericCharSet: string[] = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
+const alphaCharSet: string[] = 'abcdefghijklmnopqrstuvwxyz'.split('');
+const numericCharSet: string[] = '0123456789'.split('');
+const alphaNumericCharSet: string[] = alphaCharSet.concat(numericCharSet);
 
 export interface StringMap<V> {[day: string]: V}
 
@@ -40,32 +42,27 @@ export function generateRandomId(elementSet: string[], numChars: number): string
   }
   return id;
 }
-
 export function generateRandomAlphaNumericId(numChars: number): string {
   return generateRandomId(alphaNumericCharSet, numChars);
+}
+export function generateRandomAlphaId(numChars: number): string {
+  return generateRandomId(alphaCharSet, numChars);
 }
 
 export interface Identifiable {
   id: string;
 }
-
 export function generateIdFromIdentifiables(userId: string, items: Identifiable[]): string {
   return generateIdFromIds(userId, items.map((item) => item.id));
 }
-
 export function generateIdFromIds(userId: string, ids: string[]): string {
-  const idComponents = ids.sort((a, b) => {
-    return parseInt(a) - parseInt(b);
-  });
+  const idComponents = ids.sort();
   idComponents.unshift(userId);
   return idComponents.join('.');
 }
 
 
-
-export interface ColorMap {
-  [id: string]: string
-}
+export interface ColorMap extends StringMap<string> {}
 
 export abstract class ColorRegisterableIdentifiable implements Identifiable {
   id: string;

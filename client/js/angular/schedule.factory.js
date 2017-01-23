@@ -6,10 +6,13 @@ var Time = require('../models/time');
 var Schedule = require('../models/schedule').default;
 var ScheduleGroup = require('../models/scheduleGroup').default;
 var scheduleGenerationStatus = require('../models/scheduleGenerationStatus');
+var CustomCommitment = require('../models/customCommitment').default;
+var CustomCommitmentOption = require('../models/customCommitmentOption').default;
 
 var generatingSchedulesInstanceIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
-function scheduleFactory($q, $timeout, userService, courseService) {
+
+function scheduleFactory($q, $timeout, userService, courseService, eventService) {
   var _primaryUserId = userService.primaryUserId;
 
   var _savedSchedules = [];
@@ -473,14 +476,18 @@ function scheduleFactory($q, $timeout, userService, courseService) {
         return course.selected;
       });
     }).then(function(filteredCourseList) {
-      // TODO(dibyo): Incorporate events.
-      _setCurrentScheduleGroup(new ScheduleGroup(_primaryUserId, filteredCourseList), true);
+      _setCurrentScheduleGroup(new ScheduleGroup(
+          _primaryUserId,
+          filteredCourseList,
+          eventService.getAllEvents().filter(function(event) {
+            return event.selected;
+          })
+      ), true);
       return _currScheduleGroup.id;
     })
   }
 
   function setCurrentScheduleGroupById(scheduleGroupId) {
-    // TODO(dibyo): Incorporate events.
     if (_currScheduleGroup !== null) {
       if (_currScheduleGroup.id === ScheduleGroup.normalizeId(scheduleGroupId)) {
         return;
@@ -488,13 +495,28 @@ function scheduleFactory($q, $timeout, userService, courseService) {
     }
 
     var userId = ScheduleGroup.getUserIdFromId(scheduleGroupId);
-    var courseIdList = ScheduleGroup.getCommitmentIdsFromId(scheduleGroupId);
+    var commitmentIdList = ScheduleGroup.getCommitmentIdsFromId(scheduleGroupId);
+    var courseIdList = [];
+    var eventIdList = [];
+    commitmentIdList.forEach(function(id) {
+      if (CustomCommitment.isCustomCommitmentId(id)) {
+        eventIdList.push(id);
+      } else {
+        courseIdList.push(id);
+      }
+    });
+
     return $q.all(courseIdList.map(function(courseId) {
       return courseService.addCourseByIdQ(courseId);
     })).then(function(courses) {
       courseService.setSelectedCoursesByIdQ(courseIdList);
+      eventService.setSelectedEventsById(eventIdList);
 
-      _setCurrentScheduleGroup(new ScheduleGroup(userId, courses), false);
+      _setCurrentScheduleGroup(new ScheduleGroup(userId, courses, eventService
+          .getAllEvents()
+          .filter(function(event) {
+            return eventIdList.indexOf(event.id) >= 0;
+          })), false);
     });
   }
 
@@ -505,11 +527,14 @@ function scheduleFactory($q, $timeout, userService, courseService) {
     }
 
     var userId = Schedule.getUserIdFromId(scheduleId);
-    const sectionIds = Schedule.getOptionIdsFromId(scheduleId);
-    return $q.all(sectionIds.map(function(sectionId) {
-      return courseService.getSectionQ(sectionId);
-    })).then(function(sections) {
-      return new Schedule(userId, sections);
+    const optionIds = Schedule.getOptionIdsFromId(scheduleId);
+    return $q.all(optionIds.map(function(optionId) {
+      if (CustomCommitmentOption.isCustomCommitmentOptionId(optionId)) {
+        return $q.when(eventService.getOptionById(optionId));
+      }
+      return courseService.getSectionByIdQ(optionId);
+    })).then(function(options) {
+      return new Schedule(userId, options);
     });
   }
 
@@ -519,12 +544,21 @@ function scheduleFactory($q, $timeout, userService, courseService) {
     }
 
     var userId = Schedule.getUserIdFromId(scheduleId);
-    // TODO(dibyo): Incorporate events.
-    var sectionIdList = Schedule.getOptionIdsFromId(scheduleId);
+    var optionIdList = Schedule.getOptionIdsFromId(scheduleId);
+    var sectionIdList = [];
+    var customCommitmentOptionIdList = [];
+    optionIdList.forEach(function(id) {
+      if (CustomCommitmentOption.isCustomCommitmentOptionId(id)) {
+        customCommitmentOptionIdList.push(id);
+      } else {
+        sectionIdList.push(id);
+      }
+    });
+
     return courseService.getAllCoursesQ().then(function(prevAllCourses) {
       const courses = [];
       sectionIdList.forEach(function(sectionId) {
-        courseService.getSectionQ(sectionId).then(function(section) {
+        courseService.getSectionByIdQ(sectionId).then(function(section) {
           section.selected = true;
           const course = section.owner.course;
           if (courses.findIndex(function(c) {
@@ -566,17 +600,23 @@ function scheduleFactory($q, $timeout, userService, courseService) {
       });
       return courses;
     }).then(function(courses) {
-      // Ensure that only these courses are selected.
-      courseService.getAllCoursesQ().then(function(allCourses) {
-        const courseIds = courses.map(function(c) {
-          return c.id;
-        });
-        allCourses.forEach(function(c) {
-          c.selected = courseIds.indexOf(c.id) >= 0;
-        });
+      var events = customCommitmentOptionIdList.map(function(optionId) {
+        return eventService.getOptionById(optionId);
+      }).filter(function(option) {
+        return option !== undefined;
+      }).map(function(option) {
+        return option.owner;
       });
 
-      _setCurrentScheduleGroup(new ScheduleGroup(userId, courses), false);
+      // Ensure that only these courses and events are selected.
+      courseService.setSelectedCoursesByIdQ(courses.map(function(c) {
+        return c.id;
+      }));
+      eventService.setSelectedEventsById(events.map(function(e) {
+        return e.id;
+      }));
+
+      _setCurrentScheduleGroup(new ScheduleGroup(userId, courses, events), false);
     });
   }
 
@@ -812,9 +852,10 @@ function scheduleFactory($q, $timeout, userService, courseService) {
 }
 
 angular.module('berkeleyScheduler').factory('scheduleFactory', [
-  '$q',
-  '$timeout',
-  'userService',
-  'courseService',
+    '$q',
+    '$timeout',
+    'userService',
+    'courseService',
+    'eventService',
   scheduleFactory
 ]);

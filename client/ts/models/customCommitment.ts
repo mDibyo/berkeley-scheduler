@@ -1,10 +1,12 @@
 import {Option, Commitment} from './commitment';
-import {ColorRegisterableIdentifiable, generateRandomAlphaNumericId} from '../utils';
+import {ColorRegisterableIdentifiable, generateRandomAlphaId} from '../utils';
 import Meeting from './meeting';
-import {CustomCommitmentOption} from './customCommitmentOption';
+import CustomCommitmentOption from './customCommitmentOption';
 
 
-export class CustomCommitment extends ColorRegisterableIdentifiable implements Commitment {
+const customCommitmentIdRegex = /^[a-z]{7}$/;
+
+export default class CustomCommitment extends ColorRegisterableIdentifiable implements Commitment {
   static customType: string = 'custom';
 
   optionTypes: string[] = [CustomCommitment.customType];
@@ -17,8 +19,12 @@ export class CustomCommitment extends ColorRegisterableIdentifiable implements C
   ) {
     super();
 
-    this.id = generateRandomAlphaNumericId(7);
+    this.id = generateRandomAlphaId(7);
     this.option = new CustomCommitmentOption(this, meetings);
+  }
+
+  static isCustomCommitmentId(id: string) {
+    return customCommitmentIdRegex.test(id);
   }
 
   getName(): string {

@@ -3,7 +3,7 @@ import angular = require('angular');
 import BaseCtrl = require('./_base.controller');
 import IScheduleService = require('./schedule.service');
 import Meeting = require('../models/meeting');
-import {CustomCommitment} from '../models/customCommitment';
+import CustomCommitment from '../models/customCommitment';
 import EventService from './event.service';
 
 

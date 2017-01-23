@@ -4,9 +4,9 @@ import constants = require('../constants');
 import {Days} from '../utils';
 
 import Time = require('../models/time');
-import {CustomCommitment} from '../models/customCommitment';
+import CustomCommitment from '../models/customCommitment';
 import Meeting from '../models/meeting';
-import {CustomCommitmentOption} from '../models/customCommitmentOption';
+import CustomCommitmentOption from '../models/customCommitmentOption';
 import {generateRandomAlphaNumericId} from '../utils';
 
 
