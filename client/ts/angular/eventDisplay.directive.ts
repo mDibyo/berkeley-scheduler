@@ -24,19 +24,16 @@ function bsEventDisplayDirective() {
     }
 
     addMeeting() {
-      console.log('add');
       this.$scope.event.addMeeting();
       this.setScheduleStale();
       this.eventService.save();
     }
 
     saveMeeting() {
-      console.log('save');
       this.eventService.save();
     }
 
     setScheduleStale() {
-      console.log('stale');
       this.scheduleFactory.setStale(true);
     }
   }

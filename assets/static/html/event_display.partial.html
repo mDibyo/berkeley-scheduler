@@ -11,11 +11,14 @@
     </div>
   </div>
   <div>
-    <bs-meeting-editor
-        ng-repeat="meeting in event.option.meetings track by meeting.id"
-        meeting="meeting"
-        on-change="vm.saveMeeting(meeting)"
-        on-time-change="vm.setScheduleStale()">
-    </bs-meeting-editor>
+    <div
+        class="event-meeting-repeat"
+        ng-repeat="meeting in event.option.meetings | reverse track by meeting.id">
+      <bs-meeting-editor
+          meeting="meeting"
+          on-change="vm.saveMeeting(meeting)"
+          on-time-change="vm.setScheduleStale()">
+      </bs-meeting-editor>
+    </div>
   </div>
 </div>

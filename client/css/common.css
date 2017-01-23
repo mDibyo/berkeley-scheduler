@@ -150,6 +150,29 @@ td, th {
   height: 20px;
 }
 
+.event-meeting-repeat.ng-enter {
+  -webkit-transition: max-height 0.4s ease, opacity 0.15s linear 0.35s;
+  transition: max-height 0.4s ease, opacity 0.15s linear 0.35s;
+}
+.event-meeting-repeat.ng-move {
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+}
+.event-meeting-repeat.ng-leave {
+  -webkit-transition: opacity 0.15s linear, max-height 0.4s ease 0.1s;
+  transition: opacity 0.15s linear, max-height 0.4s ease 0.1s;
+}
+.event-meeting-repeat.ng-leave.ng-leave-active,
+.event-meeting-repeat.ng-enter {
+  opacity: 0;
+  max-height: 0;
+}
+.event-meeting-repeat.ng-leave,
+.event-meeting-repeat.ng-enter.ng-enter-active {
+  opacity: 1;
+  max-height: 80px;
+}
+
 md-input-container.event-meeting-time {
   width: 100px;
 }
