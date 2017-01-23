@@ -49,9 +49,13 @@ function bsTimePickerDirective() {
 
     save() {
       if (this.selectedTime) {
-        this.$scope.model = Time.parse(this.selectedTime);
-        if (this.$scope.onChange) {
-          this.$timeout(() => this.$scope.onChange({time: this.$scope.model}));
+        const newTime = Time.parse(this.selectedTime);
+        if (!this.$scope.model || this.$scope.model.compareTo(newTime) !== 0) {
+          this.$scope.model = newTime;
+
+          if (this.$scope.onChange) {
+            this.$timeout(() => this.$scope.onChange({time: this.$scope.model}));
+          }
         }
       }
     }

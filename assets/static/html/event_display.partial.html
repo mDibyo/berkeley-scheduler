@@ -16,7 +16,8 @@
     <bs-meeting-editor
         ng-repeat="meeting in event.option.meetings track by meeting.id"
         meeting="meeting"
-        on-change="vm.saveMeeting(meeting)">
+        on-change="vm.saveMeeting(meeting)"
+        on-time-change="vm.setScheduleStale()">
     </bs-meeting-editor>
   </div>
 </div>

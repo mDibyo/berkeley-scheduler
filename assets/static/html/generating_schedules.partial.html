@@ -25,8 +25,7 @@
   <div class="generating-schedules" ng-if="vm.scheduleGenerationStatus.status === 'failed'">
     <md-progress-linear
       class="schedule-generating-failed"
-      md-mode="determinate"
-      ng-disabled="true">
+      md-mode="determinate">
     </md-progress-linear>
     Could not generate any valid schedules.
     <span ng-if="vm.scheduleGenerationStatus.reason">

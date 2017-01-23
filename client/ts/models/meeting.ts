@@ -10,8 +10,8 @@ export default class Meeting<Owner> implements Identifiable {
   public id: string;
 
   constructor(
-      public startTime: Time = Time.midnight,
-      public endTime: Time = Time.midnight,
+      public startTime: Time = Time.noon,
+      public endTime: Time = Time.noon,
       public days: Days<boolean> = getDefaultDays<boolean>(() => false),
       public location: string = '',
       public instructors: Instructor[] = [],

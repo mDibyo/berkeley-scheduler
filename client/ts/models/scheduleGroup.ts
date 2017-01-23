@@ -39,7 +39,6 @@ export default class ScheduleGroup implements Enumerator<Schedule> {
           let courseEnumerationSize = 0;
           const optionsEnumerators = commitmentOptions.map(
               (commitment: Commitment) => {
-                console.log(commitment);
                 commitment.getOptions().forEach(o => this.options[o.id] = o);
                 const optionEnumerator = new _OptionsEnumerator<Option>(
                     commitment.optionTypes.map((optionType: string) => commitment

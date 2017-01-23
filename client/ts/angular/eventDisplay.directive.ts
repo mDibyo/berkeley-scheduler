@@ -18,18 +18,26 @@ function bsEventDisplayDirective() {
         $window: angular.IWindowService,
         private $scope: eventDisplayDirectiveScope,
         private eventService: EventService,
-        scheduleFactory: IScheduleService
+        private scheduleFactory: IScheduleService
     ) {
       super($state, $window, scheduleFactory);
     }
 
     addMeeting() {
+      console.log('add');
       this.$scope.event.addMeeting();
+      this.setScheduleStale();
       this.eventService.save();
     }
 
     saveMeeting() {
+      console.log('save');
       this.eventService.save();
+    }
+
+    setScheduleStale() {
+      console.log('stale');
+      this.scheduleFactory.setStale(true);
     }
   }
 

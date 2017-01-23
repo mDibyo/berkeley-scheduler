@@ -8,7 +8,7 @@
         apply-class="event-meeting-time"
         model="meeting.startTime"
         label="'Start Time'"
-        on-change="change(meeting)">
+        on-change="timeChange(meeting)">
     </bs-time-picker>
   </div>
   <div>
@@ -16,7 +16,7 @@
         apply-class="event-meeting-time"
         model="meeting.endTime"
         label="'End Time'"
-        on-change="change(meeting)">
+        on-change="timeChange(meeting)">
     </bs-time-picker>
   </div>
   <div class="event-meeting-location">
@@ -26,7 +26,7 @@
           type="text"
           title="location"
           ng-model="meeting.location"
-          ng-change="change(meeting)">
+          ng-change="infoChange(meeting)">
     </md-input-container>
   </div>
   <div class="event-meeting-days">
