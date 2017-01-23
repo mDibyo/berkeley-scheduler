@@ -4,7 +4,7 @@ import BaseCtrl = require('./_base.controller');
 import IScheduleService = require('./schedule.service');
 import Time = require('../models/time');
 
-interface datePickerDirectiveScope extends angular.IScope {
+interface timePickerDirectiveScope extends angular.IScope {
   applyClass?: string;
   model: Time;
   label?: string;
@@ -29,7 +29,7 @@ function bsTimePickerDirective() {
         $state: angular.ui.IStateService,
         $window: angular.IWindowService,
         private $timeout: angular.ITimeoutService,
-        private $scope: datePickerDirectiveScope,
+        private $scope: timePickerDirectiveScope,
         scheduleFactory: IScheduleService
     ) {
       super($state, $window, scheduleFactory);

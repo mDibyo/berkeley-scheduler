@@ -4,6 +4,7 @@ import IScheduleService = require('./schedule.service');
 import Meeting from '../models/meeting';
 import CustomCommitmentOption from '../models/customCommitmentOption';
 import {Days, getDefaultDays} from '../utils';
+import Time = require('../models/time');
 
 interface meetingEditorDirectiveScope extends angular.IScope {
   meeting: Meeting<CustomCommitmentOption>;
@@ -12,6 +13,16 @@ interface meetingEditorDirectiveScope extends angular.IScope {
 }
 
 function bsMeetingEditorDirective() {
+  const timeOptions: Time[] = [];
+  const startHour = 0;
+  const endHour = 24;
+  let h = startHour;
+  for (; h < endHour; h++) {
+    timeOptions.push(new Time(h, 0));
+    timeOptions.push(new Time(h, 30));
+  }
+  timeOptions.push(new Time(h, 0));
+
   class bsMeetingEditorCtrl extends BaseCtrl {
     days: string[] = [
         'Sunday',
@@ -24,6 +35,8 @@ function bsMeetingEditorDirective() {
     ];
 
     selectedDays: string[];
+    startTimeOptions: Time[] = timeOptions.slice(0, -1);
+    endTimeOptions: Time[] = timeOptions.slice(1);
 
     constructor(
         $state: angular.ui.IStateService,

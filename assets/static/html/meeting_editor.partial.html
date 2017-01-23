@@ -8,6 +8,7 @@
         apply-class="event-meeting-time"
         model="meeting.startTime"
         label="'Start Time'"
+        time-options="vm.startTimeOptions"
         on-change="timeChange(meeting)">
     </bs-time-picker>
   </div>
@@ -16,6 +17,7 @@
         apply-class="event-meeting-time"
         model="meeting.endTime"
         label="'End Time'"
+        time-options="vm.endTimeOptions"
         on-change="timeChange(meeting)">
     </bs-time-picker>
   </div>
