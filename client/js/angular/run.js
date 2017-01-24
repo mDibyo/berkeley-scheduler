@@ -39,13 +39,7 @@ angular.module('berkeleyScheduler').run([
 
     var showMobUnoptDialog = userService.preferences.showMobUnoptDialog;
     if (showMobUnoptDialog && $mdMedia('xs')) {
-      $mdDialog.show({
-        templateUrl: 'assets/static/html/mobile_unoptimized.dialog.html',
-        controller: 'MobileUnoptimizedDialogCtrl',
-        controllerAs: 'vm',
-        parent: angular.element(document.body),
-        clickOutsideToClose: true
-      });
+      $mdDialog.show($mdDialog.mobileUnoptimizedPreset());
     }
 
     // Pre-fetch SVG assets
