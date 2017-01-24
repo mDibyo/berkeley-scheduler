@@ -223,13 +223,10 @@ function CourseFindCtrl(
         parent: angular.element(document.body),
         clickOutsideToClose: true,
         escapeToClose: true,
-        locals: {
-          eventName: event.getName(),
-          onConfirm: function() {
-            eventService.deleteEvent(event);
-          }
-        }
-      });
+        locals: {eventName: event.getName()}
+      }).then(function() {
+        eventService.deleteEvent(event);
+      })
     } else {
       eventService.deleteEvent(event);
     }

@@ -8,8 +8,17 @@ angular.module('berkeleyScheduler').config([
     '$urlRouterProvider',
     '$mdThemingProvider',
     '$mdIconProvider',
+    '$mdDialogProvider',
     'localStorageServiceProvider',
-  function($compileProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider, localStorageServiceProvider) {
+  function(
+      $compileProvider,
+      $stateProvider,
+      $urlRouterProvider,
+      $mdThemingProvider,
+      $mdIconProvider,
+      $mdDialogProvider,
+      localStorageServiceProvider
+  ) {
     $compileProvider.debugInfoEnabled(false);
 
     var scheduleUrl = '/' + constants.TERM_ABBREV;
@@ -108,6 +117,23 @@ angular.module('berkeleyScheduler').config([
     $mdIconProvider
       .defaultViewBoxSize(48)
       .defaultIconSet('assets/gen/sprite.defs.svg');
+
+    var dialogDefaults = {
+      controllerAs: 'vm',
+      parent: angular.element(document.body),
+      bindToController: true,
+      clickOutsideToClose: true,
+      escapeToClose: true
+    };
+    $mdDialogProvider
+        .addPreset('mobileUnoptimizedPreset', {
+          options: function() {
+            return angular.extend({}, dialogDefaults, {
+              templateUrl: 'assets/static/html/mobile_unoptimized.dialog.html',
+              controller: 'MobileUnoptimizedDialogCtrl'
+            });
+          }
+        });
 
     localStorageServiceProvider.setPrefix('berkeleyScheduler');
   }

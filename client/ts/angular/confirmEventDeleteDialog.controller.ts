@@ -14,7 +14,6 @@ class ConfirmEventDeleteDialogCtrl extends BaseCtrl {
       private userService: UserService,
       scheduleFactory: IScheduleService,
       public eventName: string,
-      private onConfirm: () => void,
   ) {
     super($state, $window, scheduleFactory);
 
@@ -22,12 +21,8 @@ class ConfirmEventDeleteDialogCtrl extends BaseCtrl {
   }
 
   complete(confirm: boolean) {
-    if (confirm) {
-      this.onConfirm();
-    }
-
     this.userService.setPreference('showConfirmEventDeleteDialog', !this.doNotShowConfirmEventDeleteDialog);
-    this.$mdDialog.hide();
+    confirm ? this.$mdDialog.hide() : this.$mdDialog.cancel();
   }
 }
 angular.module('berkeleyScheduler').controller('ConfirmEventDeleteDialogCtrl', [
@@ -37,6 +32,5 @@ angular.module('berkeleyScheduler').controller('ConfirmEventDeleteDialogCtrl', [
     'userService',
     'scheduleFactory',
     'eventName',
-    'onConfirm',
     ConfirmEventDeleteDialogCtrl
 ]);
