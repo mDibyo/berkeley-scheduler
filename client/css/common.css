@@ -15,9 +15,8 @@
 .left-pane {
   background: #003262;
   color: #ffffff;
-  overflow: visible;
+  overflow: hidden;
   min-width: 210px;
-  max-height: none !important;
 }
 .left-pane md-content {
   background: transparent;
@@ -40,6 +39,10 @@ md-autocomplete {
   padding-left: 10px;
   padding-right: 10px;
   color: #fdb515;
+}
+
+.commitments-container {
+  overflow-y: auto;
 }
 
 .course-list-li, .event-list-li, .event-add {
@@ -90,6 +93,7 @@ md-autocomplete {
 .event-add {
   background-color: #584F29;
   font-weight: 500;
+  height: 50px;
 }
 
 td.course-instance-divider {
