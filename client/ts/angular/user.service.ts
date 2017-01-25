@@ -91,6 +91,45 @@ class AngularCookieStorage implements Storage {
   }
 }
 
+class AngularLocalStorage implements Storage {
+  constructor(private localStorage: angular.local.storage.ILocalStorageService) {}
+
+  set(key: string, value: any): boolean {
+    return this.localStorage.set(key, value);
+  }
+
+  get(key: string): any {
+    return this.localStorage.get(key);
+  }
+}
+
+class AngularCompositeStorage implements Storage {
+  private cookieStorage: AngularCookieStorage;
+  private localStorage: AngularLocalStorage;
+
+  constructor(
+      $cookies: angular.cookies.ICookiesService,
+      localStorage: angular.local.storage.ILocalStorageService
+  ) {
+    this.cookieStorage = new AngularCookieStorage($cookies);
+    this.localStorage = new AngularLocalStorage(localStorage);
+  }
+
+  set(key: string, value: any): boolean {
+    const done: boolean = this.localStorage.set(key, value);
+    return done ? done : this.cookieStorage.set(key, value);
+  }
+
+  get(key: string): any {
+    let value = this.localStorage.get(key);
+    if (!value) {
+      value = this.cookieStorage.get(key);
+      this.localStorage.set(key, value);
+    }
+    return value;
+  }
+}
+
 export default class UserService {
   private storage: Storage;
 
@@ -107,9 +146,10 @@ export default class UserService {
 
   constructor(
       $cookies: angular.cookies.ICookiesService,
+      localStorageService: angular.local.storage.ILocalStorageService,
       private $q: angular.IQService,
   ) {
-    this.storage = new AngularCookieStorage($cookies);
+    this.storage = new AngularCompositeStorage($cookies, localStorageService);
   }
 
   private get primaryUserId(): string {
@@ -117,8 +157,8 @@ export default class UserService {
       let primaryUserId = this.storage.get(UserService._primaryUserIdCookieKey);
       if (primaryUserId === undefined) {
         primaryUserId = generateRandomAlphaNumericId(10);
-        this.storage.set(UserService._primaryUserIdCookieKey, primaryUserId);
       }
+      this.storage.set(UserService._primaryUserIdCookieKey, primaryUserId);
       this._primaryUserId = primaryUserId;
     }
 
@@ -281,8 +321,9 @@ export default class UserService {
 }
 
 angular.module('berkeleyScheduler').service('userService', [
-  '$cookies',
-  '$q',
+    '$cookies',
+    'localStorageService',
+    '$q',
   UserService
 ]);
 

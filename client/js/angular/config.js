@@ -3,12 +3,13 @@
 var constants = require('../constants');
 
 angular.module('berkeleyScheduler').config([
-  '$compileProvider',
-  '$stateProvider',
-  '$urlRouterProvider',
-  '$mdThemingProvider',
-  '$mdIconProvider',
-  function($compileProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider) {
+    '$compileProvider',
+    '$stateProvider',
+    '$urlRouterProvider',
+    '$mdThemingProvider',
+    '$mdIconProvider',
+    'localStorageServiceProvider',
+  function($compileProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider, localStorageServiceProvider) {
     $compileProvider.debugInfoEnabled(false);
 
     var scheduleUrl = '/' + constants.TERM_ABBREV;
@@ -90,5 +91,7 @@ angular.module('berkeleyScheduler').config([
     $mdIconProvider
       .defaultViewBoxSize(48)
       .defaultIconSet('assets/gen/sprite.defs.svg');
+
+    localStorageServiceProvider.setPrefix('berkeleyScheduler');
   }
 ]);

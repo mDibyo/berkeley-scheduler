@@ -9,7 +9,8 @@
       'ngMaterial',
       'angulartics',
       'angulartics.google.analytics',
-      'contenteditable'
+      'contenteditable',
+      'LocalStorageModule'
   ]);
 
   // Configuration
