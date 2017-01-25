@@ -154,27 +154,31 @@ td, th {
   height: 20px;
 }
 
-.event-meeting-repeat.ng-enter {
+.event-meetings-container {
+  height: 80px;
+}
+
+.repeat-animate.ng-enter {
   -webkit-transition: max-height 0.4s ease, opacity 0.15s linear 0.35s;
   transition: max-height 0.4s ease, opacity 0.15s linear 0.35s;
 }
-.event-meeting-repeat.ng-move {
+.repeat-animate.ng-move {
   -webkit-transition: all 0.25s ease;
   transition: all 0.25s ease;
 }
-.event-meeting-repeat.ng-leave {
+.repeat-animate.ng-leave {
   -webkit-transition: opacity 0.15s linear, max-height 0.4s ease 0.1s;
   transition: opacity 0.15s linear, max-height 0.4s ease 0.1s;
 }
-.event-meeting-repeat.ng-leave.ng-leave-active,
-.event-meeting-repeat.ng-enter {
+.repeat-animate.ng-leave.ng-leave-active,
+.repeat-animate.ng-enter {
   opacity: 0;
   max-height: 0;
 }
-.event-meeting-repeat.ng-leave,
-.event-meeting-repeat.ng-enter.ng-enter-active {
+.repeat-animate.ng-leave,
+.repeat-animate.ng-enter.ng-enter-active {
   opacity: 1;
-  max-height: 80px;
+  max-height: 1000px;
 }
 
 md-input-container.event-meeting-time {
