@@ -534,7 +534,9 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       }
       return courseService.getSectionByIdQ(optionId);
     })).then(function(options) {
-      return new Schedule(userId, options);
+      return new Schedule(userId, options.filter(function(option) {
+        return option;
+      }));
     });
   }
 
