@@ -38,8 +38,15 @@ angular.module('berkeleyScheduler').run([
     $window.addEventListener('resize', setRightPaneHeight);
 
     var showMobUnoptDialog = userService.preferences.showMobUnoptDialog;
-    if (showMobUnoptDialog && $mdMedia('xs')) {
-      $mdDialog.show($mdDialog.mobileUnoptimizedPreset());
+    var showSendEmailDialog = userService.preferences.showSendEmailDialog;
+    if ($mdMedia('xs')) {
+      if (showMobUnoptDialog) {
+        $mdDialog.show($mdDialog.mobileUnoptimizedPreset());
+      }
+    } else {
+      if (showSendEmailDialog) {
+        $mdDialog.show($mdDialog.sendEmailPreset());
+      }
     }
 
     // Pre-fetch SVG assets

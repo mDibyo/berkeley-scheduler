@@ -30,6 +30,13 @@
   text-align: center;
 }
 
+#send-email-dialog {
+  max-width: 500px;
+}
+#send-email-dialog md-input-container {
+  height: 20px;
+}
+
 md-autocomplete {
   margin-left: 10px;
   margin-right: 10px;

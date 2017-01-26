@@ -3,7 +3,6 @@
 
   angular.module('berkeleyScheduler', [
       'ui.router',
-      // 'ngAnimate',
       'ngSanitize',
       'ngCookies',
       'ngMaterial',
@@ -37,6 +36,7 @@
   require('./exportToCalendarDialog.controller');
   require('./generatingSchedules.controller');
   require('./mobileUnoptimizedDialog.controller');
+  require('./sendEmailDialog.controller');
   require('./viewCourse.controller');
   require('./viewEvent.controller');
   require('./viewSchedule.controller');

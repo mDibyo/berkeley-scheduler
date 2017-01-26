@@ -13,6 +13,9 @@ import {generateRandomAlphaNumericId} from '../utils';
 export interface Preferences {
   showMobUnoptDialog: boolean;
   showConfirmEventDeleteDialog: boolean;
+  showSendEmailDialog: boolean;
+
+  isRegistered: boolean;
 }
 
 export interface SchedulingOptions {
@@ -152,7 +155,7 @@ export default class UserService {
     this.storage = new AngularCompositeStorage($cookies, localStorageService);
   }
 
-  private get primaryUserId(): string {
+  get primaryUserId(): string {
     if (!this._primaryUserId) {
       let primaryUserId = this.storage.get(UserService._primaryUserIdStorageKey);
       if (primaryUserId === undefined) {
@@ -188,7 +191,10 @@ export default class UserService {
       let preferences: Preferences = this.storage.get(preferencesStorageKey);
       preferences = angular.extend({
         showMobUnoptDialog: true,
-        showConfirmEventDeleteDialog: true
+        showConfirmEventDeleteDialog: true,
+        showSendEmailDialog: true,
+
+        isRegistered: false
       }, preferences);
       this._preferences = preferences;
     }
