@@ -3,15 +3,17 @@
 var constants = require('../constants');
 
 angular.module('berkeleyScheduler').config([
-    '$compileProvider',
-    '$stateProvider',
-    '$urlRouterProvider',
-    '$mdThemingProvider',
-    '$mdIconProvider',
-    '$mdDialogProvider',
-    'localStorageServiceProvider',
+  '$compileProvider',
+  '$httpProvider',
+  '$stateProvider',
+  '$urlRouterProvider',
+  '$mdThemingProvider',
+  '$mdIconProvider',
+  '$mdDialogProvider',
+  'localStorageServiceProvider',
   function(
       $compileProvider,
+      $httpProvider,
       $stateProvider,
       $urlRouterProvider,
       $mdThemingProvider,
@@ -20,6 +22,8 @@ angular.module('berkeleyScheduler').config([
       localStorageServiceProvider
   ) {
     $compileProvider.debugInfoEnabled(false);
+
+    $httpProvider.defaults.useXDomain = true;
 
     var scheduleUrl = '/' + constants.TERM_ABBREV;
 
@@ -131,6 +135,14 @@ angular.module('berkeleyScheduler').config([
             return angular.extend({}, dialogDefaults, {
               templateUrl: 'assets/static/html/mobile_unoptimized.dialog.html',
               controller: 'MobileUnoptimizedDialogCtrl'
+            });
+          }
+        })
+        .addPreset('sendEmailPreset', {
+          options: function() {
+            return angular.extend({}, dialogDefaults, {
+              templateUrl: 'assets/static/html/send_email.dialog.html',
+              controller: 'SendEmailDialogCtrl'
             });
           }
         });

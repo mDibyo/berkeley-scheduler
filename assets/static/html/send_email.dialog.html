@@ -1,0 +1,38 @@
+<md-dialog id="send-email-dialog" aria-label="Add Email Address dialog">
+  <md-dialog-content>
+    <div class="md-dialog-content md-body-1">
+      <h3 class="md-headline">
+        Get Updates about Berkeley Scheduler
+      </h3>
+      <p>
+        Add your email address to our mailing list, and we will email you about new features
+        on Berkeley Scheduler. You will receive up to one email each month and we will not use
+        your email address for any other purpose.
+      </p>
+      <form name="sendEmail">
+        <div layout="row">
+        <md-input-container flex>
+          <input type="text" placeholder="First Name" ng-model="vm.firstName">
+        </md-input-container>
+        <md-input-container flex>
+          <input type="text" placeholder="Last Name" ng-model="vm.lastName">
+        </md-input-container>
+        </div>
+        <div layout="row">
+        <md-input-container flex>
+          <input type="email" placeholder="Email" ng-model="vm.email" required>
+        </md-input-container>
+        </div>
+      </form>
+      <br>
+      <md-checkbox ng-model="vm.doNotShowSendEmailDialog">
+        Do not show again
+      </md-checkbox>
+    </div>
+  </md-dialog-content>
+
+  <md-dialog-actions>
+    <md-button class="md-raised md-primary schedule-button" ng-click="vm.send()" ng-disabled="!sendEmail.$valid">Add</md-button>
+    <md-button class="" ng-click="vm.cancel()">No Thanks</md-button>
+  </md-dialog-actions>
+</md-dialog>
