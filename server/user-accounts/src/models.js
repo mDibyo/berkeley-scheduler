@@ -1,10 +1,11 @@
-var mongoose = require('mongoose');
-var uniqueValidator = require('mongoose-unique-validator');
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
-var DATABASE_URL = 'mongodb://localhost:27017/berkeley-scheduler';
+
+const DATABASE_URL = 'mongodb://localhost:27017/berkeley-scheduler';
 mongoose.connect(DATABASE_URL);
 
-var userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true
@@ -26,8 +27,7 @@ var userSchema = new mongoose.Schema({
   timestamps: true
 });
 userSchema.plugin(uniqueValidator);
-var User = mongoose.model('User', userSchema);
-
+const User = mongoose.model('User', userSchema);
 
 module.exports = {
   User: User

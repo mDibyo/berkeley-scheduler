@@ -1,31 +1,31 @@
-var fs = require('fs');
-var http = require('http');
-var https = require('https');
-var path = require('path');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const path = require('path');
 
-var express = require('express');
-var bodyParser = require('body-parser');
-var mongodb = require('mongodb');
-var morgan = require('morgan');
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongodb = require('mongodb');
+const morgan = require('morgan');
 
-var models = require('./models');
+const models = require('./models');
 
-var CREDENTIALS_DIR = path.posix.join(__dirname, '..', '..', '.credentials');
+const CREDENTIALS_DIR = path.posix.join(__dirname, '..', '..', '.credentials');
 
-var DATABASE_URL = 'mongodb://localhost:27017/berkeley-scheduler';
-var USERS_COLLECTION = 'users';
+const DATABASE_URL = 'mongodb://localhost:27017/berkeley-scheduler';
+const USERS_COLLECTION = 'users';
 
 mongodb.MongoClient.connect(DATABASE_URL)
     .then(function(db) {
       console.log('Connection established.');
 
-      var users = db.collection(USERS_COLLECTION);
+      const users = db.collection(USERS_COLLECTION);
 
-      var app = express();
+      const app = express();
 
       // Configuration
-      app.set('httpPort', process.env.HTTP_PORT || 80);
-      app.set('httpsPort', process.env.HTTPS_PORT || 443);
+      app.set('httpPort', process.env.HTTP_PORT || 10080);
+      app.set('httpsPort', process.env.HTTPS_PORT || 10443);
 
       // Middleware
       app.use(morgan('dev'));
@@ -42,14 +42,14 @@ mongodb.MongoClient.connect(DATABASE_URL)
         res.send('Hello World!');
       });
       app.post('/users', function (req, res) {
-        var object = req.body;
+        const object = req.body;
 
         if (!object.email) {
           res.status(400).send('Did not send email.');
         } else if (!object.userId) {
           res.status(400).send('Did not send user id.')
         } else {
-          var user = models.User({
+          const user = models.User({
             userId: object.userId,
             name: {
               first: object.firstName,
@@ -69,7 +69,7 @@ mongodb.MongoClient.connect(DATABASE_URL)
         console.log('HTTP Server listening on port ', app.get('httpPort'));
       });
 
-      var pemDir = path.posix.join(CREDENTIALS_DIR, 'api.berkeleyscheduler.com');
+      const pemDir = path.posix.join(CREDENTIALS_DIR, 'api.berkeleyscheduler.com');
       https.createServer({
         key: fs.readFileSync(path.posix.join(pemDir, 'key.pem')),
         cert: fs.readFileSync(path.posix.join(pemDir, 'cert.pem'))
