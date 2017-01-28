@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var mongodb = require('mongodb');
 var morgan = require('morgan');
 
+var models = require('./models');
+
 var CREDENTIALS_DIR = path.posix.join(__dirname, '..', '..', '.credentials');
 
 var DATABASE_URL = 'mongodb://localhost:27017/berkeley-scheduler';
@@ -43,17 +45,22 @@ mongodb.MongoClient.connect(DATABASE_URL)
         var object = req.body;
 
         if (!object.email) {
-          res.sendStatus(400).send('Did not send first name and email.');
+          res.status(400).send('Did not send email.');
+        } else if (!object.userId) {
+          res.status(400).send('Did not send user id.')
         } else {
-          users.insertOne({
-            created_at: new Date(),
-            fist_name: object.firstName,
-            last_name: object.lastName,
+          var user = models.User({
+            userId: object.userId,
+            name: {
+              first: object.firstName,
+              last: object.lastName
+            },
             email: object.email
-          }).then(function() {
-            res.sendStatus(200);
+          });
+          user.save().then(function() {
+            res.status(200);
           }, function(err) {
-            res.sendStatus(500).send('Could not create new user: ', err);
+            res.status(500).send('Could not create new user: ' + err);
           })
         }
       });
