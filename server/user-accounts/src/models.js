@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 
+mongoose.Promise = global.Promise;
+
 const DATABASE_URL = 'mongodb://localhost:27017/berkeley-scheduler';
 mongoose.connect(DATABASE_URL);
 
