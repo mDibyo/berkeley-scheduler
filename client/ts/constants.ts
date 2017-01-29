@@ -13,5 +13,6 @@ const termLastDays: {[termAbbrev: string]: Date} = {
 export = {
   TERM_ABBREV: termAbbrev,
   TERM: terms[termAbbrev],
-  TERM_LAST_DAY: termLastDays[termAbbrev]
+  TERM_LAST_DAY: termLastDays[termAbbrev],
+  API_URL: 'https://api.berkeleyscheduler.com'
 };

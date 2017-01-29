@@ -13,14 +13,14 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   name: {
-    first: {
-      type: String
-    },
-    last: {
-      type: String
-    }
+    first: String,
+    last: String
   },
   email: {
+    type: String,
+    required: true
+  },
+  password: {
     type: String,
     required: true
   }
@@ -29,8 +29,7 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 userSchema.plugin(uniqueValidator);
-const User = mongoose.model('User', userSchema);
 
 module.exports = {
-  User: User
+  User: mongoose.model('User', userSchema)
 };
