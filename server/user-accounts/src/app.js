@@ -68,17 +68,18 @@ app.post('/users', function (req, res) {
   } else if (!object.password) {
     res.status(400).send('Did not send password.')
   } else {
-    const user = models.User({
+    models.User.update({email: object.email}, {
       userId: object.userId,
       name: {
         first: object.firstName,
         last: object.lastName
       },
       email: object.email,
-      password: object.password
-    });
-    user.save().then(function() {
-      res.status(200);
+      password: object.password,
+    }, {
+      runValidators: true,
+      upsert: true,
+      setDefaultsOnInsert: true
     }, function(err) {
       if (err) {
         res.status(500).send('Could not create new user: ' + err);
