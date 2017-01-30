@@ -47,7 +47,7 @@ class SendEmailDialogCtrl extends BaseCtrl {
       data.lastName = this.lastName;
     }
 
-    this.$http.post(constants.API_URL + '/users', data).then((response) => {
+    this.$http.post(constants.API_URL + '/user', data).then((response) => {
       this.userService.preferences.isRegistered = true;
       console.log(response);
     }, function(err) {

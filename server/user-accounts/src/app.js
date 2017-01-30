@@ -58,7 +58,7 @@ app.use(passport.initialize());
 app.get('/ping', function(req, res) {
   res.send('Hello World!');
 });
-app.post('/users', function (req, res) {
+app.post('/user', function (req, res) {
   const object = req.body;
 
   if (!object.email) {
@@ -90,8 +90,12 @@ app.post('/users', function (req, res) {
   }
 });
 
-app.get('/users', passport.authenticate('local'), (req, res) => {
+app.get('/user', passport.authenticate('local'), (req, res) => {
   res.status(200).send(req.user.userId);
+});
+
+app.put('/user', passport.authenticate('local'), (req, res) => {
+
 });
 
 // Servers

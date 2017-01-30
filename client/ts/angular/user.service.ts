@@ -10,6 +10,11 @@ import CustomCommitmentOption from '../models/customCommitmentOption';
 import {generateRandomAlphaNumericId} from '../utils';
 
 
+export interface TimeInfo {
+  hours: number,
+  minutes: number
+}
+
 export interface Preferences {
   showMobUnoptDialog: boolean;
   showConfirmEventDeleteDialog: boolean;
@@ -29,8 +34,8 @@ export interface SchedulingOptions {
   preferAfternoons: boolean;
   preferEvenings: boolean;
   preferNoTimeConflicts: boolean;
-  dayStartTime: Time;
-  dayEndTime: Time;
+  dayStartTime: TimeInfo;
+  dayEndTime: TimeInfo;
   noTimeConflicts: boolean;
   showFinalsSchedule: boolean;
 }
@@ -42,15 +47,10 @@ export interface CourseInfo {
   unselectedSections: string[];
 }
 
-export interface EventMeetingTimeInfo {
-  hours: number,
-  minutes: number
-}
-
 export interface EventMeetingInfo {
   id: string;
-  startTime: EventMeetingTimeInfo;
-  endTime: EventMeetingTimeInfo;
+  startTime: TimeInfo;
+  endTime: TimeInfo;
   days: Days<boolean>;
   location: string;
 }
@@ -237,11 +237,11 @@ export default class UserService {
         showFinalsSchedule: false,
       }, schedulingOptions);
       if (schedulingOptions.dayStartTime) {
-        const startTime: Time = schedulingOptions.dayStartTime;
+        const startTime: TimeInfo = schedulingOptions.dayStartTime;
         schedulingOptions.dayStartTime = new Time(startTime.hours, startTime.minutes);
       }
       if (schedulingOptions.dayEndTime) {
-        const endTime: Time = schedulingOptions.dayEndTime;
+        const endTime: TimeInfo = schedulingOptions.dayEndTime;
         schedulingOptions.dayEndTime = new Time(endTime.hours, endTime.minutes);
       }
 
