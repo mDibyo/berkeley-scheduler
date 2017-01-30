@@ -64,8 +64,8 @@ export interface EventInfo {
 }
 
 interface Storage {
-  set(key: string, value: any): boolean;
-  get(key: string): any|undefined;
+  set(keyComponents: string[], value: any): boolean;
+  get(keyComponents: string[]): any|undefined;
 }
 
 class AngularCookieStorage implements Storage {
@@ -77,14 +77,15 @@ class AngularCookieStorage implements Storage {
 
   constructor(private $cookies: angular.cookies.ICookiesService) {}
 
-  set(key: string, value: any): boolean {
-    this.$cookies.putObject(key, value, {
+  set(keyComponents: string[], value: any): boolean {
+    this.$cookies.putObject(keyComponents.join('.'), value, {
       expires: this._cookieExpiryDate
     });
     return true;
   }
 
-  get(key: string): any {
+  get(keyComponents: string[]): any {
+    const key = keyComponents.join('.');
     try {
       return this.$cookies.getObject(key);
     } catch (SyntaxError) {
@@ -97,12 +98,12 @@ class AngularCookieStorage implements Storage {
 class AngularLocalStorage implements Storage {
   constructor(private localStorage: angular.local.storage.ILocalStorageService) {}
 
-  set(key: string, value: any): boolean {
-    return this.localStorage.set(key, value);
+  set(keyComponents: string[], value: any): boolean {
+    return this.localStorage.set(keyComponents.join('.'), value);
   }
 
-  get(key: string): any {
-    return this.localStorage.get(key);
+  get(keyComponents: string[]): any {
+    return this.localStorage.get(keyComponents.join('.'));
   }
 }
 
@@ -118,16 +119,16 @@ class AngularCompositeStorage implements Storage {
     this.localStorage = new AngularLocalStorage(localStorage);
   }
 
-  set(key: string, value: any): boolean {
-    const done: boolean = this.localStorage.set(key, value);
-    return done ? done : this.cookieStorage.set(key, value);
+  set(keyComponents: string[], value: any): boolean {
+    const done: boolean = this.localStorage.set(keyComponents, value);
+    return done ? done : this.cookieStorage.set(keyComponents, value);
   }
 
-  get(key: string): any {
-    let value = this.localStorage.get(key);
+  get(keyComponents: string[]): any {
+    let value = this.localStorage.get(keyComponents);
     if (!value) {
-      value = this.cookieStorage.get(key);
-      this.localStorage.set(key, value);
+      value = this.cookieStorage.get(keyComponents);
+      this.localStorage.set(keyComponents, value);
     }
     return value;
   }
@@ -157,28 +158,28 @@ export default class UserService {
 
   get primaryUserId(): string {
     if (!this._primaryUserId) {
-      let primaryUserId = this.storage.get(UserService._primaryUserIdStorageKey);
+      let primaryUserId = this.storage.get([UserService._primaryUserIdStorageKey]);
       if (primaryUserId === undefined) {
         primaryUserId = generateRandomAlphaNumericId(10);
       }
-      this.storage.set(UserService._primaryUserIdStorageKey, primaryUserId);
+      this.storage.set([UserService._primaryUserIdStorageKey], primaryUserId);
       this._primaryUserId = primaryUserId;
     }
 
     return this._primaryUserId;
   }
 
-  get primaryUserIdTermIdentifier(): string {
-    return `${this.primaryUserId}.${constants.TERM_ABBREV}`;
+  get primaryUserIdTermIdentifierComponents(): string[] {
+    return [this.primaryUserId, constants.TERM_ABBREV];
   }
 
   private getTermIdentifiedStorageValue<V>(keySuffix: string): V[] {
-    let storageKey: string = `${this.primaryUserIdTermIdentifier}.${keySuffix}`;
-    let value: V[] = this.storage.get(storageKey);
+    let storageKeyComponents: string[] = this.primaryUserIdTermIdentifierComponents.concat(keySuffix);
+    let value: V[] = this.storage.get(storageKeyComponents);
 
     if (!value) {
-      storageKey = `${this.primaryUserId}.${keySuffix}`;
-      value = this.storage.get(storageKey);
+      storageKeyComponents = [this.primaryUserId, keySuffix];
+      value = this.storage.get(storageKeyComponents);
     }
 
     return value || [];
@@ -186,9 +187,10 @@ export default class UserService {
 
   get preferences(): Preferences {
     if (!this._preferences) {
-      const preferencesStorageKey: string =
-          `${this.primaryUserId}.${UserService._preferencesStorageKeySuffix}`;
-      let preferences: Preferences = this.storage.get(preferencesStorageKey);
+      let preferences: Preferences = this.storage.get([
+        this.primaryUserId,
+        UserService._preferencesStorageKeySuffix
+      ]);
       preferences = angular.extend({
         showMobUnoptDialog: true,
         showConfirmEventDeleteDialog: true,
@@ -203,9 +205,10 @@ export default class UserService {
   }
   set preferences(newPreferences: Preferences) {
     this._preferences = newPreferences;
-    const preferencesStorageKey: string =
-      `${this.primaryUserId}.${UserService._preferencesStorageKeySuffix}`;
-    this.storage.set(preferencesStorageKey, newPreferences);
+    this.storage.set([
+      this.primaryUserId,
+      UserService._preferencesStorageKeySuffix
+    ], newPreferences);
   }
   setPreference(preference: string, choice: any) {
     this.preferences = angular.extend(this._preferences, {
@@ -215,10 +218,11 @@ export default class UserService {
 
   get schedulingOptions(): SchedulingOptions {
     if (!this._schedulingOptions) {
-      const schedulingOptionsStorageKey: string =
-        `${this.primaryUserId}.${UserService._schedulingOptionsStorageKeySuffix}`;
       let schedulingOptions: SchedulingOptions =
-          this.storage.get(schedulingOptionsStorageKey) || {};
+          this.storage.get([
+            this.primaryUserId,
+            UserService._schedulingOptionsStorageKeySuffix
+          ]) || {};
 
       schedulingOptions = angular.extend({
         showSavedSchedules: false,
@@ -252,9 +256,10 @@ export default class UserService {
   }
   set schedulingOptions(newSchedulingOptions: SchedulingOptions) {
     this._schedulingOptions = newSchedulingOptions;
-    const schedulingOptionsStorageKey: string =
-      `${this.primaryUserId}.${UserService._schedulingOptionsStorageKeySuffix}`;
-    this.storage.set(schedulingOptionsStorageKey, newSchedulingOptions);
+    this.storage.set([
+      this.primaryUserId,
+      UserService._schedulingOptionsStorageKeySuffix
+    ], newSchedulingOptions);
   }
   setSchedulingOption(option: string, choice: any) {
     this.schedulingOptions = angular.extend(this._schedulingOptions, {
@@ -266,9 +271,10 @@ export default class UserService {
     return this.getTermIdentifiedStorageValue<CourseInfo>(UserService._courseInfosStorageKeySuffix);
   }
   set courseInfos(newCourseInfos: CourseInfo[]) {
-    let courseInfosStorageKey: string =
-      `${this.primaryUserIdTermIdentifier}.${UserService._courseInfosStorageKeySuffix}`;
-    this.storage.set(courseInfosStorageKey, newCourseInfos);
+    this.storage.set(
+        this.primaryUserIdTermIdentifierComponents.concat(UserService._courseInfosStorageKeySuffix),
+        newCourseInfos
+    );
   }
 
   get events(): CustomCommitment[] {
@@ -297,32 +303,34 @@ export default class UserService {
     })
   }
   set events(newEvents: CustomCommitment[]) {
-    let eventInfosStorageKey: string =
-        `${this.primaryUserIdTermIdentifier}.${UserService._eventInfosStorageKeySuffix}`;
-    this.storage.set(eventInfosStorageKey, newEvents.map((event: CustomCommitment) => {
-      return {
-        id: event.id,
-        selected: event.selected,
-        name: event.getName(),
-        optionId: event.option.id,
-        meetings: event.option.meetings.map((meeting): EventMeetingInfo => ({
-          id: meeting.id,
-          startTime: {hours: meeting.startTime.hours, minutes: meeting.startTime.minutes},
-          endTime: {hours: meeting.endTime.hours, minutes: meeting.endTime.minutes},
-          days: meeting.days,
-          location: meeting.location
-        }))
-      }
-    }));
+    this.storage.set(
+        this.primaryUserIdTermIdentifierComponents.concat(UserService._eventInfosStorageKeySuffix),
+        newEvents.map((event: CustomCommitment) => {
+          return {
+            id: event.id,
+            selected: event.selected,
+            name: event.getName(),
+            optionId: event.option.id,
+            meetings: event.option.meetings.map((meeting): EventMeetingInfo => ({
+              id: meeting.id,
+              startTime: {hours: meeting.startTime.hours, minutes: meeting.startTime.minutes},
+              endTime: {hours: meeting.endTime.hours, minutes: meeting.endTime.minutes},
+              days: meeting.days,
+              location: meeting.location
+            }))
+          }
+        })
+    );
   }
 
   get savedScheduleIds(): string[] {
     return this.getTermIdentifiedStorageValue<string>(UserService._savedScheduleIdsStorageKeySuffix);
   }
   set savedScheduleIds(newSavedScheduleIds: string[]) {
-    const savedScheduleIdsStorageKey: string =
-      `${this.primaryUserIdTermIdentifier}.${UserService._savedScheduleIdsStorageKeySuffix}`;
-    this.storage.set(savedScheduleIdsStorageKey, newSavedScheduleIds);
+    this.storage.set(
+        this.primaryUserIdTermIdentifierComponents.concat(UserService._savedScheduleIdsStorageKeySuffix),
+        newSavedScheduleIds
+    );
   }
 }
 
