@@ -43,7 +43,7 @@ def main():
             if not response:
                 break
 
-            print('response.{:03d}.{:02d}.json'.format(course_number, chunk_number))
+            print(JSON_FILE_FORMAT.format('response.{:03d}.{:02d}'.format(course_number, chunk_number)))
             with open(fetched_courses(course_number, chunk_number), 'w') as f:
                 json.dump(response, f)
             chunk_number += 1
