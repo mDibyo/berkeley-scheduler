@@ -6,17 +6,18 @@ import sys
 
 from utils import *
 
-
-departments = {}
-subject_areas = {}
-department_courses = defaultdict(list)
+department_names = {}
+subject_area_names = {}
+college_names = {}
 subject_area_courses = defaultdict(list)
+department_courses = defaultdict(list)
 
 
 def store_course_info(course):
-    departments[course['departmentCode']] = course['departmentDescription']
+    college_names[course['collegeCode']] = course['collegeDescription']
+    department_names[course['departmentCode']] = course['departmentDescription']
     department_courses[course['departmentCode']].append(course)
-    subject_areas[course['subjectAreaCode']] = course['subjectAreaDescription']
+    subject_area_names[course['subjectAreaCode']] = course['subjectAreaDescription']
     subject_area_courses[course['subjectAreaCode']].append(course)
 
 
@@ -30,14 +31,15 @@ def run_for_range(start, end):
         except IOError as e:
             print(e)
 
-    # Save out departments and subject-areas
+    # Save out subject areas, departments and colleges.
     with open(departments(), 'w') as f:
         json.dump({
-            'subjectAreas': subject_areas,
-            'departments': departments
+            'subjectAreas': subject_area_names,
+            'departments': department_names,
+            'colleges': college_names,
         }, f, indent=4)
 
-    # Save out courses
+    # Save out courses.
     for department, courses in department_courses.items():
         with open(course_listing_by_department(department), 'w') as f:
             json.dump(courses, f, indent=4)
@@ -49,4 +51,4 @@ def run_for_range(start, end):
 
 
 if __name__ == '__main__':
-    sys.exit(run_for_range(1, 400))
+    sys.exit(run_for_range(1, 401))
