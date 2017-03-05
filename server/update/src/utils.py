@@ -85,7 +85,7 @@ def course_listing_by_subject_area(subject_area):
                         INTERMEDIATE_DIR,
                         DEPARTMENTS_DIR,
                         COURSE_LISTING_BY_SUBJECT_AREA_DIR,
-                        JSON_FILE_FORMAT.format(subject_area))
+                        JSON_FILE_FORMAT.format(cleaned_subject_area_code(subject_area)))
 
 
 def class_listing_by_subject_area(subject_area):
