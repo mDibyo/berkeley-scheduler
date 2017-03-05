@@ -2,18 +2,18 @@
 **/*.pyc
 **/__pycache__
 
-/data/intermediate/*
-!/data/intermediate/.keep
-!/data/intermediate/fetched-course-json/.keep
-!/data/intermediate/extracted-course-json/.keep
-!/data/intermediate/departments/.keep
-!/data/intermediate/departments/course-listing-by-department/.keep
-!/data/intermediate/departments/course-listing-by-subject-area/.keep
-!/data/intermediate/departments/class-listing-fall-2016-by-subject-area/.keep
-!/data/intermediate/departments/class-listing-spring-2017-by-subject-area/.keep
-!/data/intermediate/departments/fetched-class-json-spring-2017-by-subject-area/.keep
+data/intermediate/*
+!data/intermediate/.keep
+!data/intermediate/fetched-course-json/.keep
+!data/intermediate/extracted-course-json/.keep
+!data/intermediate/departments/.keep
+!data/intermediate/departments/course-listing-by-department/.keep
+!data/intermediate/departments/course-listing-by-subject-area/.keep
+!data/intermediate/departments/class-listing-by-subject-area-fall-2016/.keep
+!data/intermediate/departments/class-listing-by-subject-area-spring-2017/.keep
+!data/intermediate/departments/fetched-class-json-by-subject-area-spring-2017/.keep
 
-/data/recover/*
-!/data/recover/.keep
-!/data/recover/classes/.keep
-!/data/recover/indices/.keep
+data/recover/*
+!data/recover/.keep
+!data/recover/classes/.keep
+!data/recover/indices/.keep
