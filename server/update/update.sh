@@ -7,7 +7,7 @@ source ${CREDENTIALS_DIR}/sis_api.sh
 
 if [[ "${daily}" = false ]]; then
   # Fetch course info
-  ${SRC_DIR}/fetch_course_json.sh || exit $?
+  ${SRC_DIR}/fetch_course_json.py || exit $?
   ${SRC_DIR}/extract_course_json.py || exit $?
 
   # Extract into departments

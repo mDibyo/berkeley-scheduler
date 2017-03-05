@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 
+from collections import namedtuple
 import os.path
 
 TERM = 'spring-2017'
 TERM_ABBRV = 'sp17'
 TERM_ID = 2172
 CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes/sections?{}'
+COURSE_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/courses?{}'
 
+SIS_COURSE_API_APP_ID_ENV = 'SIS_COURSE_API_APP_ID'
+SIS_COURSE_API_APP_KEY_ENV = 'SIS_COURSE_API_APP_KEY'
+SIS_COURSE_API_APP_ID = SIS_COURSE_API_APP_KEY = None
 SIS_CLASS_API_APP_ID_ENV = 'SIS_CLASS_API_APP_ID'
 SIS_CLASS_API_APP_KEY_ENV = 'SIS_CLASS_API_APP_KEY'
 SIS_CLASS_API_APP_ID = SIS_CLASS_API_APP_KEY = None
@@ -30,6 +35,9 @@ FINAL_DIR = 'data'
 JSON_FILE_FORMAT = '{}.json'
 
 
+Range = namedtuple('Range', ['start', 'end'])
+
+
 CHARS_TO_REMOVE = [' ', '&', ',', '/', '-']
 
 
@@ -39,18 +47,18 @@ def cleaned_subject_area_code(sac):
     return sac
 
 
-def fetched_courses(course_number):
+def fetched_courses(course_number, chunk_number):
     return os.path.join(DATA_DIR,
                         INTERMEDIATE_DIR,
                         FETCHED_COURSES_DIR,
-                        JSON_FILE_FORMAT.format('response.{}'.format(course_number)))
+                        JSON_FILE_FORMAT.format('response.{:03d}.{:02d}'.format(course_number, chunk_number)))
 
 
 def extracted_courses(course_number):
     return os.path.join(DATA_DIR,
                         INTERMEDIATE_DIR,
                         EXTRACTED_COURSES_DIR,
-                        JSON_FILE_FORMAT.format('response_extracted.{}'.format(course_number)))
+                        JSON_FILE_FORMAT.format('response_extracted.{:03d}'.format(course_number)))
 
 
 def departments():
