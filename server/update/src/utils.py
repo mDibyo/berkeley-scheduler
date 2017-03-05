@@ -6,7 +6,7 @@ import os.path
 TERM = 'spring-2017'
 TERM_ABBRV = 'sp17'
 TERM_ID = 2172
-CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes/sections?{}'
+CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/uat/sis/v1/classes?{}'
 COURSE_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/courses?{}'
 
 SIS_COURSE_API_APP_ID_ENV = 'SIS_COURSE_API_APP_ID'
@@ -102,6 +102,15 @@ def fetched_classes_by_subject_area(subject_area):
                         DEPARTMENTS_DIR,
                         FETCHED_CLASSES_BY_SUBJECT_AREA_FORMAT.format(TERM),
                         JSON_FILE_FORMAT.format(cleaned_subject_area_code(subject_area)))
+
+
+def fetched_classes_by_subject_area_new(subject_area, chunk_number):
+    return os.path.join(DATA_DIR,
+                        INTERMEDIATE_DIR,
+                        DEPARTMENTS_DIR,
+                        FETCHED_CLASSES_BY_SUBJECT_AREA_FORMAT.format(TERM),
+                        JSON_FILE_FORMAT.format('{}.{:02d}'.format(cleaned_subject_area_code(subject_area),
+                                                                   chunk_number)))
 
 
 def final_class_listing_by_subject_area(subject_area):
