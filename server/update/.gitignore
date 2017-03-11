@@ -12,6 +12,7 @@ data/intermediate/*
 !data/intermediate/departments/class-listing-by-subject-area-fall-2016/.keep
 !data/intermediate/departments/class-listing-by-subject-area-spring-2017/.keep
 !data/intermediate/departments/fetched-class-json-by-subject-area-spring-2017/.keep
+!data/intermediate/departments/fetched-class-section-json-by-subject-area-spring-2017/.keep
 
 data/recover/*
 !data/recover/.keep
