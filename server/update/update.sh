@@ -16,7 +16,11 @@ if [[ "${daily}" = false ]]; then
 fi
 
 # Fetch classes for a term
-${SRC_DIR}/fetch_and_extract_class_json.py || exit $?
+${SRC_DIR}/fetch_class_json.py || exit $?
+${SRC_DIR}/fetch_class_section_json.py || exit $?
+
+# Extract classes
+${SRC_DIR}/extract_class_section_json.py || exit $?
 
 # Generate reverse lookup indices
 ${SRC_DIR}/generate_indices.py || exit $?
