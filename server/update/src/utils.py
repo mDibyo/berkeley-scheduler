@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
-from collections import namedtuple
 import os.path
 
-TERM = 'spring-2017'
-TERM_ABBRV = 'sp17'
-TERM_ID = 2172
+from config import *
+
+
 CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/uat/sis/v1/classes?{}'
 CLASS_SECTION_API_URL_FORMAT = 'https://apis.berkeley.edu/uat/sis/v1/classes/sections?{}'
 COURSE_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/courses?{}'
@@ -35,10 +34,6 @@ INDICES_DIR = 'indices'
 FINAL_DIR = 'data'
 
 JSON_FILE_FORMAT = '{}.json'
-
-
-Range = namedtuple('Range', ['start', 'end'])
-FILE_RANGE = Range(0, 1000)
 
 
 CHARS_TO_REMOVE = [' ', '&', ',', '/', '-']
