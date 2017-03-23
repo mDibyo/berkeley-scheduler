@@ -27,19 +27,25 @@ def extract_course_info_from_json(course_json):
 
     return {
         'csCourseId': extract_cs_course_id_from_json(course_json['identifiers']),
+
         'departmentCode': department_info['code'],
         'departmentDescription': department_info['description'],
+
         'collegeCode': college_info['code'],
         'collegeDescription': college_info['description'],
-        'gradingBasis': course_json['gradingBasis']['code'],
-        'finalExam': final_exam_info['code'] == 'Y' if final_exam_info else None,
+
         'subjectAreaCode': course_json['subjectArea']['code'],
         'subjectAreaDescription': course_json['subjectArea']['description'],
-        'courseNumber': course_json['catalogNumber']['formatted'],
+
+        # Class characteristics
         'title': course_json['title'],
         'description': course_json.get('description'),
-        'proposedInstructors': course_json['proposedInstructors'],
+        'displayName': course_json['displayName'],
+        'courseNumber': course_json['catalogNumber']['formatted'],
         'units': course_json.get('credit'),
+        'gradingBasis': course_json['gradingBasis']['code'],
+        'finalExam': final_exam_info['code'] == 'Y' if final_exam_info else None,
+        'proposedInstructors': course_json['proposedInstructors'],
         'preparation': course_json.get('preparation'),
         'crossListedCourses': course_json['crossListing']['courses'] if 'crossListing' in course_json else None
     }
