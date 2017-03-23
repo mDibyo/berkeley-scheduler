@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 from collections import defaultdict
+from functools import partial
 import json
+from multiprocessing import Pool
 import sys
 from urllib import error as url_error, parse as url_parse, request as url_request
 
@@ -31,6 +33,12 @@ def request_class_sections(term_id, subject_area, catalog_number):
         return {}
 
 
+def fetch_class(class_, subject_area):
+    catalog_number, section_number = class_['course']['catalogNumber']['formatted'], class_['number']
+    print('{} {}-{}'.format(subject_area, catalog_number, section_number))
+    return catalog_number, section_number, request_class_sections(TERM_ID, subject_area, catalog_number)
+
+
 def main():
     with open(departments(), 'r') as f:
         subject_areas = sorted(json.load(f)['subjectAreas'].keys())
@@ -51,12 +59,11 @@ def main():
             except FileNotFoundError:
                 break
 
-            for class_ in classes:
-                catalog_number, section_number = class_['course']['catalogNumber']['formatted'], class_['number']
-                print('{} {}-{}'.format(subject_area, catalog_number, section_number))
-                response = request_class_sections(TERM_ID, subject_area, catalog_number)
-                if response:
-                    sections[catalog_number][section_number] = response
+            with Pool() as pool:
+                for catalog_number, section_number, response in \
+                        pool.map(partial(fetch_class, subject_area=subject_area), classes):
+                    if response:
+                        sections[catalog_number][section_number] = response
 
             chunk_number += 1
 
