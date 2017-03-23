@@ -50,6 +50,10 @@ def cleaned_subject_area_code(sac):
     return sac
 
 
+def extract_number_from_class(class_):
+    return class_['course']['catalogNumber']['formatted'], class_['number']
+
+
 def fetched_courses(course_number, chunk_number):
     return os.path.join(DATA_DIR,
                         INTERMEDIATE_DIR,

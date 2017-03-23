@@ -34,7 +34,7 @@ def request_class_sections(term_id, subject_area, catalog_number):
 
 
 def fetch_class(class_, subject_area):
-    catalog_number, section_number = class_['course']['catalogNumber']['formatted'], class_['number']
+    catalog_number, section_number = extract_number_from_class(class_)
     print('{} {}-{}'.format(subject_area, catalog_number, section_number))
     return catalog_number, section_number, request_class_sections(TERM_ID, subject_area, catalog_number)
 
