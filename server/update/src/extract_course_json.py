@@ -6,9 +6,6 @@ import sys
 from utils import *
 
 
-FILE_RANGE = Range(0, 1000)
-
-
 def extract_cs_course_id_from_json(identifiers_json):
     for identifier_json in identifiers_json:
         if identifier_json['type'] == 'cs-course-id':
@@ -81,6 +78,8 @@ def extract_all_course_info():
         if output_courses:
             with open(extracted_courses(course_number), 'w') as f:
                 json.dump(output_courses, f, indent=4)
+
+    return 0
 
 
 if __name__ == '__main__':
