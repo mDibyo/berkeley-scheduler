@@ -10,10 +10,11 @@ def generate_2ary_to_1ary_section_id_mapping(classes):
     mapping = {}
 
     for subject_area in classes:
-        for _class in classes[subject_area].values():
-            _1ary_section_id = _class['id']
-            for section in _class['sections']:
-                mapping[section['id']] = _1ary_section_id
+        for class_sections in classes[subject_area].values():
+            for class_section in class_sections.values():
+                _1ary_section_id = class_section['id']
+                for section in class_section['sections']:
+                    mapping[section['id']] = _1ary_section_id
     return mapping
 
 
@@ -22,7 +23,8 @@ def generate_1ary_section_id_to_subject_area_mapping(classes):
 
     for subject_area, subject_area_classes in classes.items():
         for course_number, _class in subject_area_classes.items():
-            mapping[_class['id']] = [subject_area, course_number]
+            for section_number, class_section in _class.items():
+                mapping[class_section['id']] = [subject_area, course_number, section_number]
     return mapping
 
 
@@ -32,7 +34,9 @@ def generate_subject_area_to_courses_titles_mapping(classes):
     for subject_area, subject_area_classes in classes.items():
         subject_area_mapping = []
         for course_number, _class in subject_area_classes.items():
-            subject_area_mapping.append([_class['id'], course_number, _class['title']])
+            for class_section in _class.values():
+                subject_area_mapping.append(
+                    [class_section['id'], course_number, class_section['title']])
         mapping[subject_area] = subject_area_mapping
     return mapping
 
