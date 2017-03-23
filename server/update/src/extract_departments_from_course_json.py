@@ -64,4 +64,4 @@ def run_for_range(start, end):
 
 
 if __name__ == '__main__':
-    sys.exit(run_for_range(1, 401))
+    sys.exit(run_for_range(0, 1000))

@@ -6,7 +6,7 @@ import sys
 from utils import *
 
 
-FILE_RANGE = Range(1, 401)
+FILE_RANGE = Range(0, 1000)
 
 
 def extract_cs_course_id_from_json(identifiers_json):
@@ -70,10 +70,10 @@ def extract_all_course_info():
         try:
             chunk_number = 0
             while True:
-                print('response.{:03d}.{:02d}.json'.format(course_number, chunk_number))
                 with open(fetched_courses(course_number, chunk_number), 'r') as f:
                     output_courses.extend(extract_course_info_from_file(f))
 
+                print('response.{:03d}.{:02d}.json'.format(course_number, chunk_number))
                 chunk_number += 1
         except IOError:
             pass
