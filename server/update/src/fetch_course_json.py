@@ -8,7 +8,6 @@ from utils import *
 
 
 CHUNK_SIZE = 50
-FILE_RANGE = Range(0, 1000)
 
 
 def request_course(course_number, row_start, row_limit):

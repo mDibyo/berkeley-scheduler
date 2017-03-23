@@ -38,6 +38,7 @@ JSON_FILE_FORMAT = '{}.json'
 
 
 Range = namedtuple('Range', ['start', 'end'])
+FILE_RANGE = Range(0, 1000)
 
 
 CHARS_TO_REMOVE = [' ', '&', ',', '/', '-']

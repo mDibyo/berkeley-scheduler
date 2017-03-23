@@ -34,8 +34,8 @@ def store_course_info(course):
     update_course(subject_area_courses_dict[subject_area_code][course_number], course)
 
 
-def run_for_range(start, end):
-    for course_number in range(start, end):
+def main():
+    for course_number in range(FILE_RANGE.start, FILE_RANGE.end):
         try:
             print('extracting course_number {}'.format(course_number))
             with open(extracted_courses(course_number), 'r') as f:
@@ -64,4 +64,4 @@ def run_for_range(start, end):
 
 
 if __name__ == '__main__':
-    sys.exit(run_for_range(0, 1000))
+    sys.exit(main())
