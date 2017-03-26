@@ -91,6 +91,7 @@ def extract_class_info_from_json(sections_json, class_json, course_json):
 
         # Class info
         'id': primary_section_id,
+        'number': class_json['number'],
         'primaryComponent': class_json['primaryComponent']['code'],
         'status': class_json['status']['code'],
         'instructionMode': class_json['instructionMode']['code'],
@@ -148,7 +149,7 @@ def main():
             sections_json = json.load(f)
 
         # Extraction
-        classes = defaultdict(dict)
+        classes = defaultdict(list)
         for catalog_number, class_sections in sections_json.items():
             for section_number, section in class_sections.items():
                 sections_json = section['apiResponse']['response']['classSections']
@@ -159,8 +160,8 @@ def main():
                     print('{} {}-{}'.format(subject_area, catalog_number, section_number))
                     course_json = extract_course_info_from_class_json(class_json)
 
-                classes[catalog_number][section_number] = \
-                    extract_class_info_from_json(sections_json, class_json, course_json)
+                classes[catalog_number].append(
+                    extract_class_info_from_json(sections_json, class_json, course_json))
 
         with open(class_listing_by_subject_area(subject_area), 'w') as f:
             json.dump(classes, f)
