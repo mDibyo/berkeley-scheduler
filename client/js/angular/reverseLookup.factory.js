@@ -32,9 +32,9 @@ function reverseLookup($http, $q, courses) {
       deferred.resolve(_coursesCache[id]);
       return deferred.promise;
     }
+
     return _1arySectionIdToSubjectAreaIndexQ.then(function(index) {
-      return index[id];
-    }).then(function(subjectAreaInfo) {
+      var subjectAreaInfo = index[id];
       return courses.getCoursesQBySubjectAreaCode(subjectAreaInfo[0])
         .then(function(courseList) {
           const courseNumber = subjectAreaInfo[1];
