@@ -2,11 +2,33 @@ import Time = require('./time');
 import {Days, Identifiable, generateRandomAlphaNumericId, getDefaultDays} from '../utils';
 
 
+export interface DaysJson {
+  Mo: boolean;
+  Tu: boolean;
+  We: boolean;
+  Th: boolean;
+  Fr: boolean;
+  Sa: boolean;
+  Su: boolean;
+}
+
+const parseDays = (daysJson: DaysJson): Days<boolean> => ({
+  'Monday': daysJson.Mo,
+  'Tuesday': daysJson.Tu,
+  'Wednesday': daysJson.We,
+  'Thursday': daysJson.Th,
+  'Friday': daysJson.Fr,
+  'Saturday': daysJson.Sa,
+  'Sunday': daysJson.Su
+});
+
+
 export interface MeetingJson {
-  location: {code: string, description: string};
-  days: Days<boolean>;
-  startTime: string;
-  endTime: string;
+  loc: {code: string, description: string};
+  days: DaysJson;
+  sT: string;
+  eT: string;
+  dayAbbrevs: string;
   instructors: {name: string, role: string}[];
 }
 
@@ -33,19 +55,25 @@ export default class Meeting<Owner> implements Identifiable {
 
   static parse<Owner>(meetingJson: MeetingJson, owner: Owner): Meeting<Owner> {
     let location = undefined;
-    if (meetingJson.location) {
-      location = meetingJson.location.description || undefined;
+    if (meetingJson.loc) {
+      location = meetingJson.loc.description || undefined;
     }
 
-    if (meetingJson.startTime === null || meetingJson.endTime === null) {
-      return new Meeting(undefined, undefined, meetingJson.days, location, meetingJson.instructors, owner);
+    if (meetingJson.sT === null || meetingJson.eT === null) {
+      return new Meeting<Owner>(
+          undefined, undefined, parseDays(meetingJson.days),
+          location, meetingJson.instructors, owner
+      );
     }
-    const startTimeSplit = meetingJson.startTime.split(':');
+    const startTimeSplit = meetingJson.sT.split(':');
     const startTime = new Time(parseInt(startTimeSplit[0]), parseInt(startTimeSplit[1]));
-    const endTimeSplit = meetingJson.endTime.split(':');
+    const endTimeSplit = meetingJson.eT.split(':');
     const endTime = new Time(parseInt(endTimeSplit[0]), parseInt(endTimeSplit[1]));
 
-    return new Meeting<Owner>(startTime, endTime, meetingJson.days, location, meetingJson.instructors, owner);
+    return new Meeting<Owner>(
+        startTime, endTime, parseDays(meetingJson.days),
+        location, meetingJson.instructors, owner
+    );
   };
 
   static dayAbbrevs = [

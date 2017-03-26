@@ -19,8 +19,8 @@ export interface SectionJson {
   type: string;
   number: string;
 
-  isPrimary: boolean;
-  associatedPrimarySectionId: number;
+  isPri: boolean;
+  assocPriSecId: number;
 
   enrollment: EnrollmentJson;
 
@@ -46,7 +46,11 @@ export default class Section implements Option {
   meetings: Meeting<Section>[];
 
   constructor(sectionJson: SectionJson, courseInstance?: CourseInstance) {
-    angular.extend(this, sectionJson);
+    this.id = sectionJson.id;
+    this.type = sectionJson.type;
+    this.number = sectionJson.number;
+
+    this.isPrimary = sectionJson.isPri;
 
     if (courseInstance) {
       this.owner = courseInstance;
@@ -58,7 +62,7 @@ export default class Section implements Option {
     this.waitlistCapacity = sectionJson.enrollment.wMax;
 
     this.meetings = sectionJson.meetings
-        .filter((meetingJson: MeetingJson) => meetingJson.location.code !== MIDTERM_MEETING_LOCATION_CODE)
+        .filter((meetingJson: MeetingJson) => meetingJson.loc.code !== MIDTERM_MEETING_LOCATION_CODE)
         .map(meetingJson => Meeting.parse(meetingJson, this));
     this.selected = true;
   }
