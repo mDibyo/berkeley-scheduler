@@ -1,6 +1,17 @@
-'use strict';
 import Time = require('./time');
 import {Days, Identifiable, generateRandomAlphaNumericId, getDefaultDays} from '../utils';
+
+
+export interface MeetingJson {
+  location: {code: string, description: string};
+  days: Days<boolean>;
+  startTime: string;
+  endTime: string;
+  instructors: {name: string, role: string}[];
+}
+
+export const MIDTERM_MEETING_LOCATION_CODE = 'MIDTERM';
+
 
 declare interface Instructor {
   name: string
@@ -20,10 +31,10 @@ export default class Meeting<Owner> implements Identifiable {
     this.id = generateRandomAlphaNumericId(10);
   }
 
-  static parse<Owner>(meetingJson: any, owner: Owner): Meeting<Owner> {
+  static parse<Owner>(meetingJson: MeetingJson, owner: Owner): Meeting<Owner> {
     let location = undefined;
     if (meetingJson.location) {
-      location = meetingJson.location.description || null;
+      location = meetingJson.location.description || undefined;
     }
 
     if (meetingJson.startTime === null || meetingJson.endTime === null) {

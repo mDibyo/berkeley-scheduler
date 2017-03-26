@@ -1,7 +1,7 @@
 import angular = require('angular');
 
 import CourseInstance from './courseInstance';
-import Meeting from './meeting';
+import Meeting, {MeetingJson, MIDTERM_MEETING_LOCATION_CODE} from "./meeting";
 import {Option} from './commitment';
 
 
@@ -24,7 +24,7 @@ export interface SectionJson {
 
   enrollment: EnrollmentJson;
 
-  meetings: Object[];
+  meetings: MeetingJson[];
 }
 
 
@@ -35,7 +35,6 @@ export default class Section implements Option {
   number: string;
 
   isPrimary: boolean;
-  associatedPrimarySectionId: number;
 
   enrolled: number;
   enrollCapacity: number;
@@ -58,9 +57,9 @@ export default class Section implements Option {
     this.waitlisted = sectionJson.enrollment.wCurr;
     this.waitlistCapacity = sectionJson.enrollment.wMax;
 
-    this.meetings = sectionJson.meetings.map(
-        (meetingJson) => Meeting.parse(meetingJson, this)
-    );
+    this.meetings = sectionJson.meetings
+        .filter((meetingJson: MeetingJson) => meetingJson.location.code !== MIDTERM_MEETING_LOCATION_CODE)
+        .map(meetingJson => Meeting.parse(meetingJson, this));
     this.selected = true;
   }
 }
