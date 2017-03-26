@@ -17,7 +17,6 @@ export interface CourseInstanceJson {
   status: string;
   instructionMode: string;
   finalExam: boolean;
-  print: string;
   units: number;
   grading: string;
   enrollment: EnrollmentJson;
