@@ -1,17 +1,11 @@
 import Section, {SectionJson} from './section';
 import CourseInstance from './courseInstance';
-import {Identifiable, ColorRegisterableIdentifiable} from '../utils';
+import {Identifiable, ColorRegisterableIdentifiable, StringMap} from '../utils';
+import {CourseInstanceJson} from "./courseInstance";
 
 
-interface CourseJson {
-  id: string;
-  displayName: string;
-  title: string;
-  description: string;
-  units: number;
-  meetings: Object[];
-  sections: SectionJson[];
-}
+export type CourseJson = CourseInstanceJson[];
+
 
 export default class Course extends ColorRegisterableIdentifiable implements Identifiable {
   id: string;
@@ -29,38 +23,30 @@ export default class Course extends ColorRegisterableIdentifiable implements Ide
   constructor(courseJson: CourseJson) {
     super();
 
-    if (courseJson.displayName === undefined) {
+    const courseInfo: CourseInstanceJson = courseJson[0];
+
+    if (courseInfo.displayName === undefined) {
       console.log(courseJson);
     }
 
-    [this.department, this.courseNumber] = courseJson.displayName.split(' ', 2);
-    this.title = courseJson.title;
-    this.description = courseJson.description;
-    this.id = courseJson.id;
-    this.units = courseJson.units;
+    [this.department, this.courseNumber] = courseInfo.displayName.split(' ', 2);
+    this.title = courseInfo.title;
+    this.description = courseInfo.description;
+    this.id = courseInfo.id;
+    this.units = courseInfo.units;
 
-    const primarySections: Section[] = [];
-    const sectionsByPrimarySectionId: {[id: string]: Section[]} = {};
-    courseJson.sections.forEach(sectionJson => {
-      const section = new Section(sectionJson);
+    this.instances = courseJson.map((ciJson: CourseInstanceJson) => {
+      const sectionsMap: StringMap<Section> = {};
 
-      if (section.isPrimary) {
-        primarySections.push(section);
-      } else {
-        const primarySectionId = section.associatedPrimarySectionId;
-        if (!sectionsByPrimarySectionId[primarySectionId]) {
-          sectionsByPrimarySectionId[primarySectionId] = [];
-        }
-        sectionsByPrimarySectionId[primarySectionId].push(section);
-      }
+      let section: Section = new Section(ciJson.sections[0]);
+      const sectionList: Section[] = ciJson.sections.map((sectionJson: SectionJson) => {
+        section = new Section(sectionJson);
+        sectionsMap[section.id] = section;
+        return section;
+      });
+      const primarySection: Section = sectionsMap[sectionList[0].associatedPrimarySectionId];
+      return new CourseInstance(this, primarySection, sectionList, ciJson.finalExam);
     });
-    this.instances = primarySections.map(
-        primarySection => new CourseInstance(
-            this,
-            primarySection,
-            sectionsByPrimarySectionId[primarySection.id] || []
-        )
-    );
   }
 
   static parse(courseJson: CourseJson): Course {

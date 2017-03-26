@@ -2,7 +2,16 @@ import angular = require('angular');
 
 import CourseInstance from './courseInstance';
 import Meeting from './meeting';
-import {Option, Commitment} from './commitment';
+import {Option} from './commitment';
+
+
+export interface EnrollmentJson {
+  eCurr: number;
+  eMin: number;
+  eMax: number;
+  wCurr: number;
+  wMax: number;
+}
 
 
 export interface SectionJson {
@@ -14,10 +23,7 @@ export interface SectionJson {
   isPrimary: boolean;
   associatedPrimarySectionId: number;
 
-  enrolled: number;
-  enrollCapacity: number;
-  waitlisted: number;
-  waitlistCapacity: number;
+  enrollment: EnrollmentJson;
 
   meetings: Object[];
 }
@@ -47,6 +53,12 @@ export default class Section implements Option {
     if (courseInstance) {
       this.owner = courseInstance;
     }
+
+    this.enrolled = sectionJson.enrollment.eCurr;
+    this.enrollCapacity = sectionJson.enrollment.eMax;
+    this.waitlisted = sectionJson.enrollment.wCurr;
+    this.waitlistCapacity = sectionJson.enrollment.wMax;
+
     this.meetings = sectionJson.meetings.map(
         (meetingJson) => Meeting.parse(meetingJson, this)
     );
