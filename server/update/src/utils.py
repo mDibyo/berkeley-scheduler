@@ -2,7 +2,10 @@
 
 import os.path
 
-from config import *
+try:
+    from .config import *
+except SystemError:
+    from config import *
 
 
 CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/uat/sis/v1/classes?{}'
