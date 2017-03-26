@@ -6,7 +6,8 @@ import {SectionJson, EnrollmentJson} from "./section";
 
 
 export interface CourseInstanceJson {
-  displayName: string;
+  sAC: string;
+  cN: string;
   title: string;
   description: string;
   crossListed: string[]|null;
