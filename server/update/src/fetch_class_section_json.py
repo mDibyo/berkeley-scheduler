@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from collections import defaultdict
 from functools import partial
 import json
 from multiprocessing import Pool
@@ -33,10 +32,9 @@ def request_class_sections(term_id, subject_area, catalog_number):
         return {}
 
 
-def fetch_class(class_, subject_area):
-    catalog_number, section_number = extract_number_from_class(class_)
-    print('{} {}-{}'.format(subject_area, catalog_number, section_number))
-    return catalog_number, section_number, request_class_sections(TERM_ID, subject_area, catalog_number)
+def fetch_class(catalog_number, subject_area):
+    print('{} {}'.format(subject_area, catalog_number))
+    return catalog_number, request_class_sections(TERM_ID, subject_area, catalog_number)
 
 
 def main():
@@ -50,22 +48,25 @@ def main():
         if subject_area in completed:
             continue
 
-        sections = defaultdict(dict)
+        catalog_numbers = set()
         chunk_number = 0
         while True:
             try:
                 with open(fetched_classes_by_subject_area_new(subject_area, chunk_number)) as f:
-                    classes = json.load(f)['apiResponse']['response']['classes']
+                    catalog_numbers.update(map(
+                        lambda class_: class_['course']['catalogNumber']['formatted'],
+                        json.load(f)['apiResponse']['response']['classes']))
             except FileNotFoundError:
                 break
 
-            with Pool() as pool:
-                for catalog_number, section_number, response in \
-                        pool.map(partial(fetch_class, subject_area=subject_area), classes):
-                    if response:
-                        sections[catalog_number][section_number] = response
-
             chunk_number += 1
+
+        sections = {}
+        with Pool() as pool:
+            for catalog_number, response in \
+                    pool.map(partial(fetch_class, subject_area=subject_area), catalog_numbers):
+                if response:
+                    sections[catalog_number] = response
 
         with open(fetched_class_sections_by_subject_area(subject_area), 'w') as f:
             json.dump(sections, f)

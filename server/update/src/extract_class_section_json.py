@@ -145,19 +145,25 @@ def main():
             pass
 
         # Sections
+        all_sections_json = defaultdict(lambda: defaultdict(list))
         with open(fetched_class_sections_by_subject_area(subject_area)) as f:
-            sections_json = json.load(f)
+            for catalog_number, sections in json.load(f).items():
+                for section in sections['apiResponse']['response']['classSections']:
+                    all_sections_json[catalog_number][section['class'].get('number', '001')].append(section)
 
         # Extraction
         classes = defaultdict(list)
-        for catalog_number, class_sections in sections_json.items():
-            for section_number, section in class_sections.items():
-                sections_json = section['apiResponse']['response']['classSections']
-                class_json = classes_json[catalog_number][section_number]
+        for catalog_number, class_sections in all_sections_json.items():
+            for section_number, sections_json in class_sections.items():
+                try:
+                    class_json = classes_json[catalog_number][section_number]
+                except KeyError:
+                    print('no class: {} {}-{}'.format(subject_area, catalog_number, section_number))
+                    continue
                 try:
                     course_json = courses_json[catalog_number]
                 except KeyError:
-                    print('{} {}-{}'.format(subject_area, catalog_number, section_number))
+                    print('no course: {} {}-{}'.format(subject_area, catalog_number, section_number))
                     course_json = extract_course_info_from_class_json(class_json)
 
                 classes[catalog_number].append(
