@@ -7,7 +7,6 @@ import CourseInstance from "../models/courseInstance";
 import Final = require("../models/final");
 import {StringMap} from "../utils";
 import {CourseJson} from "../models/course";
-import {CourseInstanceJson} from "../models/courseInstance";
 
 
 const departmentsUrl = 'data/departments.json';
@@ -71,15 +70,8 @@ export default class courses {
 
       const courses = Object.keys(coursesData)
           .map(displayName => {
-            return coursesData[displayName]
-                .filter((c: CourseInstanceJson) => c.print)
-                .map((c: CourseInstanceJson) => {
-                  c.sections = c.sections.filter(section => section.print);
-                  return c;
-                });
-          })
-          .filter(courseData => courseData.length > 0)
-          .map(courseData => {
+            const courseData = coursesData[displayName];
+
             const course = Course.parse(courseData);
             course.instances.forEach((courseInstance: CourseInstance) => {
               if (courseInstance.hasFinalExam) {

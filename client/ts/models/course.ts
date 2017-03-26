@@ -39,13 +39,20 @@ export default class Course extends ColorRegisterableIdentifiable implements Ide
       const sectionsMap: StringMap<Section> = {};
 
       let section: Section = new Section(ciJson.sections[0]);
-      const sectionList: Section[] = ciJson.sections.map((sectionJson: SectionJson) => {
-        section = new Section(sectionJson);
-        sectionsMap[section.id] = section;
-        return section;
-      });
+      const sectionList: Section[] = ciJson.sections.map(
+          (sectionJson: SectionJson) => {
+            section = new Section(sectionJson);
+            sectionsMap[section.id] = section;
+            return section;
+          }
+      );
       const primarySection: Section = sectionsMap[sectionList[0].associatedPrimarySectionId];
-      return new CourseInstance(this, primarySection, sectionList, ciJson.finalExam);
+      return new CourseInstance(
+          this,
+          primarySection,
+          sectionList.filter(section => !section.isPrimary),
+          ciJson.finalExam
+      );
     });
   }
 

@@ -63,7 +63,6 @@ def extract_section_info_from_json(section_json):
         'graded': section_json['graded'],
         'status': section_json['enrollmentStatus']['status'],
         'enrollment': extract_enrollment_info_from_json(section_json['enrollmentStatus']),
-        'print': section_json['printInScheduleOfClasses']
     }
 
 
@@ -96,7 +95,6 @@ def extract_class_info_from_json(sections_json, class_json, course_json):
         'status': class_json['status']['code'],
         'instructionMode': class_json['instructionMode']['code'],
         'finalExam': class_json['finalExam'],
-        'print': class_json['anyPrintInScheduleOfClasses'],
         'units': extract_units_info_from_json(class_json['allowedUnits']),
         'grading': class_json['gradingBasis']['code'],
         'enrollment': extract_enrollment_info_from_json(class_json['aggregateEnrollmentStatus']),
@@ -138,6 +136,8 @@ def main():
                 with open(fetched_classes_by_subject_area_new(subject_area, chunk_number)) as f:
                     for class_ in json.load(f)['apiResponse']['response']['classes']:
                         catalog_number, section_number = extract_number_from_class(class_)
+                        if not class_['anyPrintInScheduleOfClasses']:
+                            continue
                         classes_json[catalog_number][section_number] = class_
 
                 chunk_number += 1
@@ -149,6 +149,8 @@ def main():
         with open(fetched_class_sections_by_subject_area(subject_area)) as f:
             for catalog_number, sections in json.load(f).items():
                 for section in sections['apiResponse']['response']['classSections']:
+                    if not section['printInScheduleOfClasses']:
+                        continue
                     all_sections_json[catalog_number][section['class'].get('number', '001')].append(section)
 
         # Extraction
