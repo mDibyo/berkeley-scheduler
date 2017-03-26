@@ -2,6 +2,7 @@ import Section from './section';
 import Course from './course';
 import Meeting from './meeting';
 import {Commitment, Option} from './commitment';
+import Final = require("./final");
 
 
 export default class CourseInstance implements Commitment {
@@ -11,7 +12,7 @@ export default class CourseInstance implements Commitment {
   primarySection: Section;
   secondarySections: Section[];
   sections: Section[];
-  finalMeeting: Meeting<CourseInstance>;
+  finalMeeting: Final;
 
   optionTypes: string[] = [];
 
@@ -43,7 +44,7 @@ export default class CourseInstance implements Commitment {
     return this.sections;
   }
 
-  setFinalMeeting(finalMeeting: Meeting<CourseInstance>) {
+  setFinalMeeting(finalMeeting: Final) {
     this.finalMeeting = finalMeeting;
   }
 
