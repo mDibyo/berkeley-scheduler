@@ -12,6 +12,10 @@ class TestDepartments(unittest.TestCase):
         with open(final_departments(), 'r') as f:
             self.departments_json = json.load(f)
 
+    def test_colleges(self):
+        self.assertIn('colleges', self.departments_json)
+        self.assertNotEqual(len(self.departments_json['colleges']), 0)
+
     def test_departments(self):
         self.assertIn('departments', self.departments_json)
         self.assertNotEqual(len(self.departments_json['departments']), 0)
@@ -54,6 +58,9 @@ class TestIndices(unittest.TestCase):
 
     def test_index_1ary_section_id_to_subject_area(self):
         self._test_index(final_index_1ary_section_id_to_subject_area())
+
+    def test_index_subject_area_to_course_titles(self):
+        self._test_index(final_index_subject_area_to_course_titles())
 
 
 if __name__ == '__main__':
