@@ -1,26 +1,48 @@
 import Section from './section';
 import Course from './course';
-import Meeting from './meeting';
 import {Commitment, Option} from './commitment';
 import Final = require("./final");
+import {SectionJson, EnrollmentJson} from "./section";
+
+
+export interface CourseInstanceJson {
+  displayName: string;
+  title: string;
+  description: string;
+  crossListed: string[]|null;
+
+  id: string;
+  number: string;
+  primaryComponent: string;
+  status: string;
+  instructionMode: string;
+  finalExam: boolean;
+  print: string;
+  units: number;
+  grading: string;
+  enrollment: EnrollmentJson;
+  sections: SectionJson[];
+}
 
 
 export default class CourseInstance implements Commitment {
   id: string;
-  course: Course;
 
-  primarySection: Section;
   secondarySections: Section[];
   sections: Section[];
   finalMeeting: Final;
 
   optionTypes: string[] = [];
 
-  constructor(course: Course, primarySection: Section, secondarySections: Section[] = []) {
-    this.primarySection = primarySection;
+  constructor(
+      public course: Course,
+      public primarySection: Section,
+      secondarySections: Section[] = [],
+      public hasFinalExam: boolean
+  ) {
     this.secondarySections = secondarySections;
     this.id = this.primarySection.id;
-    this.course = course;
+
 
     this.sections = [this.primarySection].concat(secondarySections);
     this.sections.forEach((section) => {

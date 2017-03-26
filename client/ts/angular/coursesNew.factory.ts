@@ -6,7 +6,8 @@ import Course from "../models/course";
 import CourseInstance from "../models/courseInstance";
 import Final = require("../models/final");
 import {StringMap} from "../utils";
-import {SectionJson} from "../models/section";
+import {CourseJson} from "../models/course";
+import {CourseInstanceJson} from "../models/courseInstance";
 
 
 const departmentsUrl = 'data/departments.json';
@@ -25,19 +26,6 @@ export interface SubjectAreasInfo {
   description: string;
   abbreviations: string[];
 }
-
-interface CourseInstanceJson {
-  id: string;
-  print: string;
-  displayName: string;
-  title: string;
-  description: string;
-  units: number;
-  meetings: Object[];
-  sections: SectionJson[];
-}
-
-type CourseJson = CourseInstanceJson[];
 
 
 export default class courses {
@@ -62,7 +50,7 @@ export default class courses {
     });
   }
 
-  get subjectAreasQ() {
+  getSubjectAreasQ() {
     return this._subjectAreasQ;
   }
 
@@ -81,23 +69,28 @@ export default class courses {
       const coursesData = <StringMap<CourseJson>> (response.data || {});
       const finalQs: angular.IPromise<void>[] = [];
 
-      const courses = Object.keys(coursesData).map((displayName: string) => {
-        const courseData: CourseJson = coursesData[displayName]
-            .filter((c: CourseInstanceJson) => c.print)
-            .map((c: CourseInstanceJson) => {
-              c.sections = c.sections.filter(section => section.print);
-              return c;
+      const courses = Object.keys(coursesData)
+          .map(displayName => {
+            return coursesData[displayName]
+                .filter((c: CourseInstanceJson) => c.print)
+                .map((c: CourseInstanceJson) => {
+                  c.sections = c.sections.filter(section => section.print);
+                  return c;
+                });
+          })
+          .filter(courseData => courseData.length > 0)
+          .map(courseData => {
+            const course = Course.parse(courseData);
+            course.instances.forEach((courseInstance: CourseInstance) => {
+              if (courseInstance.hasFinalExam) {
+                finalQs.push(this.finals.getFinalMeetingForCourseInstanceQ(courseInstance).then(
+                    (finalMeeting: Final) => courseInstance.setFinalMeeting(finalMeeting)
+                ));
+              }
             });
 
-        const course = Course.parse(courseData);
-        course.instances.forEach((courseInstance: CourseInstance) => {
-          finalQs.push(this.finals.getFinalMeetingForCourseInstanceQ(courseInstance).then(
-              (finalMeeting: Final) => courseInstance.setFinalMeeting(finalMeeting)
-          ));
-        });
-
-        return course;
-      });
+            return course;
+          });
 
       return this.$q.all(finalQs).then(() => courses);
     }, () => []);
@@ -107,7 +100,7 @@ export default class courses {
   }
 }
 
-angular.module('berkeleyScheduler').factory('courses', [
+angular.module('berkeleyScheduler').service('courses', [
     '$http',
     '$q',
     'finals',
