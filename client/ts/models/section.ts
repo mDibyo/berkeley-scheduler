@@ -9,6 +9,7 @@ export interface SectionJson {
   id: string;
   type: string;
   number: string;
+  print: boolean;
 
   isPrimary: boolean;
   associatedPrimarySectionId: number;
