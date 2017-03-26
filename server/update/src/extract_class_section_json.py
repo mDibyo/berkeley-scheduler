@@ -22,19 +22,19 @@ def extract_meeting_info_from_json(meeting_json):
                 extract_instructor_info_from_json(instructor_json)
             )
     return {
-        'startTime': meeting_json.get('startTime', None),
-        'endTime': meeting_json.get('endTime', None),
+        'sT': meeting_json.get('startTime', None),
+        'eT': meeting_json.get('endTime', None),
         'days': {
-            'Sunday': meeting_json.get('meetsSunday', None),
-            'Monday': meeting_json.get('meetsMonday', None),
-            'Tuesday': meeting_json.get('meetsTuesday', None),
-            'Wednesday': meeting_json.get('meetsWednesday', None),
-            'Thursday': meeting_json.get('meetsThursday', None),
-            'Friday': meeting_json.get('meetsFriday', None),
-            'Saturday': meeting_json.get('meetsSaturday', None),
+            'Su': meeting_json.get('meetsSunday', None),
+            'Mo': meeting_json.get('meetsMonday', None),
+            'Tu': meeting_json.get('meetsTuesday', None),
+            'We': meeting_json.get('meetsWednesday', None),
+            'Th': meeting_json.get('meetsThursday', None),
+            'Fr': meeting_json.get('meetsFriday', None),
+            'Sa': meeting_json.get('meetsSaturday', None),
         },
-        'dayAbbrvs': meeting_json.get('meetsDays', None),
-        'location': meeting_json.get('location', {}),
+        'dayAbbrevs': meeting_json.get('meetsDays', None),
+        'loc': meeting_json.get('location', {}),
         'instructors': extracted_instructors,
     }
 
@@ -55,8 +55,8 @@ def extract_section_info_from_json(section_json):
 
     return {
         'number': section_json.get('number', ''),
-        'isPrimary': section_json['association']['primary'],
-        'associatedPrimarySectionId': section_json['association']['primaryAssociatedSectionId'],
+        'isPri': section_json['association']['primary'],
+        'assocPriSecId': section_json['association']['primaryAssociatedSectionId'],
         'type': section_json['component']['code'],
         'id': section_json['id'],
         'meetings': extracted_meetings,
@@ -91,10 +91,10 @@ def extract_class_info_from_json(sections_json, class_json, course_json):
         # Class info
         'id': primary_section_id,
         'number': class_json['number'],
-        'primaryComponent': class_json['primaryComponent']['code'],
+        'priComp': class_json['primaryComponent']['code'],
         'status': class_json['status']['code'],
         'instructionMode': class_json['instructionMode']['code'],
-        'finalExam': class_json['finalExam'],
+        'fExam': class_json['finalExam'],
         'units': extract_units_info_from_json(class_json['allowedUnits']),
         'grading': class_json['gradingBasis']['code'],
         'enrollment': extract_enrollment_info_from_json(class_json['aggregateEnrollmentStatus']),

@@ -48,7 +48,7 @@ export default class Course extends ColorRegisterableIdentifiable implements Ide
         }
       });
 
-      return new CourseInstance(this, primarySections[0], secondarySections, ciJson.finalExam);
+      return new CourseInstance(this, primarySections[0], secondarySections, ciJson.fExam);
     });
   }
 

@@ -13,10 +13,10 @@ export interface CourseInstanceJson {
 
   id: string;
   number: string;
-  primaryComponent: string;
+  priComp: string;
   status: string;
   instructionMode: string;
-  finalExam: boolean;
+  fExam: boolean;
   units: number;
   grading: string;
   enrollment: EnrollmentJson;
