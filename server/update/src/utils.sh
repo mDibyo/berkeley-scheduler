@@ -12,8 +12,8 @@ SERVER_DIR=$(cd ${PROJECT_DIR}/server/update && pwd )
 SRC_DIR=${SERVER_DIR}/src
 
 INPUT_DEPARTMENTS_DIR=${SERVER_DIR}/data/intermediate/departments
-INPUT_CLASSES_DIR=${INPUT_DEPARTMENTS_DIR}/class-listing-${TERM}-by-subject-area
-INPUT_CLASSES_TERM_DIR=${INPUT_DEPARTMENTS_DIR}/class-listing-${TERM}-by-subject-area
+INPUT_CLASSES_DIR=${INPUT_DEPARTMENTS_DIR}/class-listing-by-subject-area-${TERM}
+INPUT_CLASSES_TERM_DIR=${INPUT_DEPARTMENTS_DIR}/class-listing-by-subject-area-${TERM}
 INPUT_INDICES_DIR=${INPUT_DEPARTMENTS_DIR}/indices
 
 OUTPUT_DEPARTMENTS_DIR=${PROJECT_DIR}/data
