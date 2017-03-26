@@ -83,7 +83,8 @@ def extract_class_info_from_json(sections_json, class_json, course_json):
 
     return {
         # Course info
-        'displayName': course_json['displayName'],
+        'sAC': course_json['subjectAreaCode'],
+        'cN': course_json['courseNumber'],
         'title': course_json['title'],
         "description": course_json['description'],
         "crossListed": course_json['crossListedCourses'],
@@ -103,13 +104,14 @@ def extract_class_info_from_json(sections_json, class_json, course_json):
 
 
 def extract_course_info_from_class_json(class_json):
-    course_json = class_json['course']
+    class_course_json = class_json['course']
 
     return {
-        'displayName': course_json['displayName'],
-        'title': course_json['title'],
-        "description": course_json.get('description'),
-        "crossListedCourses": course_json.get('crossListedCourses'),
+        'subjectAreaCode': class_course_json['subjectArea']['code'],
+        'courseNumber': class_course_json['catalogNumber']['formatted'],
+        'title': class_course_json['title'],
+        "description": class_course_json.get('description'),
+        "crossListedCourses": class_course_json.get('crossListedCourses'),
     }
 
 

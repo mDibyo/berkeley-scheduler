@@ -25,11 +25,8 @@ export default class Course extends ColorRegisterableIdentifiable implements Ide
 
     const courseInfo: CourseInstanceJson = courseJson[0];
 
-    if (courseInfo.displayName === undefined) {
-      console.log(courseJson);
-    }
-
-    [this.department, this.courseNumber] = courseInfo.displayName.split(' ', 2);
+    this.department = courseInfo.sAC;
+    this.courseNumber = courseInfo.cN;
     this.title = courseInfo.title;
     this.description = courseInfo.description;
     this.id = courseInfo.id;
