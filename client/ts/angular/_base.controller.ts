@@ -17,7 +17,7 @@ class BaseCtrl {
     this._scheduleFactory = scheduleFactory;
   }
 
-  goToState(to: string, params: any, options: angular.ui.IHrefOptions) {
+  goToState(to: string, params: any, options?: angular.ui.IHrefOptions) {
     if (to === 'schedule.viewSchedule') {
       this._goToScheduleViewSchedule(params, options);
       return;
@@ -29,7 +29,7 @@ class BaseCtrl {
     this._$window.open(href, '_blank');
   }
 
-  private _goToScheduleViewSchedule(params: any, options: angular.ui.IHrefOptions) {
+  private _goToScheduleViewSchedule(params: any, options?: angular.ui.IHrefOptions) {
     const schedulingOptions = this._scheduleFactory.getSchedulingOptions();
     params.noTimeConflicts = schedulingOptions.noTimeConflicts;
     this._$state.go('schedule.viewSchedule', params, options);
