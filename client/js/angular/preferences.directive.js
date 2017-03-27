@@ -24,10 +24,22 @@ function bsPreferencesDirective() {
 
     var schedulingOptions = scheduleFactory.getSchedulingOptions();
 
+    vm.scheduleGenerationStatus = scheduleFactory.getScheduleGenerationStatus();
     vm.showSavedSchedules = schedulingOptions.showSavedSchedules;
     vm.showOptions = schedulingOptions.showOptions;
     vm.toggleSavedSchedules = toggleSavedSchedules;
     vm.toggleOptions = toggleOptions;
+
+    scheduleFactory.registerScheduleGenerationStatusListener('preferences', function(status) {
+      vm.scheduleGenerationStatus = status;
+      if (status.status === 'stale' && $state.includes('schedule.viewSchedule')) {
+        scheduleFactory.getCurrentScheduleGroupIdQ().then(function(scheduleGroupId) {
+          vm.goToState('schedule.generatingSchedules', {
+            scheduleGroupId: scheduleGroupId
+          });
+        });
+      }
+    });
 
     vm.sortingOptions = {
       preferMornings: 'preferMornings',
