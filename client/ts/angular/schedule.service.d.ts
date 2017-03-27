@@ -8,7 +8,10 @@ import {ScheduleGenerationStatus} from "../models/scheduleGenerationStatus";
 declare interface IScheduleService {
   setStale(stale?: boolean): void;
   getScheduleQById(scheduleId: string): angular.IPromise<Schedule>;
+
   getCurrentScheduleGroupIdQ(): angular.IPromise<string>;
+  getCurrScheduleId(): string;
+
   getSchedulingOptions(): SchedulingOptions;
 
   getScheduleGenerationStatus(): ScheduleGenerationStatus;

@@ -1,24 +1,24 @@
 <!--<div>-->
-  <span ng-if="dvm.scheduleGenerationStatus.status === 'stale'">
-    <md-button class="md-accent md-raised" ng-click="dvm.generateAndViewSchedules()">
+  <span ng-if="gSBCtrl.scheduleGenerationStatus.status === 'stale'">
+    <md-button class="md-accent md-raised" ng-click="gSBCtrl.generateAndViewSchedules()">
       Generate Schedules
     </md-button>
   </span>
   <span ng-if="
-      dvm.scheduleGenerationStatus.status === 'generating' ||
-      dvm.scheduleGenerationStatus.status === 'filteringAndReordering'
+      gSBCtrl.scheduleGenerationStatus.status === 'generating' ||
+      gSBCtrl.scheduleGenerationStatus.status === 'filteringAndReordering'
     ">
-    <md-button class="md-accent md-raised" ng-click="dvm.generateAndViewSchedules()">
+    <md-button class="md-accent md-raised" ng-click="gSBCtrl.generateAndViewSchedules()">
       Generating
     </md-button>
   </span>
-  <span ng-if="dvm.scheduleGenerationStatus.status === 'done'">
-    <md-button class="md-accent md-raised" ng-click="dvm.viewSchedules()">
+  <span ng-if="gSBCtrl.scheduleGenerationStatus.status === 'done'">
+    <md-button class="md-accent md-raised" ng-click="gSBCtrl.viewSchedules()">
       View Schedules
     </md-button>
   </span>
-  <span ng-if="dvm.scheduleGenerationStatus.status === 'failed'">
-    <md-button ng-click="dvm.viewSchedules()">
+  <span ng-if="gSBCtrl.scheduleGenerationStatus.status === 'failed'">
+    <md-button ng-click="gSBCtrl.viewSchedules()">
       No Valid Schedules
       <md-tooltip md-direction="bottom">
         Make changes to your courses/filtering options to fix this.
