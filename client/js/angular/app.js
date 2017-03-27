@@ -46,8 +46,8 @@
   require('./eventDisplay.directive');
   require('./meetingEditor.directive');
   require('./timePicker.directive');
+  require('./preferences.directive.js');
   require('./generateSchedules.directive');
-  require('./generateSchedulesButton.directive');
   require('./scheduleDisplay.directive');
 
   // Run

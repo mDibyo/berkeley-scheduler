@@ -1,9 +1,9 @@
 var Time = require('../models/time');
 var BaseCtrl = require('./_base.controller');
 
-function bsGenerateSchedulesDirective() {
-  bsGenerateSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function bsGenerateSchedulesCtrl($state, $window, scheduleFactory) {
+function bsPreferencesDirective() {
+  bsPreferencesCtrl.prototype = Object.create(BaseCtrl.prototype);
+  function bsPreferencesCtrl($state, $window, scheduleFactory) {
     BaseCtrl.call(this, $state, $window, scheduleFactory);
 
     var vm = this;
@@ -82,7 +82,7 @@ function bsGenerateSchedulesDirective() {
       scheduleFactory.dropSavedSchedule(schedule);
     };
 
-    scheduleFactory.registerSchedulingOptionsChangeListener('generateSchedules', function(newOptions) {
+    scheduleFactory.registerSchedulingOptionsChangeListener('preferences', function(newOptions) {
       vm.noTimeConflicts = schedulingOptions.noTimeConflicts = newOptions.noTimeConflicts;
     });
 
@@ -151,12 +151,12 @@ function bsGenerateSchedulesDirective() {
       '$state',
       '$window',
       'scheduleFactory',
-      bsGenerateSchedulesCtrl
+      bsPreferencesCtrl
     ],
     controllerAs: 'dvm',
-    templateUrl: 'assets/static/html/generate_schedules.partial.html'
+    templateUrl: 'assets/static/html/preferences.partial.html'
   }
 }
-angular.module('berkeleyScheduler').directive('bsGenerateSchedules', [
-  bsGenerateSchedulesDirective
+angular.module('berkeleyScheduler').directive('bsPreferences', [
+  bsPreferencesDirective
 ]);

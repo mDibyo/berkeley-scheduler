@@ -1,187 +1,26 @@
-<div class="generate-schedules">
-<div class="schedule-buttons" align="right" layout="row" layout-align="end center">
-  <md-button
-      class="md-raised"
-      ng-click="dvm.toggleSavedSchedules(!dvm.showSavedSchedules)"
-      ng-class="{
-        'md-primary': dvm.savedSchedules.length > 0,
-        'schedule-button': dvm.savedSchedules.length > 0,
-        'selected-button': dvm.showSavedSchedules
-      }">
-    Saved Schedules
+<span ng-if="gSBCtrl.scheduleGenerationStatus.status === 'stale'">
+  <md-button class="md-accent md-raised" ng-click="gSBCtrl.generateAndViewSchedules()">
+    Generate Schedules
   </md-button>
-
-  <md-button class="md-raised md-primary schedule-button"
-             ng-class="{'selected-button': dvm.showOptions}"
-             ng-click="dvm.toggleOptions(!dvm.showOptions)">
-    Scheduling Options
+</span>
+<span ng-if="
+    gSBCtrl.scheduleGenerationStatus.status === 'generating' ||
+    gSBCtrl.scheduleGenerationStatus.status === 'filteringAndReordering'
+  ">
+  <md-button class="md-accent md-raised" ng-click="gSBCtrl.generateAndViewSchedules()">
+    Generating
   </md-button>
-</div>
-
-<div ng-show="dvm.showSavedSchedules" class="generate-schedules-dropdown">
-  <br>
-  <div ng-if="dvm.savedSchedules.length > 0">
-    <div layout="row" layout-wrap>
-      <div
-          class="saved-schedule"
-          layout="column" layout-align="center center"
-          ng-repeat="schedule in dvm.savedSchedules track by schedule.id"
-          ui-sref-active="curr-saved-schedule"
-          ui-sref="schedule.viewSchedule({
-            scheduleId: schedule.id,
-            noTimeConflicts: schedule.hasNoTimeConflicts()
-          })">
-        <md-tooltip class="saved-schedule-description">
-          <div>
-          <span ng-repeat="(courseId, courseSections) in schedule.courses">
-            {{ courseSections[0].course.department }}
-            {{ courseSections[0].course.courseNumber }}:
-            <span ng-repeat="section in courseSections">
-              {{ section.type }} {{ section.number }}<span ng-if="!$last">,</span>
-            </span>
-            <span ng-if="!$last"><br></span>
-          </span>
-          </div>
-        </md-tooltip>
-        <div class="saved-schedule-drop" ng-click="dvm.dropSavedSchedule($event, schedule)">
-          <md-icon class="material-icons md-light"
-                   md-svg-icon="close"
-                   title="Discard">
-          </md-icon>
-        </div>
-        <div flex></div>
-        <div layout-padding>
-          {{$index + 1}}
-        </div>
-      </div>
-    </div>
-  </div>
-  <div ng-if="dvm.savedSchedules.length === 0">
-    Save your favorite schedules and they will show up here
-  </div>
-</div>
-
-<div ng-show="dvm.showOptions" class="scheduling-options generate-schedules-dropdown">
-  <br>
-  <fieldset>
-    <legend>
-      <h5 class="md-subhead">
-        Sorting options
-        <span class="md-caption scheduling-subtext">(only one option selectable)</span>
-      </h5>
-    </legend>
-    <md-list layout="column">
-      <md-radio-group ng-model="dvm.selectedSortingOption" ng-change="dvm.onChangeSortingOption()">
-        <md-list-item ng-click="null">
-          <div flex="30" class="md-body-2 scheduling-option-category">
-            Preferred time of day
-          </div>
-          <div flex layout="row" layout-margin>
-            <md-radio-button ng-value="dvm.sortingOptions.preferMornings">
-              Mornings
-              <br>
-              <span class="md-caption scheduling-subtext">(&mdash; 12PM)</span>
-            </md-radio-button>
-            <md-radio-button ng-value="dvm.sortingOptions.preferAfternoons">
-              Afternoons
-              <br>
-              <span class="md-caption scheduling-subtext">(12PM &mdash; 5PM)</span>
-            </md-radio-button>
-            <md-radio-button ng-value="dvm.sortingOptions.preferEvenings">
-              Evenings
-              <br>
-              <span class="md-caption scheduling-subtext">(5PM &mdash;)</span>
-            </md-radio-button>
-          </div>
-        </md-list-item>
-        <md-list-item ng-click="null">
-          <div flex="30" class="md-body-2 scheduling-option-category">
-            Gaps between classes
-          </div>
-          <div flex layout="row" layout-margin>
-            <md-radio-button ng-value="dvm.sortingOptions.minimizeGaps">
-              Minimize Gaps
-            </md-radio-button>
-            <md-radio-button ng-value="dvm.sortingOptions.maximizeGaps">
-              Maximize Gaps
-            </md-radio-button>
-          </div>
-        </md-list-item>
-        <md-list-item ng-click="null">
-          <div flex="30" class="md-body-2 scheduling-option-category">
-            Number of days in week
-          </div>
-          <div flex layout="row" layout-margin>
-            <md-radio-button ng-value="dvm.sortingOptions.minimizeNumberOfDays">
-              Minimize Days
-            </md-radio-button>
-            <md-radio-button ng-value="dvm.sortingOptions.maximizeNumberOfDays">
-              Maximize Days
-            </md-radio-button>
-          </div>
-        </md-list-item>
-        <md-list-item ng-click="null">
-          <div flex="30" class="md-body-2 scheduling-option-category">
-            Time conflicts
-          </div>
-          <div flex layout="row" layout-margin>
-            <md-radio-button ng-value="dvm.sortingOptions.preferNoTimeConflicts">
-              Minimize time conflicts
-            </md-radio-button>
-          </div>
-        </md-list-item>
-        <md-list-item ng-click="null">
-          <div flex="30" class="md-body-2 scheduling-option-category">
-          </div>
-          <div flex layout="row" layout-margin>
-            <md-radio-button ng-value="dvm.sortingOptions.noPreference">
-              No preference
-            </md-radio-button>
-          </div>
-        </md-list-item>
-      </md-radio-group>
-    </md-list>
-  </fieldset>
-  <fieldset>
-    <legend>
-      <h5 class="md-subhead">Filtering options</h5>
-    </legend>
-    <md-list layout="column">
-      <md-list-item ng-click="null">
-        <div flex="30" class="md-body-2 scheduling-option-category">
-          Time conflicts
-        </div>
-        <div flex layout="row" layout-margin>
-          <md-input-container>
-            <md-checkbox ng-model="dvm.noTimeConflicts" ng-change="dvm.onChangeNoTimeConflicts()">
-              No time conflicts
-            </md-checkbox>
-          </md-input-container>
-        </div>
-      </md-list-item>
-      <md-list-item ng-click="null">
-        <div flex="30" class="md-body-2 scheduling-option-category">
-          Time of day restrictions
-        </div>
-        <div flex layout="row" layout-margin>
-          <bs-time-picker
-              apply-class="schedule-option"
-              model="dvm.selectedDayStartTime"
-              label="'First class starting at/after'"
-              time-options="dvm.dayStartTimes"
-              on-change="dvm.onSelectDayStartTime()">
-          </bs-time-picker>
-          <bs-time-picker
-              apply-class="schedule-option"
-              model="dvm.selectedDayEndTime"
-              label="'Last class ending at/before'"
-              time-options="dvm.dayEndTimes"
-              on-change="dvm.onSelectDayEndTime()">
-          </bs-time-picker>
-        </div>
-      </md-list-item>
-    </md-list>
-  </fieldset>
-  <md-divider></md-divider>
-</div>
-</div>
+</span>
+<span ng-if="gSBCtrl.scheduleGenerationStatus.status === 'done'">
+  <md-button class="md-accent md-raised" ng-click="gSBCtrl.viewSchedules()">
+    View Schedules
+  </md-button>
+</span>
+<span ng-if="gSBCtrl.scheduleGenerationStatus.status === 'failed'">
+  <md-button ng-click="gSBCtrl.viewSchedules()">
+    No Valid Schedules
+    <md-tooltip md-direction="bottom">
+      Make changes to your courses/filtering options to fix this.
+    </md-tooltip>
+  </md-button>
+</span>
