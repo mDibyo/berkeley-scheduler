@@ -100,7 +100,12 @@ td.course-instance-divider {
   padding: 2px;
 }
 
+.right-pane-container {
+  height: 100%;
+}
+
 .right-pane {
+  position: relative;
   background-color: #ffffff;
   height: 100%;
   max-height: none !important;
@@ -259,6 +264,7 @@ md-progress-linear {
 
 .scheduling-options fieldset {
   border: 1px solid rgba(0, 0, 0, 0.27);
+  font-size: 14px;
   margin: 0;
   padding-bottom: 0;
   padding-top: 0;

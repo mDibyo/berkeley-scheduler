@@ -141,16 +141,22 @@
   </div>
 </div>
 
-<div class="right-pane" id="right-pane" flex>
-  <md-content layout="column">
-    <bs-generate-schedules></bs-generate-schedules>
-
+<md-content class="right-pane-container" layout="column" flex>
+  <md-toolbar>
+    <bs-generate-schedules md-whiteframe="2"></bs-generate-schedules>
+  </md-toolbar>
+  <div class="right-pane" id="right-pane" flex layout="column">
     <ui-view>
       <div class="view-default">
       Select or add a course or event in the left pane to view it here.
       </div>
     </ui-view>
-  </md-content>
-</div>
+    <div flex></div>
+    <div class="footer">
+      <md-divider></md-divider>
+      Footer
+    </div>
+  </div>
+</md-content>
 </div>
 </div>
