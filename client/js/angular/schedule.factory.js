@@ -5,7 +5,7 @@ var constants = require('../constants');
 var Time = require('../models/time');
 var Schedule = require('../models/schedule').default;
 var ScheduleGroup = require('../models/scheduleGroup').default;
-var scheduleGenerationStatus = require('../models/scheduleGenerationStatus');
+var scheduleGenerationStatus = require('../models/scheduleGenerationStatus').default;
 var CustomCommitment = require('../models/customCommitment').default;
 var CustomCommitmentOption = require('../models/customCommitmentOption').default;
 
