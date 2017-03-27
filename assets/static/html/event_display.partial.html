@@ -3,21 +3,24 @@
     <md-input-container class="event-name" title="Event Name" flex>
       <input class="md-headline" type="text" placeholder="Event Name" ng-model="event.name">
     </md-input-container>
-    <div layout="column" layout-align="end center" flex-offset="100">
-      <md-button class="md-raised" ng-click="vm.addMeeting()">
-        Add Meeting
-      </md-button>
-    </div>
   </div>
   <div>
     <div
         class="event-meetings-container repeat-animate"
-        ng-repeat="meeting in event.option.meetings | reverse track by meeting.id">
+        ng-repeat="meeting in event.option.meetings track by meeting.id">
       <bs-meeting-editor
           meeting="meeting"
           on-change="vm.saveMeeting(meeting)"
           on-time-change="vm.setScheduleStale()">
       </bs-meeting-editor>
+    </div>
+    <div>
+      <div
+          class="event-meeting-add"
+          ng-click="vm.addMeeting()"
+          layout="column" layout-align="start center">
+        <md-icon class="event-meeting-add-icon" md-svg-icon="plus-circle" title="Add Meeting">
+      </div>
     </div>
   </div>
 </div>

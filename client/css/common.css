@@ -158,6 +158,17 @@ td, th {
   height: 80px;
 }
 
+.event-meeting-add {
+  background-color: #003262;
+  color: rgba(255, 255, 255, 0.54);
+  cursor: pointer;
+  margin: 8px;
+  height: 50px;
+}
+.event-meeting-add:hover {
+  background-color: #3b7ea1;
+}
+
 .repeat-animate.ng-enter {
   -webkit-transition: max-height 0.4s ease, opacity 0.15s linear 0.35s;
   transition: max-height 0.4s ease, opacity 0.15s linear 0.35s;
@@ -319,6 +330,7 @@ md-icon.schedule-nav:hover {
   background-color: #3b7ea1;
   color: #ffffff;
 }
+md-icon.event-meeting-add-icon { color: rgba(255, 255, 255, 0.54); }
 md-icon.md-18 { font-size: 18px; }
 md-icon.md-24 { font-size: 24px; }
 md-icon.md-36 { font-size: 36px; }
