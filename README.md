@@ -4,7 +4,7 @@ Code for [berkeleyscheduler.com](https://berkeleyscheduler.com), a class
 schedule planner for UC Berkeley students.
 
 
-### Reporting issues
+## Reporting issues
 
 You can report bugs and suggest features on the
 [issues](https://github.com/mDibyo/berkeley-scheduler/issues)
@@ -13,15 +13,15 @@ If so, please comment on the existing issue, instead of creating a new one.
 This will help us a lot in addressing issues.
 
 
-### Contributing
+## Contributing
 
 To contribute, take a look at [CONTRIBUTING.md](CONTRIBUTING.md).
 
 
-### Setting up the project
+## Setting up the project
 
 
-#### Running the website locally
+### Running the website locally
 
 Berkeley Scheduler is a static website. All its functionality is handled
 in the frontend (on the AngularJS framework). In order to allow the
@@ -37,7 +37,7 @@ directory with `python -m SimpleHTTPServer 8421`.
 3. Visit the website at [http://localhost:8421](http://localhost:8421).
 
 
-#### Developing on the frontend
+### Developing on the frontend
 
 As mentioned above, all work on the website is done in Javascript. The
 code is dependent on a number of libraries available through
@@ -52,7 +52,7 @@ final location.
 svg and js resources, minifies and uglifies the js resources.
 
 
-#### Developing on the data pipeline
+### Developing on the data pipeline
 
 The class enrollment data on Berkeley Scheduler is obtained from the
 Student Information Systems (SIS) APIs. The data pipeline (/data) is
@@ -84,7 +84,7 @@ data/recover. If something goes wrong, and you only realize it after
 `finalize` has completed, run `./recover.sh` to restore the old output.
 
 
-### Acknowledgements
+## Acknowledgements
 
 I would like to thank everyone who has contributed to the development
 of this project, for providing feedback and brainstorming ideas with me.
