@@ -30,6 +30,13 @@
   text-align: center;
 }
 
+.external-resources > img {
+  height: 25px;
+  vertical-align: middle;
+  margin-bottom: 0.34em;
+  padding-right: 1px;
+}
+
 md-autocomplete {
   margin-left: 10px;
   margin-right: 10px;
