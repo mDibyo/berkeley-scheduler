@@ -24,13 +24,10 @@ function bsGenerateSchedulesDirective() {
 
     var schedulingOptions = scheduleFactory.getSchedulingOptions();
 
-    vm.scheduleGenerationStatus = scheduleFactory.getScheduleGenerationStatus();
     vm.showSavedSchedules = schedulingOptions.showSavedSchedules;
     vm.showOptions = schedulingOptions.showOptions;
     vm.toggleSavedSchedules = toggleSavedSchedules;
     vm.toggleOptions = toggleOptions;
-    vm.viewSchedules = viewSchedules;
-    vm.generateAndViewSchedules = generateAndViewSchedules;
 
     vm.sortingOptions = {
       preferMornings: 'preferMornings',
@@ -89,13 +86,6 @@ function bsGenerateSchedulesDirective() {
       vm.noTimeConflicts = schedulingOptions.noTimeConflicts = newOptions.noTimeConflicts;
     });
 
-    scheduleFactory.registerScheduleGenerationStatusListener('generateSchedules', function(status) {
-      vm.scheduleGenerationStatus = status;
-      if (status.status === 'stale' && $state.includes('schedule.viewSchedule')) {
-        vm.generateAndViewSchedules();
-      }
-    });
-
     scheduleFactory.registerAddSavedScheduleListener(function(schedule) {
       vm.savedSchedules.push(schedule);
     });
@@ -109,26 +99,6 @@ function bsGenerateSchedulesDirective() {
       if (status === 'done' || status === 'failed') {
         scheduleFactory.filterAndReorderSchedules();
       }
-    }
-
-    function viewSchedules() {
-      var currScheduleId = scheduleFactory.getCurrScheduleId();
-      if (currScheduleId === undefined) {
-        generateAndViewSchedules();
-      }
-      vm.goToState('schedule.viewSchedule', {
-        scheduleId: currScheduleId
-      });
-    }
-
-    function generateAndViewSchedules() {
-      scheduleFactory.getCurrentScheduleGroupIdQ().then(
-        function(scheduleGroupId) {
-          vm.goToState('schedule.generatingSchedules', {
-            scheduleGroupId: scheduleGroupId
-          });
-        }
-      );
     }
 
     function toggleSavedSchedules(showSavedSchedules) {

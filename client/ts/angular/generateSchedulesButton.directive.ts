@@ -32,6 +32,17 @@ function bsGenerateSchedulesButtonDirective() {
         });
       });
     }
+
+    viewSchedules() {
+      const currScheduleId = this.scheduleFactory.getCurrScheduleId();
+      if (currScheduleId === undefined) {
+        this.generateAndViewSchedules();
+        return;
+      }
+      this.goToState('schedule.viewSchedule', {
+        scheduleId: currScheduleId
+      });
+    }
   }
   return {
     controller: [
@@ -40,7 +51,7 @@ function bsGenerateSchedulesButtonDirective() {
         'scheduleFactory',
         bsGenerateSchedulesButtonCtrl
     ],
-    controllerAs: 'dvm',
+    controllerAs: 'gSBCtrl',
     templateUrl: 'assets/static/html/generate_schedules_button.partial.html'
   }
 }
