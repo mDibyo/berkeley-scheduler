@@ -4,8 +4,8 @@ import BaseCtrl = require("./_base.controller");
 import {ScheduleGenerationStatus} from "../models/scheduleGenerationStatus";
 import IScheduleService = require("./schedule.service");
 
-function bsGenerateSchedulesButtonDirective() {
-  class bsGenerateSchedulesButtonCtrl extends BaseCtrl {
+function bsGenerateSchedulesDirective() {
+  class bsGenerateSchedulesCtrl extends BaseCtrl {
     scheduleGenerationStatus: ScheduleGenerationStatus;
 
     constructor(
@@ -17,7 +17,7 @@ function bsGenerateSchedulesButtonDirective() {
 
       this.scheduleGenerationStatus = this.scheduleFactory.getScheduleGenerationStatus();
 
-      this.scheduleFactory.registerScheduleGenerationStatusListener('generateSchedulesButton', status => {
+      this.scheduleFactory.registerScheduleGenerationStatusListener('generateSchedules', status => {
         this.scheduleGenerationStatus = status;
         if (status.status === 'stale' && $state.includes('schedule.viewSchedule')) {
           this.generateAndViewSchedules();
@@ -49,12 +49,12 @@ function bsGenerateSchedulesButtonDirective() {
         '$state',
         '$window',
         'scheduleFactory',
-        bsGenerateSchedulesButtonCtrl
+        bsGenerateSchedulesCtrl
     ],
     controllerAs: 'gSBCtrl',
-    templateUrl: 'assets/static/html/generate_schedules_button.partial.html'
+    templateUrl: 'assets/static/html/generate_schedules.partial.html'
   }
 }
-angular.module('berkeleyScheduler').directive('bsGenerateSchedulesButton', [
-    bsGenerateSchedulesButtonDirective
+angular.module('berkeleyScheduler').directive('bsGenerateSchedules', [
+    bsGenerateSchedulesDirective
 ]);
