@@ -259,12 +259,12 @@ md-progress-linear {
 /*}*/
 
 .generate-schedules-dropdown {
+  font-size: 14px;
   color: #584f29;
 }
 
 .scheduling-options fieldset {
   border: 1px solid rgba(0, 0, 0, 0.27);
-  font-size: 14px;
   margin: 0;
   padding-bottom: 0;
   padding-top: 0;
@@ -324,12 +324,15 @@ md-tooltip.saved-schedule-description .md-content {
 .curr-saved-schedule > .saved-schedule-drop {
   background-color: #3b7ea1;
 }
+.saved-schedule-drop > md-icon {
+  color: #ffffff;
+}
 
 .schedule-nav-row {
   padding: 0 3px 0 3px;
 }
 
-.material-icons.md-light { color: #ffffff; }
+.material-icons.md-light {fill: #ffffff;}
 md-icon.commitment-unselect { color: #ed4e33; z-index: 20; }
 md-icon.schedule-nav { color: #003262; cursor: pointer; }
 md-icon.schedule-nav:hover {
