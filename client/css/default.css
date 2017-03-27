@@ -1,7 +1,10 @@
 body {
   background-color: #FFF7E4;
-  font-family: 'Raleway', sans-serif;
   overflow: auto;
+}
+
+body, input, textarea {
+  font-family: 'Raleway', sans-serif;
 }
 
 md-content {
