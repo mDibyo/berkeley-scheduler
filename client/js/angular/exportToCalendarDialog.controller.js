@@ -11,7 +11,7 @@ function getStartDate() {
   return new Date(2016, 7, 24);
 }
 
-var repeatingUntil = constants.TERM_LAST_DAY;
+var repeatingUntil = constants.termLastDay();
 var repeatingByDayAbbrvs = {
   Sunday: 'su',
   Monday: 'mo',
@@ -28,7 +28,7 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
 
   var vm = this;
   vm.schedule = schedule;
-  vm.calendarFilename = constants.TERM_ABBREV + ' academic calendar.ics';
+  vm.calendarFilename = constants.termName() + ' academic calendar.ics';
   vm.download = download;
   vm.cancel = cancel;
 
@@ -39,7 +39,7 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
       product: 'berkeleyscheduler.com',
       language: 'EN'
     },
-    name: constants.TERM + ' Academic Calendar',
+    name: constants.termName() + ' Academic Calendar',
     url: vm.getHref('schedule.viewSchedule', {
       scheduleId: schedule.id,
       noTimeConflicts: scheduleFactory.getSchedulingOptions().noTimeConflicts
