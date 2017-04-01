@@ -11,7 +11,7 @@ function CourseFindCtrl(
     $mdDialog,
     userService,
     reverseLookup,
-    courses,
+    courseDiscoveryService,
     courseService,
     eventService,
     scheduleFactory,
@@ -54,7 +54,7 @@ function CourseFindCtrl(
   });
   vm.addedEventsList = eventService.getAllEvents();
 
-  courses.getSubjectAreasQ().then(function(subjectAreas) {
+  courseDiscoveryService.getSubjectAreasQ().then(function(subjectAreas) {
     vm.subjectAreasList = subjectAreas;
   });
 
@@ -242,7 +242,7 @@ angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
     '$mdDialog',
     'userService',
     'reverseLookup',
-    'courses',
+    'courseDiscoveryService',
     'courseService',
     'eventService',
     'scheduleFactory',

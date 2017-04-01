@@ -10,7 +10,7 @@ var _1arySectionIdToSubjectAreaIndexUrl =
 var subjectAreaToCourseTitlesIndexUrl =
     indicesUrlFormat.replace('{}', 'subject-area-to-course-titles');
 
-function reverseLookup($http, $q, courses) {
+function reverseLookup($http, $q, courseDiscoveryService) {
   const _coursesCache = {};
 
   const _2aryTo1arySectionIdIndexQ =
@@ -35,7 +35,7 @@ function reverseLookup($http, $q, courses) {
 
     return _1arySectionIdToSubjectAreaIndexQ.then(function(index) {
       var subjectAreaInfo = index[id];
-      return courses.getCoursesQBySubjectAreaCode(subjectAreaInfo[0])
+      return courseDiscoveryService.getCoursesQBySubjectAreaCode(subjectAreaInfo[0])
         .then(function(courseList) {
           const courseNumber = subjectAreaInfo[1];
           for (var i = 0; i < courseList.length; i++) {
@@ -82,6 +82,6 @@ function reverseLookup($http, $q, courses) {
 angular.module('berkeleyScheduler').factory('reverseLookup', [
   '$http',
   '$q',
-  'courses',
+  'courseDiscoveryService',
   reverseLookup
 ]);

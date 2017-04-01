@@ -11,7 +11,7 @@ import {CourseJson} from "../models/course";
 
 const departmentsUrl = 'data/departments.json';
 const subjectAreaAbbrvsUrl = 'data/abbreviations.json';
-const coursesUrlFormat = `data/${constants.TERM_ABBREV}/classes/{}.json`;
+const coursesUrlFormat = () => `data/${constants.TERM_ABBREV}/classes/{}.json`;
 
 
 export interface DepartmentsInfo {
@@ -27,7 +27,7 @@ export interface SubjectAreasInfo {
 }
 
 
-export default class courses {
+export default class courseDiscoveryService {
   private _subjectAreasQ: angular.IPromise<SubjectAreasInfo[]>;
   private coursesQBySubjectArea: {[subjectArea: string]: angular.IPromise<Course[]>} = {};
 
@@ -62,8 +62,8 @@ export default class courses {
       return this.coursesQBySubjectArea[code];
     }
 
-    const alphabetizedCode = courses.alphabetizeSubjectAreaCode(code);
-    const coursesUrl = coursesUrlFormat.replace('{}', alphabetizedCode);
+    const alphabetizedCode = courseDiscoveryService.alphabetizeSubjectAreaCode(code);
+    const coursesUrl = coursesUrlFormat().replace('{}', alphabetizedCode);
     const coursesQ = this.$http.get(coursesUrl).then(response => {
       const coursesData = <StringMap<CourseJson>> (response.data || {});
       const finalQs: angular.IPromise<void>[] = [];
@@ -92,10 +92,10 @@ export default class courses {
   }
 }
 
-angular.module('berkeleyScheduler').service('courses', [
+angular.module('berkeleyScheduler').service('courseDiscoveryService', [
     '$http',
     '$q',
     'finals',
-    courses
+    courseDiscoveryService
 ]);
 
