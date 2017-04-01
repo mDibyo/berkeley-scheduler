@@ -109,8 +109,8 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
         // modifying the finals object as we are doing below. Refactor.
         // var clonedFinal = angular.extend({}, final);
         var clonedFinal = final;
-        if (clonedFinal.meeting && clonedFinal.meeting.days[day]) {
-          switch (final.meeting.startTime.hours) {
+        if (clonedFinal.finalMeeting && clonedFinal.finalMeeting.days[day]) {
+          switch (final.finalMeeting.startTime.hours) {
             case 8:
               finalSlots[0].push(clonedFinal);
               break;
@@ -158,7 +158,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     }
 
     function getFinalTop(final) {
-      switch (final.meeting.startTime.hours) {
+      switch (final.finalMeeting.startTime.hours) {
         case 8: // 8-11 AM
           return 0;
         case 11: // 11:30-2:30 PM
