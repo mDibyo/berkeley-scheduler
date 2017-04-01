@@ -1,13 +1,37 @@
+var constants = require('../constants');
+
 angular.module('berkeleyScheduler').run([
   '$window',
   '$state',
   '$rootScope',
+  '$transitions',
   '$mdDialog',
   '$mdMedia',
   '$templateRequest',
   'userService',
-  function($window, $state, $rootScope, $mdDialog, $mdMedia, $templateRequest, userService) {
+  function(
+      $window,
+      $state,
+      $rootScope,
+      $transitions,
+      $mdDialog,
+      $mdMedia,
+      $templateRequest,
+      userService
+  ) {
     $rootScope.$state = $state;
+
+    $transitions.onBefore({to: 'schedule.**'}, function(transition) {
+      return transition.injector().getAsync('termAbbrev').then(function(termAbbrev) {
+        if (Object.keys(constants.terms).indexOf(termAbbrev) >= 0) {
+          return true;
+        }
+
+        return $state.target('schedule', {
+          termAbbrev: constants.DEFAULT_TERM_ABBREV
+        })
+      });
+    });
 
     var bodyHeight = null;
     var leftPane = null;
