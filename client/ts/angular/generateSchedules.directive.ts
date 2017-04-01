@@ -11,7 +11,7 @@ function bsGenerateSchedulesDirective() {
     constructor(
         $state: angular.ui.IStateService,
         $window: angular.IWindowService,
-        private scheduleFactory: IScheduleService
+        scheduleFactory: IScheduleService
     ) {
       super($state, $window, scheduleFactory);
 

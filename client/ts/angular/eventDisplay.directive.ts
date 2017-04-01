@@ -18,7 +18,7 @@ function bsEventDisplayDirective() {
         $window: angular.IWindowService,
         private $scope: eventDisplayDirectiveScope,
         private eventService: EventService,
-        private scheduleFactory: IScheduleService
+        scheduleFactory: IScheduleService
     ) {
       super($state, $window, scheduleFactory);
     }
