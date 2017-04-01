@@ -18,7 +18,7 @@
 
   // Factories
   require('./courseDiscovery.service');
-  require('./finals.factory');
+  require('./finals.service');
   require('./reverseLookup.factory');
   require('./schedule.factory');
 
