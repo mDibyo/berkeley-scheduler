@@ -1,12 +1,12 @@
 import angular = require('angular');
 
 import constants = require('../constants');
-import IFinalsService = require("./finals.factory");
-import Course from "../models/course";
+import {StringMap} from "../utils";
+import finals from "./finals.service";
+
+import Course , {CourseJson} from "../models/course";
 import CourseInstance from "../models/courseInstance";
 import Final = require("../models/final");
-import {StringMap} from "../utils";
-import {CourseJson} from "../models/course";
 
 
 const departmentsUrl = 'data/departments.json';
@@ -34,7 +34,7 @@ export default class courseDiscoveryService {
   constructor(
     private $http: angular.IHttpService,
     private $q: angular.IQService,
-    private finals: IFinalsService
+    private finals: finals
   ) {
     this._subjectAreasQ = this.$q.all([
         this.$http.get(departmentsUrl).then(response => response.data),

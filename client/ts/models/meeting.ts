@@ -76,6 +76,17 @@ export default class Meeting<Owner> implements Identifiable {
     );
   };
 
+  static withOwner<Owner>(meeting: Meeting<any>, owner: Owner) {
+    return new Meeting<Owner>(
+        meeting.startTime,
+        meeting.endTime,
+        meeting.days,
+        meeting.location,
+        meeting.instructors,
+        owner
+    )
+  }
+
   static dayAbbrevs = [
     ['Monday', 'M'],
     ['Tuesday', 'T'],

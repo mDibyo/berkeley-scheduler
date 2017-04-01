@@ -49,6 +49,7 @@
     "client/js/angular/course.service.js",
     "client/js/angular/courseDiscovery.service.js",
     "client/js/angular/event.service.js",
+    "client/js/angular/finals.service.js",
     "client/js/angular/eventDisplay.directive.js",
     "client/js/angular/generateSchedules.directive.js",
     "client/js/angular/meetingEditor.directive.js",
