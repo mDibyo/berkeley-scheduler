@@ -16,10 +16,15 @@ angular.module('berkeleyScheduler').config([
 
     $stateProvider
         .state('schedule', {
-          url: scheduleUrl,
+          url: '/{termAbbrev}',
           templateUrl: 'assets/static/html/schedule.html',
           controller: 'CourseFindCtrl',
-          controllerAs: 'vm'
+          controllerAs: 'vm',
+          resolve: {
+            termAbbrev: ['$stateParams', function($stateParams) {
+              return $stateParams.termAbbrev;
+            }]
+          }
         })
         .state('schedule.viewCourse', {
           url: '/course/{id}',
