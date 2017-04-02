@@ -3,7 +3,7 @@ import angular = require('angular');
 import Final = require('../models/final');
 import Meeting, {MeetingJson} from '../models/meeting';
 import CourseInstance from "../models/courseInstance";
-import {TermMap} from "../utils";
+import {BaseService, TermMap} from "../utils";
 
 const foreignLanguageListingUrl = () => 'data/foreignLanguageListing.json';
 const finalTimesUrl = (termAbbrev: string) => `data/${termAbbrev}/finals/times.json`;
@@ -38,19 +38,12 @@ interface FinalRules extends FinalRulesJson {
   foreignLanguageCourses: ForeignLanguageListingJson;
 }
 
-export default class finals {
+export default class finals extends BaseService {
   constructor(
-      private $http: angular.IHttpService,
+      $http: angular.IHttpService,
       private $q: angular.IQService
-  ) {}
-
-  private httpGet<R>(what: string, url: string): angular.IPromise<R> {
-    return this.$http
-        .get(url)
-        .then(response => response.data, err => {
-          console.error(`could not retrieve ${what}: ${err}`);
-          return {};
-        });
+  ) {
+    super($http);
   }
 
   private finalTimesQByTerm: TermMap<angular.IPromise<FinalTimesJson>> = new TermMap(

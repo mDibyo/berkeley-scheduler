@@ -2,6 +2,7 @@
 
 var BaseCtrl = require('./_base.controller');
 
+var constants = require('../constants');
 
 CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
 function CourseFindCtrl(
@@ -148,10 +149,12 @@ function CourseFindCtrl(
       return;
     }
 
-    reverseLookup.getCourseTitlesQBySubjectAreaCode(subjectArea.code).then(function(courseTitles) {
-      vm.courseTitlesList = courseTitles;
-      vm.courseIsDisabled = false;
-    });
+    reverseLookup
+        .getCourseTitlesQBySubjectAreaCode(constants.TERM_ABBREV, subjectArea.code)
+        .then(function(courseTitles) {
+          vm.courseTitlesList = courseTitles;
+          vm.courseIsDisabled = false;
+        });
   }
 
   function searchCourseTitle(query) {
@@ -179,9 +182,11 @@ function CourseFindCtrl(
       return;
     }
 
-    reverseLookup.getCourseQBy1arySectionId(courseTitle.id).then(function(course) {
-      addCourse(course);
-    });
+    reverseLookup
+        .getCourseQBy1arySectionId(constants.TERM_ABBREV, courseTitle.id)
+        .then(function(course) {
+          addCourse(course);
+        });
   }
 
   var courseNumberRegex = /^([a-zA-Z]*)(\d+)([a-zA-Z]*)/;

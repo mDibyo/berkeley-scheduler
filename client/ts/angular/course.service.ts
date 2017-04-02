@@ -1,5 +1,6 @@
 import angular = require('angular');
 
+import * as constants from '../constants';
 import UserService, {CourseInfo} from './user.service';
 import reverseLookupService from './reverseLookup.service';
 import Course from '../models/course';
@@ -70,7 +71,7 @@ export default class CourseService {
       return this.$q.when(this._sections[sectionId]);
     }
 
-    return this.reverseLookupService.getCourseQBy2arySectionId(sectionId).then(
+    return this.reverseLookupService.getCourseQBy2arySectionId(constants.TERM_ABBREV, sectionId).then(
       (course: Course) => {
         this.addCourse(course);
         return this._sections[sectionId];
@@ -97,7 +98,7 @@ export default class CourseService {
       return this.$q.when(this._courses[courseIdx]);
     }
 
-    return this.reverseLookupService.getCourseQBy2arySectionId(id).then(
+    return this.reverseLookupService.getCourseQBy2arySectionId(constants.TERM_ABBREV, id).then(
       (course: Course) => {
         this.addCourse(course);
         return course;

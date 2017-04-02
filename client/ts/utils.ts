@@ -1,3 +1,5 @@
+import angular = require('angular');
+
 const alphaCharSet: string[] = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const numericCharSet: string[] = '0123456789'.split('');
 const alphaNumericCharSet: string[] = alphaCharSet.concat(numericCharSet);
@@ -17,6 +19,21 @@ export class TermMap<T> {
     }
 
     return this.terms[termAbbrev];
+  }
+}
+
+export class BaseService {
+  constructor(
+      private $http: angular.IHttpService
+  ) {};
+
+  protected httpGet<R>(what: string, url: string): angular.IPromise<R> {
+    return this.$http
+        .get(url)
+        .then(response => response.data, err => {
+          console.error(`could not retrieve ${what}: ${err}`);
+          return {};
+        });
   }
 }
 
