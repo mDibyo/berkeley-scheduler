@@ -235,7 +235,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       _setAndBroadcastScheduleGenerationStatus(
         new scheduleGenerationStatus.Stale());
     }
-    courseService.save();
+    courseService.save(constants.TERM_ABBREV);
   }
 
   function _updateNumSchedules() {
@@ -471,7 +471,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       return $q.when(_currScheduleGroup.id);
     }
 
-    return courseService.getAllCoursesQ().then(function(courseList) {
+    return courseService.getAllCoursesQ(constants.TERM_ABBREV).then(function(courseList) {
       return courseList.filter(function(course) {
         return course.selected;
       });
@@ -507,9 +507,9 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     });
 
     return $q.all(courseIdList.map(function(courseId) {
-      return courseService.addCourseByIdQ(courseId);
+      return courseService.addCourseByIdQ(constants.TERM_ABBREV, courseId);
     })).then(function(courses) {
-      courseService.setSelectedCoursesByIdQ(courseIdList);
+      courseService.setSelectedCoursesByIdQ(constants.TERM_ABBREV, courseIdList);
       eventService.setSelectedEventsById(eventIdList);
 
       _setCurrentScheduleGroup(new ScheduleGroup(userId, courses, eventService
@@ -532,7 +532,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       if (CustomCommitmentOption.isCustomCommitmentOptionId(optionId)) {
         return $q.when(eventService.getOptionById(optionId));
       }
-      return courseService.getSectionByIdQ(optionId);
+      return courseService.getSectionByIdQ(constants.TERM_ABBREV, optionId);
     })).then(function(options) {
       return new Schedule(userId, options.filter(function(option) {
         return option;
@@ -557,10 +557,10 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       }
     });
 
-    return courseService.getAllCoursesQ().then(function(prevAllCourses) {
+    return courseService.getAllCoursesQ(constants.TERM_ABBREV).then(function(prevAllCourses) {
       const courses = [];
       sectionIdList.forEach(function(sectionId) {
-        courseService.getSectionByIdQ(sectionId).then(function(section) {
+        courseService.getSectionByIdQ(constants.TERM_ABBREV, sectionId).then(function(section) {
           section.selected = true;
           const course = section.owner.course;
           if (courses.findIndex(function(c) {
@@ -611,7 +611,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       });
 
       // Ensure that only these courses and events are selected.
-      courseService.setSelectedCoursesByIdQ(courses.map(function(c) {
+      courseService.setSelectedCoursesByIdQ(constants.TERM_ABBREV, courses.map(function(c) {
         return c.id;
       }));
       eventService.setSelectedEventsById(events.map(function(e) {

@@ -24,7 +24,7 @@ function CourseFindCtrl(
 
   var vm = this;
 
-  vm.scheduleIsReady = courseService.ready;
+  vm.scheduleIsReady = courseService.isReady(constants.TERM_ABBREV);
   vm.subjectAreaIsDisabled = false;
   vm.courseIsDisabled = true;
   vm.courseQuery = null;
@@ -50,7 +50,7 @@ function CourseFindCtrl(
 
   vm.generateSchedulesQ = scheduleFactory.generateSchedulesQ;
 
-  courseService.getAllCoursesQ().then(function(courses) {
+  courseService.getAllCoursesQ(constants.TERM_ABBREV).then(function(courses) {
     vm.addedCoursesList = courses;
   });
   vm.addedEventsList = eventService.getAllEvents();
@@ -59,12 +59,12 @@ function CourseFindCtrl(
     vm.subjectAreasList = subjectAreas;
   });
 
-  courseService.addSetReadyListener('courseFind', function(isReady) {
+  courseService.addSetReadyListener(constants.TERM_ABBREV, 'courseFind', function(isReady) {
     vm.scheduleIsReady = isReady;
     scheduleFactory.setStale();
   });
 
-  courseService.addAddCourseListener('courseFind', function(course) {
+  courseService.addAddCourseListener(constants.TERM_ABBREV, 'courseFind', function(course) {
     vm.addedCoursesList.push(course);
     scheduleFactory.setStale();
     if (!vm.scheduleIsReady) {
@@ -73,7 +73,7 @@ function CourseFindCtrl(
     vm.goToState('schedule.viewCourse', {id: course.id});
   });
 
-  courseService.addDropCourseListener('courseFind', function(course) {
+  courseService.addDropCourseListener(constants.TERM_ABBREV, 'courseFind', function(course) {
     var courseIdx = vm.addedCoursesList.indexOf(course);
     vm.addedCoursesList.remove(course);
     if (course.selected) {
@@ -208,11 +208,11 @@ function CourseFindCtrl(
   }
 
   function addCourse(course) {
-    courseService.addCourse(course);
+    courseService.addCourse(constants.TERM_ABBREV, course);
   }
 
   function dropCourse(course) {
-    courseService.dropCourseQ(course);
+    courseService.dropCourseQ(constants.TERM_ABBREV, course);
   }
 
   function createEvent() {
