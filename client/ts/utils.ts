@@ -4,6 +4,22 @@ const alphaNumericCharSet: string[] = alphaCharSet.concat(numericCharSet);
 
 export interface StringMap<V> {[day: string]: V}
 
+export class TermMap<T> {
+  private terms: {[termAbbrev: string]: T} = {};
+
+  constructor(
+      private fetcher: (termAbbrev: string) => T
+  ) {}
+
+  get(termAbbrev: string): T {
+    if (!this.terms.hasOwnProperty(termAbbrev)) {
+      this.terms[termAbbrev] = this.fetcher(termAbbrev);
+    }
+
+    return this.terms[termAbbrev];
+  }
+}
+
 export interface Days<V> extends StringMap<V> {
   'Monday': V;
   'Tuesday': V;

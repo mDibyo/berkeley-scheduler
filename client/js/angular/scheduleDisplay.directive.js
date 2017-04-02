@@ -1,3 +1,5 @@
+var constants = require('../constants');
+
 var ColorRegisterableIdentifiable = require('../utils').ColorRegisterableIdentifiable;
 var Meeting = require('../models/meeting').default;
 var Time = require('../models/time');
@@ -8,7 +10,7 @@ var CustomCommitmentOption = require('../models/customCommitmentOption').default
 function bsScheduleDisplayDirective(finals, scheduleFactory) {
   var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   var finalDates = {};
-  finals.finalDatesQ.then(function(fd) {
+  finals.finalDatesQByTerm.get(constants.TERM_ABBREV).then(function(fd) {
     days.forEach(function(day) {
       finalDates[day] = fd[day];
     });
