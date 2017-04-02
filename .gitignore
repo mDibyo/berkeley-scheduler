@@ -21,6 +21,7 @@ client/js/angular/finals.service.js
 client/js/angular/generateSchedules.directive.js
 client/js/angular/meetingEditor.directive.js
 client/js/angular/reverse.filter.js
+client/js/angular/reverseLookup.service.js
 client/js/angular/timePicker.directive.js
 client/js/angular/user.service.js
 client/js/angular/viewEvent.controller.js
