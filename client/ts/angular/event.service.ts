@@ -2,8 +2,7 @@ import angular = require('angular');
 
 import UserService from './user.service';
 import CustomCommitment from '../models/customCommitment';
-import * as constants from '../constants';
-import {ListenerMap, Listener, addListener, sample} from '../utils';
+import {ListenerMap, Listener, addListener, sample, TermMap} from '../utils';
 import CustomCommitmentOption from '../models/customCommitmentOption';
 
 const nouns = [
@@ -47,89 +46,95 @@ function generateRandomName() {
 interface OptionsMap {[id: string]: CustomCommitmentOption}
 
 export default class EventService {
-  private events: CustomCommitment[] = [];
-  private options: OptionsMap = {};
-
-  private createEventListeners: ListenerMap<CustomCommitment> = {};
-  private deleteEventListeners: ListenerMap<CustomCommitment> = {};
-
   constructor(
       private userService: UserService
-  ) {
-    this.events = this.userService.getEvents(constants.TERM_ABBREV);
-    this.events.forEach(event => {
+  ) {}
+
+  private eventsByTerm: TermMap<CustomCommitment[]> = new TermMap(termAbbrev => {
+    const events = this.userService.getEvents(termAbbrev);
+    const options = this.optionsByTerm.get(termAbbrev);
+    events.forEach(event => {
       event.add();
 
       const option = event.option;
-      this.options[option.id] = option;
-    })
+      options[option.id] = option;
+    });
+    return events;
+  });
+  private optionsByTerm: TermMap<OptionsMap> = new TermMap(() => ({}));
+
+  private createEventListenersByTerm: TermMap<ListenerMap<CustomCommitment>> = new TermMap(() => ({}));
+  private deleteEventListenersByTerm: TermMap<ListenerMap<CustomCommitment>> = new TermMap(() => ({}));
+
+  addCreateEventListener(termAbbrev: string, tag: string, listener: Listener<CustomCommitment>) {
+    addListener<CustomCommitment>(this.createEventListenersByTerm.get(termAbbrev), tag, listener);
   }
 
-  addCreateEventListener(tag: string, listener: Listener<CustomCommitment>) {
-    addListener<CustomCommitment>(this.createEventListeners, tag, listener);
+  addDeleteEventListener(termAbbrev: string, tag: string, listener: Listener<CustomCommitment>) {
+    addListener<CustomCommitment>(this.deleteEventListenersByTerm.get(termAbbrev), tag, listener);
   }
 
-  addDeleteEventListener(tag: string, listener: Listener<CustomCommitment>) {
-    addListener<CustomCommitment>(this.deleteEventListeners, tag, listener);
+  getAllEvents(termAbbrev: string): CustomCommitment[] {
+    return this.eventsByTerm.get(termAbbrev).slice();
   }
 
-  getAllEvents(): CustomCommitment[] {
-    return this.events.slice();
+  getEventById(termAbbrev: string, eventId: string): CustomCommitment|undefined {
+    const events = this.eventsByTerm.get(termAbbrev);
+    return events[events.findIndex(e => e.id === eventId)];
   }
 
-  getEventById(eventId: string): CustomCommitment|undefined {
-    return this.events[this.events.findIndex(e => e.id === eventId)];
-  }
-
-  setSelectedEventsById(eventIds: string[]): void {
-    this.events.forEach((event) => {
+  setSelectedEventsById(termAbbrev: string, eventIds: string[]): void {
+    this.eventsByTerm.get(termAbbrev).forEach((event) => {
       event.selected = eventIds.indexOf(event.id) >= 0;
     });
-    this.save();
+    this.save(termAbbrev);
   }
 
-  getOptionById(optionId: string): CustomCommitmentOption {
-    return this.options[optionId];
+  getOptionById(termAbbrev: string, optionId: string): CustomCommitmentOption {
+    return this.optionsByTerm.get(termAbbrev)[optionId];
   }
 
-  createEvent(): CustomCommitment {
+  createEvent(termAbbrev: string): CustomCommitment {
     const newEvent = new CustomCommitment(generateRandomName(), []);
-    this.events.push(newEvent);
+    this.eventsByTerm.get(termAbbrev).push(newEvent);
     const option = newEvent.option;
-    this.options[option.id] = option;
+    this.optionsByTerm.get(termAbbrev)[option.id] = option;
 
     newEvent.add();
     newEvent.addMeeting();
 
     newEvent.selected = true;
-    this.save();
+    this.save(termAbbrev);
 
-    for (const tag in this.createEventListeners) {
-      this.createEventListeners[tag](newEvent);
+    const createEventListeners = this.createEventListenersByTerm.get(termAbbrev);
+    for (const tag in createEventListeners) {
+      createEventListeners[tag](newEvent);
     }
 
     return newEvent;
   }
 
-  deleteEvent(event: CustomCommitment) {
-    const eventIdx = this.events.findIndex(e => e.id === event.id);
+  deleteEvent(termAbbrev: string, event: CustomCommitment) {
+    const events = this.eventsByTerm.get(termAbbrev);
+    const eventIdx = events.findIndex(e => e.id === event.id);
     if (eventIdx < 0) {
       return;
     }
 
-    this.events.splice(eventIdx, 1);
-    delete this.options[event.option.id];
+    events.splice(eventIdx, 1);
+    delete this.optionsByTerm.get(termAbbrev)[event.option.id];
 
     event.drop();
-    this.save();
+    this.save(termAbbrev);
 
-    for (const tag in this.deleteEventListeners) {
-      this.deleteEventListeners[tag](event);
+    const deleteEventListeners = this.deleteEventListenersByTerm.get(termAbbrev);
+    for (const tag in deleteEventListeners) {
+      deleteEventListeners[tag](event);
     }
   }
 
-  save() {
-    this.userService.setEvents(constants.TERM_ABBREV, this.events);
+  save(termAbbrev: string) {
+    this.userService.setEvents(termAbbrev, this.eventsByTerm.get(termAbbrev));
   }
 }
 

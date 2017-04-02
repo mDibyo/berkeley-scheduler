@@ -4,6 +4,7 @@ import angulartics = require('angulartics')
 import BaseCtrl = require('./_base.controller');
 import IScheduleService = require('./schedule.service');
 import EventService from './event.service';
+import {TERM_ABBREV} from '../constants';
 import CustomCommitment from '../models/customCommitment';
 
 export class ViewEventCtrl extends BaseCtrl {
@@ -22,7 +23,7 @@ export class ViewEventCtrl extends BaseCtrl {
 
     $analytics.pageTrack($location.url());
 
-    this.selectedEvent = eventService.getEventById($stateParams.id);
+    this.selectedEvent = eventService.getEventById(TERM_ABBREV, $stateParams.id);
   }
 }
 angular.module('berkeleyScheduler').controller('ViewEventCtrl', [

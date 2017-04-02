@@ -53,7 +53,7 @@ function CourseFindCtrl(
   courseService.getAllCoursesQ(constants.TERM_ABBREV).then(function(courses) {
     vm.addedCoursesList = courses;
   });
-  vm.addedEventsList = eventService.getAllEvents();
+  vm.addedEventsList = eventService.getAllEvents(constants.TERM_ABBREV);
 
   courseDiscoveryService.getSubjectAreasQ().then(function(subjectAreas) {
     vm.subjectAreasList = subjectAreas;
@@ -93,13 +93,13 @@ function CourseFindCtrl(
     }
   });
 
-  eventService.addCreateEventListener('courseFind', function(event) {
+  eventService.addCreateEventListener(constants.TERM_ABBREV, 'courseFind', function(event) {
     vm.addedEventsList.push(event);
     scheduleFactory.setStale();
     vm.goToState('schedule.viewEvent', {id: event.id});
   });
 
-  eventService.addDeleteEventListener('courseFind', function(event) {
+  eventService.addDeleteEventListener(constants.TERM_ABBREV, 'courseFind', function(event) {
     vm.addedEventsList.remove(event);
     if (event.selected) {
       scheduleFactory.setStale();
@@ -216,7 +216,7 @@ function CourseFindCtrl(
   }
 
   function createEvent() {
-    eventService.createEvent();
+    eventService.createEvent(constants.TERM_ABBREV);
   }
 
   function deleteEvent(event) {
@@ -231,12 +231,12 @@ function CourseFindCtrl(
         locals: {
           eventName: event.getName(),
           onConfirm: function() {
-            eventService.deleteEvent(event);
+            eventService.deleteEvent(constants.TERM_ABBREV, event);
           }
         }
       });
     } else {
-      eventService.deleteEvent(event);
+      eventService.deleteEvent(constants.TERM_ABBREV, event);
     }
   }
 }

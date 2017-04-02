@@ -479,7 +479,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       _setCurrentScheduleGroup(new ScheduleGroup(
           _primaryUserId,
           filteredCourseList,
-          eventService.getAllEvents().filter(function(event) {
+          eventService.getAllEvents(constants.TERM_ABBREV).filter(function(event) {
             return event.selected;
           })
       ), true);
@@ -510,10 +510,10 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       return courseService.addCourseByIdQ(constants.TERM_ABBREV, courseId);
     })).then(function(courses) {
       courseService.setSelectedCoursesByIdQ(constants.TERM_ABBREV, courseIdList);
-      eventService.setSelectedEventsById(eventIdList);
+      eventService.setSelectedEventsById(constants.TERM_ABBREV, eventIdList);
 
       _setCurrentScheduleGroup(new ScheduleGroup(userId, courses, eventService
-          .getAllEvents()
+          .getAllEvents(constants.TERM_ABBREV)
           .filter(function(event) {
             return eventIdList.indexOf(event.id) >= 0;
           })), false);
@@ -530,7 +530,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     const optionIds = Schedule.getOptionIdsFromId(scheduleId);
     return $q.all(optionIds.map(function(optionId) {
       if (CustomCommitmentOption.isCustomCommitmentOptionId(optionId)) {
-        return $q.when(eventService.getOptionById(optionId));
+        return $q.when(eventService.getOptionById(constants.TERM_ABBREV, optionId));
       }
       return courseService.getSectionByIdQ(constants.TERM_ABBREV, optionId);
     })).then(function(options) {
@@ -603,7 +603,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       return courses;
     }).then(function(courses) {
       var events = customCommitmentOptionIdList.map(function(optionId) {
-        return eventService.getOptionById(optionId);
+        return eventService.getOptionById(constants.TERM_ABBREV, optionId);
       }).filter(function(option) {
         return option !== undefined;
       }).map(function(option) {
@@ -614,7 +614,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       courseService.setSelectedCoursesByIdQ(constants.TERM_ABBREV, courses.map(function(c) {
         return c.id;
       }));
-      eventService.setSelectedEventsById(events.map(function(e) {
+      eventService.setSelectedEventsById(constants.TERM_ABBREV, events.map(function(e) {
         return e.id;
       }));
 
