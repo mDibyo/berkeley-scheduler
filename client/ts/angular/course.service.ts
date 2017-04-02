@@ -1,7 +1,7 @@
 import angular = require('angular');
 
 import UserService, {CourseInfo} from './user.service';
-import IReverseLookupService = require('./reverseLookup.service');
+import reverseLookupService from './reverseLookup.service';
 import Course from '../models/course';
 import Section from '../models/section';
 import CourseInstance from '../models/courseInstance';
@@ -22,7 +22,7 @@ export default class CourseService {
 
   constructor(
       private $q: angular.IQService,
-      private reverseLookupService: IReverseLookupService,
+      private reverseLookupService: reverseLookupService,
       private userService: UserService,
   ) {
     this._readyQ = this.$q.all(this.userService.courseInfos.map(

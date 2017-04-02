@@ -19,7 +19,7 @@
   // Factories
   require('./courseDiscovery.service');
   require('./finals.service');
-  require('./reverseLookup.factory');
+  require('./reverseLookup.service');
   require('./schedule.factory');
 
   // Services
