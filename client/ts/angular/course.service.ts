@@ -26,7 +26,7 @@ export default class CourseService {
       private reverseLookupService: reverseLookupService,
       private userService: UserService,
   ) {
-    this._readyQ = this.$q.all(this.userService.courseInfos.map(
+    this._readyQ = this.$q.all(this.userService.getCourseInfos(constants.TERM_ABBREV).map(
       (courseInfo: CourseInfo) => {
         return this.addCourseByIdQ(courseInfo.id).then((course: Course) => {
           course.selected = courseInfo.selected === undefined || courseInfo.selected;
@@ -150,7 +150,7 @@ export default class CourseService {
   }
 
   save() {
-    this.userService.courseInfos = this._courses.map((course: Course) => {
+    this.userService.setCourseInfos(constants.TERM_ABBREV, this._courses.map((course: Course) => {
       const selectedSections: string[] = [];
       const unselectedSections: string[] = [];
       course.instances.forEach((courseInstance: CourseInstance) => {
@@ -168,7 +168,7 @@ export default class CourseService {
         selectedSections: selectedSections,
         unselectedSections: unselectedSections
       }
-    });
+    }));
   }
 }
 

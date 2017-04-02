@@ -147,7 +147,6 @@ export default class UserService {
   constructor(
       $cookies: angular.cookies.ICookiesService,
       localStorageService: angular.local.storage.ILocalStorageService,
-      private $q: angular.IQService,
   ) {
     this.storage = new AngularCompositeStorage($cookies, localStorageService);
   }
@@ -165,12 +164,12 @@ export default class UserService {
     return this._primaryUserId;
   }
 
-  get primaryUserIdTermIdentifier(): string {
-    return `${this.primaryUserId}.${constants.TERM_ABBREV}`;
+  getPrimaryUserIdTermIdentifier(termAbbrev: string): string {
+    return `${this.primaryUserId}.${termAbbrev}`;
   }
 
-  private getTermIdentifiedStorageValue<V>(keySuffix: string): V[] {
-    let storageKey: string = `${this.primaryUserIdTermIdentifier}.${keySuffix}`;
+  private getTermIdentifiedStorageValue<V>(termAbbrev: string, keySuffix: string): V[] {
+    let storageKey: string = `${this.getPrimaryUserIdTermIdentifier(termAbbrev)}.${keySuffix}`;
     let value: V[] = this.storage.get(storageKey);
 
     if (!value) {
@@ -256,18 +255,21 @@ export default class UserService {
     });
   }
 
-  get courseInfos(): CourseInfo[] {
-    return this.getTermIdentifiedStorageValue<CourseInfo>(UserService._courseInfosStorageKeySuffix);
+  getCourseInfos(termAbbrev: string): CourseInfo[] {
+    return this.getTermIdentifiedStorageValue<CourseInfo>(
+        termAbbrev,
+        UserService._courseInfosStorageKeySuffix
+    );
   }
-  set courseInfos(newCourseInfos: CourseInfo[]) {
+  setCourseInfos(termAbbrev: string, newCourseInfos: CourseInfo[]) {
     let courseInfosStorageKey: string =
-      `${this.primaryUserIdTermIdentifier}.${UserService._courseInfosStorageKeySuffix}`;
+      `${this.getPrimaryUserIdTermIdentifier(termAbbrev)}.${UserService._courseInfosStorageKeySuffix}`;
     this.storage.set(courseInfosStorageKey, newCourseInfos);
   }
 
-  get events(): CustomCommitment[] {
+  getEvents(termAbbrev: string): CustomCommitment[] {
     const eventInfos =
-        this.getTermIdentifiedStorageValue<EventInfo>(UserService._eventInfosStorageKeySuffix);
+        this.getTermIdentifiedStorageValue<EventInfo>(termAbbrev, UserService._eventInfosStorageKeySuffix);
 
     return eventInfos.map((eventInfo: EventInfo) => {
       const event = new CustomCommitment(eventInfo.name);
@@ -290,9 +292,9 @@ export default class UserService {
       return event;
     })
   }
-  set events(newEvents: CustomCommitment[]) {
+  setEvents(termAbbrev: string, newEvents: CustomCommitment[]) {
     let eventInfosStorageKey: string =
-        `${this.primaryUserIdTermIdentifier}.${UserService._eventInfosStorageKeySuffix}`;
+        `${this.getPrimaryUserIdTermIdentifier(termAbbrev)}.${UserService._eventInfosStorageKeySuffix}`;
     this.storage.set(eventInfosStorageKey, newEvents.map((event: CustomCommitment) => {
       return {
         id: event.id,
@@ -310,12 +312,15 @@ export default class UserService {
     }));
   }
 
-  get savedScheduleIds(): string[] {
-    return this.getTermIdentifiedStorageValue<string>(UserService._savedScheduleIdsStorageKeySuffix);
+  getSavedScheduleIds(termAbbrev: string): string[] {
+    return this.getTermIdentifiedStorageValue<string>(
+        termAbbrev,
+        UserService._savedScheduleIdsStorageKeySuffix
+    );
   }
-  set savedScheduleIds(newSavedScheduleIds: string[]) {
+  setSavedScheduleIds(termAbbrev: string, newSavedScheduleIds: string[]) {
     const savedScheduleIdsStorageKey: string =
-      `${this.primaryUserIdTermIdentifier}.${UserService._savedScheduleIdsStorageKeySuffix}`;
+      `${this.getPrimaryUserIdTermIdentifier(termAbbrev)}.${UserService._savedScheduleIdsStorageKeySuffix}`;
     this.storage.set(savedScheduleIdsStorageKey, newSavedScheduleIds);
   }
 }

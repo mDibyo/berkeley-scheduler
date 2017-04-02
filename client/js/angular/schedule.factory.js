@@ -206,7 +206,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
   }
 
   function _loadScheduleIdsInto_savedSchedules() {
-    userService.savedScheduleIds.forEach(function(scheduleId) {
+    userService.getSavedScheduleIds(constants.TERM_ABBREV).forEach(function(scheduleId) {
       getScheduleQById(scheduleId).then(function(schedule) {
         _addSavedScheduleNoSave(schedule);
       });
@@ -214,9 +214,9 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
   }
 
   function _saveScheduleIdsToCookie() {
-    userService.savedScheduleIds = _savedSchedules.map(function(schedule) {
+    userService.setSavedScheduleIds(constants.TERM_ABBREV, _savedSchedules.map(function(schedule) {
       return schedule.id;
-    });
+    }));
   }
 
   function _isStale() {

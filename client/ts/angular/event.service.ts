@@ -2,6 +2,7 @@ import angular = require('angular');
 
 import UserService from './user.service';
 import CustomCommitment from '../models/customCommitment';
+import * as constants from '../constants';
 import {ListenerMap, Listener, addListener, sample} from '../utils';
 import CustomCommitmentOption from '../models/customCommitmentOption';
 
@@ -55,7 +56,7 @@ export default class EventService {
   constructor(
       private userService: UserService
   ) {
-    this.events = this.userService.events;
+    this.events = this.userService.getEvents(constants.TERM_ABBREV);
     this.events.forEach(event => {
       event.add();
 
@@ -128,7 +129,7 @@ export default class EventService {
   }
 
   save() {
-    this.userService.events = this.events;
+    this.userService.setEvents(constants.TERM_ABBREV, this.events);
   }
 }
 
