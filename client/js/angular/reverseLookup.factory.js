@@ -35,18 +35,20 @@ function reverseLookup($http, $q, courseDiscoveryService) {
 
     return _1arySectionIdToSubjectAreaIndexQ.then(function(index) {
       var subjectAreaInfo = index[id];
-      return courseDiscoveryService.getCoursesQBySubjectAreaCode(subjectAreaInfo[0])
-        .then(function(courseList) {
-          const courseNumber = subjectAreaInfo[1];
-          for (var i = 0; i < courseList.length; i++) {
-            if (courseList[i].courseNumber === courseNumber) {
-              const course = courseList[i];
-              _coursesCache[id] = course;
-              return course;
-            }
+      return courseDiscoveryService.getCoursesQBySubjectAreaCode(
+          constants.TERM_ABBREV,
+          subjectAreaInfo[0]
+      ).then(function(courseList) {
+        const courseNumber = subjectAreaInfo[1];
+        for (var i = 0; i < courseList.length; i++) {
+          if (courseList[i].courseNumber === courseNumber) {
+            const course = courseList[i];
+            _coursesCache[id] = course;
+            return course;
           }
-          return $q.reject();
-        });
+        }
+        return $q.reject();
+      });
     });
   }
 
