@@ -38,7 +38,7 @@ export default class courseDiscoveryService {
   ) {
     this._subjectAreasQ = this.$q.all([
         this.$http.get(departmentsUrl).then(response => response.data),
-        this.$http.get(subjectAreaAbbrvsUrl).then(response => response.data, () => {})
+        this.$http.get(subjectAreaAbbrvsUrl).then(response => response.data, () => ({}))
     ]).then(([departmentsJson, abbrevs]: [DepartmentsInfo, StringMap<string[]>]) => {
       const subjectAreas = departmentsJson.subjectAreas;
       return Object.keys(subjectAreas).map(code => ({
@@ -75,9 +75,10 @@ export default class courseDiscoveryService {
             const course = Course.parse(courseData);
             course.instances.forEach((courseInstance: CourseInstance) => {
               if (courseInstance.hasFinalExam) {
-                finalQs.push(this.finals.getFinalMeetingForCourseInstanceQ(courseInstance).then(
-                    (finalMeeting: Final) => courseInstance.setFinalMeeting(finalMeeting)
-                ));
+                finalQs.push(this.finals.getFinalMeetingForCourseInstanceQ(
+                    constants.TERM_ABBREV,
+                    courseInstance
+                ).then((finalMeeting: Final) => courseInstance.setFinalMeeting(finalMeeting)));
               }
             });
 

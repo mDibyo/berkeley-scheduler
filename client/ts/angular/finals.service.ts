@@ -1,14 +1,13 @@
 import angular = require('angular');
 
-import * as constants from '../constants';
-
 import Final = require('../models/final');
 import Meeting, {MeetingJson} from '../models/meeting';
 import CourseInstance from "../models/courseInstance";
+import {TermMap} from "../utils";
 
-const foreignLanguageListingUrl = 'data/foreignLanguageListing.json';
-const finalTimesUrl = 'data/' + constants.TERM_ABBREV + '/finals/times.json';
-const finalRulesUrl = 'data/' + constants.TERM_ABBREV + '/finals/rules.json';
+const foreignLanguageListingUrl = () => 'data/foreignLanguageListing.json';
+const finalTimesUrl = (termAbbrev: string) => `data/${termAbbrev}/finals/times.json`;
+const finalRulesUrl = (termAbbrev: string) => `data/${termAbbrev}/finals/rules.json`;
 
 
 interface DateJson {
@@ -40,77 +39,86 @@ interface FinalRules extends FinalRulesJson {
 }
 
 export default class finals {
-  public finalDatesQ: angular.IPromise<FinalDates>;
-  private finalMeetingsQ: angular.IPromise<FinalMeetings>;
-
-  private finalsByCourseInstanceId: {[id: string]: Final} = {};
-  private finalRulesAllQ: angular.IPromise<FinalRules>;
-
   constructor(
       private $http: angular.IHttpService,
       private $q: angular.IQService
-  ) {
-    const finalTimesQ: angular.IPromise<FinalTimesJson> = this.$http
-        .get(finalTimesUrl)
-        .then(response => response.data, err => {
-          console.error(`could not retrieve foreign language listing: ${err}`);
-          return {dates: {}, meetings: {}};
-        });
-    this.finalDatesQ = finalTimesQ.then(({dates}) => {
-      const finalDates: FinalDates = {};
-      Object.keys(dates).forEach((day: string) => {
-        const date = dates[day];
-        finalDates[day] = new Date(date.year, date.month, date.day);
-      });
-      return finalDates;
-    });
-    this.finalMeetingsQ = finalTimesQ.then(({meetings}) => {
-      const finalMeetings: FinalMeetings = {};
-      Object.keys(meetings).forEach((meetingKey) => {
-        finalMeetings[meetingKey] = Meeting.parse(meetings[meetingKey], null);
-      });
-      return finalMeetings;
-    });
+  ) {}
 
-    const finalRulesQ: angular.IPromise<FinalRulesJson> = this.$http
-        .get(finalRulesUrl)
+  private httpGet<R>(what: string, url: string): angular.IPromise<R> {
+    return this.$http
+        .get(url)
         .then(response => response.data, err => {
-          console.error(`could not retrieve final rules: ${err}`);
+          console.error(`could not retrieve ${what}: ${err}`);
           return {};
         });
-    const foreignLanguagesListingQ: angular.IPromise<ForeignLanguageListingJson> = this.$http
-        .get(foreignLanguageListingUrl)
-        .then(response => response.data, (err) => {
-          console.error(`could not retrieve foreign language listing: ${err}`);
-          return {};
+  }
+
+  private finalTimesQByTerm: TermMap<angular.IPromise<FinalTimesJson>> = new TermMap(
+      termAbbrev => this.httpGet<FinalTimesJson>('final times', finalTimesUrl(termAbbrev))
+  );
+
+  public finalDatesQByTerm: TermMap<angular.IPromise<FinalDates>> = new TermMap(
+      termAbbrev => this.finalTimesQByTerm.get(termAbbrev).then(({dates}) => {
+        const finalDates: FinalDates = {};
+        Object.keys(dates).forEach((day: string) => {
+          const date = dates[day];
+          finalDates[day] = new Date(date.year, date.month, date.day);
         });
-    this.finalRulesAllQ = this.$q.all([
-      finalRulesQ,
-      foreignLanguagesListingQ
-    ]).then(([finalRules, foreignLanguageListing]) => {
-      (finalRules as FinalRules).foreignLanguageCourses = foreignLanguageListing;
-      return finalRules;
-    });
+        return finalDates;
+      })
+  );
+
+  private finalMeetingsQByTerm: TermMap<angular.IPromise<FinalMeetings>> = new TermMap(
+      termAbbrev => this.finalTimesQByTerm.get(termAbbrev).then(({meetings}) => {
+        const finalMeetings: FinalMeetings = {};
+        Object.keys(meetings).forEach((meetingKey) => {
+          finalMeetings[meetingKey] = Meeting.parse(meetings[meetingKey], null);
+        });
+        return finalMeetings;
+      })
+  );
+
+  private finalRulesAllQByTerm: TermMap<angular.IPromise<FinalRules>> = new TermMap(
+      termAbbrev => this.$q.all([
+        this.httpGet<FinalRulesJson>('final rules', finalRulesUrl(termAbbrev)),
+        this.httpGet<ForeignLanguageListingJson>('foreign language listing', foreignLanguageListingUrl())
+      ]).then(([finalRules, foreignLanguageListing]) => {
+        (finalRules as FinalRules).foreignLanguageCourses = foreignLanguageListing;
+        return finalRules;
+      })
+  );
+
+  private finalsByCourseInstanceIdByTerm: TermMap<{[id: string]: Final}> = new TermMap(() => ({}));
+
+  private getFinalMeetingQ(termAbbrev: string, meetingKey: string): angular.IPromise<Meeting<null>|null> {
+    return this.finalMeetingsQByTerm
+        .get(termAbbrev)
+        .then(meetings => meetings[meetingKey] || null);
   }
 
-  private getFinalMeetingQ(meetingKey: string): angular.IPromise<Meeting<null>|null> {
-    return this.finalMeetingsQ.then(meetings => meetings[meetingKey] || null);
-  }
-
-  private getFinalQ(courseInstance: CourseInstance, meetingKey: string): angular.IPromise<Final|null> {
-    return this.getFinalMeetingQ(meetingKey).then(
+  private getFinalQ(
+      termAbbrev: string,
+      courseInstance: CourseInstance,
+      meetingKey: string
+  ): angular.IPromise<Final|null> {
+    return this.getFinalMeetingQ(termAbbrev, meetingKey).then(
         finalMeeting => finalMeeting
             ? new Final(courseInstance, Meeting.withOwner(finalMeeting, courseInstance))
             : null
     )
   }
 
-  getFinalMeetingForCourseInstanceQ(courseInstance: CourseInstance): angular.IPromise<Final> {
-    if (this.finalsByCourseInstanceId.hasOwnProperty(courseInstance.id)) {
-      return this.$q.when(this.finalsByCourseInstanceId[courseInstance.id]);
+  getFinalMeetingForCourseInstanceQ(
+      termAbbrev: string,
+      courseInstance: CourseInstance
+  ): angular.IPromise<Final> {
+    const finalsByCourseInstanceId = this.finalsByCourseInstanceIdByTerm.get(termAbbrev);
+    if (finalsByCourseInstanceId.hasOwnProperty(courseInstance.id)) {
+      return this.$q.when(finalsByCourseInstanceId[courseInstance.id]);
     }
 
-    return this.finalRulesAllQ
+    return this.finalRulesAllQByTerm
+        .get(termAbbrev)
         .then((finalRulesAll) => {
           const {department, courseNumber} = courseInstance.course;
 
@@ -147,10 +155,10 @@ export default class finals {
             return finalRulesAll.TRCourses[courseMeeting.startTime.hours];
           }
         })
-        .then(meetingKey => meetingKey ? this.getFinalQ(courseInstance, meetingKey) : null)
+        .then(meetingKey => meetingKey ? this.getFinalQ(termAbbrev, courseInstance, meetingKey) : null)
         .then(final => {
           if (final) {
-            this.finalsByCourseInstanceId[courseInstance.id] = final;
+            finalsByCourseInstanceId[courseInstance.id] = final;
           }
           return final;
         })
