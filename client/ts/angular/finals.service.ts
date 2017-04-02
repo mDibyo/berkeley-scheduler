@@ -1,5 +1,6 @@
 import angular = require('angular');
 
+import {DEFAULT_TERM_ABBREV} from '../constants';
 import Final = require('../models/final');
 import Meeting, {MeetingJson} from '../models/meeting';
 import CourseInstance from "../models/courseInstance";
@@ -44,6 +45,10 @@ export default class finals extends BaseService {
       private $q: angular.IQService
   ) {
     super($http);
+
+    // Get defaults
+    this.finalDatesQByTerm.get(DEFAULT_TERM_ABBREV);
+    this.finalRulesAllQByTerm.get(DEFAULT_TERM_ABBREV);
   }
 
   private finalTimesQByTerm: TermMap<angular.IPromise<FinalTimesJson>> = new TermMap(

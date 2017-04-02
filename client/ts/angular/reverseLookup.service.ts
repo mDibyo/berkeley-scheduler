@@ -1,9 +1,9 @@
 import angular = require('angular');
 
-import * as constants from '../constants';
 import courseDiscoveryService from "./courseDiscovery.service";
 import Course from "../models/course";
 import {BaseService, StringMap, TermMap} from "../utils";
+import {DEFAULT_TERM_ABBREV} from "../constants";
 
 
 type CourseTitleJson = [string, string, string]
@@ -24,6 +24,11 @@ export default class reverseLookup extends BaseService {
       private courseDiscoveryService: courseDiscoveryService
   ) {
     super($http);
+
+    // Get defaults
+    this._2aryTo1arySectionIdIndexQByTerm.get(DEFAULT_TERM_ABBREV);
+    this._1arySectionIdToSubjectAreaIndexQByTerm.get(DEFAULT_TERM_ABBREV);
+    this.subjectAreaToCourseTitlesIndexQByTerm.get(DEFAULT_TERM_ABBREV);
   }
 
   private coursesCacheByTerm: TermMap<StringMap<Course>> = new TermMap(() => ({}));

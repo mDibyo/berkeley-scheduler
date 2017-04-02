@@ -6,6 +6,7 @@ import Course from '../models/course';
 import Section from '../models/section';
 import CourseInstance from '../models/courseInstance';
 import {ListenerMap, Listener, addListener, TermMap} from '../utils';
+import {DEFAULT_TERM_ABBREV} from "../constants";
 
 interface SectionsMap {[id: string]: Section}
 
@@ -14,7 +15,10 @@ export default class CourseService {
       private $q: angular.IQService,
       private reverseLookupService: reverseLookupService,
       private userService: UserService,
-  ) {}
+  ) {
+    // Get Defaults
+    this.readyQByTerm.get(DEFAULT_TERM_ABBREV);
+  }
 
   private setReadyListenersByTerm: TermMap<ListenerMap<boolean>> = new TermMap(() => ({}));
   private addCourseListenersByTerm: TermMap<ListenerMap<Course>> = new TermMap(() => ({}));

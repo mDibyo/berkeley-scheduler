@@ -4,6 +4,7 @@ import UserService from './user.service';
 import CustomCommitment from '../models/customCommitment';
 import {ListenerMap, Listener, addListener, sample, TermMap} from '../utils';
 import CustomCommitmentOption from '../models/customCommitmentOption';
+import {DEFAULT_TERM_ABBREV} from "../constants";
 
 const nouns = [
     'Piano',
@@ -48,7 +49,9 @@ interface OptionsMap {[id: string]: CustomCommitmentOption}
 export default class EventService {
   constructor(
       private userService: UserService
-  ) {}
+  ) {
+    this.eventsByTerm.get(DEFAULT_TERM_ABBREV);
+  }
 
   private eventsByTerm: TermMap<CustomCommitment[]> = new TermMap(termAbbrev => {
     const events = this.userService.getEvents(termAbbrev);
