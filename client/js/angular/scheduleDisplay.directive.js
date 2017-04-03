@@ -33,7 +33,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
   var sectionColorOpacity = '0.6';
 
   sbScheduleDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function sbScheduleDisplayCtrl($scope, $state, $window, $mdDialog, scheduleFactory) {
+  function sbScheduleDisplayCtrl($scope, $state, $window, $mdDialog, scheduleFactory, savedScheduleService) {
     BaseCtrl.call(this, $state, $window, scheduleFactory);
 
     var vm = this;
@@ -70,7 +70,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
     vm.finalColorOpacity = finalColorOpacity;
     vm.sectionColorOpacity = sectionColorOpacity;
     vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
-    vm.addSavedSchedule = scheduleFactory.addSavedSchedule;
+    vm.addSavedSchedule = addSavedSchedule;
     vm.exportScheduleToCalendar = exportScheduleToCalendar;
     vm.toggleFinalsSchedule = toggleFinalsSchedule;
     vm.getFinalsForDay = getFinalsForDay;
@@ -91,6 +91,10 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
           });
         }
       });
+
+    function addSavedSchedule(schedule) {
+      return savedScheduleService.addSavedSchedule(constants.TERM_ABBREV, schedule);
+    }
 
     function toggleFinalsSchedule() {
       vm.showFinalsSchedule = !vm.showFinalsSchedule;
@@ -275,6 +279,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
       '$window',
       '$mdDialog',
       'scheduleFactory',
+      'savedScheduleService',
       sbScheduleDisplayCtrl
     ],
     controllerAs: 'vm',
@@ -284,5 +289,6 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
 angular.module('berkeleyScheduler').directive('bsScheduleDisplay', [
   'finals',
   'scheduleFactory',
+  'savedScheduleService',
   bsScheduleDisplayDirective
 ]);

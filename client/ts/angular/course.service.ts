@@ -24,6 +24,9 @@ export default class CourseService {
   private addCourseListenersByTerm: TermMap<ListenerMap<Course>> = new TermMap(() => ({}));
   private dropCourseListenersByTerm: TermMap<ListenerMap<Course>> = new TermMap(() => ({}));
 
+  private coursesByTerm: TermMap<Course[]> = new TermMap(() => ([]));
+  private sectionsByTerm: TermMap<SectionsMap> = new TermMap(() => ({}));
+
   private readyByTerm: TermMap<boolean> = new TermMap(() => true);
   private readyQByTerm: TermMap<angular.IPromise<void>> = new TermMap(
       termAbbrev => this.$q.all(this.userService.getCourseInfos(termAbbrev).map(
@@ -46,9 +49,6 @@ export default class CourseService {
         }
       })
   );
-
-  private coursesByTerm: TermMap<Course[]> = new TermMap(() => ([]));
-  private sectionsByTerm: TermMap<SectionsMap> = new TermMap(() => ({}));
 
   addSetReadyListener(termAbbrev: string, tag: string, listener: Listener<boolean>) {
     addListener<boolean>(this.setReadyListenersByTerm.get(termAbbrev), tag, listener);

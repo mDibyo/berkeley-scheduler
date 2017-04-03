@@ -14,9 +14,6 @@ var generatingSchedulesInstanceIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789
 function scheduleFactory($q, $timeout, userService, courseService, eventService) {
   var _primaryUserId = userService.primaryUserId;
 
-  var _savedSchedules = [];
-  var _addSavedScheduleListeners = [];
-  var _dropSavedScheduleListeners = [];
   /** @type ScheduleGroup **/
   var _currScheduleGroup = null;
   var _scheduleIdsByFp = {};
@@ -194,28 +191,12 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     }
   };
 
-  _loadScheduleIdsInto_savedSchedules();
-
   function _generateId(charSet, numChars) {
     var id = '';
     for (var i = 0; i < numChars; i++) {
       id += charSet[Math.floor(Math.random() * charSet.length)]
     }
     return id;
-  }
-
-  function _loadScheduleIdsInto_savedSchedules() {
-    userService.getSavedScheduleIds(constants.TERM_ABBREV).forEach(function(scheduleId) {
-      getScheduleQById(scheduleId).then(function(schedule) {
-        _addSavedScheduleNoSave(schedule);
-      });
-    });
-  }
-
-  function _saveScheduleIdsToCookie() {
-    userService.setSavedScheduleIds(constants.TERM_ABBREV, _savedSchedules.map(function(schedule) {
-      return schedule.id;
-    }));
   }
 
   function _isStale() {
@@ -770,64 +751,11 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     _schedulingOptionsChangeListeners[tag] = listener;
   }
 
-  function getSavedSchedules() {
-    return _savedSchedules.slice();
-  }
-
-  function _addSavedScheduleNoSave(schedule) {
-    for (var i = 0; i < _savedSchedules.length; i++) {
-      if (_savedSchedules[i].id === schedule.id) {
-        return false;
-      }
-    }
-    _savedSchedules.push(schedule);
-    _addSavedScheduleListeners.forEach(function(listener) {
-      listener(schedule);
-    });
-    return true;
-  }
-
-  function addSavedSchedule(schedule) {
-    var success = _addSavedScheduleNoSave(schedule);
-    if (success) {
-      _saveScheduleIdsToCookie();
-    }
-    return success;
-  }
-
-  function registerAddSavedScheduleListener(listener) {
-    _addSavedScheduleListeners.push(listener);
-  }
-
-  function _dropSavedScheduleNoSave(schedule) {
-    for (var i = 0; i < _savedSchedules.length; i++) {
-      if (_savedSchedules[i].id === schedule.id) {
-        _savedSchedules.splice(i, 1);
-        _dropSavedScheduleListeners.forEach(function(listener) {
-          listener(schedule);
-        });
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function dropSavedSchedule(schedule) {
-    var success = _dropSavedScheduleNoSave(schedule);
-    if (success) {
-      _saveScheduleIdsToCookie();
-    }
-    return success;
-  }
-
-  function registerDropSavedScheduleListener(listener) {
-    _dropSavedScheduleListeners.push(listener);
-  }
-
   return {
     setStale: setStale,
 
     generateSchedulesQ: generateSchedulesQ,
+    filterAndReorderSchedules: filterAndReorderSchedules,
     getCurrentScheduleGroupIdQ: getCurrentScheduleGroupIdQ,
     setCurrentScheduleGroupById: setCurrentScheduleGroupById,
     setCurrentScheduleGroupByScheduleIdQ: setCurrentScheduleGroupByScheduleIdQ,
@@ -842,13 +770,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
 
     getSchedulingOptions: getSchedulingOptions,
     setSchedulingOption: setSchedulingOption,
-    registerSchedulingOptionsChangeListener: registerSchedulingOptionsChangeListener,
-    filterAndReorderSchedules: filterAndReorderSchedules,
-    getSavedSchedules: getSavedSchedules,
-    addSavedSchedule: addSavedSchedule,
-    dropSavedSchedule: dropSavedSchedule,
-    registerAddSavedScheduleListener: registerAddSavedScheduleListener,
-    registerDropSavedScheduleIdListener: registerDropSavedScheduleListener
+    registerSchedulingOptionsChangeListener: registerSchedulingOptionsChangeListener
   };
 }
 
