@@ -1,9 +1,10 @@
-var Time = require('../models/time');
 var BaseCtrl = require('./_base.controller');
+var constants = require('../constants');
+var Time = require('../models/time');
 
 function bsPreferencesDirective() {
   bsPreferencesCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function bsPreferencesCtrl($state, $window, scheduleFactory) {
+  function bsPreferencesCtrl($state, $window, scheduleFactory, savedScheduleService) {
     BaseCtrl.call(this, $state, $window, scheduleFactory);
 
     var vm = this;
@@ -88,21 +89,21 @@ function bsPreferencesDirective() {
     vm.noTimeConflicts = schedulingOptions.noTimeConflicts;
     vm.onChangeNoTimeConflicts = onChangeNoTimeConflicts;
 
-    vm.savedSchedules = scheduleFactory.getSavedSchedules();
+    vm.savedSchedules = [];
     vm.dropSavedSchedule = function($event, schedule) {
       $event.stopPropagation();
-      scheduleFactory.dropSavedSchedule(schedule);
+      savedScheduleService.dropSavedSchedule(schedule);
     };
 
     scheduleFactory.registerSchedulingOptionsChangeListener('preferences', function(newOptions) {
       vm.noTimeConflicts = schedulingOptions.noTimeConflicts = newOptions.noTimeConflicts;
     });
 
-    scheduleFactory.registerAddSavedScheduleListener(function(schedule) {
+    savedScheduleService.addAddSavedScheduleListener(constants.TERM_ABBREV, 'preferences', function(schedule) {
       vm.savedSchedules.push(schedule);
     });
 
-    scheduleFactory.registerDropSavedScheduleIdListener(function(schedule) {
+    savedScheduleService.addDropSavedScheduleListener(constants.TERM_ABBREV, 'preferences', function(schedule) {
       vm.savedSchedules.remove(schedule);
     });
 
@@ -163,6 +164,7 @@ function bsPreferencesDirective() {
       '$state',
       '$window',
       'scheduleFactory',
+      'savedScheduleService',
       bsPreferencesCtrl
     ],
     controllerAs: 'dvm',
