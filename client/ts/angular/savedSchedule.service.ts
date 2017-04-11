@@ -18,7 +18,7 @@ export default class SavedScheduleService {
   private readyQByTerm: TermMap<angular.IPromise<void>> = new TermMap(
       termAbbrev => this.$q.all(this.userService.getSavedScheduleIds(termAbbrev).map(
           scheduleId => this.scheduleFactory
-              .getScheduleQById(scheduleId)
+              .getScheduleQById(termAbbrev, scheduleId)
               .then(schedule => this.addSavedSchedule(termAbbrev, schedule))
       )).then(() => {})
   );

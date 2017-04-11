@@ -34,7 +34,7 @@ function bsPreferencesDirective() {
     scheduleFactory.registerScheduleGenerationStatusListener('preferences', function(status) {
       vm.scheduleGenerationStatus = status;
       if (status.status === 'stale' && $state.includes('schedule.viewSchedule')) {
-        scheduleFactory.getCurrentScheduleGroupIdQ().then(function(scheduleGroupId) {
+        scheduleFactory.getCurrentScheduleGroupIdQ(constants.TERM_ABBREV).then(function(scheduleGroupId) {
           vm.goToState('schedule.generatingSchedules', {
             scheduleGroupId: scheduleGroupId
           });
