@@ -6,6 +6,7 @@ import * as constants from '../constants';
 import Meeting = require('../models/meeting');
 import CustomCommitment from '../models/customCommitment';
 import EventService from './event.service';
+import SchedulingOptionsService from "./schedulingOptions.service";
 
 
 interface eventDisplayDirectiveScope extends angular.IScope {
@@ -19,9 +20,10 @@ function bsEventDisplayDirective() {
         $window: angular.IWindowService,
         private $scope: eventDisplayDirectiveScope,
         private eventService: EventService,
-        scheduleFactory: IScheduleService
+        schedulingOptionsService: SchedulingOptionsService,
+        private scheduleFactory: IScheduleService
     ) {
-      super($state, $window, scheduleFactory);
+      super($state, $window, schedulingOptionsService);
     }
 
     addMeeting() {
@@ -48,6 +50,7 @@ function bsEventDisplayDirective() {
         '$window',
         '$scope',
         'eventService',
+        'schedulingOptionsService',
         'scheduleFactory',
         bsEventDisplayCtrl
     ],

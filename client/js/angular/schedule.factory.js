@@ -11,7 +11,7 @@ var CustomCommitmentOption = require('../models/customCommitmentOption').default
 var generatingSchedulesInstanceIdCharSet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
 
-function scheduleFactory($q, $timeout, userService, courseService, eventService) {
+function scheduleFactory($q, $timeout, userService, courseService, eventService, schedulingOptionsService) {
   var _primaryUserId = userService.primaryUserId;
 
   /** @type ScheduleGroup **/
@@ -27,8 +27,6 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
   var _currFpScheduleIdx = 0;
   var _currScheduleIdx = 0;
   var _numSchedules = 0;
-  var _schedulingOptions = userService.schedulingOptions;
-  var _schedulingOptionsChangeListeners = {};
 
   var _orderByFns = {
     minimizeGaps: function(footprint) {
@@ -167,10 +165,11 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     },
     dayStartTime: function(footprint) {
       var meetingsByDay = Schedule.timeFootprints[footprint];
+      var dayStartTime = schedulingOptionsService.getAllSchedulingOptions().dayStartTime;
       for (var day in meetingsByDay) {
         var meetings = meetingsByDay[day];
         if (meetings.length > 0) {
-          if (meetings[0].startTime.compareTo(_schedulingOptions.dayStartTime) < 0) {
+          if (meetings[0].startTime.compareTo(dayStartTime) < 0) {
             return false;
           }
         }
@@ -179,10 +178,11 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     },
     dayEndTime: function(footprint) {
       var meetingsByDay = Schedule.timeFootprints[footprint];
+      var dayEndTime = schedulingOptionsService.getAllSchedulingOptions().dayEndTime;
       for (var day in meetingsByDay) {
         var meetings = meetingsByDay[day];
         for (var i = 0; i < meetings.length; i++) {
-          if (meetings[i].endTime.compareTo(_schedulingOptions.dayEndTime) > 0) {
+          if (meetings[i].endTime.compareTo(dayEndTime) > 0) {
             return false;
           }
         }
@@ -300,12 +300,13 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     }
 
     _currFpList = Object.keys(_scheduleIdsByFp);
+    var schedulingOptions = schedulingOptionsService.getAllSchedulingOptions();
 
     // Filter footprints
     _setAndBroadcastScheduleGenerationStatus(
       new scheduleGenerationStatus.FilteringAndReordering(_numSchedules, true));
     Object.keys(_filterFns).forEach(function applyFilterFn(option) {
-      if (!_schedulingOptions[option]) {
+      if (!schedulingOptions[option]) {
         return;
       }
       var filterFn = _filterFns[option];
@@ -318,7 +319,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     _setAndBroadcastScheduleGenerationStatus(
       new scheduleGenerationStatus.FilteringAndReordering(_numSchedules, false));
     var orderByOptions = Object.keys(_orderByFns).filter(function(option) {
-      return _schedulingOptions[option];
+      return schedulingOptions[option];
     });
     var orderByValues = {};
     var value;
@@ -410,7 +411,7 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     // Check if any filtering option is discarding all schedules
     var fpList = Object.keys(_scheduleIdsByFp);
 
-    if (_schedulingOptions.noTimeConflicts) {
+    if (schedulingOptionsService.getAllSchedulingOptions().noTimeConflicts) {
       fpList = fpList.filter(function(footprint) {
         return _filterFns.noTimeConflicts(footprint);
       });
@@ -731,25 +732,6 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     return schedule;
   }
 
-  function getSchedulingOptions() {
-    return angular.copy(_schedulingOptions);
-  }
-
-  function setSchedulingOption(option, choice, save) {
-    _schedulingOptions[option] = choice;
-    if (save === undefined || save) {
-      userService.schedulingOptions = _schedulingOptions;
-    }
-
-    Object.keys(_schedulingOptionsChangeListeners).forEach(function(tag) {
-      _schedulingOptionsChangeListeners[tag](getSchedulingOptions());
-    });
-  }
-
-  function registerSchedulingOptionsChangeListener(tag, listener) {
-    _schedulingOptionsChangeListeners[tag] = listener;
-  }
-
   return {
     setStale: setStale,
 
@@ -765,19 +747,16 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
     registerScheduleGenerationStatusListener: registerScheduleGenerationStatusListener,
     getCurrScheduleListInfo: getCurrScheduleListInfo,
     registerCurrScheduleListInfoChangeListener: registerCurrScheduleListInfoChangeListener,
-    setCurrentScheduleById: setCurrentScheduleById,
-
-    getSchedulingOptions: getSchedulingOptions,
-    setSchedulingOption: setSchedulingOption,
-    registerSchedulingOptionsChangeListener: registerSchedulingOptionsChangeListener
+    setCurrentScheduleById: setCurrentScheduleById
   };
 }
 
 angular.module('berkeleyScheduler').factory('scheduleFactory', [
-    '$q',
-    '$timeout',
-    'userService',
-    'courseService',
-    'eventService',
+  '$q',
+  '$timeout',
+  'userService',
+  'courseService',
+  'eventService',
+  'schedulingOptionsService',
   scheduleFactory
 ]);

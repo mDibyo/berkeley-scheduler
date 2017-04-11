@@ -33,8 +33,15 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
   var sectionColorOpacity = '0.6';
 
   sbScheduleDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function sbScheduleDisplayCtrl($scope, $state, $window, $mdDialog, scheduleFactory, savedScheduleService) {
-    BaseCtrl.call(this, $state, $window, scheduleFactory);
+  function sbScheduleDisplayCtrl(
+      $scope,
+      $state,
+      $window,
+      $mdDialog,
+      schedulingOptionsService,
+      scheduleFactory,
+      savedScheduleService) {
+    BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
     var vm = this;
 
@@ -60,7 +67,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
 
     var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
 
-    var schedulingOptions = scheduleFactory.getSchedulingOptions();
+    var schedulingOptions = schedulingOptionsService.getAllSchedulingOptions();
     vm.enableFinalsSchedule = enableFinalsSchedule;
     vm.showFinalsSchedule = schedulingOptions.showFinalsSchedule;
     vm.finalMeetings = finalMeetings;
@@ -278,6 +285,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
       '$state',
       '$window',
       '$mdDialog',
+      'schedulingOptionsService',
       'scheduleFactory',
       'savedScheduleService',
       sbScheduleDisplayCtrl

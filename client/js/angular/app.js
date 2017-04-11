@@ -27,6 +27,7 @@
   require('./course.service');
   require('./event.service');
   require('./savedSchedule.service');
+  require('./schedulingOptions.service');
 
   // Filters
   require('./reverse.filter');

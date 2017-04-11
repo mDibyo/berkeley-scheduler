@@ -3,10 +3,10 @@ var BaseCtrl = require('./_base.controller');
 var constants = require('../constants');
 
 ViewCourseCtrl.prototype = Object.create(BaseCtrl.prototype);
-function ViewCourseCtrl($state, $window, $location, $stateParams, courseService, scheduleFactory, $analytics) {
+function ViewCourseCtrl($state, $window, $location, $stateParams, courseService, schedulingOptionsService, $analytics) {
   $analytics.pageTrack($location.url());
 
-  BaseCtrl.call(this, $state, $window, scheduleFactory);
+  BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
   var vm = this;
 
@@ -21,7 +21,7 @@ angular.module('berkeleyScheduler').controller('ViewCourseCtrl', [
   '$location',
   '$stateParams',
   'courseService',
-  'scheduleFactory',
+  'schedulingOptionsService',
   '$analytics',
   ViewCourseCtrl
 ]);

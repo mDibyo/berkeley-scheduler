@@ -3,6 +3,7 @@ import angular = require('angular');
 import BaseCtrl = require("./_base.controller");
 import {ScheduleGenerationStatus} from "../models/scheduleGenerationStatus";
 import IScheduleService = require("./schedule.service");
+import SchedulingOptionsService from "./schedulingOptions.service";
 
 function bsGenerateSchedulesDirective() {
   class bsGenerateSchedulesCtrl extends BaseCtrl {
@@ -11,9 +12,10 @@ function bsGenerateSchedulesDirective() {
     constructor(
         $state: angular.ui.IStateService,
         $window: angular.IWindowService,
-        scheduleFactory: IScheduleService
+        schedulingOptionsService: SchedulingOptionsService,
+        private scheduleFactory: IScheduleService
     ) {
-      super($state, $window, scheduleFactory);
+      super($state, $window, schedulingOptionsService);
 
       this.scheduleGenerationStatus = this.scheduleFactory.getScheduleGenerationStatus();
 
@@ -48,6 +50,7 @@ function bsGenerateSchedulesDirective() {
     controller: [
         '$state',
         '$window',
+        'schedulingOptionsService',
         'scheduleFactory',
         bsGenerateSchedulesCtrl
     ],

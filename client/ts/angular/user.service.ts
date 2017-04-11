@@ -1,7 +1,7 @@
 import angular = require('angular');
 
 import constants = require('../constants');
-import {Days} from '../utils';
+import {Days, StringMap} from '../utils';
 
 import Time = require('../models/time');
 import CustomCommitment from '../models/customCommitment';
@@ -15,7 +15,7 @@ export interface Preferences {
   showConfirmEventDeleteDialog: boolean;
 }
 
-export interface SchedulingOptions {
+export interface SchedulingOptions extends StringMap<any> {
   showSavedSchedules: boolean;
   showOptions: boolean;
   minimizeGaps: boolean;
@@ -142,7 +142,6 @@ export default class UserService {
 
   private _primaryUserId: string;
   private _preferences: Preferences;
-  private _schedulingOptions: SchedulingOptions;
 
   constructor(
       $cookies: angular.cookies.ICookiesService,
@@ -207,52 +206,14 @@ export default class UserService {
   }
 
   get schedulingOptions(): SchedulingOptions {
-    if (!this._schedulingOptions) {
-      const schedulingOptionsStorageKey: string =
-        `${this.primaryUserId}.${UserService._schedulingOptionsStorageKeySuffix}`;
-      let schedulingOptions: SchedulingOptions =
-          this.storage.get(schedulingOptionsStorageKey) || {};
-
-      schedulingOptions = angular.extend({
-        showSavedSchedules: false,
-        showOptions: false,
-        minimizeGaps: false,
-        maximizeGaps: false,
-        minimizeNumberOfDays: false,
-        maximizeNumberOfDays: false,
-        preferMornings: false,
-        preferAfternoons: false,
-        preferEvenings: false,
-        preferNoTimeConflicts: false,
-        dayStartTime: null,
-        dayEndTime: null,
-        noTimeConflicts: true,
-        showFinalsSchedule: false,
-      }, schedulingOptions);
-      if (schedulingOptions.dayStartTime) {
-        const startTime: Time = schedulingOptions.dayStartTime;
-        schedulingOptions.dayStartTime = new Time(startTime.hours, startTime.minutes);
-      }
-      if (schedulingOptions.dayEndTime) {
-        const endTime: Time = schedulingOptions.dayEndTime;
-        schedulingOptions.dayEndTime = new Time(endTime.hours, endTime.minutes);
-      }
-
-      this._schedulingOptions = schedulingOptions;
-    }
-
-    return angular.copy(this._schedulingOptions);
+    const schedulingOptionsStorageKey: string =
+      `${this.primaryUserId}.${UserService._schedulingOptionsStorageKeySuffix}`;
+    return this.storage.get(schedulingOptionsStorageKey) || {};
   }
   set schedulingOptions(newSchedulingOptions: SchedulingOptions) {
-    this._schedulingOptions = newSchedulingOptions;
     const schedulingOptionsStorageKey: string =
       `${this.primaryUserId}.${UserService._schedulingOptionsStorageKeySuffix}`;
     this.storage.set(schedulingOptionsStorageKey, newSchedulingOptions);
-  }
-  setSchedulingOption(option: string, choice: any) {
-    this.schedulingOptions = angular.extend(this._schedulingOptions, {
-      [option]: choice
-    });
   }
 
   getCourseInfos(termAbbrev: string): CourseInfo[] {

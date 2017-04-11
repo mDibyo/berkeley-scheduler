@@ -15,12 +15,13 @@ function CourseFindCtrl(
     courseDiscoveryService,
     courseService,
     eventService,
+    schedulingOptionsService,
     scheduleFactory,
     $analytics
 ) {
   $analytics.pageTrack($location.url());
 
-  BaseCtrl.call(this, $state, $window, scheduleFactory);
+  BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
   var vm = this;
 
@@ -250,6 +251,7 @@ angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
     'courseDiscoveryService',
     'courseService',
     'eventService',
+    'schedulingOptionsService',
     'scheduleFactory',
     '$analytics',
     CourseFindCtrl

@@ -12,8 +12,6 @@ declare interface IScheduleService {
   getCurrentScheduleGroupIdQ(): angular.IPromise<string>;
   getCurrScheduleId(): string;
 
-  getSchedulingOptions(): SchedulingOptions;
-
   getScheduleGenerationStatus(): ScheduleGenerationStatus;
   registerScheduleGenerationStatusListener(
       tag: string,

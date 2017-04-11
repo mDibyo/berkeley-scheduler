@@ -1,8 +1,8 @@
 var BaseCtrl = require('./_base.controller');
 
 MobileUnoptimizedDialogCtrl.prototype = Object.create(BaseCtrl.prototype);
-function MobileUnoptimizedDialogCtrl($state, $window, $mdDialog, userService, scheduleFactory) {
-  BaseCtrl.call(this, $state, $window, scheduleFactory);
+function MobileUnoptimizedDialogCtrl($state, $window, $mdDialog, userService, schedulingOptionsService) {
+  BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
   var vm = this;
 
@@ -19,6 +19,6 @@ angular.module('berkeleyScheduler').controller('MobileUnoptimizedDialogCtrl', [
   '$window',
   '$mdDialog',
   'userService',
-  'scheduleFactory',
+  'schedulingOptionsService',
   MobileUnoptimizedDialogCtrl
 ]);

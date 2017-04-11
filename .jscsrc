@@ -56,6 +56,7 @@
     "client/js/angular/reverse.filter.js",
     "client/js/angular/reverseLookup.service.js",
     "client/js/angular/savedSchedule.service.js",
+    "client/js/angular/schedulingOptions.service.js",
     "client/js/angular/user.service.js",
     "client/js/angular/timePicker.directive.js",
     "client/js/angular/viewEvent.controller.js",

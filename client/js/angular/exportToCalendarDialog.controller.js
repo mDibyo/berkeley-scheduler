@@ -23,8 +23,8 @@ var repeatingByDayAbbrvs = {
 };
 
 ExportToCalendarDialogCtrl.prototype = Object.create(BaseCtrl.prototype);
-function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory, schedule) {
-  BaseCtrl.call(this, $state, $window, scheduleFactory);
+function ExportToCalendarDialogCtrl($state, $window, $mdDialog, schedulingOptionsService, schedule) {
+  BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
   var vm = this;
   vm.schedule = schedule;
@@ -42,7 +42,7 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, scheduleFactory,
     name: constants.termName() + ' Academic Calendar',
     url: vm.getHref('schedule.viewSchedule', {
       scheduleId: schedule.id,
-      noTimeConflicts: scheduleFactory.getSchedulingOptions().noTimeConflicts
+      noTimeConflicts: schedulingOptionsService.getAllSchedulingOptions().noTimeConflicts
     }),
     timezone: 'America/Los_Angeles',
     method: 'add'
@@ -100,7 +100,7 @@ angular.module('berkeleyScheduler').controller('ExportToCalendarDialogCtrl', [
   '$state',
   '$window',
   '$mdDialog',
-  'scheduleFactory',
+  'schedulingOptionsService',
   'schedule',
   ExportToCalendarDialogCtrl
 ]);
