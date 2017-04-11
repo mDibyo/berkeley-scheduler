@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-TERM='spring-2017'
-TERM_ABBRV='sp17'
+TERM='fall-2017'
+TERM_ABBRV='fa17'
 
 
 PROJECT_DIR=$(cd $(dirname ${BASH_SOURCE[0]})/../../.. && pwd )
