@@ -48,6 +48,7 @@
     "client/js/angular/confirmEventDeleteDialog.controller.js",
     "client/js/angular/course.service.js",
     "client/js/angular/courseDiscovery.service.js",
+    "client/js/angular/courseFind.controller.js",
     "client/js/angular/event.service.js",
     "client/js/angular/finals.service.js",
     "client/js/angular/eventDisplay.directive.js",
