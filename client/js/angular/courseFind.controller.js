@@ -2,13 +2,12 @@
 
 var BaseCtrl = require('./_base.controller');
 
-var constants = require('../constants');
-
 CourseFindCtrl.prototype = Object.create(BaseCtrl.prototype);
 function CourseFindCtrl(
     $state,
     $window,
     $location,
+    $stateParams,
     $mdDialog,
     userService,
     reverseLookup,
@@ -25,7 +24,7 @@ function CourseFindCtrl(
 
   var vm = this;
 
-  vm.scheduleIsReady = courseService.isReady(constants.TERM_ABBREV);
+  vm.scheduleIsReady = courseService.isReady($stateParams.termAbbrev);
   vm.subjectAreaIsDisabled = false;
   vm.courseIsDisabled = true;
   vm.courseQuery = null;
@@ -51,21 +50,21 @@ function CourseFindCtrl(
 
   vm.generateSchedulesQ = scheduleFactory.generateSchedulesQ;
 
-  courseService.getAllCoursesQ(constants.TERM_ABBREV).then(function(courses) {
+  courseService.getAllCoursesQ($stateParams.termAbbrev).then(function(courses) {
     vm.addedCoursesList = courses;
   });
-  vm.addedEventsList = eventService.getAllEvents(constants.TERM_ABBREV);
+  vm.addedEventsList = eventService.getAllEvents($stateParams.termAbbrev);
 
   courseDiscoveryService.getSubjectAreasQ().then(function(subjectAreas) {
     vm.subjectAreasList = subjectAreas;
   });
 
-  courseService.addSetReadyListener(constants.TERM_ABBREV, 'courseFind', function(isReady) {
+  courseService.addSetReadyListener($stateParams.termAbbrev, 'courseFind', function(isReady) {
     vm.scheduleIsReady = isReady;
     scheduleFactory.setStale();
   });
 
-  courseService.addAddCourseListener(constants.TERM_ABBREV, 'courseFind', function(course) {
+  courseService.addAddCourseListener($stateParams.termAbbrev, 'courseFind', function(course) {
     vm.addedCoursesList.push(course);
     scheduleFactory.setStale();
     if (!vm.scheduleIsReady) {
@@ -74,7 +73,7 @@ function CourseFindCtrl(
     vm.goToState('schedule.viewCourse', {id: course.id});
   });
 
-  courseService.addDropCourseListener(constants.TERM_ABBREV, 'courseFind', function(course) {
+  courseService.addDropCourseListener($stateParams.termAbbrev, 'courseFind', function(course) {
     var courseIdx = vm.addedCoursesList.indexOf(course);
     vm.addedCoursesList.remove(course);
     if (course.selected) {
@@ -94,13 +93,13 @@ function CourseFindCtrl(
     }
   });
 
-  eventService.addCreateEventListener(constants.TERM_ABBREV, 'courseFind', function(event) {
+  eventService.addCreateEventListener($stateParams.termAbbrev, 'courseFind', function(event) {
     vm.addedEventsList.push(event);
     scheduleFactory.setStale();
     vm.goToState('schedule.viewEvent', {id: event.id});
   });
 
-  eventService.addDeleteEventListener(constants.TERM_ABBREV, 'courseFind', function(event) {
+  eventService.addDeleteEventListener($stateParams.termAbbrev, 'courseFind', function(event) {
     vm.addedEventsList.remove(event);
     if (event.selected) {
       scheduleFactory.setStale();
@@ -151,7 +150,7 @@ function CourseFindCtrl(
     }
 
     reverseLookup
-        .getCourseTitlesQBySubjectAreaCode(constants.TERM_ABBREV, subjectArea.code)
+        .getCourseTitlesQBySubjectAreaCode($stateParams.termAbbrev, subjectArea.code)
         .then(function(courseTitles) {
           vm.courseTitlesList = courseTitles;
           vm.courseIsDisabled = false;
@@ -184,7 +183,7 @@ function CourseFindCtrl(
     }
 
     reverseLookup
-        .getCourseQBy1arySectionId(constants.TERM_ABBREV, courseTitle.id)
+        .getCourseQBy1arySectionId($stateParams.termAbbrev, courseTitle.id)
         .then(function(course) {
           addCourse(course);
         });
@@ -209,15 +208,15 @@ function CourseFindCtrl(
   }
 
   function addCourse(course) {
-    courseService.addCourse(constants.TERM_ABBREV, course);
+    courseService.addCourse($stateParams.termAbbrev, course);
   }
 
   function dropCourse(course) {
-    courseService.dropCourseQ(constants.TERM_ABBREV, course);
+    courseService.dropCourseQ($stateParams.termAbbrev, course);
   }
 
   function createEvent() {
-    eventService.createEvent(constants.TERM_ABBREV);
+    eventService.createEvent($stateParams.termAbbrev);
   }
 
   function deleteEvent(event) {
@@ -232,12 +231,12 @@ function CourseFindCtrl(
         locals: {
           eventName: event.getName(),
           onConfirm: function() {
-            eventService.deleteEvent(constants.TERM_ABBREV, event);
+            eventService.deleteEvent($stateParams.termAbbrev, event);
           }
         }
       });
     } else {
-      eventService.deleteEvent(constants.TERM_ABBREV, event);
+      eventService.deleteEvent($stateParams.termAbbrev, event);
     }
   }
 }
@@ -245,6 +244,7 @@ angular.module('berkeleyScheduler').controller('CourseFindCtrl', [
     '$state',
     '$window',
     '$location',
+    '$stateParams',
     '$mdDialog',
     'userService',
     'reverseLookup',

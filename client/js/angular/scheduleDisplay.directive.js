@@ -7,14 +7,8 @@ var Time = require('../models/time');
 var BaseCtrl = require('./_base.controller');
 var CustomCommitmentOption = require('../models/customCommitmentOption').default;
 
-function bsScheduleDisplayDirective(finals, scheduleFactory) {
+function bsScheduleDisplayDirective() {
   var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  var finalDates = {};
-  finals.finalDatesQByTerm.get(constants.TERM_ABBREV).then(function(fd) {
-    days.forEach(function(day) {
-      finalDates[day] = fd[day];
-    });
-  });
 
   var enableFinalsSchedule = true;
 
@@ -37,13 +31,23 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
       $scope,
       $state,
       $window,
+      $stateParams,
       $mdDialog,
+      finals,
       schedulingOptionsService,
       scheduleFactory,
-      savedScheduleService) {
+      savedScheduleService
+  ) {
     BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
     var vm = this;
+
+    var finalDates = {};
+    finals.finalDatesQByTerm.get($stateParams.termAbbrev).then(function(fd) {
+      days.forEach(function(day) {
+        finalDates[day] = fd[day];
+      });
+    });
 
     vm.hours = [];
     vm.halfHours = [];
@@ -100,7 +104,7 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
       });
 
     function addSavedSchedule(schedule) {
-      return savedScheduleService.addSavedSchedule(constants.TERM_ABBREV, schedule);
+      return savedScheduleService.addSavedSchedule($stateParams.termAbbrev, schedule);
     }
 
     function toggleFinalsSchedule() {
@@ -271,7 +275,10 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
         parent: angular.element(document.body),
         clickOutsideToClose: true,
         escapeToClose: true,
-        locals: {schedule: schedule}
+        locals: {
+          termAbbrev: $stateParams.termAbbrev,
+          schedule: schedule
+        }
       })
     }
   }
@@ -284,7 +291,9 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
       '$scope',
       '$state',
       '$window',
+      '$stateParams',
       '$mdDialog',
+      'finals',
       'schedulingOptionsService',
       'scheduleFactory',
       'savedScheduleService',
@@ -295,7 +304,5 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
   }
 }
 angular.module('berkeleyScheduler').directive('bsScheduleDisplay', [
-  'finals',
-  'scheduleFactory',
   bsScheduleDisplayDirective
 ]);

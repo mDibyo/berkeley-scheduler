@@ -29,6 +29,7 @@ export default class SavedScheduleService {
   private dropSavedScheduleListenersByTerm: TermMap<ListenerMap<Schedule>> = new TermMap(() => ({}));
 
   addAddSavedScheduleListener(termAbbrev: string, tag: string, listener: Listener<Schedule>) {
+    // console.trace(termAbbrev);
     addListener<Schedule>(this.addSavedScheduleListenersByTerm.get(termAbbrev), tag, listener);
   }
 

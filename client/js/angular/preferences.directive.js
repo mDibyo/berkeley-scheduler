@@ -1,10 +1,16 @@
 var BaseCtrl = require('./_base.controller');
-var constants = require('../constants');
 var Time = require('../models/time');
 
 function bsPreferencesDirective() {
   bsPreferencesCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function bsPreferencesCtrl($state, $window, schedulingOptionsService, scheduleFactory, savedScheduleService) {
+  function bsPreferencesCtrl(
+      $state,
+      $window,
+      schedulingOptionsService,
+      $stateParams,
+      scheduleFactory,
+      savedScheduleService
+  ) {
     BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
     var vm = this;
@@ -34,7 +40,7 @@ function bsPreferencesDirective() {
     scheduleFactory.registerScheduleGenerationStatusListener('preferences', function(status) {
       vm.scheduleGenerationStatus = status;
       if (status.status === 'stale' && $state.includes('schedule.viewSchedule')) {
-        scheduleFactory.getCurrentScheduleGroupIdQ(constants.TERM_ABBREV).then(function(scheduleGroupId) {
+        scheduleFactory.getCurrentScheduleGroupIdQ($stateParams.termAbbrev).then(function(scheduleGroupId) {
           vm.goToState('schedule.generatingSchedules', {
             scheduleGroupId: scheduleGroupId
           });
@@ -92,18 +98,18 @@ function bsPreferencesDirective() {
     vm.savedSchedules = [];
     vm.dropSavedSchedule = function($event, schedule) {
       $event.stopPropagation();
-      savedScheduleService.dropSavedSchedule(schedule);
+      savedScheduleService.dropSavedSchedule($stateParams.termAbbrev, schedule);
     };
 
     schedulingOptionsService.addChangeSchedulingOptionListener('preferences', function(newOptions) {
       vm.noTimeConflicts = schedulingOptions.noTimeConflicts = newOptions.noTimeConflicts;
     });
 
-    savedScheduleService.addAddSavedScheduleListener(constants.TERM_ABBREV, 'preferences', function(schedule) {
+    savedScheduleService.addAddSavedScheduleListener($stateParams.termAbbrev, 'preferences', function(schedule) {
       vm.savedSchedules.push(schedule);
     });
 
-    savedScheduleService.addDropSavedScheduleListener(constants.TERM_ABBREV, 'preferences', function(schedule) {
+    savedScheduleService.addDropSavedScheduleListener($stateParams.termAbbrev, 'preferences', function(schedule) {
       vm.savedSchedules.remove(schedule);
     });
 
@@ -164,6 +170,7 @@ function bsPreferencesDirective() {
       '$state',
       '$window',
       'schedulingOptionsService',
+      '$stateParams',
       'scheduleFactory',
       'savedScheduleService',
       bsPreferencesCtrl

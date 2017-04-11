@@ -4,7 +4,6 @@ import BaseCtrl = require("./_base.controller");
 import {ScheduleGenerationStatus} from "../models/scheduleGenerationStatus";
 import IScheduleService = require("./schedule.service");
 import SchedulingOptionsService from "./schedulingOptions.service";
-import {TERM_ABBREV} from "../constants";
 
 function bsGenerateSchedulesDirective() {
   class bsGenerateSchedulesCtrl extends BaseCtrl {
@@ -14,6 +13,7 @@ function bsGenerateSchedulesDirective() {
         $state: angular.ui.IStateService,
         $window: angular.IWindowService,
         schedulingOptionsService: SchedulingOptionsService,
+        private $stateParams: angular.ui.IStateParamsService,
         private scheduleFactory: IScheduleService
     ) {
       super($state, $window, schedulingOptionsService);
@@ -29,7 +29,7 @@ function bsGenerateSchedulesDirective() {
     }
 
     generateAndViewSchedules() {
-      this.scheduleFactory.getCurrentScheduleGroupIdQ(TERM_ABBREV).then(scheduleGroupId => {
+      this.scheduleFactory.getCurrentScheduleGroupIdQ(this.$stateParams.termAbbrev).then(scheduleGroupId => {
         this.goToState('schedule.generatingSchedules', {
           scheduleGroupId
         });
@@ -52,6 +52,7 @@ function bsGenerateSchedulesDirective() {
         '$state',
         '$window',
         'schedulingOptionsService',
+        '$stateParams',
         'scheduleFactory',
         bsGenerateSchedulesCtrl
     ],

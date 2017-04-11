@@ -1,9 +1,16 @@
 var BaseCtrl = require('./_base.controller');
-var constants = require('../constants');
 
 function bsCourseDisplayDirective() {
   bsCourseDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function bsCourseDisplayCtrl($state, $window, $scope, courseService, schedulingOptionsService, scheduleFactory) {
+  function bsCourseDisplayCtrl(
+      $state,
+      $window,
+      $scope,
+      $stateParams,
+      courseService,
+      schedulingOptionsService,
+      scheduleFactory
+  ) {
     BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
     var vm = this;
@@ -48,7 +55,7 @@ function bsCourseDisplayDirective() {
     }
 
     function updateCourse() {
-      courseService.save(constants.TERM_ABBREV);
+      courseService.save($stateParams.termAbbrev);
       scheduleFactory.setStale(true);
     }
 
@@ -65,6 +72,7 @@ function bsCourseDisplayDirective() {
       '$state',
       '$window',
       '$scope',
+      '$stateParams',
       'courseService',
       'schedulingOptionsService',
       'scheduleFactory',

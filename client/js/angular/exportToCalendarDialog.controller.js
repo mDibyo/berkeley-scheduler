@@ -11,7 +11,6 @@ function getStartDate() {
   return new Date(2016, 7, 24);
 }
 
-var repeatingUntil = constants.termLastDay();
 var repeatingByDayAbbrvs = {
   Sunday: 'su',
   Monday: 'mo',
@@ -23,15 +22,16 @@ var repeatingByDayAbbrvs = {
 };
 
 ExportToCalendarDialogCtrl.prototype = Object.create(BaseCtrl.prototype);
-function ExportToCalendarDialogCtrl($state, $window, $mdDialog, schedulingOptionsService, schedule) {
+function ExportToCalendarDialogCtrl($state, $window, $mdDialog, schedulingOptionsService, termAbbrev, schedule) {
   BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
   var vm = this;
   vm.schedule = schedule;
-  vm.calendarFilename = constants.termName() + ' academic calendar.ics';
+  vm.calendarFilename = constants.termName(termAbbrev) + ' academic calendar.ics';
   vm.download = download;
   vm.cancel = cancel;
 
+  var repeatingUntil = constants.termLastDay(termAbbrev);
   var calendar = ical({
     domain: 'berkeleyscheduler.com',
     prodId: {
@@ -39,7 +39,7 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, schedulingOption
       product: 'berkeleyscheduler.com',
       language: 'EN'
     },
-    name: constants.termName() + ' Academic Calendar',
+    name: constants.termName(termAbbrev) + ' Academic Calendar',
     url: vm.getHref('schedule.viewSchedule', {
       scheduleId: schedule.id,
       noTimeConflicts: schedulingOptionsService.getAllSchedulingOptions().noTimeConflicts
@@ -64,7 +64,7 @@ function ExportToCalendarDialogCtrl($state, $window, $mdDialog, schedulingOption
           startDate.setHours(meeting.startTime.hours, meeting.startTime.minutes);
           var endDate = new Date(startDate.getTime() + meeting.getTotalMinutes() * MILLISECONDS_PER_MINUTE);
           calendar.createEvent({
-            uid: constants.TERM_ABBREV + '/' + course.id + '/' + section.id,
+            uid: termAbbrev + '/' + course.id + '/' + section.id,
             start: startDate,
             end: endDate,
             repeating: {
@@ -101,6 +101,7 @@ angular.module('berkeleyScheduler').controller('ExportToCalendarDialogCtrl', [
   '$window',
   '$mdDialog',
   'schedulingOptionsService',
+  'termAbbrev',
   'schedule',
   ExportToCalendarDialogCtrl
 ]);

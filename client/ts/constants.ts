@@ -19,12 +19,10 @@ export const terms: {[termAbbrev: string]: Term} = {
   }
 };
 
-export const TERM_ABBREV: string = DEFAULT_TERM_ABBREV;
-
-export function termName(): string {
-  return terms[TERM_ABBREV].name;
+export function termName(termAbbrev: string): string {
+  return terms[termAbbrev].name;
 }
 
-export function termLastDay(): Date {
-  return terms[TERM_ABBREV].lastDay;
+export function termLastDay(termAbbrev: string): Date {
+  return terms[termAbbrev].lastDay;
 }

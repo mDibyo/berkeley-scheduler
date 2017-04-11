@@ -11,7 +11,7 @@ function ViewCourseCtrl($state, $window, $location, $stateParams, courseService,
   var vm = this;
 
   vm.selectedCourse = null;
-  courseService.addCourseByIdQ(constants.TERM_ABBREV, $stateParams.id).then(function(course) {
+  courseService.addCourseByIdQ($stateParams.termAbbrev, $stateParams.id).then(function(course) {
     vm.selectedCourse = course;
   });
 }
