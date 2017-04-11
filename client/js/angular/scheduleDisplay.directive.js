@@ -98,7 +98,7 @@ function bsScheduleDisplayDirective() {
         // TODO: Figure out if this operation is required
         if (info.scheduleListChanged) {
           vm.goToState('schedule.viewSchedule', {
-            scheduleId: info.firstScheduleId
+            scheduleId: info.firstScheduleId || ''
           });
         }
       });
@@ -109,7 +109,7 @@ function bsScheduleDisplayDirective() {
 
     function toggleFinalsSchedule() {
       vm.showFinalsSchedule = !vm.showFinalsSchedule;
-      scheduleFactory.setSchedulingOption('showFinalsSchedule', vm.showFinalsSchedule);
+      schedulingOptionsService.setSchedulingOption('showFinalsSchedule', vm.showFinalsSchedule);
     }
 
     function getFinalsForDay(courseInstanceSections, day) {
