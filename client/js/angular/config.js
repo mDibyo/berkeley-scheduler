@@ -12,8 +12,6 @@ angular.module('berkeleyScheduler').config([
   function($compileProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider, localStorageServiceProvider) {
     $compileProvider.debugInfoEnabled(false);
 
-    var scheduleUrl = '/' + constants.TERM_ABBREV;
-
     $stateProvider
         .state('schedule', {
           url: '/{termAbbrev}',
@@ -51,7 +49,7 @@ angular.module('berkeleyScheduler').config([
           controllerAs: 'vm'
         });
 
-    $urlRouterProvider.otherwise(scheduleUrl);
+    $urlRouterProvider.otherwise('/' + constants.DEFAULT_TERM_ABBREV);
 
     var berkeleyPrimaryPalette = {
       '50': '#0073e1',

@@ -35,9 +35,9 @@ function GeneratingSchedulesCtrl(
   var scheduleGroupId = $stateParams.scheduleGroupId;
   var startScheduleId = $stateParams.startScheduleId;
   if (scheduleGroupId) {
-    deferred.resolve(scheduleFactory.setCurrentScheduleGroupById(constants.TERM_ABBREV, scheduleGroupId));
+    deferred.resolve(scheduleFactory.setCurrentScheduleGroupById($stateParams.termAbbrev, scheduleGroupId));
   } else if (startScheduleId) {
-    deferred.resolve(scheduleFactory.setCurrentScheduleGroupByScheduleIdQ(constants.TERM_ABBREV, startScheduleId));
+    deferred.resolve(scheduleFactory.setCurrentScheduleGroupByScheduleIdQ($stateParams.termAbbrev, startScheduleId));
   }
 
   deferred.promise.then(function() {

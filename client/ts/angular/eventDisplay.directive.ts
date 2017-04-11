@@ -19,6 +19,7 @@ function bsEventDisplayDirective() {
         $state: angular.ui.IStateService,
         $window: angular.IWindowService,
         private $scope: eventDisplayDirectiveScope,
+        private $stateParams: angular.ui.IStateParamsService,
         private eventService: EventService,
         schedulingOptionsService: SchedulingOptionsService,
         private scheduleFactory: IScheduleService
@@ -29,11 +30,11 @@ function bsEventDisplayDirective() {
     addMeeting() {
       this.$scope.event.addMeeting();
       this.setScheduleStale();
-      this.eventService.save(constants.TERM_ABBREV);
+      this.eventService.save(this.$stateParams.termAbbrev);
     }
 
     saveMeeting() {
-      this.eventService.save(constants.TERM_ABBREV);
+      this.eventService.save(this.$stateParams.termAbbrev);
     }
 
     setScheduleStale() {
@@ -49,6 +50,7 @@ function bsEventDisplayDirective() {
         '$state',
         '$window',
         '$scope',
+        '$stateParams',
         'eventService',
         'schedulingOptionsService',
         'scheduleFactory',
