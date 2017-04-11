@@ -1,12 +1,12 @@
 import angular = require('angular');
 
-import IScheduleService = require('./schedule.service');
+import SchedulingOptionsService from "./schedulingOptions.service";
 
 class BaseCtrl {
   constructor(
       private $state: angular.ui.IStateService,
       private $window: angular.IWindowService,
-      protected scheduleFactory: IScheduleService
+      protected schedulingOptionsService: SchedulingOptionsService
   ) {}
 
   goToState(to: string, params: any, options?: angular.ui.IHrefOptions) {
@@ -22,7 +22,7 @@ class BaseCtrl {
   }
 
   private _goToScheduleViewSchedule(params: any, options?: angular.ui.IHrefOptions) {
-    const schedulingOptions = this.scheduleFactory.getSchedulingOptions();
+    const schedulingOptions = this.schedulingOptionsService.getAllSchedulingOptions();
     params.noTimeConflicts = schedulingOptions.noTimeConflicts;
     this.$state.go('schedule.viewSchedule', params, options);
   }

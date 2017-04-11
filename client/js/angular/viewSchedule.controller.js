@@ -1,10 +1,10 @@
 var BaseCtrl = require('./_base.controller');
 
 ViewScheduleCtrl.prototype = Object.create(BaseCtrl.prototype);
-function ViewScheduleCtrl($state, $window, $location, $stateParams, scheduleFactory, $analytics) {
+function ViewScheduleCtrl($state, $window, $location, $stateParams, schedulingOptionsService, scheduleFactory, $analytics) {
   $analytics.pageTrack($location.url());
 
-  BaseCtrl.call(this, $state, $window, scheduleFactory);
+  BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
   var vm = this;
 
@@ -12,8 +12,8 @@ function ViewScheduleCtrl($state, $window, $location, $stateParams, scheduleFact
 
   if ($stateParams.noTimeConflicts !== undefined) {
     var noTimeConflicts = $stateParams.noTimeConflicts !== 'false';
-    var oldNoTimeConflicts = scheduleFactory.getSchedulingOptions().noTimeConflicts;
-    if (noTimeConflicts != oldNoTimeConflicts) {
+    var oldNoTimeConflicts = schedulingOptionsService.getAllSchedulingOptions().noTimeConflicts;
+    if (noTimeConflicts !== oldNoTimeConflicts) {
       scheduleFactory.setSchedulingOption('noTimeConflicts', noTimeConflicts);
       scheduleFactory.filterAndReorderSchedules();
     }
@@ -34,6 +34,7 @@ angular.module('berkeleyScheduler').controller('ViewScheduleCtrl', [
   '$window',
   '$location',
   '$stateParams',
+  'schedulingOptionsService',
   'scheduleFactory',
   '$analytics',
   ViewScheduleCtrl

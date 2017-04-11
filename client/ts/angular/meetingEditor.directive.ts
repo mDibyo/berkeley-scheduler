@@ -1,10 +1,11 @@
 import angular = require('angular');
+
 import BaseCtrl = require('./_base.controller');
-import IScheduleService = require('./schedule.service');
 import Meeting from '../models/meeting';
 import CustomCommitmentOption from '../models/customCommitmentOption';
 import {Days, getDefaultDays} from '../utils';
 import Time = require('../models/time');
+import SchedulingOptionsService from "./schedulingOptions.service";
 
 interface meetingEditorDirectiveScope extends angular.IScope {
   meeting: Meeting<CustomCommitmentOption>;
@@ -42,9 +43,9 @@ function bsMeetingEditorDirective() {
         $state: angular.ui.IStateService,
         $window: angular.IWindowService,
         private $scope: meetingEditorDirectiveScope,
-        scheduleFactory: IScheduleService
+        schedulingOptionsService: SchedulingOptionsService
     ) {
-      super($state, $window, scheduleFactory);
+      super($state, $window, schedulingOptionsService);
 
       this.selectedDays = Object.keys(this.$scope.meeting.days).filter(d => this.$scope.meeting.days[d])
     }
@@ -80,7 +81,7 @@ function bsMeetingEditorDirective() {
         '$state',
         '$window',
         '$scope',
-        'scheduleFactory',
+        'schedulingOptionsService',
         bsMeetingEditorCtrl
     ],
     controllerAs: 'vm',

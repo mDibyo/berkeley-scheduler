@@ -1,8 +1,8 @@
 import angular = require('angular');
 
 import BaseCtrl = require('./_base.controller');
-import IScheduleService = require('./schedule.service');
 import Time = require('../models/time');
+import SchedulingOptionsService from "./schedulingOptions.service";
 
 interface timePickerDirectiveScope extends angular.IScope {
   applyClass?: string;
@@ -30,9 +30,9 @@ function bsTimePickerDirective() {
         $window: angular.IWindowService,
         private $timeout: angular.ITimeoutService,
         private $scope: timePickerDirectiveScope,
-        scheduleFactory: IScheduleService
+        schedulingOptionsService: SchedulingOptionsService
     ) {
-      super($state, $window, scheduleFactory);
+      super($state, $window, schedulingOptionsService);
 
       $scope.applyClass = $scope.applyClass || '';
       $scope.timeOptions = $scope.timeOptions || defaultTimeOptions;
@@ -74,7 +74,7 @@ function bsTimePickerDirective() {
         '$window',
         '$timeout',
         '$scope',
-        'scheduleFactory',
+        'schedulingOptionsService',
         bsTimePickerCtrl
     ],
     controllerAs: 'vm',

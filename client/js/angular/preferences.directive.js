@@ -4,8 +4,8 @@ var Time = require('../models/time');
 
 function bsPreferencesDirective() {
   bsPreferencesCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function bsPreferencesCtrl($state, $window, scheduleFactory, savedScheduleService) {
-    BaseCtrl.call(this, $state, $window, scheduleFactory);
+  function bsPreferencesCtrl($state, $window, schedulingOptionsService, scheduleFactory, savedScheduleService) {
+    BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
     var vm = this;
 
@@ -23,7 +23,7 @@ function bsPreferencesDirective() {
     hours.push(new Time(h, 0));
     halfHours.push(new Time(h, 0));
 
-    var schedulingOptions = scheduleFactory.getSchedulingOptions();
+    var schedulingOptions = schedulingOptionsService.getAllSchedulingOptions();
 
     vm.scheduleGenerationStatus = scheduleFactory.getScheduleGenerationStatus();
     vm.showSavedSchedules = schedulingOptions.showSavedSchedules;
@@ -64,16 +64,16 @@ function bsPreferencesDirective() {
     vm.onChangeSortingOption = onChangeSortingOption;
 
     function onChangeSortingOption() {
-      scheduleFactory.setSchedulingOption('preferMornings', false, false);
-      scheduleFactory.setSchedulingOption('preferAfternoons', false, false);
-      scheduleFactory.setSchedulingOption('preferEvenings', false, false);
-      scheduleFactory.setSchedulingOption('minimizeGaps', false, false);
-      scheduleFactory.setSchedulingOption('maximizeGaps', false, false);
-      scheduleFactory.setSchedulingOption('minimizeNumberOfDays', false, false);
-      scheduleFactory.setSchedulingOption('maximizeNumberOfDays', false, false);
-      scheduleFactory.setSchedulingOption('preferNoTimeConflicts', false, false);
+      schedulingOptionsService.setSchedulingOption('preferMornings', false, false);
+      schedulingOptionsService.setSchedulingOption('preferAfternoons', false, false);
+      schedulingOptionsService.setSchedulingOption('preferEvenings', false, false);
+      schedulingOptionsService.setSchedulingOption('minimizeGaps', false, false);
+      schedulingOptionsService.setSchedulingOption('maximizeGaps', false, false);
+      schedulingOptionsService.setSchedulingOption('minimizeNumberOfDays', false, false);
+      schedulingOptionsService.setSchedulingOption('maximizeNumberOfDays', false, false);
+      schedulingOptionsService.setSchedulingOption('preferNoTimeConflicts', false, false);
 
-      scheduleFactory.setSchedulingOption(vm.selectedSortingOption, true, true);
+      schedulingOptionsService.setSchedulingOption(vm.selectedSortingOption, true, true);
       maybeFilterAndReorderSchedules();
     }
 
@@ -95,7 +95,7 @@ function bsPreferencesDirective() {
       savedScheduleService.dropSavedSchedule(schedule);
     };
 
-    scheduleFactory.registerSchedulingOptionsChangeListener('preferences', function(newOptions) {
+    schedulingOptionsService.addChangeSchedulingOptionListener('preferences', function(newOptions) {
       vm.noTimeConflicts = schedulingOptions.noTimeConflicts = newOptions.noTimeConflicts;
     });
 
@@ -119,7 +119,7 @@ function bsPreferencesDirective() {
         toggleOptions(false);
       }
       vm.showSavedSchedules = showSavedSchedules;
-      scheduleFactory.setSchedulingOption('showSavedSchedules', vm.showSavedSchedules);
+      schedulingOptionsService.setSchedulingOption('showSavedSchedules', vm.showSavedSchedules);
     }
 
     function toggleOptions(showOptions) {
@@ -127,12 +127,12 @@ function bsPreferencesDirective() {
         toggleSavedSchedules(false);
       }
       vm.showOptions = showOptions;
-      scheduleFactory.setSchedulingOption('showOptions', vm.showOptions);
+      schedulingOptionsService.setSchedulingOption('showOptions', vm.showOptions);
     }
 
     function onChangeNoTimeConflicts() {
       vm.disablePreferNoTimeConflicts = vm.noTimeConflicts;
-      scheduleFactory.setSchedulingOption('noTimeConflicts', vm.noTimeConflicts);
+      schedulingOptionsService.setSchedulingOption('noTimeConflicts', vm.noTimeConflicts);
       maybeFilterAndReorderSchedules();
     }
 
@@ -143,7 +143,7 @@ function bsPreferencesDirective() {
       }
       vm.dayEndTimes = times;
 
-      scheduleFactory.setSchedulingOption('dayStartTime', vm.selectedDayStartTime);
+      schedulingOptionsService.setSchedulingOption('dayStartTime', vm.selectedDayStartTime);
       maybeFilterAndReorderSchedules();
     }
 
@@ -154,7 +154,7 @@ function bsPreferencesDirective() {
       }
       vm.dayStartTimes = times;
 
-      scheduleFactory.setSchedulingOption('dayEndTime', vm.selectedDayEndTime);
+      schedulingOptionsService.setSchedulingOption('dayEndTime', vm.selectedDayEndTime);
       maybeFilterAndReorderSchedules();
     }
   }
@@ -163,6 +163,7 @@ function bsPreferencesDirective() {
     controller: [
       '$state',
       '$window',
+      'schedulingOptionsService',
       'scheduleFactory',
       'savedScheduleService',
       bsPreferencesCtrl

@@ -3,8 +3,8 @@ var constants = require('../constants');
 
 function bsCourseDisplayDirective() {
   bsCourseDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function bsCourseDisplayCtrl($state, $window, $scope, courseService, scheduleFactory) {
-    BaseCtrl.call(this, $state, $window, scheduleFactory);
+  function bsCourseDisplayCtrl($state, $window, $scope, courseService, schedulingOptionsService, scheduleFactory) {
+    BaseCtrl.call(this, $state, $window, schedulingOptionsService);
 
     var vm = this;
 
@@ -66,6 +66,7 @@ function bsCourseDisplayDirective() {
       '$window',
       '$scope',
       'courseService',
+      'schedulingOptionsService',
       'scheduleFactory',
       bsCourseDisplayCtrl
     ],

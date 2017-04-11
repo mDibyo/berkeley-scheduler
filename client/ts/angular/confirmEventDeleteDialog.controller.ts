@@ -1,8 +1,8 @@
 import angular = require('angular');
 
 import BaseCtrl = require('./_base.controller');
-import IScheduleService = require('./schedule.service');
 import UserService from './user.service';
+import SchedulingOptionsService from "./schedulingOptions.service";
 
 class ConfirmEventDeleteDialogCtrl extends BaseCtrl {
   doNotShowConfirmEventDeleteDialog: boolean = false;
@@ -12,11 +12,11 @@ class ConfirmEventDeleteDialogCtrl extends BaseCtrl {
       $window: angular.IWindowService,
       private $mdDialog: angular.material.IDialogService,
       private userService: UserService,
-      scheduleFactory: IScheduleService,
+      schedulingOptionsService: SchedulingOptionsService,
       public eventName: string,
       private onConfirm: () => void,
   ) {
-    super($state, $window, scheduleFactory);
+    super($state, $window, schedulingOptionsService);
 
     this.doNotShowConfirmEventDeleteDialog = !this.userService.preferences.showConfirmEventDeleteDialog;
   }
@@ -35,7 +35,7 @@ angular.module('berkeleyScheduler').controller('ConfirmEventDeleteDialogCtrl', [
     '$window',
     '$mdDialog',
     'userService',
-    'scheduleFactory',
+    'schedulingOptionsService',
     'eventName',
     'onConfirm',
     ConfirmEventDeleteDialogCtrl
