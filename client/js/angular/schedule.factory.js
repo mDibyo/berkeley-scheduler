@@ -215,7 +215,6 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService)
       _setAndBroadcastScheduleGenerationStatus(
         new scheduleGenerationStatus.Stale());
     }
-    courseService.save(constants.TERM_ABBREV);
   }
 
   function _updateNumSchedules() {

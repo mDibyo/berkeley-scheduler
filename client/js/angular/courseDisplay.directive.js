@@ -1,8 +1,9 @@
 var BaseCtrl = require('./_base.controller');
+var constants = require('../constants');
 
 function bsCourseDisplayDirective() {
   bsCourseDisplayCtrl.prototype = Object.create(BaseCtrl.prototype);
-  function bsCourseDisplayCtrl($state, $window, $scope, scheduleFactory) {
+  function bsCourseDisplayCtrl($state, $window, $scope, courseService, scheduleFactory) {
     BaseCtrl.call(this, $state, $window, scheduleFactory);
 
     var vm = this;
@@ -17,7 +18,7 @@ function bsCourseDisplayDirective() {
     vm.selectAllSections = false;
     vm.onChangeSelectAllSections = onChangeSelectAllSections;
     vm.onChangeSelectPrimarySection = onChangeSelectPrimarySection;
-    vm.setStale = setSchedulesStale;
+    vm.updateCourse = updateCourse;
     vm.extractSectionTypePriority = extractSectionTypePriority;
 
     function onChangeSelectAllSections() {
@@ -34,7 +35,7 @@ function bsCourseDisplayDirective() {
           });
         });
       }
-      setSchedulesStale();
+      updateCourse();
     }
 
     function onChangeSelectPrimarySection(courseInstance) {
@@ -43,10 +44,11 @@ function bsCourseDisplayDirective() {
           section.selected = false;
         });
       }
-      setSchedulesStale();
+      updateCourse();
     }
 
-    function setSchedulesStale() {
+    function updateCourse() {
+      courseService.save(constants.TERM_ABBREV);
       scheduleFactory.setStale(true);
     }
 
@@ -63,6 +65,7 @@ function bsCourseDisplayDirective() {
       '$state',
       '$window',
       '$scope',
+      'courseService',
       'scheduleFactory',
       bsCourseDisplayCtrl
     ],
