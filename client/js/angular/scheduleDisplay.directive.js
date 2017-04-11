@@ -297,6 +297,5 @@ function bsScheduleDisplayDirective(finals, scheduleFactory) {
 angular.module('berkeleyScheduler').directive('bsScheduleDisplay', [
   'finals',
   'scheduleFactory',
-  'savedScheduleService',
   bsScheduleDisplayDirective
 ]);

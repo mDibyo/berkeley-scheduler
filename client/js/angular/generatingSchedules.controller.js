@@ -1,3 +1,4 @@
+var constants = require('../constants');
 var BaseCtrl = require('./_base.controller');
 
 GeneratingSchedulesCtrl.prototype = Object.create(BaseCtrl.prototype);
@@ -34,9 +35,9 @@ function GeneratingSchedulesCtrl(
   var scheduleGroupId = $stateParams.scheduleGroupId;
   var startScheduleId = $stateParams.startScheduleId;
   if (scheduleGroupId) {
-    deferred.resolve(scheduleFactory.setCurrentScheduleGroupById(scheduleGroupId));
+    deferred.resolve(scheduleFactory.setCurrentScheduleGroupById(constants.TERM_ABBREV, scheduleGroupId));
   } else if (startScheduleId) {
-    deferred.resolve(scheduleFactory.setCurrentScheduleGroupByScheduleIdQ(startScheduleId));
+    deferred.resolve(scheduleFactory.setCurrentScheduleGroupByScheduleIdQ(constants.TERM_ABBREV, startScheduleId));
   }
 
   deferred.promise.then(function() {

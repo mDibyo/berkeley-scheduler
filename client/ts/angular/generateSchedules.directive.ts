@@ -4,6 +4,7 @@ import BaseCtrl = require("./_base.controller");
 import {ScheduleGenerationStatus} from "../models/scheduleGenerationStatus";
 import IScheduleService = require("./schedule.service");
 import SchedulingOptionsService from "./schedulingOptions.service";
+import {TERM_ABBREV} from "../constants";
 
 function bsGenerateSchedulesDirective() {
   class bsGenerateSchedulesCtrl extends BaseCtrl {
@@ -28,7 +29,7 @@ function bsGenerateSchedulesDirective() {
     }
 
     generateAndViewSchedules() {
-      this.scheduleFactory.getCurrentScheduleGroupIdQ().then(scheduleGroupId => {
+      this.scheduleFactory.getCurrentScheduleGroupIdQ(TERM_ABBREV).then(scheduleGroupId => {
         this.goToState('schedule.generatingSchedules', {
           scheduleGroupId
         });
