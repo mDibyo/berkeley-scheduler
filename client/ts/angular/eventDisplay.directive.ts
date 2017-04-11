@@ -2,7 +2,6 @@ import angular = require('angular');
 
 import BaseCtrl = require('./_base.controller');
 import IScheduleService = require('./schedule.service');
-import * as constants from '../constants';
 import Meeting = require('../models/meeting');
 import CustomCommitment from '../models/customCommitment';
 import EventService from './event.service';

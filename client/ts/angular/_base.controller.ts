@@ -9,7 +9,7 @@ class BaseCtrl {
       protected schedulingOptionsService: SchedulingOptionsService
   ) {}
 
-  goToState(to: string, params: any, options?: angular.ui.IHrefOptions) {
+  goToState(to: string, params: any={}, options?: angular.ui.IHrefOptions) {
     if (to === 'schedule.viewSchedule') {
       this._goToScheduleViewSchedule(params, options);
       return;

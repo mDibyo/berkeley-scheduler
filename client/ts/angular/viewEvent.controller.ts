@@ -1,5 +1,5 @@
 import angular = require('angular');
-import angulartics = require('angulartics')
+import {angulartics} from "angulartics";
 
 import BaseCtrl = require('./_base.controller');
 import EventService from './event.service';
@@ -16,7 +16,7 @@ export class ViewEventCtrl extends BaseCtrl {
       $stateParams: angular.ui.IStateParamsService & {id: string},
       eventService: EventService,
       schedulingOptionsService: SchedulingOptionsService,
-      $analytics: angulartics.angulartics.IAnalyticsService
+      $analytics: angulartics.IAnalyticsService
   ) {
     super($state, $window, schedulingOptionsService);
 

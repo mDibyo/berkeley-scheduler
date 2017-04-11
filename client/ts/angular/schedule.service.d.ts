@@ -12,6 +12,7 @@ declare interface IScheduleService {
   getCurrentScheduleGroupIdQ(termAbbrev: string): angular.IPromise<string>;
   getCurrScheduleId(): string;
 
+  generateSchedulesQ(): angular.IPromise<void>;
   getScheduleGenerationStatus(): ScheduleGenerationStatus;
   registerScheduleGenerationStatusListener(
       tag: string,

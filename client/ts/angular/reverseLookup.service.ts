@@ -8,6 +8,12 @@ import {DEFAULT_TERM_ABBREV} from "../constants";
 
 type CourseTitleJson = [string, string, string]
 
+export interface CourseTitleInfo {
+  id: string;
+  courseNumber: string;
+  title: string;
+}
+
 const indicesUrlFormat = (termAbbrev: string, index: string) =>
     `data/${termAbbrev}/indices/${index}.json`;
 const _2aryTo1arySectionIdIndexUrl = (termAbbrev: string) =>
@@ -86,7 +92,10 @@ export default class reverseLookup extends BaseService {
         .then(id => this.getCourseQBy1arySectionId(termAbbrev, id));
   }
 
-  getCourseTitlesQBySubjectAreaCode(termAbbrev: string, subjectAreaCode: string) {
+  getCourseTitlesQBySubjectAreaCode(
+      termAbbrev: string,
+      subjectAreaCode: string
+  ): angular.IPromise<CourseTitleInfo[]> {
     return this.subjectAreaToCourseTitlesIndexQByTerm
         .get(termAbbrev)
         .then(index => index[subjectAreaCode]
