@@ -27,7 +27,7 @@ export default class CourseService {
   private coursesByTerm: TermMap<Course[]> = new TermMap(() => ([]));
   private sectionsByTerm: TermMap<SectionsMap> = new TermMap(() => ({}));
 
-  private readyByTerm: TermMap<boolean> = new TermMap(() => true);
+  private readyByTerm: TermMap<{ready: boolean}> = new TermMap(() => ({ready: false}));
   private readyQByTerm: TermMap<angular.IPromise<void>> = new TermMap(
       termAbbrev => this.$q.all(this.userService.getCourseInfos(termAbbrev).map(
           (courseInfo: CourseInfo) => {
@@ -42,10 +42,10 @@ export default class CourseService {
             });
           }
       )).then(() => {
-        this.readyByTerm.get(termAbbrev);
+        this.readyByTerm.get(termAbbrev).ready = true;
         const setReadyListeners = this.setReadyListenersByTerm.get(termAbbrev);
         for (let tag in setReadyListeners) {
-          setReadyListeners[tag](this.readyByTerm.get(termAbbrev));
+          setReadyListeners[tag](true);
         }
       })
   );
@@ -63,7 +63,7 @@ export default class CourseService {
   }
 
   isReady(termAbbrev: string): boolean {
-    return this.readyByTerm.get(termAbbrev);
+    return this.readyByTerm.get(termAbbrev).ready;
   }
 
   getSections(termAbbrev: string): SectionsMap {
