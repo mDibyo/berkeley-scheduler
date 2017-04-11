@@ -31,7 +31,7 @@ export default class CourseService {
   private readyQByTerm: TermMap<angular.IPromise<void>> = new TermMap(
       termAbbrev => this.$q.all(this.userService.getCourseInfos(termAbbrev).map(
           (courseInfo: CourseInfo) => {
-            return this.addCourseByIdQ(termAbbrev, courseInfo.id).then((course: Course) => {
+            return this.addCourseByIdQ(termAbbrev, courseInfo.id, false).then((course: Course) => {
               course.selected = courseInfo.selected === undefined || courseInfo.selected;
               course.instances.forEach((courseInstance: CourseInstance) => {
                 courseInstance.sections.forEach((section: Section) => {
@@ -99,7 +99,7 @@ export default class CourseService {
     });
   }
 
-  addCourseByIdQ(termAbbrev: string, id: string): angular.IPromise<Course> {
+  addCourseByIdQ(termAbbrev: string, id: string, save: boolean=true): angular.IPromise<Course> {
     const courses = this.coursesByTerm.get(termAbbrev);
     const courseIdx = courses.findIndex((c: Course) => id === c.id);
     if (courseIdx >= 0) {
@@ -108,13 +108,13 @@ export default class CourseService {
 
     return this.reverseLookupService.getCourseQBy2arySectionId(termAbbrev, id).then(
       (course: Course) => {
-        this.addCourse(termAbbrev, course);
+        this.addCourse(termAbbrev, course, save);
         return course;
       }
     );
   }
 
-  addCourse(termAbbrev: string, course: Course): void {
+  addCourse(termAbbrev: string, course: Course, save: boolean=true): void {
     // Check if course has already been added.
     const courses = this.coursesByTerm.get(termAbbrev);
     const courseIdx = courses.findIndex((c: Course) => course.id === c.id);
@@ -132,7 +132,9 @@ export default class CourseService {
 
     course.add();
     course.selected = true;
-    this.save(termAbbrev);
+    if (save) {
+      this.save(termAbbrev);
+    }
 
     const addCourseListeners = this.addCourseListenersByTerm.get(termAbbrev);
     for (const tag in addCourseListeners) {
