@@ -1,0 +1,54 @@
+{
+  "MTWRFCourses": {
+    "8": "Monday811AM",
+    "9": "Monday710PM",
+    "10": "Tuesday36PM",
+    "11": "Tuesday710PM",
+    "12": "Wednesday36PM",
+    "13": "Tuesday811AM",
+    "14": "Tuesday1130230PM",
+    "15": "Wednesday710PM",
+    "16": "Friday811AM",
+    "17": "Friday36PM",
+    "18": "Friday36PM",
+    "19": "Friday36PM",
+    "20": "Friday36PM",
+    "21": "Friday36PM",
+    "22": "Friday36PM",
+    "23": "Friday36PM"
+  },
+  "TRCourses": {
+    "8": "Thursday710PM",
+    "9": "Wednesday1130230PM",
+    "10": "Friday36PM",
+    "11": "Thursday811AM",
+    "12": "Thursday36PM",
+    "13": "Thursday36PM",
+    "14": "Monday1130230PM",
+    "15": "Friday710PM",
+    "16": "Friday710PM",
+    "17": "Friday1130230PM",
+    "18": "Friday1130230PM",
+    "19": "Friday1130230PM",
+    "20": "Friday1130230PM",
+    "21": "Friday1130230PM",
+    "22": "Friday1130230PM",
+    "23": "Friday1130230PM"
+  },
+  "SatSunCourses": "Thursday710PM",
+  "exceptions": {
+    "ECON": {
+      "1": "Monday36PM",
+      "100B": "Monday36PM"
+    },
+    "CHEM": {
+      "1A": "Wednesday811AM",
+      "1B": "Wednesday811AM",
+      "3A": "Wednesday811AM",
+      "3B": "Wednesday811AM",
+      "4A": "Wednesday811AM",
+      "4B": "Wednesday811AM"
+    },
+    "foreignLanguageListing": "Thursday1130230PM"
+  }
+}

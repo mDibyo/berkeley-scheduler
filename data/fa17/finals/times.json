@@ -1,0 +1,31 @@
+{
+  "dates": {
+    "Monday": {"year": 2017, "month": 11, "day": 11},
+    "Tuesday": {"year": 2017, "month": 11, "day": 12},
+    "Wednesday": {"year": 2017, "month": 11, "day": 13},
+    "Thursday": {"year": 2017, "month": 11, "day": 14},
+    "Friday": {"year": 2017, "month": 11, "day": 15}
+  },
+  "meetings": {
+    "Monday811AM": {"sT": "8:00", "eT": "11:00", "days": {"Mo": true}},
+    "Monday1130230PM": {"sT": "11:30", "eT": "14:30", "days": {"Mo": true}},
+    "Monday36PM": {"sT": "15:00", "eT": "18:00", "days": {"Mo": true}},
+    "Monday710PM": {"sT": "19:00", "eT": "22:00", "days": {"Mo": true}},
+    "Tuesday1130230PM": {"sT": "11:30", "eT": "14:30", "days": {"Tu": true}},
+    "Tuesday811AM": {"sT": "8:00", "eT": "11:00", "days": {"Tu": true}},
+    "Tuesday36PM": {"sT": "15:00", "eT": "18:00", "days": {"Tu": true}},
+    "Tuesday710PM": {"sT": "19:00", "eT": "22:00", "days": {"Tu": true}},
+    "Wednesday811AM": {"sT": "8:00", "eT": "11:00", "days": {"We": true}},
+    "Wednesday1130230PM": {"sT": "11:30", "eT": "14:30", "days": {"We": true}},
+    "Wednesday36PM": {"sT": "15:00", "eT": "18:00", "days": {"We": true}},
+    "Wednesday710PM": {"sT": "19:00", "eT": "22:00", "days": {"We": true}},
+    "Thursday811AM": {"sT": "8:00", "eT": "11:00", "days": {"Th": true}},
+    "Thursday1130230PM": {"sT": "11:30", "eT": "14:30", "days": {"Th": true}},
+    "Thursday36PM": {"sT": "15:00", "eT": "18:00", "days": {"Th": true}},
+    "Thursday710PM": {"sT": "19:00", "eT": "22:00", "days": {"Th": true}},
+    "Friday811AM": {"sT": "8:00", "eT": "11:00", "days": {"Fr": true}},
+    "Friday1130230PM": {"sT": "11:30", "eT": "14:30", "days": {"Fr": true}},
+    "Friday36PM": {"sT": "15:00", "eT": "18:00", "days": {"Fr": true}},
+    "Friday710PM": {"sT": "19:00", "eT": "22:00", "days": {"Fr": true}}
+  }
+}
