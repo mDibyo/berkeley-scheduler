@@ -33,7 +33,7 @@ COURSE_LISTING_BY_DEPARTMENT_DIR = 'course-listing-by-department'
 FETCHED_CLASSES_BY_SUBJECT_AREA_FORMAT = 'fetched-class-json-by-subject-area-{}'
 FETCHED_CLASS_SECTIONS_BY_SUBJECT_AREA_FORMAT = 'fetched-class-section-json-by-subject-area-{}'
 CLASS_LISTING_DIR_FORMAT = 'class-listing-by-subject-area-{}'
-INDICES_DIR = 'indices'
+INDICES_DIR_FORMAT = 'indices-{}'
 FINAL_DIR = 'data'
 
 JSON_FILE_FORMAT = '{}.json'
@@ -138,7 +138,7 @@ def index_2ary_to_1ary_section_id():
     return os.path.join(DATA_DIR,
                         INTERMEDIATE_DIR,
                         DEPARTMENTS_DIR,
-                        INDICES_DIR,
+                        INDICES_DIR_FORMAT.format(TERM),
                         JSON_FILE_FORMAT.format('2ary-to-1ary-section-id'))
 
 
@@ -154,7 +154,7 @@ def index_1ary_section_id_to_subject_area():
     return os.path.join(DATA_DIR,
                         INTERMEDIATE_DIR,
                         DEPARTMENTS_DIR,
-                        INDICES_DIR,
+                        INDICES_DIR_FORMAT.format(TERM),
                         JSON_FILE_FORMAT.format('1ary-section-id-to-subject-area'))
 
 
@@ -170,7 +170,7 @@ def index_subject_area_to_course_titles():
     return os.path.join(DATA_DIR,
                         INTERMEDIATE_DIR,
                         DEPARTMENTS_DIR,
-                        INDICES_DIR,
+                        INDICES_DIR_FORMAT.format(TERM),
                         JSON_FILE_FORMAT.format('subject-area-to-course-titles'))
 
 
