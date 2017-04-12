@@ -1,6 +1,6 @@
 import angular = require('angular');
 
-import {StringMap} from "../utils";
+import {StringMap, TermMap} from "../utils";
 import finals from "./finals.service";
 
 import Course , {CourseJson} from "../models/course";
@@ -9,8 +9,9 @@ import Final = require("../models/final");
 
 
 const departmentsUrl = 'data/departments.json';
-const subjectAreaAbbrvsUrl = 'data/abbreviations.json';
-const coursesUrlFormat = (termAbbrev: string) => `data/${termAbbrev}/classes/{}.json`;
+const subjectAreaAbbrevsUrl = 'data/abbreviations.json';
+const coursesUrlFormat =
+    (termAbbrev: string, subjectAreaCode: string) => `data/${termAbbrev}/classes/${subjectAreaCode}.json`;
 
 
 export interface DepartmentsInfo {
@@ -28,7 +29,8 @@ export interface SubjectAreasInfo {
 
 export default class courseDiscoveryService {
   private _subjectAreasQ: angular.IPromise<SubjectAreasInfo[]>;
-  private coursesQBySubjectArea: {[subjectArea: string]: angular.IPromise<Course[]>} = {};
+  private coursesQBySubjectAreaByTerm: TermMap<{[subjectArea: string]: angular.IPromise<Course[]>}> =
+      new TermMap(() => ({}));
 
   constructor(
     private $http: angular.IHttpService,
@@ -37,7 +39,7 @@ export default class courseDiscoveryService {
   ) {
     this._subjectAreasQ = this.$q.all([
         this.$http.get(departmentsUrl).then(response => response.data),
-        this.$http.get(subjectAreaAbbrvsUrl).then(response => response.data, () => ({}))
+        this.$http.get(subjectAreaAbbrevsUrl).then(response => response.data, () => ({}))
     ]).then(([departmentsJson, abbrevs]: [DepartmentsInfo, StringMap<string[]>]) => {
       const subjectAreas = departmentsJson.subjectAreas;
       return Object.keys(subjectAreas).map(code => ({
@@ -57,12 +59,13 @@ export default class courseDiscoveryService {
   }
 
   getCoursesQBySubjectAreaCode(termAbbrev: string, code: string): angular.IPromise<Course[]> {
-    if (code in this.coursesQBySubjectArea) {
-      return this.coursesQBySubjectArea[code];
+    const coursesQBySubjectArea = this.coursesQBySubjectAreaByTerm.get(termAbbrev);
+    if (code in coursesQBySubjectArea) {
+      return coursesQBySubjectArea[code];
     }
 
     const alphabetizedCode = courseDiscoveryService.alphabetizeSubjectAreaCode(code);
-    const coursesUrl = coursesUrlFormat(termAbbrev).replace('{}', alphabetizedCode);
+    const coursesUrl = coursesUrlFormat(termAbbrev, alphabetizedCode);
     const coursesQ = this.$http.get(coursesUrl).then(response => {
       const coursesData = <StringMap<CourseJson>> (response.data || {});
       const finalQs: angular.IPromise<void>[] = [];
@@ -87,7 +90,7 @@ export default class courseDiscoveryService {
       return this.$q.all(finalQs).then(() => courses);
     }, () => []);
 
-    this.coursesQBySubjectArea[code] = coursesQ;
+    coursesQBySubjectArea[code] = coursesQ;
     return coursesQ;
   }
 }
