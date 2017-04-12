@@ -39,12 +39,7 @@
         md-no-cache
         md-min-length="0"
         md-search-text="vm.courseQuery"
-        md-items="courseTitle in vm.searchCourseTitle(vm.courseQuery) |
-          orderBy: [
-            vm.extractCourseNumberNumber,
-            vm.extractCourseNumberSuffix,
-            vm.extractCourseNumberPrefix
-          ]"
+        md-items="courseTitle in vm.searchCourseTitle(vm.courseQuery)"
         md-item-text="courseTitle.courseNumber"
         md-selected-item="vm.selectedCourseTitle"
         md-selected-item-change="vm.selectCourseWithTitle(vm.selectedCourseTitle)"
