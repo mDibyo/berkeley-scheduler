@@ -1,4 +1,4 @@
-export const DEFAULT_TERM_ABBREV = 'sp17';
+export const DEFAULT_TERM_ABBREV = 'fa17';
 
 export interface Term {
   abbrev: string;
@@ -16,6 +16,11 @@ export const terms: {[termAbbrev: string]: Term} = {
     abbrev: 'sp17',
     name: 'Spring 2017',
     lastDay: new Date(2017, 3, 28)
+  },
+  'fa17': {
+    abbrev: 'fa17',
+    name: 'Fall 2017',
+    lastDay: new Date(2017, 11, 8)
   }
 };
 
