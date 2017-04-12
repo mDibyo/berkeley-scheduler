@@ -13,6 +13,8 @@ function ViewCourseCtrl($state, $window, $location, $stateParams, courseService,
   vm.selectedCourse = null;
   courseService.addCourseByIdQ($stateParams.termAbbrev, $stateParams.id).then(function(course) {
     vm.selectedCourse = course;
+  }, function() {
+    vm.goToState('schedule');
   });
 }
 angular.module('berkeleyScheduler').controller('ViewCourseCtrl', [

@@ -64,6 +64,9 @@ export default class reverseLookup extends BaseService {
         .get(termAbbrev)
         .then(index => {
           const subjectAreaInfo = index[id];
+          if (!subjectAreaInfo) {
+            return this.$q.reject(`course with id ${id} could not be found in term ${termAbbrev}`);
+          }
           return this.courseDiscoveryService
               .getCoursesQBySubjectAreaCode(termAbbrev, subjectAreaInfo[0])
               .then(courseList => {

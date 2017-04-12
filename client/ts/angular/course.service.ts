@@ -39,7 +39,7 @@ export default class CourseService {
                 });
               });
               return course;
-            });
+            }, () => undefined);
           }
       )).then(() => {
         this.readyByTerm.get(termAbbrev).ready = true;
@@ -107,10 +107,10 @@ export default class CourseService {
     }
 
     return this.reverseLookupService.getCourseQBy2arySectionId(termAbbrev, id).then(
-      (course: Course) => {
-        this.addCourse(termAbbrev, course, save);
-        return course;
-      }
+        (course: Course) => {
+          this.addCourse(termAbbrev, course, save);
+          return course;
+        }
     );
   }
 
