@@ -151,6 +151,7 @@ export default class CourseFindCtrl extends BaseCtrl {
     this.reverseLookup
         .getCourseTitlesQBySubjectAreaCode(this.$stateParams.termAbbrev, subjectArea.code)
         .then(courseTitles => {
+          CourseFindCtrl.sortCourseTitles(courseTitles);
           this.courseTitlesList = courseTitles;
           this.courseIsDisabled = false;
         });
@@ -187,20 +188,24 @@ export default class CourseFindCtrl extends BaseCtrl {
   }
 
   private static courseNumberRegex = /^([a-zA-Z]*)(\d+)([a-zA-Z]*)/;
+  private static defaultCourseNumberRegexMatch = ["0", "", "0", ""];
+  private static sortCourseTitles(courseTitles: CourseTitleInfo[]) {
+    courseTitles.sort((t1, t2) => {
+      const [ , prefix1, number1, suffix1] =
+          CourseFindCtrl.courseNumberRegex.exec(t1.courseNumber) || CourseFindCtrl.defaultCourseNumberRegexMatch;
+      const [ , prefix2, number2, suffix2] =
+          CourseFindCtrl.courseNumberRegex.exec(t2.courseNumber) || CourseFindCtrl.defaultCourseNumberRegexMatch;
 
-  static extractCourseNumberNumber(courseTitle: CourseTitleInfo): number {
-    const match = this.courseNumberRegex.exec(courseTitle.courseNumber);
-    return match ? parseInt(match[2]) : 0;
-  }
+      if (number1 !== number2) {
+        return parseInt(number1) - parseInt(number2);
+      }
 
-  static extractCourseNumberSuffix(courseTitle: CourseTitleInfo): string {
-    const match = this.courseNumberRegex.exec(courseTitle.courseNumber);
-    return match ? match[3] : '';
-  }
+      if (suffix1 !== suffix2) {
+        return suffix1.localeCompare(suffix2, undefined, {sensitivity: 'base'});
+      }
 
-  static extractCourseNumberPrefix(courseTitle: CourseTitleInfo): string {
-    const match = this.courseNumberRegex.exec(courseTitle.courseNumber);
-    return match ? match[1] : '';
+      return prefix1.localeCompare(prefix2, undefined, {sensitivity: 'base'});
+    });
   }
 
   addCourse(course: Course) {
