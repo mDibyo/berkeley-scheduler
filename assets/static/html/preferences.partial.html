@@ -1,5 +1,9 @@
 <div class="generate-schedules">
-<div class="schedule-buttons" align="right" layout="row" layout-align="end center">
+<div class="schedule-buttons" align="right" layout="row" layout-align="start center">
+  <bs-term-selector></bs-term-selector>
+
+  <div flex></div>
+
   <md-button
       class="md-raised"
       ng-click="dvm.toggleSavedSchedules(!dvm.showSavedSchedules)"

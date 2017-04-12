@@ -37,6 +37,12 @@
   padding-right: 1px;
 }
 
+.term-selector {
+  font-size: 18px;
+  width: 140px;
+  text-align: left;
+}
+
 md-autocomplete {
   margin-left: 10px;
   margin-right: 10px;

@@ -1,0 +1,7 @@
+<md-input-container class="term-selector">
+  <md-select ng-model="tvm.selectedTermAbbrev" ng-change="tvm.changeTerm()" aria-label="Select Term">
+    <md-option ng-repeat="term in tvm.terms" ng-selected="tvm.termIsSelected(term)" value="{{term.abbrev}}">
+      {{term.name}}
+    </md-option>
+  </md-select>
+</md-input-container>

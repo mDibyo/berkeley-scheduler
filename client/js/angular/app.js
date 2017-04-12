@@ -44,6 +44,7 @@
   require('./viewSchedule.controller');
 
   // Directives
+  require('./termSelector.directive');
   require('./courseDisplay.directive');
   require('./eventDisplay.directive');
   require('./meetingEditor.directive');

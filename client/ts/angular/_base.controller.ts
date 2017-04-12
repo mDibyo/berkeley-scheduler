@@ -9,22 +9,28 @@ class BaseCtrl {
       protected schedulingOptionsService: SchedulingOptionsService
   ) {}
 
-  goToState(to: string, params: any={}, options?: angular.ui.IHrefOptions) {
+  goToState(
+      to: string,
+      params: any={},
+      options?: angular.ui.IHrefOptions
+  ): angular.IPromise<any> {
     if (to === 'schedule.viewSchedule') {
-      this._goToScheduleViewSchedule(params, options);
-      return;
+      return this._goToScheduleViewSchedule(params, options);
     }
-    this.$state.go(to, params, options);
+    return this.$state.go(to, params, options);
   }
 
   goToExternal(href: string) {
     this.$window.open(href, '_blank');
   }
 
-  private _goToScheduleViewSchedule(params: any, options?: angular.ui.IHrefOptions) {
+  private _goToScheduleViewSchedule(
+      params: any,
+      options?: angular.ui.IHrefOptions
+  ): angular.IPromise<any> {
     const schedulingOptions = this.schedulingOptionsService.getAllSchedulingOptions();
     params.noTimeConflicts = schedulingOptions.noTimeConflicts;
-    this.$state.go('schedule.viewSchedule', params, options);
+    return this.$state.go('schedule.viewSchedule', params, options);
   }
 
   getHref(state: angular.ui.IState, params: any, options: angular.ui.IHrefOptions) {
