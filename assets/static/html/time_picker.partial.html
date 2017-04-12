@@ -1,6 +1,6 @@
 <md-input-container class="{{ applyClass }}">
   <label ng-if="label !== undefined">{{ label }}</label>
-  <md-select ng-model="vm.selectedTime" ng-change="vm.save()">
+  <md-select ng-model="vm.selectedTime" ng-change="vm.save()" aria-label="{{ label }}">
     <md-option ng-repeat="time in timeOptions" ng-selected="vm.timeIsSelected(time)" value="{{time}}">
       {{time.toString()}}
     </md-option>
