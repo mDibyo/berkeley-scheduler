@@ -20,7 +20,7 @@ function bsScheduleDisplayDirective() {
   ];
 
   var finalMeetingHeight = 40;
-  var hourHeight = 70;
+  var hourHeight = 60;
   var minuteHeight = hourHeight / 60;
 
   var finalColorOpacity = '0.6';
