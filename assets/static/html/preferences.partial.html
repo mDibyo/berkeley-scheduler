@@ -37,14 +37,14 @@
           })">
         <md-tooltip class="saved-schedule-description">
           <div>
-          <span ng-repeat="(courseId, courseSections) in schedule.courses">
-            {{ courseSections[0].course.department }}
-            {{ courseSections[0].course.courseNumber }}:
-            <span ng-repeat="section in courseSections">
-              {{ section.type }} {{ section.number }}<span ng-if="!$last">,</span>
+            <span ng-repeat="(courseId, courseSections) in schedule.courseInstances">
+              {{ courseSections[0].owner.course.department }}
+              {{ courseSections[0].owner.course.courseNumber }}:
+              <span ng-repeat="section in courseSections">
+                {{ section.type }} {{ section.number }}<span ng-if="!$last">,</span>
+              </span>
+              <span ng-if="!$last"><br></span>
             </span>
-            <span ng-if="!$last"><br></span>
-          </span>
           </div>
         </md-tooltip>
         <div class="saved-schedule-drop" ng-click="dvm.dropSavedSchedule($event, schedule)">
