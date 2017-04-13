@@ -34,7 +34,7 @@
   <div class="current-schedule-index">
     {{vm.currScheduleListInfo.currentIdx+1}} of {{vm.currScheduleListInfo.total}}
   </div>
-  <div flex layout="row">
+  <div flex layout="row" layout-align="start center">
     <div>
       <md-icon class="md-48 schedule-nav"
                md-svg-icon="chevron-right"
@@ -52,6 +52,49 @@
                  scheduleId: vm.currScheduleListInfo.nextFpFirstScheduleId
                })">
       </md-icon>
+    </div>
+    <div>
+      <md-menu>
+        <md-button class="md-icon-button md-48" md-menu-origin ng-mouseenter="$mdOpenMenu($event)" aria-label="Choose how you would like to navigate through schedules">
+          <md-icon md-svg-icon="dots-vertical">
+          </md-icon>
+        </md-button>
+        <md-menu-content style="width: 350px; padding-bottom: 0">
+          <span style="font-size: 15px; padding: 5px;">Choose how you would like to navigate through schedules
+          </span>
+          <md-divider></md-divider>
+          <md-menu-item class="schedule-nav-menu-item" md-ink-ripple md-prevent-menu-close>
+            <div layout="row" layout-align="start center">
+              <div class="schedule-nav-menu-icon-left">
+                <md-icon class="md-48" md-svg-icon="chevron-left">
+                </md-icon>
+              </div>
+              <div class="schedule-nav-menu-icon-right">
+                <md-icon class="md-48" md-svg-icon="chevron-right">
+                </md-icon>
+              </div>
+              <div class="schedule-nav-menu-item-text" flex>
+                Go to previous/next schedule
+              </div>
+            </div>
+          </md-menu-item>
+          <md-menu-item class="schedule-nav-menu-item" md-ink-ripple md-prevent-menu-close>
+            <div layout="row" layout-align="start center">
+              <div class="schedule-nav-menu-icon-left">
+                <md-icon class="md-48" md-svg-icon="chevron-double-left">
+                </md-icon>
+              </div>
+              <div class="schedule-nav-menu-icon-right">
+                <md-icon class="md-48" md-svg-icon="chevron-double-right">
+                </md-icon>
+              </div>
+              <div class="schedule-nav-menu-item-text" flex>
+              Skip to previous/next set of schedules with different section times
+              </div>
+            </div>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
     </div>
     <div flex></div>
     <div>

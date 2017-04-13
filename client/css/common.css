@@ -357,6 +357,35 @@ md-icon.md-18 { font-size: 18px; }
 md-icon.md-24 { font-size: 24px; }
 md-icon.md-36 { font-size: 36px; }
 md-icon.md-48 {width: 48px;height: 48px;}
+md-icon.md-48[md-svg-icon="dots-vertical"] {width: 36px; height: 36px; }
+md-button.md-icon-button { padding: 0; margin: 0 }
+
+
+.md-open-menu-container.md-active>md-menu-content>* {
+  transition: none;
+}
+.schedule-nav-menu-item>div {
+  font-size: 13px;
+  padding: 0;
+}
+
+md-menu-item:hover {
+  background-color: #3b7ea1;
+  color: #ffffff;
+}
+md-menu-item.schedule-nav-menu-item md-icon {
+  color: #003262;
+}
+md-menu-item.schedule-nav-menu-item:hover md-icon {
+  color: #ffffff;
+}
+.schedule-nav-menu-icon-left {
+  margin-right: -8px;
+}
+.schedule-nav-menu-item-text {
+  padding-left: 4px;
+  padding-right: 4px;
+}
 
 .current-schedule-index {
   padding: 8px;
