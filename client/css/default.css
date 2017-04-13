@@ -18,3 +18,8 @@ md-content {
 md-checkbox.md-checked div.md-icon {
   border-color: rgba(253, 181, 21, 0.87);
 }
+
+md-tooltip > div {
+  background-color: #003262 !important;
+  font-size: 14px;
+}
