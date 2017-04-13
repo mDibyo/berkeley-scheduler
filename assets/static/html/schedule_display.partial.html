@@ -2,14 +2,6 @@
 
 <div layout="row" layout-align="center center" class="schedule-nav-row">
   <div flex layout="row">
-    <div>
-      <md-button class="md-raised" ng-click="vm.toggleFinalsSchedule()" ng-disabled="!vm.enableFinalsSchedule">
-        Finals Schedule
-      </md-button>
-      <md-tooltip ng-if="!vm.enableFinalsSchedule">
-        Coming soon!
-      </md-tooltip>
-    </div>
     <div flex></div>
     <div>
       <md-icon class="md-48 schedule-nav"
@@ -151,7 +143,7 @@
   No sections in schedule.
 </div>
 
-<div ng-if="vm.enableFinalsSchedule && vm.showFinalsSchedule">
+<div ng-if="vm.enableFinalsSchedule">
   <h4 class="md-title finals-schedule-title">Finals Schedule</h4>
   <div id="finals-entire" layout="column" class="right-pane-item">
     <div class="schedule-display" layout="row">

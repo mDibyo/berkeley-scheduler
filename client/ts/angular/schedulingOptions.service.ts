@@ -24,7 +24,6 @@ export default class SchedulingOptionsService {
       dayStartTime: null,
       dayEndTime: null,
       noTimeConflicts: true,
-      showFinalsSchedule: false,
     }, this.userService.schedulingOptions);
 
 

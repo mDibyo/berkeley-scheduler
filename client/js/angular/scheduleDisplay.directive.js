@@ -71,9 +71,7 @@ function bsScheduleDisplayDirective() {
 
     var startHourTotalMinutes = (new Time(startHour, 0)).getTotalMinutes();
 
-    var schedulingOptions = schedulingOptionsService.getAllSchedulingOptions();
     vm.enableFinalsSchedule = enableFinalsSchedule;
-    vm.showFinalsSchedule = schedulingOptions.showFinalsSchedule;
     vm.finalMeetings = finalMeetings;
 
     vm.days = days;
@@ -83,7 +81,6 @@ function bsScheduleDisplayDirective() {
     vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
     vm.addSavedSchedule = addSavedSchedule;
     vm.exportScheduleToCalendar = exportScheduleToCalendar;
-    vm.toggleFinalsSchedule = toggleFinalsSchedule;
     vm.getFinalsForDay = getFinalsForDay;
     vm.getFinalStyle = getFinalStyle;
     vm.getFinalHoverStyle = getFinalHoverStyle;
@@ -105,11 +102,6 @@ function bsScheduleDisplayDirective() {
 
     function addSavedSchedule(schedule) {
       return savedScheduleService.addSavedSchedule($stateParams.termAbbrev, schedule);
-    }
-
-    function toggleFinalsSchedule() {
-      vm.showFinalsSchedule = !vm.showFinalsSchedule;
-      schedulingOptionsService.setSchedulingOption('showFinalsSchedule', vm.showFinalsSchedule);
     }
 
     function getFinalsForDay(courseInstanceSections, day) {
