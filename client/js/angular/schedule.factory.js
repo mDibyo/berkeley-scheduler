@@ -152,8 +152,10 @@ function scheduleFactory($q, $timeout, userService, courseService, eventService,
           for (i = 1; i < meetings.length; i++) {
             meeting = meetings[i];
             if (horizon > 0) {
-              if (meeting.startTime.getTotalMinutes() < horizon) {
-                return false;
+              if (meeting.getTotalMinutes() > 0) {
+                if (meeting.startTime.getTotalMinutes() < horizon) {
+                  return false;
+                }
               }
             }
             horizon = Math.max(horizon, meeting.endTime.getTotalMinutes());
