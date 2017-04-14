@@ -79,6 +79,34 @@ angular.module('berkeleyScheduler').run([
     // Pre-fetch SVG assets
     $templateRequest('assets/gen/sprite.defs.svg');
 
-    timeSpentService.initialize();
+    function getNextShareThreshold(currentTimeSpent) {
+      var shareThresholds = constants.shareThresholds;
+      for (var i = 0; i < shareThresholds.length; i++) {
+        if (shareThresholds[i] > currentTimeSpent) {
+          return shareThresholds[i];
+        }
+      }
+      return Infinity;
+    }
+
+    if (!$mdMedia('xs')) {
+      var startTimeSpent = timeSpentService.current;
+      var nextShareThreshold = getNextShareThreshold(startTimeSpent);
+
+      timeSpentService.initialize();
+      timeSpentService.addUpdateTimeSpentListener('run', function(timeSpent) {
+        if (userService.preferences.showShareDialog && timeSpent > nextShareThreshold) {
+          nextShareThreshold = getNextShareThreshold(timeSpent);
+
+          $mdDialog.show({
+            templateUrl: 'assets/static/html/share.dialog.html',
+            controller: 'ShareDialogCtrl',
+            controllerAs: 'vm',
+            parent: angular.element(document.body),
+            clickOutsideToClose: true
+          });
+        }
+      });
+    }
   }
 ]);

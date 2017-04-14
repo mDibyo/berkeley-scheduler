@@ -31,3 +31,10 @@ export function termName(termAbbrev: string): string {
 export function termLastDay(termAbbrev: string): Date {
   return terms[termAbbrev].lastDay;
 }
+
+export const shareThresholds: number[] = [
+    5 * 60 + 30,
+    20 * 60,
+    2 * 60 * 60,
+    Infinity
+];

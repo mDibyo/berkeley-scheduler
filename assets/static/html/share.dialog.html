@@ -1,0 +1,36 @@
+<md-dialog aria-label="Share dialog" style="max-width: 600px">
+  <md-dialog-content>
+    <div class="md-dialog-content md-body-1">
+      <h3 class="md-headline">
+        Consider sharing Berkeley Scheduler
+      </h3>
+      <div class="md-body-1">
+        <p>
+          We built Berkeley Scheduler because we felt that the alternatives available to
+          Cal Bears had much to be desired. We know this because while building it, we
+          spent a lot of time asking our fellow bears what they wished for from their
+          class schedule planners.
+        </p>
+        <p>
+          And to this day, we continue to maintain Berkeley Scheduler thanks to your
+          support and encouragement. If you enjoy Berkeley Scheduler, please consider
+          sharing it with your friends so that they too can benefit from it.
+        </p>
+        <p>
+          Also, if something is not working right, or if you would really like Berkeley Scheduler
+          to have some feature, give us feedback by clicking
+          <a href="https://github.com/mDibyo/berkeley-scheduler/blob/gh-pages/README.md" target="_blank">here</a>, or
+          by clicking the link at the bottom of any page.
+        </p>
+        <br>
+        <md-checkbox ng-model="vm.doNotShowShareDialog">
+          Do not show again
+        </md-checkbox>
+      </div>
+    </div>
+  </md-dialog-content>
+
+  <md-dialog-actions>
+    <md-button class="md-raised" ng-click="vm.close()">Close</md-button>
+  </md-dialog-actions>
+</md-dialog>
