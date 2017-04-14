@@ -15,6 +15,10 @@ export interface Preferences {
   showConfirmEventDeleteDialog: boolean;
 }
 
+export interface UserState {
+  timeSpent: number; // seconds
+}
+
 export interface SchedulingOptions extends StringMap<any> {
   showSavedSchedules: boolean;
   showOptions: boolean;
@@ -136,6 +140,7 @@ export default class UserService {
 
   private static _primaryUserIdStorageKey = 'primaryUserId';
   private static _preferencesStorageKeySuffix = 'preferences';
+  private static _stateStorageKeySuffix = 'state';
   private static _schedulingOptionsStorageKeySuffix = 'schedulingOptions';
   private static _courseInfosStorageKeySuffix = 'addedCourses';
   private static _eventInfosStorageKeySuffix = 'addedEvents';
@@ -143,6 +148,7 @@ export default class UserService {
 
   private _primaryUserId: string;
   private _preferences: Preferences;
+  private _state: UserState;
 
   constructor(
       $cookies: angular.cookies.ICookiesService,
@@ -178,6 +184,30 @@ export default class UserService {
     }
 
     return value || [];
+  }
+
+  get state(): UserState {
+    if (!this._state) {
+      const stateStorageKey: string =
+          `${this.primaryUserId}.${UserService._stateStorageKeySuffix}`;
+      let state: UserState = this.storage.get(stateStorageKey);
+      this._state = angular.extend({
+        timeSpent: 0
+      }, state);
+    }
+
+    return angular.copy(this._state);
+  }
+  set state(newState: UserState) {
+    this._state = newState;
+    const stateStorageKey: string =
+        `${this.primaryUserId}.${UserService._stateStorageKeySuffix}`;
+    this.storage.set(stateStorageKey, newState);
+  }
+  setState(stateKey: string, stateValue: any) {
+    this.state = angular.extend(this._state, {
+      [stateKey]: stateValue
+    });
   }
 
   get preferences(): Preferences {

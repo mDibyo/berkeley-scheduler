@@ -61,6 +61,7 @@
     "client/js/angular/user.service.js",
     "client/js/angular/termSelector.directive.js",
     "client/js/angular/timePicker.directive.js",
+    "client/js/angular/timeSpent.service.js",
     "client/js/angular/viewEvent.controller.js",
     "client/js/constants.js",
     "client/js/lib/polyfills.js",
