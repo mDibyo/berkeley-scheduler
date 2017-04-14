@@ -30,6 +30,7 @@ export interface SchedulingOptions extends StringMap<any> {
   dayEndTime: Time;
   noTimeConflicts: boolean;
   showFinalsSchedule: boolean;
+  doSkipNav: boolean;
 }
 
 export interface CourseInfo {
