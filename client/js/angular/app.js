@@ -28,6 +28,7 @@
   require('./event.service');
   require('./savedSchedule.service');
   require('./schedulingOptions.service');
+  require('./timeSpent.service');
 
   // Filters
   require('./reverse.filter');

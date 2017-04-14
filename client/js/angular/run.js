@@ -1,5 +1,7 @@
 var constants = require('../constants');
 
+var SHARE_THRESHOLD = 5 * 60; // seconds
+
 angular.module('berkeleyScheduler').run([
   '$window',
   '$state',
@@ -9,6 +11,7 @@ angular.module('berkeleyScheduler').run([
   '$mdMedia',
   '$templateRequest',
   'userService',
+  'timeSpentService',
   function(
       $window,
       $state,
@@ -17,7 +20,8 @@ angular.module('berkeleyScheduler').run([
       $mdDialog,
       $mdMedia,
       $templateRequest,
-      userService
+      userService,
+      timeSpentService
   ) {
     $rootScope.$state = $state;
 
@@ -74,5 +78,7 @@ angular.module('berkeleyScheduler').run([
 
     // Pre-fetch SVG assets
     $templateRequest('assets/gen/sprite.defs.svg');
+
+    timeSpentService.initialize();
   }
 ]);
