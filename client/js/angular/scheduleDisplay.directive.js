@@ -79,6 +79,9 @@ function bsScheduleDisplayDirective() {
     vm.finalColorOpacity = finalColorOpacity;
     vm.sectionColorOpacity = sectionColorOpacity;
     vm.currScheduleListInfo = scheduleFactory.getCurrScheduleListInfo();
+    vm.doSkipNav = schedulingOptionsService.getAllSchedulingOptions().doSkipNav;
+
+    vm.setSkipNav = setSkipNav;
     vm.addSavedSchedule = addSavedSchedule;
     vm.exportScheduleToCalendar = exportScheduleToCalendar;
     vm.getFinalsForDay = getFinalsForDay;
@@ -99,6 +102,13 @@ function bsScheduleDisplayDirective() {
           });
         }
       });
+
+    function setSkipNav(doSkipNav) {
+      if (doSkipNav !== vm.doSkipNav) {
+        vm.doSkipNav = doSkipNav;
+        schedulingOptionsService.setSchedulingOption('doSkipNav', vm.doSkipNav);
+      }
+    }
 
     function addSavedSchedule(schedule) {
       return savedScheduleService.addSavedSchedule($stateParams.termAbbrev, schedule);

@@ -360,7 +360,9 @@ md-icon.md-48 {width: 48px;height: 48px;}
 md-icon.md-48[md-svg-icon="dots-vertical"] {width: 36px; height: 36px; }
 md-button.md-icon-button { padding: 0; margin: 0 }
 
-
+.schedule-nav-menu-icon > md-icon {
+  color: #003262;
+}
 .md-open-menu-container.md-active>md-menu-content>* {
   transition: none;
 }
