@@ -34,7 +34,6 @@ const gerunds = [
     'Exercising',
     'Jumping',
     'Watching',
-    '****ing',
     'Inaugurating',
     'Sanctifying',
     'Sanitizing'
