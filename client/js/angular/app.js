@@ -40,6 +40,7 @@
   require('./exportToCalendarDialog.controller');
   require('./generatingSchedules.controller');
   require('./mobileUnoptimizedDialog.controller');
+  require('./shareDialog.controller');
   require('./viewCourse.controller');
   require('./viewEvent.controller');
   require('./viewSchedule.controller');

@@ -12,6 +12,7 @@ import {generateRandomAlphaNumericId} from '../utils';
 
 export interface Preferences {
   showMobUnoptDialog: boolean;
+  showShareDialog: boolean;
   showConfirmEventDeleteDialog: boolean;
 }
 
@@ -217,6 +218,7 @@ export default class UserService {
       let preferences: Preferences = this.storage.get(preferencesStorageKey);
       preferences = angular.extend({
         showMobUnoptDialog: true,
+        showShareDialog: true,
         showConfirmEventDeleteDialog: true
       }, preferences);
       this._preferences = preferences;

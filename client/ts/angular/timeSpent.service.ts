@@ -2,7 +2,7 @@ import angular = require('angular');
 import UserService from "./user.service";
 import {addListener, Listener, ListenerMap} from "../utils";
 
-const UPDATE_INTERVAL = 15; // seconds
+const UPDATE_INTERVAL = 1; // seconds
 
 class TimeSpentService {
   private currentStart: number = 0;
