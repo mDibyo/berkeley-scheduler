@@ -47,7 +47,7 @@ export default class CourseFindCtrl extends BaseCtrl {
     $analytics.pageTrack($location.url());
 
     this.courseService.getAllCoursesQ($stateParams.termAbbrev).then(
-        courses => this.addedCoursesList = courses
+        courses => this.addedCoursesList = courses.sort(CourseFindCtrl.compareCourses)
     );
     this.addedEventsList = eventService.getAllEvents($stateParams.termAbbrev);
 
@@ -60,8 +60,15 @@ export default class CourseFindCtrl extends BaseCtrl {
       this.scheduleFactory.setStale();
     });
 
-    this.courseService.addAddCourseListener($stateParams.termAbbrev, 'courseFind', course => {
-      this.addedCoursesList.push(course);
+    this.courseService.addAddCourseListener($stateParams.termAbbrev, 'courseFind', (course: Course) => {
+      let i = 0;
+      for (; i < this.addedCoursesList.length; i++) {
+        if (CourseFindCtrl.compareCourses(course, this.addedCoursesList[i]) > 0) {
+          break;
+        }
+      }
+      this.addedCoursesList.splice(i, 0, course);
+
       this.scheduleFactory.setStale();
       if (!this.scheduleIsReady) {
         return;
@@ -151,8 +158,10 @@ export default class CourseFindCtrl extends BaseCtrl {
     this.reverseLookup
         .getCourseTitlesQBySubjectAreaCode(this.$stateParams.termAbbrev, subjectArea.code)
         .then(courseTitles => {
-          CourseFindCtrl.sortCourseTitles(courseTitles);
-          this.courseTitlesList = courseTitles;
+
+          this.courseTitlesList = courseTitles.sort(
+              (ct1, ct2) => CourseFindCtrl.compareCourseNumbers(ct1.courseNumber, ct2.courseNumber)
+          );
           this.courseIsDisabled = false;
         });
   }
@@ -189,23 +198,33 @@ export default class CourseFindCtrl extends BaseCtrl {
 
   private static courseNumberRegex = /^([a-zA-Z]*)(\d+)([a-zA-Z]*)/;
   private static defaultCourseNumberRegexMatch = ["0", "", "0", ""];
-  private static sortCourseTitles(courseTitles: CourseTitleInfo[]) {
-    courseTitles.sort((t1, t2) => {
-      const [ , prefix1, number1, suffix1] =
-          CourseFindCtrl.courseNumberRegex.exec(t1.courseNumber) || CourseFindCtrl.defaultCourseNumberRegexMatch;
-      const [ , prefix2, number2, suffix2] =
-          CourseFindCtrl.courseNumberRegex.exec(t2.courseNumber) || CourseFindCtrl.defaultCourseNumberRegexMatch;
+  private static compareCourseNumbers(courseNumber1: string, courseNumber2: string): number {
+    const [ , prefix1, number1, suffix1] =
+    CourseFindCtrl.courseNumberRegex.exec(courseNumber1) || CourseFindCtrl.defaultCourseNumberRegexMatch;
+    const [ , prefix2, number2, suffix2] =
+    CourseFindCtrl.courseNumberRegex.exec(courseNumber2) || CourseFindCtrl.defaultCourseNumberRegexMatch;
 
-      if (number1 !== number2) {
-        return parseInt(number1) - parseInt(number2);
-      }
+    if (number1 !== number2) {
+      return parseInt(number1) - parseInt(number2);
+    }
 
-      if (suffix1 !== suffix2) {
-        return suffix1.localeCompare(suffix2, undefined, {sensitivity: 'base'});
-      }
+    if (suffix1 !== suffix2) {
+      return suffix1.localeCompare(suffix2, undefined, {sensitivity: 'base'});
+    }
 
-      return prefix1.localeCompare(prefix2, undefined, {sensitivity: 'base'});
-    });
+    return prefix1.localeCompare(prefix2, undefined, {sensitivity: 'base'});
+  }
+
+  static compareCourses(course1: Course, course2: Course): number {
+    const compareDepartments = course1.department.localeCompare(
+        course2.department,
+        undefined,
+        {sensitivity: 'base'}
+    );
+
+    return compareDepartments
+        ? compareDepartments
+        : CourseFindCtrl.compareCourseNumbers(course1.courseNumber, course2.courseNumber);
   }
 
   addCourse(course: Course) {

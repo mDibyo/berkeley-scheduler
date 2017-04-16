@@ -89,7 +89,7 @@
     <div>
       <div
           ng-if="vm.addedEventsList.length > 0"
-          ng-repeat="event in vm.addedEventsList"
+          ng-repeat="event in vm.addedEventsList | orderBy:'getName()'"
           layout="row" layout-align="center center"
           ui-sref="schedule.viewEvent({id: event.id})"
           ui-sref-active="curr-commitment"
