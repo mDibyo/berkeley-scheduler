@@ -49,7 +49,7 @@ def main():
         while True:
             response = request_classes_by_subject_area(TERM_ID,
                                                        subject_area,
-                                                       chunk_number * CHUNK_SIZE,
+                                                       chunk_number,
                                                        CHUNK_SIZE)
             if not response:
                 break
@@ -58,6 +58,9 @@ def main():
                                                              chunk_number)))
             with open(fetched_classes_by_subject_area_new(subject_area, chunk_number), 'w') as f:
                 json.dump(response, f)
+
+            if len(response['apiResponse']['response']['classes']) < 50:
+                break
             chunk_number += 1
 
         completed.add(subject_area)
