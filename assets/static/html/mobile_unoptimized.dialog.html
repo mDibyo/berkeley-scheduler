@@ -9,8 +9,27 @@
           This website has been designed for big screens and may not work well on a small screen.
           For the best experience, please consider visiting again on a device with a larger screen.
         </p>
+        <p>
+          Leave your email address here, and we will send you a link so that you can easily get back
+          to us on a larger device. We will not use your email address for any other purpose.
+        </p>
+        <form name="sendEmail">
+          <div layout="row">
+            <md-input-container flex>
+              <input type="email" placeholder="Email" ng-model="vm.email" required>
+            </md-input-container>
+          </div>
+          <div layout="row">
+            <md-input-container flex>
+              <input type="text" placeholder="First Name (optional)" ng-model="vm.firstName">
+            </md-input-container>
+            <md-input-container flex>
+              <input type="text" placeholder="Last Name (optional)" ng-model="vm.lastName">
+            </md-input-container>
+          </div>
+        </form>
         <md-checkbox ng-model="vm.doNotShowMobUnoptDialog">
-          Do not show again
+          Do not show this message again
         </md-checkbox>
       </div>
     </div>

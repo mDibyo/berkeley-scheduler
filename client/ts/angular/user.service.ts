@@ -14,6 +14,8 @@ export interface Preferences {
   showMobUnoptDialog: boolean;
   showShareDialog: boolean;
   showConfirmEventDeleteDialog: boolean;
+  email: string;
+  isEmailed: boolean;
 }
 
 export interface UserState {
@@ -219,7 +221,8 @@ export default class UserService {
       preferences = angular.extend({
         showMobUnoptDialog: true,
         showShareDialog: true,
-        showConfirmEventDeleteDialog: true
+        showConfirmEventDeleteDialog: true,
+        isEmailed: false
       }, preferences);
       this._preferences = preferences;
     }

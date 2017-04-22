@@ -1,4 +1,5 @@
 export const DEFAULT_TERM_ABBREV = 'fa17';
+export const API_URL = "https://api.berkeleyscheduler.com";
 
 export interface Term {
   abbrev: string;
