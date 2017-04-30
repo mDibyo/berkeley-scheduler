@@ -8,8 +8,8 @@ except SystemError:
     from config import *
 
 
-CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/uat/sis/v1/classes?{}'
-CLASS_SECTION_API_URL_FORMAT = 'https://apis.berkeley.edu/uat/sis/v1/classes/sections?{}'
+CLASS_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes?{}'
+CLASS_SECTION_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/classes/sections?{}'
 COURSE_API_URL_FORMAT = 'https://apis.berkeley.edu/sis/v1/courses?{}'
 
 SIS_COURSE_API_APP_ID_ENV = 'SIS_COURSE_API_APP_ID'
